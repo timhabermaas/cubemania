@@ -51,6 +51,7 @@ Rails::Initializer.run do |config|
   # end
 
   # See Rails::Configuration for more options
+  config.action_controller.session = { :session_key => '_Cubemania_session_id', :secret => 'some s3cr3t phrase of at least 42 characters' }
 end
 
 # Add new mime types for use in respond_to blocks:
