@@ -1,0 +1,25 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  name: 3x3x3
+  dimension: 3
+  
+two:
+  name: 2x2x2
+  dimension: 2
+
+three:
+  name: 4x4x4
+  dimension: 4
+
+four:
+  name: 3x3x3
+  dimension: 3
+
+five:
+  name: 2x2x2
+  dimension: 2
+
+six:
+  name: multi bld
+  dimension: 1000
