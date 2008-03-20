@@ -1,0 +1,17 @@
+<%= error_messages_for :puzzle %>
+
+<% form_for @puzzle, :html => { :multipart => true } do |form| %>
+  <p>
+    <b>Name</b><br />
+    <%= form.text_field :name %>
+  </p>
+  <p>
+    <%= file_column_field 'puzzle', 'image' %>
+  </p>
+  <p>
+    <%= form.select :kind_id, Kind.find(:all, :order => 'name').collect {|k| [ k.name, k.id ] } %>
+  </p>
+  <p>
+    <%= form.submit action_label %>
+  </p>
+<% end %>

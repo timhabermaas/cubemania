@@ -1,8 +1,7 @@
 class CreateKinds < ActiveRecord::Migration
   def self.up
     create_table :kinds do |t|
-      t.string :name, :null => false
-      t.timestamps
+      t.string :name, :limit => 64, :null => false
     end
   end
 

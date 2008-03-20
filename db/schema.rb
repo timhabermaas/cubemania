@@ -9,23 +9,23 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 2) do
+ActiveRecord::Schema.define(:version => 4) do
+
+  create_table "items", :force => true do |t|
+    t.string "name",        :limit => 64, :null => false
+    t.string "description",               :null => false
+  end
 
   create_table "kinds", :force => true do |t|
-    t.string   "name",       :default => "", :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string "name", :limit => 64, :null => false
   end
 
   create_table "puzzles", :force => true do |t|
-    t.string   "name",       :limit => 42, :default => "", :null => false
-    t.string   "image",      :limit => 42, :default => "", :null => false
-    t.integer  "kind_id",                                  :null => false
-    t.integer  "dimension",                                :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string  "name",    :limit => 64, :null => false
+    t.string  "image",   :limit => 64, :null => false
+    t.integer "kind_id",               :null => false
   end
 
-  add_index "puzzles", ["kind_id", "dimension"], :name => "index_puzzles_on_kind_id_and_dimension"
+  add_index "puzzles", ["kind_id", "name"], :name => "index_puzzles_on_kind_id_and_name"
 
 end

@@ -1,17 +1,6 @@
 <h1>Editing puzzle</h1>
 
-<%= error_messages_for :puzzle %>
-
-<% form_for(@puzzle) do |f| %>
-  <p>
-    <b>Name</b><br />
-    <%= f.text_field :name %>
-  </p>
-
-  <p>
-    <%= f.submit "Update" %>
-  </p>
-<% end %>
+<%= render :partial => 'form' %>
 
 <%= link_to 'Show', @puzzle %> |
 <%= link_to 'Back', puzzles_path %>

@@ -1,0 +1,12 @@
+<%= error_messages_for :kind %>
+
+<% form_for @kind do |form| %>
+  <p>
+    <b>Name</b><br />
+    <%= form.text_field :name %>
+  </p>
+
+  <p>
+    <%= form.submit acion_label %>
+  </p>
+<% end %>
