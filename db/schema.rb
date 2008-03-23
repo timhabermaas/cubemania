@@ -9,7 +9,13 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 4) do
+ActiveRecord::Schema.define(:version => 5) do
+
+  create_table "clocks", :force => true do |t|
+    t.integer  "time",       :null => false
+    t.integer  "puzzle_id",  :null => false
+    t.datetime "created_at"
+  end
 
   create_table "items", :force => true do |t|
     t.string "name",        :limit => 64, :null => false
@@ -26,6 +32,6 @@ ActiveRecord::Schema.define(:version => 4) do
     t.integer "kind_id",               :null => false
   end
 
-  add_index "puzzles", ["kind_id", "name"], :name => "index_puzzles_on_kind_id_and_name"
+  add_index "puzzles", ["kind_id", "name"], :name => "index_puzzles_on_kind_id_and_name", :unique => true
 
 end

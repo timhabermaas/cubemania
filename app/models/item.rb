@@ -4,6 +4,6 @@ class Item < ActiveRecord::Base
   validates_length_of :description, :maximum => 256
   
   def url
-    { :controller => name }
+    { :controller => name.underscore }
   end
 end

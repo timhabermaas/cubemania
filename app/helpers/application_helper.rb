@@ -1,5 +1,9 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  def page_title
+    params[:controller].titleize
+  end
+
   def action_label
     case params[:action].to_sym
       when :new, :create
@@ -7,5 +11,9 @@ module ApplicationHelper
       when :edit, :update
         'Update'
     end
+  end
+  
+  def controller?(name)
+    params[:controller].to_sym == name
   end
 end

@@ -1,0 +1,18 @@
+<h1>Listing clocks</h1>
+
+<table>
+  <tr>
+  </tr>
+
+<% for clock in @clocks %>
+  <tr>
+    <td><%= link_to 'Show', clock %></td>
+    <td><%= link_to 'Edit', edit_clock_path(clock) %></td>
+    <td><%= link_to 'Destroy', clock, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New clock', new_clock_path %>

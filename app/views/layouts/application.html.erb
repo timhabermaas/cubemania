@@ -1,32 +1,65 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
-    <title>Cubemania</title>
-    <%= stylesheet_link_tag 'application', 'scaffold' %>
+    <title><%= page_title %> &middot; Cubemania</title>
+    <%= stylesheet_link_tag 'reset', 'application', 'scaffold', :cache => true %>
   </head>
   <body>
-    <ul id="navigation">
-    <% for item in @navigation -%>
-      <li class="<%= "checked" if current_page? item.url %>"><%= link_to item.name, item.url, :title => item.description %></li>
+    <div id="site">
+      <div id="header">
+        <h3><span>Cubemania</span></h3>
+        <blockquote>
+          <p>Save The World - Solve The Puzzle</p>
+        </blockquote>
+      </div>
+    <% unless controller? :items -%>
+      <ul id="navigation">
+      <% for item in @navigation -%>
+        <li class="<%= "checked" if current_page? item.url %>"><%= link_to item.name, item.url, :title => item.description %></li>
+      <% end -%>
+        <li><a href="#">Competitions</a></li>
+        <li><a href="#">Users</a></li>
+        <li><a href="#">Records</a></li>
+        <li class="login"><a href="#">Login</a></li>
+      </ul>
     <% end -%>
-    </ul>
-    <ul id="subnavigation">
-      <% for kind in @kinds -%>
-      <li>
-        <a><%= kind.name %></a> 
-        <ul>
-        <% for puzzle in kind.puzzles -%>
-          <li><%= link_to image_tag(url_for_file_column(puzzle, :image), :title => puzzle.name), '' %></li>
+      <div id="subnavigation">
+        <ul id="puzzles">
+        <% for kind in @kinds -%>
+          <li>
+            <ul>
+            <% for puzzle in kind.puzzles -%>
+              <li>
+                <a href="<%= '' %>" title="<%= puzzle.name %>">
+                  <span class="image"><%= image_tag url_for_file_column(puzzle, :image), :title => puzzle.name %></span>
+                  <span class="name"><%= puzzle.name %></span>
+                </a>
+              </li>
+            <% end -%>
+            </ul>
+          </li>
         <% end -%>
         </ul>
-      </li>
-      <% end -%>
-    </ul>
-    <div id="content">
-      <%= yield  %>
+        <ul id="kinds">
+        <% for kind in @kinds -%>
+          <li>
+            <a><%= kind.name %></a>
+          </li>
+        <% end -%>
+        </ul>
+      </div>
+      <div id="content">
+        <%= yield  %>
+      </div>
+      <div id="footer">
+        <p>
+          Founded by Tim Habermaas,
+          <a href="http://www.patrick-stadler.de" title="Patrick Stadler's Website">Patrick Stadler</a> and
+          <a href="http://www.simonwacker.com" title="Simon Wacker's Portfolio">Simon Wacker</a>
+        </p>
+      </div>
     </div>
   </body>
 </html>
