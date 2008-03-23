@@ -17,7 +17,7 @@
     <% unless controller? :items -%>
       <ul id="navigation">
       <% for item in @navigation -%>
-        <li class="<%= "checked" if current_page? item.url %>"><%= link_to item.name, item.url, :title => item.description %></li>
+        <li class="<%= "checked" if current_item? item %>"><%= link_to item.name, item.url, :title => item.description %></li>
       <% end -%>
         <li><a href="#">Competitions</a></li>
         <li><a href="#">Users</a></li>
@@ -31,8 +31,8 @@
           <li>
             <ul>
             <% for puzzle in kind.puzzles -%>
-              <li>
-                <a href="<%= '' %>" title="<%= puzzle.name %>">
+              <li class="<%= "checked" if current_puzzle? puzzle %>">
+                <a href="<%= url_for :puzzle => puzzle.name, :kind => params[:kind] %>" title="<%= puzzle.name %>">
                   <span class="image"><%= image_tag url_for_file_column(puzzle, :image), :title => puzzle.name %></span>
                   <span class="name"><%= puzzle.name %></span>
                 </a>
@@ -44,8 +44,8 @@
         </ul>
         <ul id="kinds">
         <% for kind in @kinds -%>
-          <li>
-            <a><%= kind.name %></a>
+          <li class="<%= "checked" if current_kind? kind %>">
+            <%= link_to kind.name, :puzzle => params[:puzzle], :kind => kind.name %>
           </li>
         <% end -%>
         </ul>

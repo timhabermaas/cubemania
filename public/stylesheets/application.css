@@ -6,26 +6,36 @@
   font-size: 1em;
 }
 
+::selection {
+  color: #2f2f2f;
+  background: #df0;
+}
+::-moz-selection {
+  color: #2f2f2f;
+  background: #df0;
+}
+
 #header {
   height: 199px;
-  font-size: inherit;
-  background: url(/images/header.jpg) center;
+  background: url(/images/header.gif) repeat-x;
 }
-#header * {
-  display: none;
-}
-/*#header h3 {
+#header h3 {
+  float: left;
+  height: 199px;
+  width: 396px;
   background: url(/images/logo.jpg) no-repeat;
 }
 #header h3 span {
   display: none;
 }
 #header blockquote {
+  height: 199px;
+  margin-left: 396px;
   background: url(/images/quote.jpg) no-repeat;
 }
 #header blockquote p {
   display: none;
-}*/
+}
 
 #navigation {
   display: block;
@@ -68,12 +78,12 @@
   display: block;
   color: #fff;
 }
-#subnavigation li a:hover {
+#subnavigation li a:hover, #subnavigation li.checked a {
   background: none;
   color: #df0;
 }
 #puzzles {
-  height: 4.25em;
+  height: 68px; /* 4.25em */
   padding: 1em;
   background: #5d5d5d url(/images/puzzles.gif) repeat-x;
 }
@@ -88,7 +98,7 @@
   margin: 0 auto;
   overflow: hidden;
 }
-#puzzles a:hover img {
+#puzzles a:hover img, #puzzles li.checked a img {
   position: relative;
   left: -50px;
 }
