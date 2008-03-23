@@ -16,3 +16,6 @@ config.action_controller.perform_caching             = true
 
 # Disable delivery errors, bad email addresses will be ignored
 # config.action_mailer.raise_delivery_errors = false
+
+ExceptionNotifier.exception_recipients = %w(tim.habermaas@gmail.com simon.wacker@gmail.com)
+ExceptionNotifier.sender_address = %('Cubemania Error' <error@cubemania.org>)
