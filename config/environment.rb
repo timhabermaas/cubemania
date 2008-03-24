@@ -51,6 +51,8 @@ Rails::Initializer.run do |config|
   # end
 
   # See Rails::Configuration for more options
+  # Your secret key for verifying cookie session data integrity.
+  # If you change this key, all old sessions will become invalid!
   config.action_controller.session = { :session_key => '_Cubemania_session_id', :secret => 'some s3cr3t phrase of at least 42 characters' }
 end
 

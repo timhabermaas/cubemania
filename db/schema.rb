@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 5) do
+ActiveRecord::Schema.define(:version => 6) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",       :null => false
@@ -33,5 +33,15 @@ ActiveRecord::Schema.define(:version => 5) do
   end
 
   add_index "puzzles", ["kind_id", "name"], :name => "index_puzzles_on_kind_id_and_name", :unique => true
+
+  create_table "users", :force => true do |t|
+    t.string   "name",               :limit => 32, :null => false
+    t.string   "email",              :limit => 32, :null => false
+    t.string   "salt",               :limit => 8,  :null => false
+    t.string   "encrypted_password", :limit => 16, :null => false
+    t.datetime "created_at"
+  end
+
+  add_index "users", ["name", "encrypted_password"], :name => "index_users_on_name_and_encrypted_password", :unique => true
 
 end

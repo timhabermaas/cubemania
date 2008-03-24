@@ -2,7 +2,7 @@
 
 <% form_for @kind do |form| %>
   <p>
-    <b>Name</b><br />
+    <%= form.label :name %>
     <%= form.text_field :name %>
   </p>
   <p>

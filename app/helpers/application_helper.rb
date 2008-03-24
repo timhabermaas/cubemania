@@ -3,12 +3,12 @@ module ApplicationHelper
     params[:controller].titleize
   end
   
-  def action_label
+  def action_label(new = 'Create', edit = 'Update')
     case params[:action].to_sym
       when :new, :create
-        'Create'
+        new
       when :edit, :update
-        'Update'
+        edit
     end
   end
   

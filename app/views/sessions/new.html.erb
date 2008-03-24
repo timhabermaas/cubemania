@@ -1,0 +1,17 @@
+<h1>Login</h1>
+
+<%= error_messages_for :session %>
+
+<% form_for @session do |form| %>
+  <p>
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </p>
+  <p>
+    <%= form.label :password %>
+    <%= form.password_field :password %>
+  </p>
+  <p>
+    <%= form.submit 'Login' %>
+  </p>
+<% end %>
