@@ -18,7 +18,7 @@ module Authentication
     def login
       unless logged_in?
         flash[:notice] = 'Please login to continue'
-        redirect_to login_path
+        redirect_to login_path, :status => 401
       end
     end
 
