@@ -1,8 +1,8 @@
 <h1>Login</h1>
 
-<%= error_messages_for :session %>
+<%= error_messages_for :login %>
 
-<% form_for @session do |form| %>
+<% form_for @login, :url => login_path do |form| %>
   <p>
     <%= form.label :name %>
     <%= form.text_field :name %>

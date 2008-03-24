@@ -6,8 +6,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :kinds
   map.resources :puzzles
   map.resources :users
-  map.resources :sessions
+  map.resource :login
   
-  map.login 'login', :controller => 'sessions', :action => 'new'
-  map.logout 'logout', :controller => 'sessions', :action => 'destroy'
+  map.logout 'logout', :controller => 'logins', :action => 'destroy'
 end

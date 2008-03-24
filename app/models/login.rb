@@ -1,6 +1,6 @@
 require 'active_record/validations'
 
-class Session
+class Login
   attr_accessor :name, :password
 
   def initialize(attributes = nil)

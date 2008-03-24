@@ -1,22 +1,18 @@
-class SessionsController < ApplicationController
+class LoginsController < ApplicationController
   login :only => :destroy
-  logout :only => [:new, :create]
+  logout :only => [:show, :create]
 
-  def index
-    redirect_to login_path
-  end
-
-  def new
-    @session = Session.new
+  def show
+    @login = Login.new
   end
 
   def create
-    @session = Session.new params[:session]
-    if self.user = @session.validate
+    @login = Login.new params[:login]
+    if self.user = @login.validate
       flash[:notice] = "Hello #{user.name}, you are now logged in"
       redirect_to root_path
     else
-      render :action => 'new'
+      render :action => 'show'
     end
   end
 
