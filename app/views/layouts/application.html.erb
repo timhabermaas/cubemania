@@ -22,7 +22,7 @@
         <li><a href="#">Competitions</a></li>
         <li><a href="#">Users</a></li>
         <li><a href="#">Records</a></li>
-        <li class="login">
+        <li class="<%= "checked_" if controller? :sessions %>login">
           <%= link_to 'Login', login_path unless logged_in? %>
           <%= link_to 'Logout', logout_path if logged_in? %>
         </li>
