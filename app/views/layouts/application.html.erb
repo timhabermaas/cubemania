@@ -4,7 +4,8 @@
   <head>
     <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
     <title><%= page_title %> &middot; Cubemania</title>
-    <%= stylesheet_link_tag 'reset', 'application', 'scaffold', :cache => true %>
+    <%= stylesheet_link_tag 'reset', 'application', :cache => true %>
+    <%= javascript_include_tag 'jquery', 'application', :cache => true %>
   </head>
   <body>
     <div id="site">
@@ -29,26 +30,28 @@
       </ul>
     <% end -%>
       <div id="subnavigation">
-        <ul id="puzzles">
-        <% for kind in @kinds -%>
-          <li>
-            <ul>
-            <% for puzzle in kind.puzzles -%>
-              <li class="<%= "checked" if current_puzzle? puzzle %>">
-                <a href="<%= url_for :puzzle => puzzle.name, :kind => params[:kind] %>" title="<%= puzzle.name %>">
-                  <span class="image"><%= image_tag url_for_file_column(puzzle, :image), :title => puzzle.name %></span>
-                  <span class="name"><%= puzzle.name %></span>
-                </a>
-              </li>
-            <% end -%>
-            </ul>
-          </li>
-        <% end -%>
-        </ul>
+        <div id="puzzles">
+          <ul>
+          <% for kind in @kinds -%>
+            <li id="puzzles_<%= kind.id %>">
+              <ul>
+              <% for puzzle in kind.puzzles -%>
+                <li class="<%= "checked" if current_puzzle? puzzle %>">
+                  <a href="<%= url_for :puzzle => puzzle.name, :kind => params[:kind] %>" title="<%= puzzle.name %>">
+                    <span class="image"><%= image_tag url_for_file_column(puzzle, :image), :title => puzzle.name %></span>
+                    <span class="name"><%= puzzle.name %></span>
+                  </a>
+                </li>
+              <% end -%>
+              </ul>
+            </li>
+          <% end -%>
+          </ul>
+        </div>
         <ul id="kinds">
-        <% for kind in @kinds -%>
-          <li class="<%= "checked" if current_kind? kind %>">
-            <%= link_to kind.name, :puzzle => params[:puzzle], :kind => kind.name %>
+        <% @kinds.each_with_index do |kind, index| -%>
+          <li style="width: <%= 100 / @kinds.size %>%">
+            <%= link_to_function kind.name, "showPuzzles(#{index})" %>
           </li>
         <% end -%>
         </ul>

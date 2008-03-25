@@ -39,7 +39,7 @@
 
 #navigation {
   display: block;
-  height: 3.125em;
+  height: 3.1875em;
   border-top: 1px solid #df0;
   background: #1e1e1e url(/images/navigation.gif) repeat-x;
 }
@@ -82,12 +82,27 @@
   background: none;
   color: #df0;
 }
+
 #puzzles {
   height: 68px; /* 4.25em */
   padding: 1em;
   background: #5d5d5d url(/images/puzzles.gif) repeat-x;
+  overflow: hidden;
+}
+#puzzles ul {
+  position: relative;
 }
 #puzzles li {
+  width: 100%;
+}
+#puzzles li ul {
+  position: static;
+  display: inline-block;
+  margin: 0 auto;
+  margin-bottom: 1em;
+}
+#puzzles li li {
+  width: auto;
   margin-right: 1em;
 }
 #puzzles span {
@@ -105,15 +120,13 @@
 #puzzles .name {
   font-size: 0.75em;
 }
+
 #kinds {
   clear: both;
   width: 100%;
   height: 1em;
   padding: 0.4375em 0;
   background: #373737 url(/images/kinds.gif) bottom repeat-x;
-}
-#kinds li {
-  width: 33%;
 }
 #kinds li a {
   font-size: 0.75em;
