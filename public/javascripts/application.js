@@ -5,8 +5,8 @@
   ul.width(++li.length * width);
 }*/
 
-function showPuzzles(index) {
+function checkKind(index) {
   $("#kinds").children("li").removeClass("checked").eq(index).addClass("checked");
-  var value = -$("#puzzles li").height() * index;
-  $("#puzzles ul").animate({top: value}, "normal");
+  var value = $("#puzzles li").height() * index;
+  $("#puzzles ul").animate({top: -value}, "normal");
 }

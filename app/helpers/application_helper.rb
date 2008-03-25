@@ -20,8 +20,8 @@ module ApplicationHelper
     controller? item.url[:controller]
   end
   
-  def current_puzzle?(puzzle)
-    params[:puzzle] == puzzle.name
+  def current_puzzle?(puzzle, kind)
+    params[:puzzle] == puzzle.name and current_kind? kind
   end
   
   def current_kind?(kind)
