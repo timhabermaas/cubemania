@@ -9,61 +9,11 @@
   </head>
   <body>
     <div id="site">
-      <div id="header">
-        <h3><span>Cubemania</span></h3>
-        <blockquote>
-          <p>Save The World - Solve The Puzzle</p>
-        </blockquote>
-      </div>
-    <% unless controller? :items -%>
-      <ul id="navigation">
-      <% for item in @navigation -%>
-        <li class="<%= "checked" if current_item? item %>"><%= link_to item.name, item.url, :title => item.description %></li>
-      <% end -%>
-        <li class="<%= "checked_" if controller? :logins %>login">
-          <%= link_to 'Login', login_path unless logged_in? %>
-          <%= link_to 'Logout', logout_path if logged_in? %>
-        </li>
-      </ul>
-    <% end -%>
-      <div id="subnavigation">
-        <div id="puzzles">
-          <ul>
-          <% for kind in @kinds -%>
-            <li id="puzzles_<%= kind.id %>">
-              <ul>
-              <% for puzzle in kind.puzzles -%>
-                <li class="<%= "checked" if current_puzzle? puzzle, kind %>">
-                  <a href="<%= url_for :puzzle => puzzle.name, :kind => kind.name %>" title="<%= puzzle.name %>">
-                    <span class="image"><%= image_tag url_for_file_column(puzzle, :image), :title => puzzle.name %></span>
-                    <span class="name"><%= puzzle.name %></span>
-                  </a>
-                </li>
-              <% end -%>
-              </ul>
-            </li>
-          <% end -%>
-          </ul>
-        </div>
-        <ul id="kinds">
-        <% @kinds.each_with_index do |kind, index| -%>
-          <li style="width: <%= 100 / @kinds.size %>%">
-            <%= link_to_function kind.name, "checkKind(#{index})" %>
-          </li>
-          <%= javascript_tag "checkKind(#{index})" if current_kind? kind -%>
-        <% end -%>
-        </ul>
-      </div>
-      <div id="content">
-        <%= yield  %>
-      </div>
-      <div id="footer">
-        <p>
-          Founded by Tim Habermaas,
-          <a href="http://www.patrick-stadler.de" title="Patrick Stadler's Website">Patrick Stadler</a> and
-          <a href="http://www.simonwacker.com" title="Simon Wacker's Portfolio">Simon Wacker</a>
-        </p>
-      </div>
+      <%= render :partial => 'layouts/header' %>
+      <%= render :partial => 'layouts/navigation' unless controller? :items -%>
+      <%= render :partial => 'layouts/subnavigation' if controller? :clocks, :competitions, :records -%>
+      <%= render :partial => 'layouts/content' %>
+      <%= render :partial => 'layouts/footer' %>
     </div>
   </body>
 </html>

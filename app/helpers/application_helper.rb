@@ -12,8 +12,8 @@ module ApplicationHelper
     end
   end
   
-  def controller?(name)
-    params[:controller].to_sym == name.to_sym
+  def controller?(*names)
+    names.map(&:to_sym).include? params[:controller].to_sym
   end
   
   def current_item?(item)
