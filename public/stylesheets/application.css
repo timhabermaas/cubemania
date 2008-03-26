@@ -125,6 +125,7 @@
 }
 #puzzles .name {
   font-size: 0.75em;
+  text-transform: capitalize;
 }
 
 #kinds {
