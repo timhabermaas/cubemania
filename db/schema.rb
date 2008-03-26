@@ -9,12 +9,13 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 7) do
+ActiveRecord::Schema.define(:version => 8) do
 
   create_table "clocks", :force => true do |t|
-    t.integer  "time",       :null => false
-    t.integer  "puzzle_id",  :null => false
+    t.integer  "time",                      :null => false
+    t.integer  "puzzle_id",                 :null => false
     t.datetime "created_at"
+    t.integer  "user_id",    :default => 0, :null => false
   end
 
   create_table "items", :force => true do |t|
