@@ -7,7 +7,10 @@
         <% for puzzle in kind.puzzles -%>
           <li class="<%= "checked" if current_puzzle? puzzle, kind %>">
             <a href="<%= url_for :puzzle => puzzle.name, :kind => kind.name %>" title="<%= puzzle.name %>">
-              <span class="image"><%= image_tag url_for_file_column(puzzle, :image), :title => puzzle.name %></span>
+              <span class="image">
+                <%= image_tag url_for_file_column(puzzle, :image), :title => puzzle.name, :class => 'puzzle' %>
+                <%= image_tag url_for_file_column(kind, :image), :title => kind.name, :class => 'kind' unless kind.image.nil? %>
+              </span>
               <span class="name"><%= puzzle.name %></span>
             </a>
           </li>

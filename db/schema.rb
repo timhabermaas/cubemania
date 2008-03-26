@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 6) do
+ActiveRecord::Schema.define(:version => 7) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",       :null => false
@@ -23,7 +23,8 @@ ActiveRecord::Schema.define(:version => 6) do
   end
 
   create_table "kinds", :force => true do |t|
-    t.string "name", :limit => 64, :null => false
+    t.string "name",  :limit => 64, :null => false
+    t.string "image", :limit => 64
   end
 
   create_table "puzzles", :force => true do |t|

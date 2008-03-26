@@ -113,8 +113,13 @@
   height: 50px;
   margin: 0 auto;
   overflow: hidden;
+  text-align: right;
 }
-#puzzles a:hover img, #puzzles li.checked a img {
+#puzzles .kind {
+  position: relative;
+  top: -30px;
+}
+#puzzles a:hover .puzzle, #puzzles li.checked a .puzzle {
   position: relative;
   left: -50px;
 }

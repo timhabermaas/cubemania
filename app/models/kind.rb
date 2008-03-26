@@ -1,6 +1,10 @@
 class Kind < ActiveRecord::Base
   has_many :puzzles
   
-  validates_presence_of :name
+  file_column :image, :store_dir => 'public/images/kinds', :base_url => 'images/kinds'
+  
+  validates_presence_of :name, :image
   validates_length_of :name, :maximum => 64
+  validates_filesize_of :image, :in => 0..10.kilobytes
+  validates_file_format_of :image, :in => ['gif', 'png']
 end
