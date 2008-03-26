@@ -1,4 +1,4 @@
-<div id="subnavigation">
+<div id="subnavigation" style="display: none">
   <div id="puzzles">
     <ul>
     <% for kind in @kinds -%>
@@ -29,3 +29,4 @@
   <% end -%>
   </ul>
 </div>
+<%= javascript_tag 'showSubNavigation()' %>
