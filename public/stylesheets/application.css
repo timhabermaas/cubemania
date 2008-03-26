@@ -1,9 +1,8 @@
 #site {
+  width: 1000px;
+  margin: 0 auto;
   font-size: 16px;
   font-family: Verdana, Arial, Helvetica, sans-serif;
-}
-#site * {
-  font-size: 1em;
 }
 
 ::selection {
@@ -85,19 +84,21 @@
 
 #puzzles {
   height: 68px; /* 4.25em */
-  padding: 1em;
+  padding: 1em 0;
   background: #5d5d5d url(/images/puzzles.gif) repeat-x;
   overflow: hidden;
 }
 #puzzles ul {
   position: relative;
+  width: 5000px;
 }
 #puzzles li {
-  width: 100%;
+  width: 1000px;
 }
 #puzzles li ul {
   position: static;
   display: inline-block;
+  width: auto;
   margin: 0 auto;
   margin-bottom: 1em;
 }
