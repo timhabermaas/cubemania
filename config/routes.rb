@@ -3,7 +3,7 @@ ActionController::Routing::Routes.draw do |map|
   
   map.resources :clocks
   map.resources :competitions
-  map.resources :users
+  map.resources :users, :has_many => :clocks
   map.resources :records
   map.resources :items
   map.resources :kinds

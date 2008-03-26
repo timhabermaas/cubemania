@@ -28,6 +28,14 @@ class User < ActiveRecord::Base
     end
   end
 
+  def role?(role, request_id)
+    if role.to_sym == :self
+      id.to_s == request_id
+    else
+      true
+    end
+  end
+
   private
     def flush_passwords
       @password = @password_confirmation = nil

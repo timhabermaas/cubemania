@@ -5,8 +5,10 @@ module Authentication
   end
 
   module ClassMethods
-    def login(filters = {})
-      before_filter :login, filters
+    def login(options = {})
+      before_filter options do |controller|
+        controller.login options[:role]
+      end
     end
     
     def logout(filters = {})
@@ -14,14 +16,17 @@ module Authentication
     end
   end
 
-  protected
-    def login
-      unless logged_in?
-        flash[:notice] = 'Please login to continue'
-        redirect_to login_path
-      end
+  def login(role)
+    if not logged_in?
+      flash[:notice] = 'Please login to continue'
+      redirect_to login_path
+    elsif role and not role? role
+      flash[:notice] = 'You do not have the necessary permissions'
+      redirect_to root_url
     end
+  end
 
+  protected
     def logout
       if logged_in?
         flash[:notice] = 'You must logout before you can login or register'
@@ -33,13 +38,17 @@ module Authentication
       not user.nil?
     end
     
+    def role?(role)
+      user.role? role, params[:id] if logged_in?
+    end
+    
     def user
-      params[:user_id] = session[:user_id]
+      params[:user_id] ||= session[:user_id]
       @user ||= User.find session[:user_id] unless session[:user_id].nil?
     end
     
     def user=(user)
       @user = user
-      session[:user_id] = params[:user_id] = user.nil? ? nil : user.id
+      session[:user_id] = user.nil? ? nil : user.id
     end
 end

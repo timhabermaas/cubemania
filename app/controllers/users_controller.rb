@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  login :only => [:edit, :update, :destroy]
+  login :role => :self, :only => [:edit, :update, :destroy]
   logout :only => [:new, :create]
 
   resource_controller
