@@ -1,32 +1,36 @@
 <div id="subnavigation" style="display: none">
   <div id="puzzles">
-    <ul>
-    <% for kind in @kinds -%>
-      <li id="puzzles_<%= kind.id %>">
-        <ul>
-        <% for puzzle in kind.puzzles -%>
-          <li class="<%= "checked" if current_puzzle? puzzle, kind %>">
-            <a href="<%= url_for :puzzle => puzzle.name, :kind => kind.name %>" title="<%= puzzle.name %>">
-              <span class="image">
-                <%= image_tag url_for_file_column(puzzle, :image), :title => puzzle.name, :class => 'puzzle' %>
-                <%= image_tag url_for_file_column(kind, :image), :title => kind.name, :class => 'kind' unless kind.image.nil? %>
-              </span>
-              <span class="name"><%= puzzle.name %></span>
-            </a>
-          </li>
-        <% end -%>
-        </ul>
+    <div class="center">
+      <ul>
+      <% for kind in @kinds -%>
+        <li id="puzzles_<%= kind.id %>">
+          <ul>
+          <% for puzzle in kind.puzzles -%>
+            <li class="<%= "checked" if current_puzzle? puzzle, kind %>">
+              <a href="<%= url_for :puzzle => puzzle.name, :kind => kind.name %>" title="<%= puzzle.name %>">
+                <span class="image">
+                  <%= image_tag url_for_file_column(puzzle, :image), :title => puzzle.name, :class => 'puzzle' %>
+                  <%= image_tag url_for_file_column(kind, :image), :title => kind.name, :class => 'kind' unless kind.image.nil? %>
+                </span>
+                <span class="name"><%= puzzle.name %></span>
+              </a>
+            </li>
+          <% end -%>
+          </ul>
+        </li>
+      <% end -%>
+      </ul>
+    </div>
+  </div>
+  <div id="kinds">
+    <ul class="center">
+    <% @kinds.each_with_index do |kind, index| -%>
+      <li style="width: <%= 100 / @kinds.size %>%">
+        <%= link_to_function kind.name, "checkKind(#{index})" %>
       </li>
+      <%= javascript_tag "checkKind(#{index})" if current_kind? kind -%>
     <% end -%>
     </ul>
   </div>
-  <ul id="kinds">
-  <% @kinds.each_with_index do |kind, index| -%>
-    <li style="width: <%= 100 / @kinds.size %>%">
-      <%= link_to_function kind.name, "checkKind(#{index})" %>
-    </li>
-    <%= javascript_tag "checkKind(#{index})" if current_kind? kind -%>
-  <% end -%>
-  </ul>
 </div>
 <%= javascript_tag 'showSubNavigation()' %>

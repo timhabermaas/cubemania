@@ -1,8 +1,11 @@
 #site {
-  width: 1000px;
-  margin: 0 auto;
   font-size: 16px;
   font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+#site .center {
+  width: 1000px;
+  margin: 0 auto;
+  overflow: hidden;
 }
 
 ::selection {
@@ -16,23 +19,9 @@
 
 #header {
   height: 199px;
-  background: url(/images/header.gif) repeat-x;
+  background: url(/images/header.jpg) center no-repeat;
 }
-#header h3 {
-  float: left;
-  height: 199px;
-  width: 396px;
-  background: url(/images/logo.jpg) no-repeat;
-}
-#header h3 span {
-  display: none;
-}
-#header blockquote {
-  height: 199px;
-  margin-left: 396px;
-  background: url(/images/quote.jpg) no-repeat;
-}
-#header blockquote p {
+#header * {
   display: none;
 }
 
@@ -83,7 +72,7 @@
 }
 
 #puzzles {
-  height: 68px; /* 4.25em */
+  height: 68px;
   padding: 1em 0;
   background: #5d5d5d url(/images/puzzles.gif) repeat-x;
   overflow: hidden;
@@ -131,7 +120,6 @@
 
 #kinds {
   clear: both;
-  width: 100%;
   height: 1em;
   padding: 0.4375em 0;
   background: #373737 url(/images/kinds.gif) bottom repeat-x;
@@ -143,14 +131,17 @@
 
 #content {
   clear: both;
-  padding: 1em;
   background: #5c7da0 url(/images/content.gif) repeat-x;
+}
+#content .center {
+  width: 968px;
+  padding: 16px;
 }
 
 #footer {
   clear: both;
   height: 1em;
-  padding: 1em;
+  padding: 1em 0;
   color: #5c7da0;
   text-align: center;
   background: #1e1e1e url(/images/footer.gif) repeat-x;

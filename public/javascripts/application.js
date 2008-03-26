@@ -1,5 +1,5 @@
 function checkKind(index) {
-  $("#kinds").children("li").removeClass("checked").eq(index).addClass("checked");
+  $("#kinds ul").children("li").removeClass("checked").eq(index).addClass("checked");
   $("#puzzles ul").animate({left: -1000 * index}, "normal");
 }
 
