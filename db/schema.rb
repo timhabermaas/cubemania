@@ -18,6 +18,8 @@ ActiveRecord::Schema.define(:version => 8) do
     t.integer  "user_id",    :default => 0, :null => false
   end
 
+  add_index "clocks", ["user_id", "puzzle_id", "created_at"], :name => "index_clocks_on_user_id_and_puzzle_id_and_created_at", :unique => true
+
   create_table "items", :force => true do |t|
     t.string "name",        :limit => 64, :null => false
     t.string "description",               :null => false

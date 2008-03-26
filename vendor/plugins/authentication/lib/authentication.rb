@@ -5,11 +5,11 @@ module Authentication
   end
 
   module ClassMethods
-    def login(filters)
+    def login(filters = {})
       before_filter :login, filters
     end
     
-    def logout(filters)
+    def logout(filters = {})
       before_filter :logout, filters
     end
   end
@@ -18,7 +18,7 @@ module Authentication
     def login
       unless logged_in?
         flash[:notice] = 'Please login to continue'
-        redirect_to login_path, :status => 401
+        redirect_to login_path
       end
     end
 
@@ -34,11 +34,12 @@ module Authentication
     end
     
     def user
+      params[:user_id] = session[:user_id]
       @user ||= User.find session[:user_id] unless session[:user_id].nil?
     end
     
     def user=(user)
       @user = user
-      session[:user_id] = user.nil? ? nil : user.id
+      session[:user_id] = params[:user_id] = user.nil? ? nil : user.id
     end
 end
