@@ -21,10 +21,10 @@ module ApplicationHelper
   end
   
   def current_puzzle?(puzzle, kind)
-    params[:puzzle] == puzzle.name and current_kind? kind
+    params[:puzzle] == puzzle.id.to_s and current_kind? kind
   end
   
   def current_kind?(kind)
-    params[:kind] == kind.name
+    params[:kind] == kind.id.to_s
   end
 end
