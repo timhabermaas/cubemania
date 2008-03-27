@@ -9,13 +9,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 8) do
+ActiveRecord::Schema.define(:version => 10) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                      :null => false
     t.integer  "puzzle_id",                 :null => false
     t.datetime "created_at"
     t.integer  "user_id",    :default => 0, :null => false
+    t.string   "scramble"
   end
 
   add_index "clocks", ["user_id", "puzzle_id", "created_at"], :name => "index_clocks_on_user_id_and_puzzle_id_and_created_at", :unique => true
@@ -31,9 +32,10 @@ ActiveRecord::Schema.define(:version => 8) do
   end
 
   create_table "puzzles", :force => true do |t|
-    t.string  "name",    :limit => 64, :null => false
-    t.string  "image",   :limit => 64, :null => false
-    t.integer "kind_id",               :null => false
+    t.string  "name",            :limit => 64, :null => false
+    t.string  "image",           :limit => 64, :null => false
+    t.integer "kind_id",                       :null => false
+    t.integer "scramble_length"
   end
 
   add_index "puzzles", ["kind_id", "name"], :name => "index_puzzles_on_kind_id_and_name", :unique => true
