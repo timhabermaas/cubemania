@@ -1,26 +1,24 @@
 <div id="subnavigation" style="display: none">
   <div id="puzzles">
-    <div class="center">
-      <ul>
-      <% for kind in @kinds -%>
-        <li id="puzzles_<%= kind.id %>">
-          <ul>
-          <% for puzzle in kind.puzzles -%>
-            <li class="<%= "checked" if current_puzzle? puzzle, kind %>">
-              <a href="<%= url_for :puzzle => puzzle.name, :kind => kind.name %>" title="<%= puzzle.name %>">
-                <span class="image">
-                  <%= image_tag url_for_file_column(puzzle, :image), :title => puzzle.name, :class => 'puzzle' %>
-                  <%= image_tag url_for_file_column(kind, :image), :title => kind.name, :class => 'kind' unless kind.image.nil? %>
-                </span>
-                <span class="name"><%= puzzle.name %></span>
-              </a>
-            </li>
-          <% end -%>
-          </ul>
-        </li>
-      <% end -%>
-      </ul>
-    </div>
+    <ul style="width: <%= @kinds.size * 100 %>%">
+    <% for kind in @kinds -%>
+      <li style="width: <%= 100 / @kinds.size %>%">
+        <ul>
+        <% for puzzle in kind.puzzles -%>
+          <li class="<%= "checked" if current_puzzle? puzzle, kind %>">
+            <a href="<%= url_for :puzzle => puzzle.name, :kind => kind.name %>" title="<%= puzzle.name %>">
+              <span class="image">
+                <%= image_tag url_for_file_column(puzzle, :image), :title => puzzle.name, :class => 'puzzle' %>
+                <%= image_tag url_for_file_column(kind, :image), :title => kind.name, :class => 'kind' unless kind.image.nil? %>
+              </span>
+              <span class="name"><%= puzzle.name %></span>
+            </a>
+          </li>
+        <% end -%>
+        </ul>
+      </li>
+    <% end -%>
+    </ul>
   </div>
   <div id="kinds">
     <ul class="center">

@@ -1,11 +1,12 @@
 #site {
+  min-width: 1000px;
   font-size: 16px;
   font-family: Verdana, Arial, Helvetica, sans-serif;
 }
 #site .center {
   width: 1000px;
   margin: 0 auto;
-  overflow: hidden;
+  word-wrap: break-word;
 }
 
 ::selection {
@@ -79,10 +80,6 @@
 }
 #puzzles ul {
   position: relative;
-  width: 5000px;
-}
-#puzzles li {
-  width: 1000px;
 }
 #puzzles li ul {
   position: static;
@@ -92,7 +89,6 @@
   margin-bottom: 1em;
 }
 #puzzles li li {
-  width: auto;
   margin-right: 1em;
 }
 #puzzles span {
