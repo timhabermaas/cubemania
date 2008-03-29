@@ -16,6 +16,8 @@ class Puzzle < ActiveRecord::Base
         cube_scramble [%w{R L r l}, %w{F B f b}, %w{D U d u}]
       when 'megaminx'
         megaminx_scramble
+      when 'pyraminx'
+        pyraminx_scramble
     end
   end
   
@@ -38,6 +40,22 @@ class Puzzle < ActiveRecord::Base
       scramble_length.times do |index|
         scramble += (scramble.empty? ? '' : ' ') + turns[index % 2] + variants.rand
         scramble += ' Y' + variants.rand if index % 10 == 9
+      end
+      scramble
+    end
+    
+    def pyraminx_scramble
+      scramble = ''
+      turns = %w(U L R B)
+      variants = ['', "'", '2']
+      tip_turns = turns.map &:downcase
+      tip_length = (rand(3) + 2).times do
+        scramble += (scramble.empty? ? '' : ' ') + tip_turns.delete(tip_turns.rand) + variants.rand
+      end
+      axis = rand turns.size
+      (scramble_length - tip_length).times do
+        axis = (axis + rand(turns.size - 1) + 1) % turns.size
+        scramble += ' ' + turns[axis] + variants.rand
       end
       scramble
     end
