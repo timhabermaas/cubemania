@@ -8,8 +8,15 @@ class ClocksController < ResourceController::Base
     params[:kind] ||= '2'
   end
   
+  index.wants.xml
+  
+  def auto_complete_for_user_name
+    @users = User.find :all, :conditions => ["LOWER(name) LIKE ?", '%' + params[:val] + '%'], :order => "name ASC", :limit => 10
+  end
+  
   private
     def collection
-      @collection ||= end_of_association_chain.find_all_by_puzzle_id params[:puzzle], :conditions => ['created_at >= ?', Time.now - 30*24*60*60]
+      @collection ||= end_of_association_chain.find_all_by_puzzle_id params[:puzzle],
+          :conditions => ['created_at >= ?', Time.now - 30*24*60*60], :order => 'created_at'
     end
 end

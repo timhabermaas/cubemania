@@ -1,7 +1,7 @@
 ActionController::Routing::Routes.draw do |map|
   map.root :controller => 'clocks'
   
-  map.resources :clocks
+  map.resources :clocks, :collection => { :auto_complete_for_user_name => :get }
   map.resources :competitions
   map.resources :users, :has_many => :clocks
   map.resources :records

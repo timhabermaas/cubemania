@@ -1,0 +1,1 @@
+Time::DATE_FORMATS[:flash] = lambda { |time| time.strftime("%a %b %d %H:%M:%S UTC%z %Y").gsub '+', '-' }

@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml">
+
+    <mx:Script>
+        <![CDATA[
+        import mx.collections.ArrayCollection;
+
+        [Bindable]
+        private var expensesAC:ArrayCollection = new ArrayCollection( [
+            { Month: "Jan", Profit: 2000, Expenses: 1500, Amount: 450 },
+            { Month: "Feb", Profit: 1000, Expenses: 200, Amount: 600 },
+            { Month: "Mar", Profit: 1500, Expenses: 500, Amount: 300 },
+            { Month: "Apr", Profit: 1800, Expenses: 1200, Amount: 900 },
+            { Month: "May", Profit: 2400, Expenses: 575, Amount: 500 } ]);
+        ]]>
+    </mx:Script>
+
+    <!-- Define custom Strokes. -->
+    <mx:Stroke id = "s1" color="blue" weight="2"/>
+    <mx:Stroke id = "s2" color="red" weight="2"/>
+    <mx:Stroke id = "s3" color="green" weight="2"/>
+
+        <mx:LineChart id="linechart" height="100%" width="45%"
+            paddingLeft="5" paddingRight="5" 
+            showDataTips="true" dataProvider="{expensesAC}">
+                
+            <mx:horizontalAxis>
+                <mx:CategoryAxis categoryField="Month"/>
+            </mx:horizontalAxis>
+
+            <mx:series>
+                <mx:LineSeries yField="Profit" form="curve" displayName="Profit" lineStroke="{s1}"/>
+                <mx:LineSeries yField="Expenses" form="curve" displayName="Expenses" lineStroke="{s2}"/>
+                <mx:LineSeries yField="Amount" form="curve" displayName="Amount" lineStroke="{s3}"/>
+            </mx:series>
+        </mx:LineChart>
+
+</mx:Application>

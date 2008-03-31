@@ -1,9 +1,16 @@
-<h1>Listing clocks</h1>
+<div id="chart">
+  <p>
+    <a href="http://www.adobe.com/go/getflashplayer">
+      <img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" />
+    </a>
+  </p>
+</div>
+
+<input id="user_name" type="text"/>
 
 <table>
   <tr>
   </tr>
-
 <% for clock in @clocks %>
   <tr>
     <td><%= link_to 'Show', clock %></td>
@@ -13,6 +20,7 @@
 <% end %>
 </table>
 
-<br />
-
 <%= link_to 'New clock', new_clock_path %>
+
+<% content_for :head, javascript_tag("embedChart('#{formatted_clocks_path :xml, :puzzle => params[:puzzle]}')") -%>
+<% content_for :head, javascript_tag("autocompleteUserName('#{formatted_auto_complete_for_user_name_clocks_path(:js, :puzzle => params[:puzzle])}')") -%>

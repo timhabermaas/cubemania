@@ -1,0 +1,1 @@
+﻿package {		import flash.display.Sprite;		public class Axis extends Sprite {				protected var w:int;		protected var h:int;		protected var minLabel:AxisLabel;		protected var maxLabel:AxisLabel;				public function Axis(w:int, h:int) {			this.w = w;			this.h = h;		}			}	}
