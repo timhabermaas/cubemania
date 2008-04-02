@@ -5,8 +5,16 @@
     </a>
   </p>
 </div>
+<% content_for :head, javascript_tag("embedChart('#{formatted_clocks_path :xml, :puzzle => params[:puzzle]}')") -%>
+
+<div id="timer">
+  <p>0</p>
+  <a>GO!</a>
+</div>
+<% content_for :head, javascript_tag("initTimer()") -%>
 
 <input id="user_name" type="text"/>
+<% content_for :head, javascript_tag("autocompleteUserName('#{formatted_auto_complete_for_user_name_clocks_path(:js, :puzzle => params[:puzzle])}')") -%>
 
 <table>
   <tr>
@@ -21,6 +29,3 @@
 </table>
 
 <%= link_to 'New clock', new_clock_path %>
-
-<% content_for :head, javascript_tag("embedChart('#{formatted_clocks_path :xml, :puzzle => params[:puzzle]}')") -%>
-<% content_for :head, javascript_tag("autocompleteUserName('#{formatted_auto_complete_for_user_name_clocks_path(:js, :puzzle => params[:puzzle])}')") -%>

@@ -11,6 +11,35 @@ function embedChart(url) {
   swfobject.embedSWF('/movies/chart.swf', 'chart', '750', '400', '9.0.28.0', '/movies/expressInstall.swf', {dataUrl: url}, {wmode: 'transparent'});
 }
 
+function initTimer() {
+  $(function() {
+    $("#timer a").click(function() {
+      toggleTimer();
+    });
+    $(window).keydown(function(event) {
+      if (event.keyCode == 32) {
+        toggleTimer();
+      }
+    });
+  });
+}
+
+function toggleTimer() {
+  if (this.interval == null) {
+    $("#timer p").text(0);
+    $("#timer a").text("Stop");
+    this.interval = setInterval(function() {
+      $("#timer p").text(Math.round((Number($("#timer p").text()) + 1/100) * 100) / 100);
+    }, 10);
+  }
+  else {
+    clearInterval(this.interval);
+    this.interval = null;
+    document.getElementById("chart").addItem(Number($("#timer p").text()) * 100, "UU FF RR");
+    $("#timer a").text("GO!");
+  }
+}
+
 function autocompleteUserName(url) {
   $(function() {
     $("#user_name").autocomplete({
