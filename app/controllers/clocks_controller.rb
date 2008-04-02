@@ -6,6 +6,7 @@ class ClocksController < ResourceController::Base
   index.before do
     params[:puzzle] ||= '4'
     params[:kind] ||= '2'
+    @puzzle = Puzzle.find_by_id params[:puzzle]
   end
   
   index.wants.xml

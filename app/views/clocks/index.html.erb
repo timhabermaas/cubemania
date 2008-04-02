@@ -8,6 +8,9 @@
 <% content_for :head, javascript_tag("embedChart('#{formatted_clocks_path :xml, :puzzle => params[:puzzle]}')") -%>
 
 <div id="timer">
+  <div id="scramble">
+  	<%= @puzzle.scramble if @puzzle %>
+  </div>
   <p>0</p>
   <a>GO!</a>
 </div>
