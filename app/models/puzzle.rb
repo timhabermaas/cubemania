@@ -23,14 +23,12 @@ class Puzzle < ActiveRecord::Base
   
   private
     def cube_scramble(turns)
-      scramble = ''
       variants = ['', "'", '2']
       axis = rand turns.size
-      scramble_length.times do
+      (0..scramble_length).map do
         axis = (axis + rand(turns.size - 1) + 1) % turns.size
-        scramble += (scramble.empty? ? '' : ' ') + turns[axis].rand + variants.rand
-      end
-      scramble
+        turns[axis].rand + variants.rand
+      end.join(" ")
     end
     
     def megaminx_scramble
@@ -45,18 +43,18 @@ class Puzzle < ActiveRecord::Base
     end
     
     def pyraminx_scramble
-      scramble = ''
       turns = %w(U L R B)
       variants = ['', "'", '2']
       tip_turns = turns.map &:downcase
-      tip_length = (rand(3) + 2).times do
-        scramble += (scramble.empty? ? '' : ' ') + tip_turns.delete(tip_turns.rand) + variants.rand
+      tip_length = rand(3) + 2
+      scramble = (0..tip_length).map do
+        tip_turns.delete(tip_turns.rand) + variants.rand
       end
       axis = rand turns.size
-      (scramble_length - tip_length).times do
+      scramble += (tip_length..scramble_length).map do
         axis = (axis + rand(turns.size - 1) + 1) % turns.size
-        scramble += ' ' + turns[axis] + variants.rand
+        turns[axis] + variants.rand
       end
-      scramble
+      scramble.join(" ")
     end
 end
