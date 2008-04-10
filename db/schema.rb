@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 15) do
+ActiveRecord::Schema.define(:version => 16) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                             :null => false
@@ -34,22 +34,22 @@ ActiveRecord::Schema.define(:version => 15) do
   end
 
   create_table "puzzles", :force => true do |t|
-    t.string  "name",            :limit => 64, :null => false
-    t.string  "image",           :limit => 64, :null => false
-    t.integer "kind_id",                       :null => false
+    t.string  "name",            :limit => 64,                :null => false
+    t.string  "image",           :limit => 64,                :null => false
+    t.integer "kind_id",                                      :null => false
     t.integer "scramble_length"
     t.integer "record_id"
+    t.integer "attempt_count",                 :default => 1, :null => false
   end
 
   add_index "puzzles", ["kind_id", "name"], :name => "index_puzzles_on_kind_id_and_name", :unique => true
 
   create_table "records", :force => true do |t|
-    t.integer "time",                                :null => false
-    t.integer "puzzle_id",                           :null => false
-    t.integer "user_id",                             :null => false
-    t.integer "clock_id",                            :null => false
-    t.integer "attempt_count", :default => 1,        :null => false
-    t.string  "clock_type",    :default => "Single", :null => false
+    t.integer "time",                             :null => false
+    t.integer "puzzle_id",                        :null => false
+    t.integer "user_id",                          :null => false
+    t.integer "clock_id",                         :null => false
+    t.string  "clock_type", :default => "Single", :null => false
   end
 
   add_index "records", ["user_id"], :name => "index_records_on_user_id"
