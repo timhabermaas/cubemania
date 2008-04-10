@@ -20,6 +20,10 @@ class Puzzle < ActiveRecord::Base
         megaminx_scramble
       when 'pyraminx'
         pyraminx_scramble
+      when 'square one'
+      	square1_scramble
+      when 'clock'
+      	clock_scramble
     end
   end
   
@@ -58,5 +62,24 @@ class Puzzle < ActiveRecord::Base
         turns[axis] + variants.rand
       end
       scramble.join(" ")
+    end
+    
+    def square1_scramble
+    	"blub"
+    end
+    
+    def clock_scramble
+    	pins = %w(U d)
+    	states = %w(UUdd dUdU ddUU UdUd dUUU UdUU UUUd UUdU UUUU dddd)
+    	scramble = states.map do |state|
+    	  moves = []
+    		moves << 'u = ' + (rand(13) - 6).to_s if state.gsub('d', '').length > 1
+    		moves << 'd = ' + (rand(13) - 6).to_s if state.gsub('U', '').length > 1
+    		state + ' ' + moves.join("; ")
+    	end
+    	scramble << Array.new(4).map do
+    		pins.rand
+    	end.join
+    	scramble.join(" / ")
     end
 end
