@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 16) do
+ActiveRecord::Schema.define(:version => 17) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                             :null => false
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(:version => 16) do
     t.string   "scramble"
     t.string   "type",       :default => "Single", :null => false
     t.integer  "average_id"
+    t.boolean  "record",     :default => false,    :null => false
   end
 
   add_index "clocks", ["user_id", "puzzle_id", "created_at"], :name => "index_clocks_on_user_id_and_puzzle_id_and_created_at"
@@ -43,17 +44,6 @@ ActiveRecord::Schema.define(:version => 16) do
   end
 
   add_index "puzzles", ["kind_id", "name"], :name => "index_puzzles_on_kind_id_and_name", :unique => true
-
-  create_table "records", :force => true do |t|
-    t.integer "time",                             :null => false
-    t.integer "puzzle_id",                        :null => false
-    t.integer "user_id",                          :null => false
-    t.integer "clock_id",                         :null => false
-    t.string  "clock_type", :default => "Single", :null => false
-  end
-
-  add_index "records", ["user_id"], :name => "index_records_on_user_id"
-  add_index "records", ["puzzle_id", "time"], :name => "index_records_on_puzzle_id_and_time"
 
   create_table "users", :force => true do |t|
     t.string   "name",               :limit => 32, :null => false
