@@ -1,5 +1,7 @@
 class Puzzle < ActiveRecord::Base
-  belongs_to :kind, :order => :name
+  belongs_to :kind, :order => 'name'
+  belongs_to :record
+  has_many :records, :order => 'time'
   
   file_column :image, :store_dir => 'public/images/puzzles', :base_url => 'images/puzzles'
   
