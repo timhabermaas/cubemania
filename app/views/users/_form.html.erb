@@ -1,21 +1,23 @@
-<%= error_messages_for :user %>
-
 <% form_for @user do |form| %>
   <p>
     <%= form.label :name %>
     <%= form.text_field :name %>
+    <%= form.error_message_on :name %>
   </p>
   <p>
     <%= form.label :email %>
     <%= form.text_field :email %>
+    <%= form.error_message_on :email %>
   </p>
   <p>
     <%= form.label :password %>
     <%= form.password_field :password %>
+    <%= form.error_message_on :password %>
   </p>
   <p>
-    <%= form.label :password_confirmation %>
+    <%= form.label :password_confirmation, 'Confirmation' %>
     <%= form.password_field :password_confirmation %>
+    <%= form.error_message_on :password_confirmation %>
   </p>
   <p>
     <%= form.submit action_label 'Register' %>

@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
 
   filter_parameter_logging 'password'
 
-  before_filter :init_navigation, :except => [:create, :update, :destroy]
+  before_filter :init_navigation
 
   def init_navigation
     @navigation = Item.find :all, :order => 'name'

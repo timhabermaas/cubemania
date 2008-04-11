@@ -7,6 +7,11 @@
   width: 968px;
   padding: 32px 16px;
 }
+#content h1 {
+  font-size: 1.5em;
+  margin-bottom: 1em;
+  color: #df0;
+}
 #content a {
   color: #df0;
 }
@@ -23,6 +28,27 @@
 #content ol {
   list-style-type: decimal;
   margin-left: 2em;
+}
+
+#content form p {
+  margin-bottom: 0.5em;
+}
+#content label {
+  display: block;
+  float: left;
+  width: 150px;
+}
+#content input {
+  padding: 1px;
+}
+#content input[type=submit] {
+  margin-left: 150px;
+}
+#content label.error, span.error {
+  color: #a00;
+}
+#content input.error {
+  border: 2px solid #a00;
 }
 
 #times {

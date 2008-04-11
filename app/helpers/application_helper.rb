@@ -32,3 +32,30 @@ module ApplicationHelper
     date.to_formatted_s :long
   end
 end
+
+module ActionView
+  class Base
+    @@field_error_proc = Proc.new do |html_tag, instance|
+      error_class = 'error'
+      if html_tag =~ /<(input|textarea|select)[^>]+class=/
+        class_attribute = html_tag =~ /class=['"]/
+        html_tag.insert(class_attribute + 7, "#{error_class} ")
+      elsif html_tag =~ /<(input|textarea|select)/
+        first_whitespace = html_tag =~ /\s/
+        html_tag[first_whitespace] = " class='#{error_class}' "
+      end
+      html_tag
+    end
+  end
+  module Helpers
+    module FormHelper
+      def error_message_on(object, method, prepend_text = '', append_text = '', css_class = 'error')
+        if (obj = (object.respond_to?(:errors) ? object : instance_variable_get("@#{object}"))) && (errors = obj.errors.on(method))
+          content_tag('span', "#{prepend_text}#{errors.is_a?(Array) ? errors.first : errors}#{append_text}", :class => 'error')
+        else 
+          ''
+        end
+      end
+    end
+  end
+end
