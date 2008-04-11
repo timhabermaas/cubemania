@@ -1,1 +1,0 @@
-xml.item :v => average.time, :tip => "<b>#{'%.2f' % (average.time.to_f / 1000)}</b> sec<br>#{d average.created_at}"

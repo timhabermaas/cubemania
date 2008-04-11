@@ -4,18 +4,19 @@
   <head>
     <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
     <title><%= page_title %> &middot; Cubemania</title>
-    <%= stylesheet_link_tag 'reset', 'autocomplete', 'application', 'header', 'navigation', 'subnavigation', 'content', 'footer', :cache => true %>
-    <%= javascript_include_tag 'jquery', 'dimensions', 'templating', 'mouse', 'slider', 'autocomplete', 'swfobject', 'application', :cache => true %>
+    <%= stylesheet_link_tag 'reset', 'application', 'header', 'navigation', 'subnavigation', 'notice', 'content', 'footer', :cache => true %>
+    <%= javascript_include_tag 'jquery', 'dimensions', 'mouse', 'slider', 'swfobject', 'application', :cache => true %>
     <%= yield :head %>
     <link rel="shortcut icon" href="/favicon.ico" type="image/ico" />
   </head>
   <body>
     <div id="site">
-      <%= render :partial => 'layouts/header' %>
-      <%= render :partial => 'layouts/navigation' unless controller? :items -%>
-      <%= render :partial => 'layouts/subnavigation' if controller? :clocks, :records -%>
-      <%= render :partial => 'layouts/content' %>
-      <%= render :partial => 'layouts/footer' %>
+      <%= partial 'layouts/header' %>
+      <%= partial 'layouts/navigation' unless controller? :items -%>
+      <%= partial 'layouts/subnavigation' if controller? :clocks, :records -%>
+      <%= partial 'layouts/notice' unless flash[:notice].nil? %>
+      <%= partial 'layouts/content' %>
+      <%= partial 'layouts/footer' %>
     </div>
   </body>
 </html>

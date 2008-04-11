@@ -2,9 +2,8 @@ class AveragesController < ApplicationController
   login
 
   def index
-    @averages = User.find(params[:user_id]).averages.for params[:puzzle]
-    respond_to do |format|
-      format.xml
-    end
+    @user = User.find params[:user_id]
+    @averages = @user.averages.for params[:puzzle]
+    respond_to &:xml
   end
 end

@@ -55,6 +55,30 @@
   float: left;
   width: 750px;
 }
+.ui-slider {
+  float: left;
+  width: 600px;
+  height: 23px;
+  position: relative;
+  background-image: url(/images/slider.png);
+  background-position: center center;
+}
+.ui-slider-handle {
+  position: absolute;
+  z-index: 1;
+  height: 23px;
+  width: 12px;
+  top: 0px;
+  left: 0px;
+  background-image: url(/images/slider-handle.gif);
+}
+.ui-slider-handle-active {
+  border: 1px dotted black;
+}
+#times select {
+  float: right;
+  width: 150px;
+}
 
 #timer {
   margin-left: 750px;
@@ -64,7 +88,7 @@
 #timer p {
   margin-bottom: 1em;
 }
-#timer .go {
+#go {
   display: block;
   width: 200px;
   height: 30px;
@@ -74,20 +98,20 @@
   font-size: 1.5em;
   background: url(/images/go.gif) no-repeat;
 }
-#timer .go:hover {
+#go:hover {
   color: #000;
   background-position: -200px;
 }
-#timer .go:active {
+#go:active {
   background-position: -400px;
 }
-#timer a.countdown {
+#go.countdown {
   background-position: -600px;
 }
-#timer a.running {
+#go.running {
   background-position: -800px;
 }
-#timer a.countdown, #timer a.running {
+#go.countdown, #go.running {
   color: #fff;
 }
 #timer li {
@@ -102,7 +126,7 @@
 #timer li.dnf {
   color: #83a1bf;
 }
-#timer li.dnf .time, #timer .average .dnf {
+#timer li.dnf .time, #average .dnf {
   text-decoration: line-through;
 }
 #timer li .scramble {
@@ -117,7 +141,7 @@
 #timer li.done .dnf {
   display: inline;
 }
-#timer .average {
+#average {
   padding-top: 0.5em;
   text-align: right;
   font-size: 1.25em;

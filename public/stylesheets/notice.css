@@ -1,0 +1,8 @@
+#notice {
+  background: #b1cc00 url(/images/notice.gif) bottom repeat-x;
+}
+#notice p {
+  padding: 9px 0;
+  color: #282828;
+  text-align: center;
+}

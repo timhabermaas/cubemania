@@ -5,16 +5,22 @@
     </a>
   </div>
   <div id="slider"><div class="ui-slider-handle"></div></div>
-  <input id="user_name" type="text"/>
+  <%= select_tag 'user_id', options_for_select(User.find(:all).collect { |u| [u.name, u.id] }.unshift(['Compare with ...'])), :onchange => 'addSeries(this)' %>
 </div>
 
 <%- content_for :head, javascript_tag("swfobject.embedSWF('/movies/chart.swf', 'chart', '750', '400', '9.0.28.0', '/movies/expressInstall.swf', {dataUrl: '#{formatted_averages_path :xml, :puzzle => params[:puzzle]}'}, {wmode: 'transparent'});") -%>
 <%- javascript_tag do -%>
-  $('#slider').slider();
-  $("#user_name").autocomplete({
-    ajax: "<%= formatted_auto_complete_for_user_name_clocks_path(:js, :puzzle => params[:puzzle]) %>",
-    match: function(typed) { return this.name.match(new RegExp(typed)); },
-    insertText: function(user) { return user.name }
-  })
-  .bind("activate.autocomplete", function(e, d) { document.getElementById("chart").addSeries(d.url) });
+  function addSeries(select) {
+    var index = select.selectedIndex;
+    if (index > 0) {
+      var id = select.options[index].value;
+      document.getElementById("chart").addSeries("<%= formatted_averages_path :xml, :puzzle => params[:puzzle] %>&user_id=" + id);
+      select.selectedIndex = 0;
+    }
+  }
+  $('#slider').slider({minValue: 0, maxValue: <%= user.averages.for(params[:puzzle]).size - 1 %>, startValue: 20, change: function(e, ui) {
+    try {
+      document.getElementById("chart").setItemCount(Math.ceil(ui.value));
+    } catch (e) {}
+  }});
 <%- end -%>

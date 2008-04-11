@@ -20,10 +20,8 @@ class ClocksController < ApplicationController
 
     @average.save!
 
-    @puzzle = @average.puzzle
-
     respond_to do |format|
-      format.js
+      format.js { @puzzle = @average.puzzle }
     end
   end
 

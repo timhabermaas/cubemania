@@ -1,2 +1,3 @@
-page << "document.getElementById('chart').addItem(\"<item v=\\\"#{@average.time}\\\" tip=\\\"&lt;b&gt;#{'%.2f' % (@average.time.to_f / 1000)}&lt;/b&gt; sec&lt;br&gt;#{d @average.created_at}\\\"/>\");"
+page << "document.getElementById(\"chart\").addItem(\"#{partial 'averages/average.xml.erb'}\");"
 page['timer'].replaceWith partial 'timer.html.erb'
+page << "updateScramble()"
