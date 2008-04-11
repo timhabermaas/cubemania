@@ -20,8 +20,10 @@ class ClocksController < ApplicationController
 
     @average.save!
 
+    @puzzle = @average.puzzle
+
     respond_to do |format|
-      format.xml { render :partial => @average }
+      format.js
     end
   end
 

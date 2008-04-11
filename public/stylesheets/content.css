@@ -102,7 +102,7 @@
 #timer li.dnf {
   color: #83a1bf;
 }
-#timer li.dnf .time {
+#timer li.dnf .time, #timer .average .dnf {
   text-decoration: line-through;
 }
 #timer li .scramble {
