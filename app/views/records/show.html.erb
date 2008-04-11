@@ -1,0 +1,9 @@
+<ol id="records">
+<%- for record in @puzzle.records -%>
+  <li>
+    <h3><%= record.time %></h3>
+    <cite><%= link_to record.user.name, record.user %></cite>
+    <small><%=d record.created_at %></small>
+  </li>
+<%- end -%>
+</ol>

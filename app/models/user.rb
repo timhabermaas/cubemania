@@ -5,7 +5,13 @@ class User < ActiveRecord::Base
 
   attr_reader :password
 
-  has_many :clocks, :order => 'created_at desc'
+  has_many :singles, :order => 'created_at desc', :dependent => :delete_all do
+    def record(puzzle_id); find_by_puzzle_id_and_record puzzle_id, true; end
+  end
+  has_many :averages, :order => 'created_at desc', :dependent => :delete_all do
+    def for(puzzle_id); find_all_by_puzzle_id puzzle_id; end
+    def record(puzzle_id); find_by_puzzle_id_and_record puzzle_id, true; end
+  end
 
   validates_uniqueness_of :name, :email, :case_sensitive => false, :message => 'is already in use by another user'
   validates_format_of :name, :with => /^([a-z0-9_]{2,16})$/i, :message => 'must be 2 to 16 letters, numbers or underscores and have no spaces'

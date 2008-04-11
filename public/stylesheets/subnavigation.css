@@ -1,0 +1,73 @@
+#subnavigation {
+  clear: both;
+  border-top: 1px solid #000;
+}
+#subnavigation li {
+  display: block;
+  float: left;
+  text-align: center;
+}
+#subnavigation li a {
+  display: block;
+  color: #fff;
+}
+#subnavigation li a:hover, #subnavigation li.checked a {
+  background: none;
+  color: #df0;
+}
+
+#puzzles {
+  height: 68px;
+  padding: 1em 0;
+  background: #5d5d5d url(/images/puzzles.gif) repeat-x;
+  overflow: hidden;
+}
+#puzzles ul {
+  position: relative;
+}
+#puzzles li ul {
+  position: static;
+  display: -moz-inline-box;
+  display: inline-block;
+  zoom: 1;
+  *display: inline;
+  width: auto;
+  margin: 0 auto;
+  margin-bottom: 1em;
+}
+#puzzles li li {
+  margin-right: 1em;
+}
+#puzzles span {
+  display: block;
+}
+#puzzles .image {
+  width: 50px;
+  height: 50px;
+  margin: 0 auto;
+  overflow: hidden;
+  text-align: right;
+}
+#puzzles .kind {
+  position: relative;
+  top: -30px;
+}
+#puzzles a:hover .puzzle, #puzzles li.checked a .puzzle {
+  position: relative;
+  left: -50px;
+}
+#puzzles .name {
+  font-size: 0.75em;
+  text-transform: capitalize;
+}
+
+#kinds {
+  clear: both;
+  height: 1em;
+  padding: 0.4375em 0;
+  background: #373737 url(/images/kinds.gif) bottom repeat-x;
+}
+#kinds li a {
+  font-size: 0.75em;
+  text-transform: uppercase;
+}

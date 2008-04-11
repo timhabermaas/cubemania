@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 18) do
+ActiveRecord::Schema.define(:version => 19) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                             :null => false
@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(:version => 18) do
     t.string   "type",       :default => "Single", :null => false
     t.integer  "average_id"
     t.boolean  "record",     :default => false,    :null => false
+    t.boolean  "dnf",        :default => false,    :null => false
   end
 
   add_index "clocks", ["user_id", "puzzle_id", "created_at"], :name => "index_clocks_on_user_id_and_puzzle_id_and_created_at"

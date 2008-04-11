@@ -1,4 +1,10 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :singles
+
+  map.resources :averages
+
+  map.resources :records
+
   map.root :controller => 'clocks'
   
   map.resources :clocks, :collection => { :auto_complete_for_user_name => :get }

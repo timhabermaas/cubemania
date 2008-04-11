@@ -1,23 +1,39 @@
-class ClocksController < ResourceController::Base
+class ClocksController < ApplicationController
   login
 
-  belongs_to :user
-
-  index.before do
+  def index
     params[:puzzle] ||= '4'
     params[:kind] ||= '2'
-    @puzzle = Puzzle.find_by_id params[:puzzle]
+    
+    respond_to do |format|
+      format.html { @puzzle = Puzzle.find params[:puzzle] }
+      format.xml { @clocks = User.find(params[:user_id]).averages.for params[:puzzle] }
+    end
   end
-  
-  index.wants.xml
-  
+
+  def create
+    @average = user.averages.build params[:average]
+    @average.singles = params[:singles].map { |index, single| user.singles.build single }
+
+    update_record user.averages.record(@average.puzzle_id), @average
+    update_record user.singles.record(@average.puzzle_id), @average.singles.sort_by(&:time).first
+
+    @average.save!
+
+    respond_to do |format|
+      format.xml { render :partial => @average }
+    end
+  end
+
   def auto_complete_for_user_name
     @users = User.find :all, :conditions => ["LOWER(name) LIKE ?", '%' + params[:val] + '%'], :order => "name ASC", :limit => 10
   end
-  
+
   private
-    def collection
-      @collection ||= end_of_association_chain.find_all_by_puzzle_id params[:puzzle],
-          :conditions => ['created_at >= ?', Time.now - 30*24*60*60], :order => 'created_at'
+    def update_record(old, new)
+      if old.nil? or new.time < old.time
+        old.update_attribute :record, false unless old.nil?
+        new.record = true
+      end
     end
 end

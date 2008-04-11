@@ -1,3 +1,3 @@
 class CompetitionsController < ApplicationController
-  resource_controller
+  def index; end
 end

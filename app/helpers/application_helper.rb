@@ -27,4 +27,8 @@ module ApplicationHelper
   def current_kind?(kind)
     params[:kind] == kind.id.to_s
   end
+  
+  def d(date)
+    date.to_formatted_s :long
+  end
 end
