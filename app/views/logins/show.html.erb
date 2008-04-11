@@ -1,7 +1,5 @@
 <h1>Login</h1>
 
-<%= error_messages_for :login %>
-
 <% form_for @login, :url => login_path do |form| %>
   <p>
     <%= form.label :name %>
@@ -10,6 +8,7 @@
   <p>
     <%= form.label :password %>
     <%= form.password_field :password %>
+    <%= form.error_message_on :password %>
   </p>
   <p>
     <%= form.submit 'Login' %>
