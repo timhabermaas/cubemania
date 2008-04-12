@@ -4,9 +4,9 @@
 </p>
 
 <ol id="records">
-<%- for record in @puzzle.records.send params[:type] -%>
-  <li>
-    <h3><%= record.time %></h3>
+<%- @puzzle.records.send(params[:type]).each_with_index do |record, index| -%>
+  <li class="rank<%= index + 1 %>">
+    <h3><%=t record.time %></h3>
     <cite><%= link_to record.user.name, record.user %></cite>
     <small><%=d record.created_at %></small>
   </li>

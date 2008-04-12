@@ -3,13 +3,13 @@
   <%= link_to 'Average', records_path(:type => 'average'), :class => ('checked' if type? :average) %>
 </p>
 
-<ul>
+<ul id="records">
 <%- for kind in @kinds -%>
   <li>
-    <h2><%=h kind.name %></h2>
-    <ol>
+    <h2><%=h kind.name.titleize %></h2>
+    <ul>
       <%= partial kind.records.send(params[:type]) %>
-    </ol>
+    </ul>
   </li>
 <%- end -%>
 </ul>

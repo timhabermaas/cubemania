@@ -7,7 +7,7 @@
   width: 968px;
   padding: 32px 16px;
 }
-#content h1 {
+#content h1, #content h2 {
   font-size: 1.5em;
   margin-bottom: 1em;
   color: #df0;
@@ -153,4 +153,48 @@
   text-align: right;
   font-size: 1.25em;
   border-top: 2px solid;
+}
+
+#records {
+  text-align: center;
+  list-style-position: inside;
+}
+#records h3 {
+  display: inline;
+  font-weight: bold;
+}
+#records small {
+  font-size: 1em;
+}
+#records h3, #records cite, #records small {
+  margin-right: 0.5em;
+}
+#records .rank1 {
+  font-size: 1.75em;
+}
+#records .rank1 h3 {
+  padding-left: 43px;
+  background-image: url(/images/rank1.gif);
+}
+#records .rank2 {
+  font-size: 1.5em;
+}
+#records .rank2 h3 {
+  padding-left: 43px;
+  background-image: url(/images/rank2.gif);
+}
+#records .rank3 {
+  font-size: 1.125em;
+}
+#records .rank3 h3 {
+  padding-left: 43px;
+  background-image: url(/images/rank3.gif);
+}
+#records .rank1, #records .rank2, #records .rank3 {
+  margin-bottom: 1em;
+  list-style: none;
+}
+#records .rank1 h3, #records .rank2 h3, #records .rank3 h3 {
+  background-position: left center;
+  background-repeat: no-repeat;
 }

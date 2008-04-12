@@ -35,6 +35,10 @@ module ApplicationHelper
   def d(date)
     date.to_formatted_s :long
   end
+  
+  def t(time)
+    '%.2f' % (time / 1000) + ' sec'
+  end
 end
 
 module ActionView
