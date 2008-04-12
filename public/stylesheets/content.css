@@ -54,8 +54,9 @@
   border: 2px solid #a00;
 }
 
-#caption {
+#content #caption {
   text-align: center;
+  margin-bottom: 2em;
 }
 
 #times {
