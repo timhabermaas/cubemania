@@ -19,6 +19,7 @@ module Authentication
   def login(role)
     if not logged_in?
       flash[:notice] = 'Please login to continue'
+      session[:return_to] = request.request_uri
       redirect_to login_path
     elsif role and not role? role
       flash[:notice] = 'You do not have the necessary permissions'
@@ -50,5 +51,10 @@ module Authentication
     def user=(user)
       @user = user
       session[:user_id] = user.nil? ? nil : user.id
+    end
+    
+    def redirect_back(default)
+      redirect_to(session[:return_to] || default)
+      session[:return_to] = nil
     end
 end

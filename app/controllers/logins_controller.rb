@@ -10,7 +10,7 @@ class LoginsController < ApplicationController
     @login = Login.new params[:login]
     if self.user = @login.validate
       flash[:notice] = "Hello #{user.name}, you are now logged in"
-      redirect_to root_path
+      redirect_back root_path
     else
       render :action => 'show'
     end
