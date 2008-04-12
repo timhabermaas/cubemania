@@ -1,6 +1,6 @@
 class Kind < ActiveRecord::Base
   has_many :puzzles
-  has_many :records, :class_name => 'Clock', :through => :puzzles
+  has_many :records, :through => :puzzles, :order => 'name', :class_name => 'Clock'
   
   file_column :image, :store_dir => 'public/images/kinds', :base_url => 'images/kinds'
   

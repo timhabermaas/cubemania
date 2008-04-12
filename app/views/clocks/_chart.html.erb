@@ -5,7 +5,7 @@
     </a>
   </div>
   <div id="slider"><div class="ui-slider-handle"></div></div>
-  <%= select_tag 'user_id', options_for_select(User.find(:all).collect { |u| [u.name, u.id] }.unshift(['Compare with ...'])), :onchange => 'addSeries(this)' %>
+  <%= select_tag 'user_id', options_for_select(User.find(:all, :conditions => ['id <> ?', user.id]).collect { |u| [u.name, u.id] }.unshift(['Compare with ...'])), :onchange => 'addSeries(this)' %>
 </div>
 
 <%- content_for :head, javascript_tag("swfobject.embedSWF('/movies/chart.swf', 'chart', '750', '400', '9.0.28.0', '/movies/expressInstall.swf', {dataUrl: '#{formatted_averages_path :xml, :puzzle => params[:puzzle]}'}, {wmode: 'transparent'});") -%>
