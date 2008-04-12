@@ -28,6 +28,10 @@ module ApplicationHelper
     params[:kind] == kind.id.to_s
   end
   
+  def type?(type)
+    params[:type] == type.to_s
+  end
+  
   def d(date)
     date.to_formatted_s :long
   end

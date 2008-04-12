@@ -1,3 +1,8 @@
+<p id="caption">
+  <%= link_to 'Single', records_path(:puzzle => params[:puzzle], :type => 'single'), :class => ('checked' if type? :single) %>
+  <%= link_to 'Average', records_path(:puzzle => params[:puzzle], :type => 'average'), :class => ('checked' if type? :average) %>
+</p>
+
 <ol id="records">
 <%- for record in @puzzle.records.send params[:type] -%>
   <li>

@@ -3,7 +3,7 @@ ActionController::Routing::Routes.draw do |map|
   
   map.resources :clocks, :singles, :averages
   map.resources :competitions
-  map.connect 'records/:type', :controller => 'records', :defaults => { :type => 'single' }, :type => /(single)|(average)/
+  map.records 'records/:type', :controller => 'records', :defaults => { :type => 'single' }, :type => /(single)|(average)/
   map.resources :users, :has_many => :clocks
   map.resources :puzzles, :kinds
   map.resources :items

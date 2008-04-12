@@ -19,6 +19,9 @@
   color: #000;
   background-color: #df0;
 }
+#content a.checked {
+  font-weight: bold;
+}
 #content small {
   font-size: 0.75em;
 }
@@ -49,6 +52,10 @@
 }
 #content input.error {
   border: 2px solid #a00;
+}
+
+#caption {
+  text-align: center;
 }
 
 #times {
