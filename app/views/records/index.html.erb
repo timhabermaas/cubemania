@@ -2,7 +2,9 @@
 <%- for kind in @kinds -%>
   <li>
     <h2><%=h kind.name %></h2>
-    <%= partial 'records/records', :object => kind.records.send(params[:type]) %>
+    <ol>
+      <%= partial kind.records.send(params[:type]) %>
+    </ol>
   </li>
 <%- end -%>
 </ul>

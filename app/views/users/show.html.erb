@@ -6,4 +6,6 @@
   </a>
 </div>
 
-<%= partial 'records/records', :object => @user.records %>
+<ul id="records">
+  <%= partial @user.averages.records %>
+</ul>
