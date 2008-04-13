@@ -22,9 +22,6 @@
 #content a {
   color: #df0;
 }
-#content p a {
-  text-decoration: underline;
-}
 #content a:hover {
   color: #2f2f2f;
   background-color: #df0;
@@ -46,8 +43,12 @@
 #content cite {
   font-style: italic;
 }
-#content p, .text blockquote, .text ul, #content ol {
+
+.text p, .text blockquote, .text ul, .text ol {
   margin-bottom: 1em;
+}
+.text p a {
+  text-decoration: underline;
 }
 .text blockquote {
   font-style: italic;
@@ -65,9 +66,28 @@
   list-style-type: square;
   margin-left: 1.5em;
 }
-#content ol {
+.text ol {
   list-style-type: decimal;
   margin-left: 2em;
+}
+
+.meta {
+  text-align: center;
+  margin: 2em 0;
+}
+
+.pagination {
+  text-align: center;
+}
+.pagination span, .pagination a {
+  padding: 0.25em;
+}
+.pagination .current {
+  color: #2f2f2f;
+  background-color: #df0;
+}
+.pagination .disabled {
+  color: #83a1bf;
 }
 
 #content form p {
@@ -78,11 +98,14 @@
   float: left;
   width: 150px;
 }
-#content input {
+#content input, #content textarea {
   padding: 1px;
 }
 #content input[type=submit] {
   margin-left: 150px;
+}
+#content .new_comment input[type=submit] {
+  margin-left: 0;
 }
 #content label.error, span.error {
   color: #a00;
@@ -94,18 +117,6 @@
 #content #tabs {
   text-align: center;
   margin-bottom: 2em;
-}
-
-#content .post h1 {
-  margin-bottom: 0.25em;
-}
-#content .post small {
-  display: block;
-  margin-bottom: 1em;
-}
-#content .post p small {
-  display: inline;
-  margin-bottom: 0;
 }
 
 #times {

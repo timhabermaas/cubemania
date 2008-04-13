@@ -16,6 +16,10 @@ module ApplicationHelper
     names.map(&:to_sym).include? params[:controller].to_sym
   end
   
+  def action?(*names)
+    names.map(&:to_sym).include? params[:action].to_sym
+  end
+  
   def current_item?(item)
     controller? item.url[:controller]
   end
@@ -33,15 +37,23 @@ module ApplicationHelper
   end
   
   def d(date)
-    date.to_formatted_s :long
+    date.strftime '%B %d, %Y'
   end
   
   def t(time)
     '%.2f' % (time / 1000) + ' sec'
   end
   
+  def dt(datetime)
+    datetime.strftime '%B %d, %Y %H:%M'
+  end
+  
   def m(text)
     markdown text
+  end
+  
+  def li_for(record, *args, &block)
+    content_tag_for :li, record, *args, &block
   end
 end
 

@@ -6,6 +6,6 @@
   <div class="meta">
     <%=d post.created_at %> &middot;
     <cite><%= link_to post.user.name, post.user %></cite>
-    <%= "&middot; #{link_to "#{post.comments.size} Comments", post_path(post, :anchor => 'comments')}" %>
+    <%= "&middot; #{link_to "#{pluralize post.comments.size, 'Comment'} &raquo;", post_path(post, :anchor => 'comments')}" unless action? :show %>
   </div>
 <% end %>
