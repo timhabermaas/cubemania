@@ -97,8 +97,12 @@
   }
   $(window).keyup(function(event) {
     var finished = $("#timer li.done").length == <%= @puzzle.attempt_count %>;
-    if (event.keyCode == 32 && !finished) toggleTimer();
-    if (event.keyCode == 32 && finished) commitTimes();
+    if (event.keyCode == 32) {
+      if (!finished)
+        toggleTimer();
+      else
+        commitTimes();
+    }
   });
   updateScramble();
 <%- end -%>
