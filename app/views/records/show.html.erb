@@ -1,4 +1,4 @@
-<p id="caption">
+<p id="tabs">
   <%= link_to 'Single', records_path(:puzzle => params[:puzzle], :type => 'single'), :class => ('checked' if type? :single) %>
   <%= link_to 'Average', records_path(:puzzle => params[:puzzle], :type => 'average'), :class => ('checked' if type? :average) %>
 </p>

@@ -7,26 +7,63 @@
   width: 968px;
   padding: 32px 16px;
 }
-#content h1, #content h2 {
+#content h1 {
   font-size: 1.5em;
   margin-bottom: 1em;
   color: #df0;
 }
+#content h2 {
+  font-size: 1.25em;
+  margin: 1em 0;
+  padding-bottom: 0.25em;
+  color: #df0;
+  border-bottom: 2px solid;
+}
 #content a {
   color: #df0;
 }
+#content p a {
+  text-decoration: underline;
+}
 #content a:hover {
-  color: #000;
+  color: #2f2f2f;
   background-color: #df0;
+  text-decoration: none;
 }
 #content a.checked {
   font-weight: bold;
 }
 #content small {
+  color: #b5cadf;
   font-size: 0.75em;
 }
-#content p, #content ol, #content ul {
+#content strong {
+  font-weight: bold;
+}
+#content em {
+  background-color: #485f77;
+}
+#content cite {
+  font-style: italic;
+}
+#content p, .text blockquote, .text ul, #content ol {
   margin-bottom: 1em;
+}
+.text blockquote {
+  font-style: italic;
+  margin-left: 0.75em;
+  padding-left: 21px;
+  background: url(/images/open-quote.gif) top left no-repeat;
+}
+.text blockquote p {
+  display: inline;
+  margin-bottom: 0;
+  padding-right: 21px;
+  background: url(/images/close-quote.gif) bottom right no-repeat;
+}
+.text ul {
+  list-style-type: square;
+  margin-left: 1.5em;
 }
 #content ol {
   list-style-type: decimal;
@@ -54,9 +91,21 @@
   border: 2px solid #a00;
 }
 
-#content #caption {
+#content #tabs {
   text-align: center;
   margin-bottom: 2em;
+}
+
+#content .post h1 {
+  margin-bottom: 0.25em;
+}
+#content .post small {
+  display: block;
+  margin-bottom: 1em;
+}
+#content .post p small {
+  display: inline;
+  margin-bottom: 0;
 }
 
 #times {

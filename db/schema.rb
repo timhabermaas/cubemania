@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 19) do
+ActiveRecord::Schema.define(:version => 21) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                             :null => false
@@ -35,6 +35,14 @@ ActiveRecord::Schema.define(:version => 19) do
     t.string "image", :limit => 64
   end
 
+  create_table "posts", :force => true do |t|
+    t.string   "title"
+    t.text     "content"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "puzzles", :force => true do |t|
     t.string  "name",            :limit => 64,                 :null => false
     t.string  "image",           :limit => 64,                 :null => false
@@ -48,11 +56,12 @@ ActiveRecord::Schema.define(:version => 19) do
   add_index "puzzles", ["kind_id", "name"], :name => "index_puzzles_on_kind_id_and_name", :unique => true
 
   create_table "users", :force => true do |t|
-    t.string   "name",               :limit => 32, :null => false
-    t.string   "email",              :limit => 32, :null => false
-    t.string   "salt",               :limit => 8,  :null => false
-    t.string   "encrypted_password", :limit => 16, :null => false
+    t.string   "name",               :limit => 32,                     :null => false
+    t.string   "email",              :limit => 32,                     :null => false
+    t.string   "salt",               :limit => 8,                      :null => false
+    t.string   "encrypted_password", :limit => 16,                     :null => false
     t.datetime "created_at"
+    t.string   "role",               :limit => 16, :default => "user"
   end
 
   add_index "users", ["name", "encrypted_password"], :name => "index_users_on_name_and_encrypted_password", :unique => true

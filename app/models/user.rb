@@ -36,12 +36,20 @@ class User < ActiveRecord::Base
     end
   end
 
-  def role?(role, request_id)
-    if role.to_sym == :self
-      id.to_s == request_id
-    else
+  def role?(required_role, request_id)
+    if admin?
       true
+    else
+      if required_role == :self
+        id.to_s == request_id
+      else
+        role.to_sym == required_role
+      end
     end
+  end
+
+  def admin?
+    role.to_sym == :admin
   end
 
   private

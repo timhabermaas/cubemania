@@ -1,0 +1,15 @@
+<% form_for @post do |form| %>
+  <p>
+    <%= form.label :title %>
+    <%= form.text_field :title %>
+    <%= form.error_message_on :title %>
+  </p>
+  <p>
+    <%= form.label :content %>
+    <%= form.text_area :content %>
+    <%= form.error_message_on :content %>
+  </p>
+  <p>
+    <%= form.submit action_label %>
+  </p>
+<% end %>

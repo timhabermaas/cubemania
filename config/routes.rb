@@ -1,6 +1,7 @@
 ActionController::Routing::Routes.draw do |map|
-  map.root :controller => 'clocks'
+  map.root :controller => 'posts'
   
+  map.resources :posts
   map.resources :clocks, :singles, :averages
   map.resources :competitions
   map.records 'records/:type', :controller => 'records', :defaults => { :type => 'single' }, :type => /(single)|(average)/

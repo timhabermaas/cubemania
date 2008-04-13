@@ -39,6 +39,10 @@ module ApplicationHelper
   def t(time)
     '%.2f' % (time / 1000) + ' sec'
   end
+  
+  def m(text)
+    markdown text
+  end
 end
 
 module ActionView
