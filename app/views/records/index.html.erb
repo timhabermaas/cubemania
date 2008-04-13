@@ -1,15 +1,8 @@
 <p id="tabs">
-  <%= link_to 'Single', records_path(:type => 'single'), :class => ('checked' if type? :single) %>
-  <%= link_to 'Average', records_path(:type => 'average'), :class => ('checked' if type? :average) %>
+  <%= link_to 'Single', records_path(:puzzle => params[:puzzle], :type => 'single'), :class => ('checked' if type? :single) %>
+  <%= link_to 'Average', records_path(:puzzle => params[:puzzle], :type => 'average'), :class => ('checked' if type? :average) %>
 </p>
 
-<ul id="records">
-<%- for kind in @kinds -%>
-  <li>
-    <h2><%=h kind.name.titleize %></h2>
-    <ul>
-      <%= partial kind.records.send(params[:type]) %>
-    </ul>
-  </li>
-<%- end -%>
-</ul>
+<ol id="records">
+  <%= partial 'record', :collection => @puzzle.records.send(params[:type]) %>
+</ol>

@@ -1,12 +1,5 @@
-<li>
-  <div class="puzzle">
-    <span class="image">
-      <%= puzzle = record.puzzle; image_tag url_for_file_column(puzzle, :image), :title => puzzle.name, :class => 'puzzle' %>
-      <%= kind = record.puzzle.kind; image_tag url_for_file_column(kind, :image), :title => kind.name, :class => 'kind' unless kind.image.nil? %>
-    </span>
-    <h3><%=h record.puzzle.name %></h3>
-  </div>
-  <p><%= '%.2f' % (record.time.to_f / 100) %> sec</p>
-  <% unless controller? :users %><cite><%= link_to record.user.name, record.user %></cite><% end %>
+<li class="record rank<%= record_counter %>">
+  <strong><%=t record.time %></strong>
+  <cite><%= link_to record.user.name, record.user %></cite>
   <small><%=d record.created_at %></small>
 </li>

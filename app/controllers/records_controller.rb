@@ -1,10 +1,7 @@
 class RecordsController < ApplicationController
   def index
-    if params[:puzzle].blank?
-      @kinds = Kind.find :all
-    else
-      @puzzle = Puzzle.find params[:puzzle]
-      render :action => 'show'
-    end
+    params[:puzzle] ||= '4'
+    params[:kind] ||= '2'
+    @puzzle = Puzzle.find params[:puzzle]
   end
 end

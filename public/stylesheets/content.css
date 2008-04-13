@@ -239,42 +239,39 @@ input.error {
   text-align: center;
   list-style-position: inside;
 }
-#records h3 {
-  display: inline;
-  font-weight: bold;
+#records cite {
+  font-style: normal;
 }
 #records small {
   font-size: 1em;
 }
-#records h3, #records cite, #records small {
+#records strong, #records cite, #records small {
   margin-right: 0.5em;
 }
 #records .rank1 {
   font-size: 1.75em;
 }
-#records .rank1 h3 {
-  padding-left: 43px;
+#records .rank1 strong {
   background-image: url(/images/rank1.gif);
 }
 #records .rank2 {
   font-size: 1.5em;
 }
-#records .rank2 h3 {
-  padding-left: 43px;
+#records .rank2 strong {
   background-image: url(/images/rank2.gif);
 }
 #records .rank3 {
-  font-size: 1.125em;
+  font-size: 1.25em;
 }
-#records .rank3 h3 {
-  padding-left: 43px;
+#records .rank3 strong {
   background-image: url(/images/rank3.gif);
 }
 #records .rank1, #records .rank2, #records .rank3 {
   margin-bottom: 1em;
   list-style: none;
 }
-#records .rank1 h3, #records .rank2 h3, #records .rank3 h3 {
+#records .rank1 strong, #records .rank2 strong, #records .rank3 strong {
+  padding-left: 43px;
   background-position: left center;
   background-repeat: no-repeat;
 }
