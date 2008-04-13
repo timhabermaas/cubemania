@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
   attr_reader :password
 
   has_many :posts
+  has_many :comments
   has_many :singles, :order => 'created_at desc', :dependent => :delete_all do
     def record(puzzle_id); find_by_puzzle_id_and_record puzzle_id, true; end
     def records; find_all_by_record true; end

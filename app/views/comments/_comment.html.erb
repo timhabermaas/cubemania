@@ -1,0 +1,7 @@
+<% li_for comment do %>
+  <cite><%= link_to comment.user.name, comment.user %></cite>
+  <small><%=dt comment.created_at %></small>
+  <div class="text">
+    <%=m comment.content %>
+  </div>
+<% end %>

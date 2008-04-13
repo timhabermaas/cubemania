@@ -8,16 +8,21 @@
   padding: 32px 16px;
 }
 #content h1 {
-  font-size: 1.5em;
+  font-size: 1.75em;
   margin-bottom: 1em;
   color: #df0;
 }
 #content h2 {
-  font-size: 1.25em;
+  font-size: 1.5em;
   margin: 1em 0;
   padding-bottom: 0.25em;
   color: #df0;
   border-bottom: 2px solid;
+}
+#content h3 {
+  font-size: 1.5em;
+  margin: 1em 0;
+  color: #df0;
 }
 #content a {
   color: #df0;
@@ -76,6 +81,23 @@
   margin: 2em 0;
 }
 
+.comment cite {
+  display: block;
+  font-size: 1.25em;
+  margin-bottom: 0.125em;
+}
+.comment small {
+  display: block;
+  margin-bottom: 0.25em;
+}
+.new_comment textarea {
+  width: 100%;
+  height: 8em;
+}
+.new_comment input[type=submit] {
+  margin-left: 0;
+}
+
 .pagination {
   text-align: center;
 }
@@ -90,27 +112,24 @@
   color: #83a1bf;
 }
 
-#content form p {
+form p {
   margin-bottom: 0.5em;
 }
-#content label {
+label {
   display: block;
   float: left;
   width: 150px;
 }
-#content input, #content textarea {
+input, textarea {
   padding: 1px;
 }
-#content input[type=submit] {
+input[type=submit] {
   margin-left: 150px;
 }
-#content .new_comment input[type=submit] {
-  margin-left: 0;
-}
-#content label.error, span.error {
+label.error, span.error {
   color: #a00;
 }
-#content input.error {
+input.error {
   border: 2px solid #a00;
 }
 
