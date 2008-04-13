@@ -1,7 +1,11 @@
 <% div_for post do %>
   <h1><%= link_to_unless_current post.title.titleize, post %></h1>
-  <small><%=d post.created_at %> by <cite><%= link_to post.user.name, post.user %></cite></small>
   <div class="text">
     <%=m post.content %>
+  </div>
+  <div class="meta">
+    <%=d post.created_at %> &middot;
+    <cite><%= link_to post.user.name, post.user %></cite>
+    <%= "&middot; #{link_to "#{post.comments.size} Comments", post_path(post, :anchor => 'comments')}" %>
   </div>
 <% end %>
