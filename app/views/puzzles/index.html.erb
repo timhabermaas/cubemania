@@ -1,20 +1,18 @@
-<h1>Listing puzzles</h1>
+<h1>Listing Puzzles</h1>
 
 <table>
   <tr>
     <th>Name</th>
+    <th>Image</th>
   </tr>
-
-<% for puzzle in @puzzles %>
+<%- for puzzle in @puzzles -%>
   <tr>
     <td><%=h puzzle.name %></td>
-    <td><%= link_to 'Show', puzzle %></td>
-    <td><%= link_to 'Edit', edit_puzzle_path(puzzle) %></td>
-    <td><%= link_to 'Destroy', puzzle, :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= image_tag url_for_file_column(puzzle, :image) %></td>
+    <td><%= link_to 'Edit', edit_kind_puzzle_path(@kind, puzzle) %></td>
+    <td><%= link_to 'Destroy', kind_puzzle_path(@kind, puzzle), :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
-<% end %>
+<%- end -%>
 </table>
 
-<br />
-
-<%= link_to 'New puzzle', new_puzzle_path %>
+<%= link_to 'New puzzle', new_kind_puzzle_path %>

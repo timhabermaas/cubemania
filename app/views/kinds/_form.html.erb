@@ -1,13 +1,13 @@
-<%= error_messages_for :kind %>
-
 <% form_for @kind, :html => { :multipart => true } do |form| %>
   <p>
     <%= form.label :name %>
     <%= form.text_field :name %>
+    <%= form.error_message_on :name %>
   </p>
   <p>
     <%= form.label :image %>
     <%= file_column_field 'kind', 'image' %>
+    <%= form.error_message_on :image %>
   </p>
   <p>
     <%= form.submit action_label %>

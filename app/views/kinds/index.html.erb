@@ -1,20 +1,18 @@
-<h1>Listing kinds</h1>
+<h1>Listing Kinds</h1>
 
 <table>
   <tr>
     <th>Name</th>
+    <th>Image</th>
   </tr>
-
-<% for kind in @kinds %>
+<%- for kind in @kinds -%>
   <tr>
     <td><%=h kind.name %></td>
-    <td><%= link_to 'Show', kind %></td>
+    <td><%= image_tag url_for_file_column(kind, :image) unless kind.image.nil? %></td>
     <td><%= link_to 'Edit', edit_kind_path(kind) %></td>
     <td><%= link_to 'Destroy', kind, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
-<% end %>
+<%- end -%>
 </table>
 
-<br />
-
-<%= link_to 'New kind', new_kind_path %>
+<%= link_to 'New Kind', new_kind_path %>
