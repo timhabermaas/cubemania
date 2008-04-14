@@ -216,7 +216,7 @@ input.error {
 #timer li.dnf .time, #average .dnf {
   text-decoration: line-through;
 }
-#timer li .scramble {
+#timer li .scramble, li .realTime {
   display: none;
 }
 #timer li .dnf {
