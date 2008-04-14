@@ -21,7 +21,7 @@ module ApplicationHelper
   end
   
   def current_item?(item)
-    controller? item.url[:controller]
+    controller? item.url.split('/').last.to_sym
   end
   
   def current_puzzle?(puzzle)
