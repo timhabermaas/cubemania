@@ -8,13 +8,13 @@
   <%= select_tag 'user_id', options_for_select(User.find(:all, :conditions => ['id <> ?', user.id]).collect { |u| [u.name, u.id] }.unshift(['Compare with ...'])), :onchange => 'addSeries(this)' %>
 </div>
 
-<%- content_for :head, javascript_tag("swfobject.embedSWF('/movies/chart.swf', 'chart', '750', '400', '9.0.28.0', '/movies/expressInstall.swf', {dataUrl: '#{formatted_averages_path :xml, :puzzle => params[:puzzle]}'}, {wmode: 'transparent'});") -%>
+<%- content_for :head, javascript_tag("swfobject.embedSWF('/movies/chart.swf', 'chart', '750', '400', '9.0.28.0', '/movies/expressInstall.swf', {dataUrl: '#{formatted_kind_puzzle_averages_path params[:kind_id], params[:puzzle_id], :xml}'}, {wmode: 'transparent'});") -%>
 <%- javascript_tag do -%>
   function addSeries(select) {
     var index = select.selectedIndex;
     if (index > 0) {
       var id = select.options[index].value;
-      document.getElementById("chart").addSeries("<%= formatted_averages_path :xml, :puzzle => params[:puzzle] %>&user_id=" + id);
+      document.getElementById("chart").addSeries("<%= formatted_kind_puzzle_averages_path params[:kind_id], params[:puzzle_id], :xml %>&user_id=" + id);
       select.selectedIndex = 0;
     }
   }
