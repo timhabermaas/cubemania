@@ -1,5 +1,5 @@
 class PostsController < ResourceController::Base
-  login :role => :moderator, :except => [:index, :show]
+  permit :moderator, :except => [:index, :show]
 
   private
     def collection
