@@ -1,33 +1,47 @@
 module Authentication
   def self.included(base)
     base.extend ClassMethods
-    base.helper_method :user, :logged_in?, :admin?, :moderator?
+    base.helper_method :user, :logged_in?, :role?, :admin?, :moderator?
   end
 
   module ClassMethods
-    def login(options = {})
-      before_filter options do |controller|
-        controller.login options[:role]
-      end
+    def login(filters = {})
+      before_filter :login, filters
+    end
+    
+    def skip_login(filters = {})
+      skip_before_filter :login, filters
     end
     
     def logout(filters = {})
       before_filter :logout, filters
     end
+    
+    def permit(role, filters = {})
+      before_filter filters do |controller|
+        controller.permit role
+      end
+    end
   end
 
-  def login(role)
-    if not logged_in?
-      flash[:notice] = 'Please login to continue'
-      session[:return_to] = request.request_uri
-      redirect_to login_path
-    elsif role and not role? role
+  def permit(role)
+    if role? role
+      yield if block_given?
+    else
       flash[:notice] = 'You do not have the necessary permissions'
       redirect_to root_url
     end
   end
 
   protected
+    def login
+      unless logged_in?
+        flash[:notice] = 'Please login to continue'
+        session[:return_to] = request.request_uri
+        redirect_to login_path
+      end
+    end
+  
     def logout
       if logged_in?
         flash[:notice] = 'You must logout before you can login or register'

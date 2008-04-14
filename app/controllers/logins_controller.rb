@@ -1,5 +1,5 @@
 class LoginsController < ApplicationController
-  login :only => :destroy
+  skip_login :except => :destroy
   logout :only => [:show, :create]
 
   def show

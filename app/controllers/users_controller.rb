@@ -1,9 +1,12 @@
-class UsersController < ApplicationController
-  login :role => :self, :only => [:edit, :update, :destroy]
+class UsersController < ResourceController::Base
+  skip_login :only => [:new, :create]
   logout :only => [:new, :create]
+  permit :self, :only => [:edit, :update, :destroy]
 
-  resource_controller
+  create do
+    flash "Hello, you are now registered"
+    after { self.user = @user }
+  end
 
-  create.after { self.user = object }
   destroy.after { self.user = nil }
 end

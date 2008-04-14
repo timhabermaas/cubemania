@@ -17,4 +17,5 @@ ActionController::Routing::Routes.draw do |map|
   
   map.resource :login
   map.logout 'logout', :controller => 'logins', :action => 'destroy'
+  map.register 'register', :controller => 'users', :action => 'new'
 end
