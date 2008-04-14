@@ -1,13 +1,18 @@
-<%= error_messages_for :item %>
-
 <% form_for @item do |form| %>
   <p>
-		<%= form.label :name %><br />
+		<%= form.label :name %>
     <%= form.text_field :name %>
+    <%= form.error_message_on :name %>
   </p>
   <p>
-		<%= form.label :description %><br />
+    <%= form.label :url %>
+    <%= form.text_field :url %>
+    <%= form.error_message_on :url %>
+  </p>
+  <p>
+		<%= form.label :description %>
     <%= form.text_field :description %>
+    <%= form.error_message_on :description %>
   </p>
   <p>
     <%= form.submit action_label %>

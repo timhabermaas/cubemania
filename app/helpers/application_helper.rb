@@ -13,23 +13,23 @@ module ApplicationHelper
   end
   
   def controller?(*names)
-    names.map(&:to_sym).include? params[:controller].to_sym
+    names.include? params[:controller].to_sym
   end
   
   def action?(*names)
-    names.map(&:to_sym).include? params[:action].to_sym
+    names.include? params[:action].to_sym
   end
   
   def current_item?(item)
     controller? item.url[:controller]
   end
   
-  def current_puzzle?(puzzle, kind)
-    params[:puzzle] == puzzle.id.to_s and current_kind? kind
+  def current_puzzle?(puzzle)
+    params[:puzzle_id] == puzzle.id.to_s
   end
   
   def current_kind?(kind)
-    params[:kind] == kind.id.to_s
+    params[:kind_id] == kind.id.to_s
   end
   
   def type?(type)

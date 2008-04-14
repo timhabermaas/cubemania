@@ -2,12 +2,8 @@ class ClocksController < ApplicationController
   login
 
   def index
-    params[:puzzle] ||= '4'
-    params[:kind] ||= '2'
-    
-    respond_to do |format|
-      format.html { @puzzle = Puzzle.find params[:puzzle] }
-    end
+    @puzzle = Puzzle.find params[:puzzle_id]
+    respond_to &:html
   end
 
   def create

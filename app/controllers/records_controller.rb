@@ -1,7 +1,5 @@
 class RecordsController < ApplicationController
   def index
-    params[:puzzle] ||= '4'
-    params[:kind] ||= '2'
-    @puzzle = Puzzle.find params[:puzzle]
+    @puzzle = Puzzle.find params[:puzzle_id]
   end
 end

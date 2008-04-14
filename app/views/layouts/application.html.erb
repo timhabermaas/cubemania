@@ -12,8 +12,8 @@
   <body>
     <div id="site">
       <%= partial 'layouts/header' %>
-      <%= partial 'layouts/navigation', :navigation => Item.all unless controller? :items -%>
-      <%= partial 'layouts/subnavigation', :kinds => Kind.all if controller? :clocks, :records -%>
+      <%= partial 'layouts/navigation', :navigation => Item.all unless controller? :items %>
+      <%= partial 'layouts/subnavigation', :kinds => Kind.all if controller? :clocks, :records %>
       <%= partial 'layouts/notice' unless flash[:notice].nil? %>
       <%= partial 'layouts/content' %>
       <%= partial 'layouts/footer' %>

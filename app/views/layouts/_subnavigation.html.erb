@@ -5,8 +5,8 @@
       <li style="width: <%= 100 / kinds.size %>%">
         <ul>
         <% for puzzle in kind.puzzles -%>
-          <li class="<%= "checked" if current_puzzle? puzzle, kind %>">
-            <a href="<%= url_for :puzzle => puzzle.id, :kind => kind.id %>" title="<%= puzzle.name %>">
+          <li class="<%= 'checked' if current_puzzle? puzzle %>">
+            <a href="<%= url_for :puzzle_id => puzzle.id, :kind_id => kind.id %>" title="<%= puzzle.name %>">
               <span class="image">
                 <%= image_tag url_for_file_column(puzzle, :image), :title => puzzle.name, :class => 'puzzle' %>
                 <%= image_tag url_for_file_column(kind, :image), :title => kind.name, :class => 'kind' unless kind.image.nil? %>
@@ -26,7 +26,7 @@
       <li style="width: <%= 100 / kinds.size %>%">
         <%= link_to_function kind.name, "checkKind(#{index})" %>
       </li>
-      <%= javascript_tag "checkKind(#{index})" if current_kind? kind -%>
+      <%= javascript_tag "checkKind(#{index})" if current_kind? kind %>
     <%- end -%>
     </ul>
   </div>

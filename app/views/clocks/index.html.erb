@@ -78,7 +78,7 @@
       map["singles[" + index + "][dnf]"] = $(this).hasClass("dnf");
       map["singles[" + index + "][puzzle_id]"] = "<%= @puzzle.id %>";
     });
-    $.post("<%= clocks_path %>", map, function(data, status) {
+    $.post("<%= kind_puzzle_clocks_path %>", map, function(data, status) {
       eval(data);
     }, "js");
   }

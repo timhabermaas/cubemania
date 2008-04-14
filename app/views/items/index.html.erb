@@ -1,20 +1,20 @@
-<h1>Listing items</h1>
+<h1>Listing Items</h1>
 
 <table>
   <tr>
     <th>Name</th>
+    <th>URL</th>
+    <th>Description</th>
   </tr>
-
-<% for item in @items %>
+<%- for item in @items -%>
   <tr>
     <td><%=h item.name %></td>
-    <td><%= link_to 'Show', item %></td>
+    <td><%=h item.url %></td>
+    <td><%=h item.description %></td>
     <td><%= link_to 'Edit', edit_item_path(item) %></td>
     <td><%= link_to 'Destroy', item, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
-<% end %>
+<%- end -%>
 </table>
 
-<br />
-
-<%= link_to 'New item', new_item_path %>
+<%= link_to 'New Item', new_item_path %>

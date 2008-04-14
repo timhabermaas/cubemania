@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 23) do
+ActiveRecord::Schema.define(:version => 24) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                             :null => false
@@ -35,8 +35,9 @@ ActiveRecord::Schema.define(:version => 23) do
   add_index "comments", ["post_id", "created_at"], :name => "index_comments_on_post_id_and_created_at"
 
   create_table "items", :force => true do |t|
-    t.string "name",        :limit => 64, :null => false
-    t.string "description",               :null => false
+    t.string "name",        :limit => 64,                 :null => false
+    t.string "description",                               :null => false
+    t.string "url",         :limit => 32, :default => "", :null => false
   end
 
   create_table "kinds", :force => true do |t|

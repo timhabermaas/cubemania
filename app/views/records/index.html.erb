@@ -1,6 +1,6 @@
 <p id="tabs">
-  <%= link_to 'Single', records_path(:puzzle => params[:puzzle], :type => 'single'), :class => ('checked' if type? :single) %>
-  <%= link_to 'Average', records_path(:puzzle => params[:puzzle], :type => 'average'), :class => ('checked' if type? :average) %>
+  <%= link_to 'Single', kind_puzzle_records_path(:type => 'single'), :class => ('checked' if type? :single) %>
+  <%= link_to 'Average', kind_puzzle_records_path(:type => 'average'), :class => ('checked' if type? :average) %>
 </p>
 
 <ol id="records">
