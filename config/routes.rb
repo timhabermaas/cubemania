@@ -9,7 +9,7 @@ ActionController::Routing::Routes.draw do |map|
     end
   end
   map.resources :competitions
-  map.resources :users, :has_many => :clocks
+  map.resources :users
   map.resources :items
 
   map.resource :login
