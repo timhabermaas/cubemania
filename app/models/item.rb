@@ -3,6 +3,10 @@ class Item < ActiveRecord::Base
   validates_length_of :name, :maximum => 64
   validates_length_of :description, :maximum => 256
   
+  def self.all
+    find :all, :order => 'name'
+  end
+  
   def url
     { :controller => name.underscore }
   end

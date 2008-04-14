@@ -6,5 +6,9 @@ class Kind < ActiveRecord::Base
   validates_presence_of :name
   validates_length_of :name, :maximum => 64
   validates_filesize_of :image, :in => 0..10.kilobytes
-  validates_file_format_of :image, :in => ['gif', 'png']
+  validates_file_format_of :image, :in => [ 'gif', 'png' ]
+  
+  def self.all
+    find :all
+  end
 end

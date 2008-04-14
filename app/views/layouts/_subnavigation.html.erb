@@ -1,8 +1,8 @@
 <div id="subnavigation" style="display: none">
   <div id="puzzles">
-    <ul style="width: <%= @kinds.size * 100 %>%">
-    <% for kind in @kinds -%>
-      <li style="width: <%= 100 / @kinds.size %>%">
+    <ul style="width: <%= kinds.size * 100 %>%">
+    <%- for kind in kinds -%>
+      <li style="width: <%= 100 / kinds.size %>%">
         <ul>
         <% for puzzle in kind.puzzles -%>
           <li class="<%= "checked" if current_puzzle? puzzle, kind %>">
@@ -17,17 +17,17 @@
         <% end -%>
         </ul>
       </li>
-    <% end -%>
+    <%- end -%>
     </ul>
   </div>
   <div id="kinds">
     <ul class="center">
-    <% @kinds.each_with_index do |kind, index| -%>
-      <li style="width: <%= 100 / @kinds.size %>%">
+    <%- kinds.each_with_index do |kind, index| -%>
+      <li style="width: <%= 100 / kinds.size %>%">
         <%= link_to_function kind.name, "checkKind(#{index})" %>
       </li>
       <%= javascript_tag "checkKind(#{index})" if current_kind? kind -%>
-    <% end -%>
+    <%- end -%>
     </ul>
   </div>
 </div>
