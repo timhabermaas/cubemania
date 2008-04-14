@@ -15,6 +15,11 @@
     <%= form.error_message_on :description %>
   </p>
   <p>
+    <%= form.label :position %>
+    <%= form.text_field :position %>
+    <%= form.error_message_on :position %>
+  </p>
+  <p>
     <%= form.submit action_label %>
   </p>
 <% end %>
