@@ -63,7 +63,7 @@ class User < ActiveRecord::Base
     if max.zero?
       1
     else
-      clocks.size / max
+      clocks.size / max.to_f
     end
   end
 

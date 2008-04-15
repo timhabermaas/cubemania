@@ -3,6 +3,12 @@
   <%= link_to 'Average', kind_puzzle_records_path(:type => 'average'), :class => ('checked' if type? :average) %>
 </p>
 
-<ol id="records">
-  <%= partial 'record', :collection => @puzzle.records.send(params[:type]) %>
-</ol>
+<%- if @records.empty? -%>
+<p class="challenge">
+  Be the first: <%= link_to 'Get the record!', kind_puzzle_clocks_path %>
+</p>
+<%- else -%>
+<table id="records">
+  <%= partial 'record', :collection => @records %>
+</table>
+<%- end -%>

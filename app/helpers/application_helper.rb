@@ -41,11 +41,17 @@ module ApplicationHelper
   end
   
   def t(time)
-    '%.2f' % (time / 1000) + ' sec'
+    if time > 60000
+      min = time / 60000
+      sec = (time - min * 60000) / 1000.0
+      '%d:%05.2f' % [min, sec] + ' min'
+    else
+      '%.2f' % (time.to_f / 1000) + ' sec'
+    end
   end
   
   def dt(datetime)
-    datetime.strftime '%B %d, %Y %H:%M'
+    datetime.strftime '%B %d, %Y at %H:%M'
   end
   
   def m(text)

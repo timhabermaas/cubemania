@@ -1,5 +1,6 @@
-<li class="record rank<%= record_counter %>">
-  <strong><%=t record.time %></strong>
-  <cite><%= link_to record.user.name, record.user %></cite>
-  <small><%=d record.created_at %></small>
-</li>
+<tr class="record rank<%= record_counter %>">
+  <th><span><%= record_counter %></span></th>
+  <td><strong><%=t record.time %></strong></td>
+  <td><cite><%= link_to record.user.name, record.user %></cite></td>
+  <td><small><%=d record.created_at %></small></td>
+</tr>
