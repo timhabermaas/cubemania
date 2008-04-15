@@ -28,14 +28,18 @@
 #timer li .scramble, li .milliseconds {
   display: none;
 }
-#timer li .dnf {
+#timer li .flags {
   display: none;
   position: absolute;
   right: 0;
   font-size: 0.75em;
 }
-#timer li.done .dnf {
+#timer li.done .flags {
   display: inline;
+}
+#timer li.dnf .flags .dnf, #timer li.plus2 .flags .plus2 {
+  color: #2f2f2f;
+  background-color: #df0;
 }
 #timer #scramble {
   font-size: 0.875em;
