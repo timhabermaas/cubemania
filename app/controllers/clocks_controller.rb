@@ -1,5 +1,5 @@
 class ClocksController < ApplicationController
-  login
+  login :only => :index
 
   def index
     @puzzle = Puzzle.find params[:puzzle_id]
