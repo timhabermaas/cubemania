@@ -1,0 +1,74 @@
+#timer {
+  margin-left: 768px;
+  width: 200px;
+  text-align: center;
+}
+#timer p, #timer ol {
+  margin-bottom: 1em;
+}
+#timer ol {
+  list-style-type: decimal;
+  margin-left: 2em;
+}
+#timer li {
+  color: #83a1bf;
+}
+#timer li div {
+  position: relative;
+}
+#timer li.done {
+  color: #fff;
+}
+#timer li.dnf {
+  color: #83a1bf;
+}
+#timer li.dnf .time, #average .dnf {
+  text-decoration: line-through;
+}
+#timer li .scramble, li .milliseconds {
+  display: none;
+}
+#timer li .dnf {
+  display: none;
+  position: absolute;
+  right: 0;
+  font-size: 0.75em;
+}
+#timer li.done .dnf {
+  display: inline;
+}
+#timer #scramble {
+  font-size: 0.875em;
+}
+#timer #go {
+  display: block;
+  width: 200px;
+  height: 30px;
+  padding: 10px 0;
+  margin: 0 auto;
+  margin-bottom: 1em;
+  font-size: 1.5em;
+  background: url(/images/go.gif) no-repeat;
+}
+#timer #go:hover {
+  color: #000;
+  background-position: -200px;
+}
+#timer #go:active {
+  background-position: -400px;
+}
+#timer #go.countdown {
+  background-position: -600px;
+}
+#timer #go.running {
+  background-position: -800px;
+}
+#timer #go.countdown, #timer #go.running {
+  color: #fff;
+}
+#timer #average {
+  padding-top: 0.5em;
+  text-align: right;
+  font-size: 1.25em;
+  border-top: 2px solid;
+}

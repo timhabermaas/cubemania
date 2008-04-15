@@ -5,6 +5,8 @@ class UsersController < ResourceController::Base
 
   index.before { @max_clocks_count = User.max_clocks_count }
 
+  show.before { @records = @user.averages.records }
+
   create do
     flash 'Hello, you are now registered'
     after { self.user = @user }

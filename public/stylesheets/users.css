@@ -1,0 +1,36 @@
+#users {
+  font-size: 1.5em;
+}
+#users li {
+  display: inline;
+  margin-right: 16px;
+}
+
+#records {
+  float: right;
+  width: 200px;
+}
+#records li {
+  margin-bottom: 1em;
+}
+#records strong {
+  display: block;
+}
+#records .container {
+  float: left;
+  margin-right: 1em;
+}
+#records .image {
+  display: block;
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
+}
+#records .puzzle {
+  position: relative;
+  left: -50px;
+}
+#records .kind {
+  position: relative;
+  top: -30px;
+}

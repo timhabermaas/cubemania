@@ -1,0 +1,20 @@
+#comments {
+  padding: 1em;
+  background-color: #485f77;
+}
+#comments .comment cite {
+  display: block;
+  font-size: 1.25em;
+  margin-bottom: 0.125em;
+}
+#comments .comment small {
+  display: block;
+  margin-bottom: 0.25em;
+}
+#comments .new_comment textarea {
+  width: 99%;
+  height: 8em;
+}
+#comments .new_comment input[type=submit] {
+  margin-left: 0;
+}

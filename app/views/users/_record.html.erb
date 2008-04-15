@@ -1,0 +1,12 @@
+<li class="record">
+  <div class="container">
+    <span class="image">
+      <%= puzzle = record.puzzle; image_tag url_for_file_column(puzzle, :image), :title => puzzle.name, :class => 'puzzle' %>
+      <%= kind = record.puzzle.kind; image_tag url_for_file_column(kind, :image), :title => kind.name, :class => 'kind' if kind.image? %>
+    </span>
+    <cite><%=h record.puzzle.name %></cite>
+  </div>
+  <strong><%=t record.time %></strong>
+  <small><%=d record.created_at %></small>
+  <div style="clear: left"></div>
+</li>
