@@ -109,7 +109,9 @@
     }, "js");
   }
   function toggleDnf(index) {
-    $("#timer li:eq(" + index + ")").toggleClass("dnf");
+    if ($("#timer li:eq(" + index + ")").hasClass("plus2"))
+      $("#timer li:eq(" + index + ") .milliseconds").text(parseInt($("#timer li:eq(" + index + ") .milliseconds").text()) - 2000);
+    $("#timer li:eq(" + index + ")").toggleClass("dnf").removeClass("plus2");
     $("#average span").text(formatTime(calculateAverage()));
     if ($("#timer li.dnf").length >= <%= @puzzle.attempt_count > 4 ? 2 : 1 %>) {
       $("#timer input").removeAttr("disabled");
@@ -122,26 +124,29 @@
     }
   }
   function togglePlus2(index) {
+    $("#timer li:eq(" + index + ")").toggleClass("plus2").removeClass("dnf");
     var time = parseInt($("#timer li:eq(" + index + ") .milliseconds").text());
-    if (isNaN(time) || $("#timer li:eq(" + index + ")").hasClass("dnf"))
-      return;
-    $("#timer li:eq(" + index + ")").toggleClass("plus2");
     if ($("#timer li:eq(" + index + ")").hasClass("plus2")) {
-      $("#timer li:eq(" + index + ") .time").text(formatTime(time));
       time += 2000;
     } else {
-      time -= 2000;
-      $("#timer li:eq(" + index + ") .time").text(formatTime(time));
-      //$("#timer li:eq(" + index + ") .time .plus2").empty();
+      time -= 2000; 
     }
+    $("#timer li:eq(" + index + ") .time").text(formatTime(time));
     $("#timer li:eq(" + index + ") .milliseconds").text(time);
     $("#average span").text(formatTime(calculateAverage()));
   }
-  var flag = false;
   $(window).keyup(function(event) {
     if (event.keyCode == 32) {
       toggleTimer();
     }
+  });
+  $(window).keydown(function(event) {
+    /*if (event.keyCode == 32) {
+      if (this.intervall != null) {
+        stopTimer();
+        flag = true;
+      }
+    }*/
   });
   function formatTime(time) {
     var seconds = time / 1000;
