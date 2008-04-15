@@ -1,5 +1,5 @@
 unless @comment.new_record?
-  page['comments'].append partial 'comment.html.erb'
+  page['comments ol'].append partial 'comment.html.erb'
   page[@comment].hide.slideDown 'normal'
   @comment = @post.comments.build
 end

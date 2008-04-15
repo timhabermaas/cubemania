@@ -1,5 +1,7 @@
-<h2>Comments</h2>
-<ul id="comments">
-  <%= partial @post.comments %>
-</ul>
-<%= partial 'comments/form' if logged_in? %>
+<div id="comments">
+  <h4><%= @post.comments.length %> Comments</h4>
+  <ol>
+    <%= partial @post.comments %>
+  </ol>
+  <%= partial 'comments/form' if logged_in? %>
+</div>
