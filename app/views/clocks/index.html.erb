@@ -5,7 +5,8 @@
   interval = null;
   
   function toggleTimer() {
-    this.interval == null ? startTimer() : stopTimer();
+    if ($("#timer li.done").length != <%= @puzzle.attempt_count %>)
+      this.interval == null ? startTimer() : stopTimer();
   }
   function startTimer() {
     if (<%= @puzzle.countdown %> == 0) {
@@ -24,12 +25,12 @@
       $("#go").removeClass("countdown").addClass("running");
       clearInterval(interval);
       startTime = new Date().getTime();
-      interval = setInterval(countUp, 50);
+      interval = setInterval(countUp, 1);
     }
   }
   function countUp() {
-    var time = (new Date().getTime() - startTime) / 1000;
-    $("#go").text(time.toFixed(2));
+    var time = (new Date().getTime() - startTime);
+    $("#go").text(formatTime(time));
   }
   function stopTimer() {
     clearInterval(interval); interval = null;
@@ -37,10 +38,11 @@
       $("#go").text("GO!").removeClass("countdown");
     }
     else {
-      var time = new Date().getTime() - startTime;
+      var time = (new Date().getTime() - startTime);
+      $("#go").text(formatTime(time));
       $("#timer li:not(.done):first").find(".realTime").text(time)
-      $("#timer li:not(.done):first").addClass("done").find(".time").text((time / 1000).toFixed(2));
-      $("#average span").text((calculateAverage() / 1000).toFixed(2));
+      $("#timer li:not(.done):first").addClass("done").find(".time").text(formatTime(time));
+      $("#average span").text(formatTime(calculateAverage()));
       $("#go").removeClass("running");
       if ($("#timer li.done").length == <%= @puzzle.attempt_count %>) {
         $("#timer input").removeAttr("disabled");
@@ -108,7 +110,7 @@
   }
   function toggleDnf(index) {
     $("#timer li:eq(" + index + ")").toggleClass("dnf");
-    $("#average span").text((calculateAverage() / 1000).toFixed(2));
+    $("#average span").text(formatTime(calculateAverage()));
     if ($("#timer li.dnf").length >= <%= @puzzle.attempt_count > 4 ? 2 : 1 %>) {
       $("#timer input").removeAttr("disabled");
       $("#average span").addClass("dnf");
@@ -120,10 +122,20 @@
     }
   }
   $(window).keyup(function(event) {
-    finished = $("#timer li.done").length == <%= @puzzle.attempt_count %>
-    if (event.keyCode == 32 && !finished) {
+    if (event.keyCode == 32) {
       toggleTimer();
     }
   });
+  function formatTime(time) {
+    var seconds = time / 1000;
+    if (seconds < 60) {
+      return seconds.toFixed(2);
+    } else {
+      var minutes = Math.floor(seconds / 60);
+      seconds = seconds - minutes * 60;
+      var s = seconds < 10 ? "0" : "";
+      return minutes + ":" + s + seconds.toFixed(2);
+    }
+  }
   updateScramble();
 <%- end -%>
