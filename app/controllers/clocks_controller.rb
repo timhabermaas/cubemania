@@ -1,11 +1,11 @@
 class ClocksController < ApplicationController
-  login :only => :index
+  login :except => []
 
   def index
     @puzzle = Puzzle.find params[:puzzle_id]
     respond_to &:html
   end
-
+  
   def create
     @average = user.averages.build params[:average]
     @average.singles = params[:singles].map { |index, single| user.singles.build single }
