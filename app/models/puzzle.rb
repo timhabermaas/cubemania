@@ -46,7 +46,7 @@ class Puzzle < ActiveRecord::Base
       variants = %w(-- ++)
       scramble_length.times do |index|
         scramble += (scramble.empty? ? '' : ' ') + turns[index % 2] + variants.rand
-        scramble += ' Y' + variants.rand if index % 10 == 9
+        scramble += ' Y' + variants.rand + "<br/>" if index % 10 == 9
       end
       scramble
     end
@@ -55,7 +55,7 @@ class Puzzle < ActiveRecord::Base
       turns = %w(U L R B)
       variants = ['', "'", '2']
       tip_turns = turns.map &:downcase
-      tip_length = rand(3) + 2
+      tip_length = rand(3) + 1
       scramble = (0..tip_length).map do
         tip_turns.delete(tip_turns.rand) + variants.rand
       end
