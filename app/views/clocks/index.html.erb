@@ -127,16 +127,17 @@
       return;
     $("#timer li:eq(" + index + ")").toggleClass("plus2");
     if ($("#timer li:eq(" + index + ")").hasClass("plus2")) {
-      $("#timer li:eq(" + index + ") .time").text(formatTime(time)).append('<div class="plus2">+2</div>');
+      $("#timer li:eq(" + index + ") .time").text(formatTime(time));
       time += 2000;
     } else {
       time -= 2000;
-      $("#timer li:eq(" + index + ") .time").text(formatTime(time)).remove(".plus2");
+      $("#timer li:eq(" + index + ") .time").text(formatTime(time));
       //$("#timer li:eq(" + index + ") .time .plus2").empty();
     }
     $("#timer li:eq(" + index + ") .milliseconds").text(time);
     $("#average span").text(formatTime(calculateAverage()));
   }
+  var flag = false;
   $(window).keyup(function(event) {
     if (event.keyCode == 32) {
       toggleTimer();
