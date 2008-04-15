@@ -1,4 +1,4 @@
-<ul>
+<ul id="users">
 <%- for user in @users -%>
   <li style="font-size: <%= user.activity(@max_clocks_count) * 1 + 1 %>em">
     <%= link_to user.name, user %>
