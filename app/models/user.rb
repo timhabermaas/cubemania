@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
 
   has_many :posts
   has_many :comments
+  has_many :clocks
   has_many :singles, :order => 'created_at desc', :dependent => :delete_all do
     def record(puzzle_id); find_by_puzzle_id_and_record puzzle_id, true; end
     def records; find_all_by_record true; end
@@ -28,6 +29,10 @@ class User < ActiveRecord::Base
   def self.find_by_name_and_password(name, password)
     user = find_by_name name
     user if user and user.encrypted_password == ENCRYPT.hexdigest(password + user.salt)
+  end
+
+  def self.max_clocks_count
+    find(:first, :select => 'clocks_count', :order => 'clocks_count desc').clocks_count
   end
 
   def password=(password)
@@ -52,6 +57,14 @@ class User < ActiveRecord::Base
 
   def admin?
     role.to_sym == :admin
+  end
+
+  def activity(max)
+    if max.zero?
+      1
+    else
+      clocks.size / max
+    end
   end
 
   private

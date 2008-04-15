@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 25) do
+ActiveRecord::Schema.define(:version => 26) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                             :null => false
@@ -74,6 +74,7 @@ ActiveRecord::Schema.define(:version => 25) do
     t.string   "encrypted_password", :limit => 16,                     :null => false
     t.datetime "created_at"
     t.string   "role",               :limit => 16, :default => "user"
+    t.integer  "clocks_count",                     :default => 0,      :null => false
   end
 
   add_index "users", ["name", "encrypted_password"], :name => "index_users_on_name_and_encrypted_password", :unique => true
