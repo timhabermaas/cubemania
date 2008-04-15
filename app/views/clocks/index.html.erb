@@ -127,7 +127,7 @@
       return;
     $("#timer li:eq(" + index + ")").toggleClass("plus2");
     if ($("#timer li:eq(" + index + ")").hasClass("plus2")) {
-      $("#timer li:eq(" + index + ") .time").text(formatTime(time)).append('<strong class="plus2">+2</strong>');
+      $("#timer li:eq(" + index + ") .time").text(formatTime(time)).append('<div class="plus2">+2</div>');
       time += 2000;
     } else {
       time -= 2000;
