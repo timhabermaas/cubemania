@@ -121,6 +121,21 @@
       $("#average span").removeClass("dnf");
     }
   }
+  function togglePlus2(index) {
+    var time = parseInt($("#timer li:eq(" + index + ") .milliseconds").text());
+    if (isNaN(time) || $("#timer li:eq(" + index + ")").hasClass("dnf"))
+      return;
+    $("#timer li:eq(" + index + ")").toggleClass("plus2");
+    if ($("#timer li:eq(" + index + ")").hasClass("plus2")) {
+      $("#timer li:eq(" + index + ") .time").text(formatTime(time) + " +2");
+      time += 2000;
+    } else {
+      time -= 2000;
+      $("#timer li:eq(" + index + ") .time").text(formatTime(time));
+    }
+    $("#timer li:eq(" + index + ") .milliseconds").text(time);
+    $("#average span").text(formatTime(calculateAverage()));
+  }
   $(window).keyup(function(event) {
     if (event.keyCode == 32) {
       toggleTimer();
