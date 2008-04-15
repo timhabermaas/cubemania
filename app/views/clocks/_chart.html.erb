@@ -18,7 +18,7 @@
       select.selectedIndex = 0;
     }
   }
-  $('#slider').slider({minValue: 0, maxValue: <%= user.averages.for(params[:puzzle]).size - 1 %>, startValue: 20, change: function(e, ui) {
+  $('#slider').slider({minValue: 0, maxValue: <%= user.averages.for(params[:puzzle_id]).size - 1 %>, startValue: 20, change: function(e, ui) {
     try {
       document.getElementById("chart").setItemCount(Math.ceil(ui.value));
     } catch (e) {}
