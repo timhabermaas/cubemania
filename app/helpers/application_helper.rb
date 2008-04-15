@@ -46,7 +46,7 @@ module ApplicationHelper
       sec = (time - min * 60000) / 1000.0
       '%d:%05.2f' % [min, sec] + ' min'
     else
-      '%.2f' % (time.to_f / 1000) + ' sec'
+      '%.2f' % (time.to_f / 1000) + ' s'
     end
   end
   
