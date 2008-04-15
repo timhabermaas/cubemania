@@ -203,7 +203,7 @@
 #timer li.dnf .time, #average .dnf {
   text-decoration: line-through;
 }
-#timer li .scramble, li .realTime {
+#timer li .scramble, li .milliseconds {
   display: none;
 }
 #timer li .dnf {
