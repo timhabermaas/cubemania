@@ -1,3 +1,8 @@
 page << "document.getElementById(\"chart\").addItem(\"#{partial 'averages/average.xml.erb'}\");"
 page['timer'].replaceWith partial 'timer.html.erb'
 page << "updateScramble()"
+page << "if ($('#notice')) {$('#notice').remove();}"
+if (!flash[:notice].nil?)
+  page.insert_html :after, 'subnavigation', :partial => 'layouts/notice.html.erb'
+  flash.discard
+end
