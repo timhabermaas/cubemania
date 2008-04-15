@@ -277,21 +277,21 @@
 #records small {
   font-size: 1em;
 }
-#records .rank1 {
+#records .rank1 td strong, #records .rank1 td cite, #records .rank1 td small {
   font-size: 2em;
   line-height: 2.25em;
 }
 #records .rank1 th {
   background-image: url(/images/rank1.gif);
 }
-#records .rank2 {
+#records .rank2 td strong, #records .rank2 td cite, #records .rank2 td small {
   font-size: 1.5em;
   line-height: 2em;
 }
 #records .rank2 th {
   background-image: url(/images/rank2.gif);
 }
-#records .rank3 {
+#records .rank3 td strong, #records .rank3 td cite, #records .rank3 td small {
   font-size: 1.25em;
   line-height: 1.75em;
 }
@@ -303,7 +303,7 @@
   list-style: none;
 }
 #records .rank1 th, #records .rank2 th, #records .rank3 th {
-  padding-left: 43px;
+  width: 42px;
   background-position: center center;
   background-repeat: no-repeat;
 }
