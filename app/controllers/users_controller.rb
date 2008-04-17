@@ -9,11 +9,11 @@ class UsersController < ResourceController::Base
 
   create do
     flash 'Hello, you are now registered'
-    after { self.user = @user }
+    after { self.current_user = @user }
     wants.html { redirect_back user_path(@user) }
   end
 
-  destroy.after { self.user = nil }
+  destroy.after { self.current_user = nil }
   
   private
     def collection

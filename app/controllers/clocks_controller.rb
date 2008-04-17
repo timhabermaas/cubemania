@@ -7,12 +7,12 @@ class ClocksController < ApplicationController
   end
   
   def create
-    @average = user.averages.build params[:average]
-    @average.singles = params[:singles].map { |index, single| user.singles.build single }
+    @average = current_user.averages.build params[:average]
+    @average.singles = params[:singles].map { |index, single| current_user.singles.build single }
 
     if @average.save
-      average = update_record user.averages.record(@average.puzzle_id), @average
-      single = update_record user.singles.record(@average.puzzle_id), @average.singles.sort_by(&:time).first
+      average = update_record current_user.averages.record(@average.puzzle_id), @average
+      single = update_record current_user.singles.record(@average.puzzle_id), @average.singles.sort_by(&:time).first
       if average
         flash[:notice] = "You have a new personal average record!"
       end

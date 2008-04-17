@@ -8,8 +8,8 @@ class LoginsController < ApplicationController
 
   def create
     @login = Login.new params[:login]
-    if self.user = @login.validate
-      flash[:notice] = "Hello #{user.name}, you are now logged in"
+    if self.current_user = @login.validate
+      flash[:notice] = "Hello #{current_user.name}, you are now logged in"
       redirect_back root_path
     else
       render :action => 'show'
@@ -17,7 +17,7 @@ class LoginsController < ApplicationController
   end
 
   def destroy
-    self.user = nil
+    self.current_user = nil
     flash[:notice] = 'You are now logged out'
     redirect_to root_path
   end

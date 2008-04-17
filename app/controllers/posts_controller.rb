@@ -11,6 +11,6 @@ class PostsController < ResourceController::Base
     end
     
     def build_object
-      @object ||= user.posts.build object_params
+      @object ||= current_user.posts.build object_params
     end
 end
