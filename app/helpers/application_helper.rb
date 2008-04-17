@@ -78,6 +78,11 @@ module ApplicationHelper
     users = User.find_by_sql ['SELECT u.id, u.name FROM clocks r LEFT OUTER JOIN users u ON r.user_id = u.id WHERE r.puzzle_id = ? AND r.record = ? AND r.type = ? AND u.id <> ? ORDER BY u.name', params[:puzzle_id], true, 'Average', current_user.id]
     options_for_select users.collect { |u| [u.name, u.id] }.unshift ['Compare with ...']
   end
+  
+  def options_for_puzzle_select
+    puzzles = Puzzle.find_by_sql ['SELECT p.id, p.name, p.kind_id FROM clocks r LEFT OUTER JOIN puzzles p ON r.puzzle_id = p.id WHERE r.record = ? AND r.type = ? AND r.user_id = ? ORDER BY p.name', true, 'Average', @user.id]
+    options_for_select puzzles.collect { |p| ["#{p.name} (#{p.kind.name})", formatted_kind_puzzle_averages_path(p.kind, p, :xml, :user_id => @user.id)] }.unshift ['Add Puzzle ...']
+  end
 end
 
 module ActionView
