@@ -113,6 +113,9 @@
 #content form p {
   margin-bottom: 0.5em;
 }
+#content form p.bot {
+  display: none;
+}
 #content label {
   display: block;
   float: left;

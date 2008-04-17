@@ -4,6 +4,7 @@ class User < ActiveRecord::Base
   ENCRYPT = Digest::SHA256
 
   attr_reader :password
+  attr_accessor :bot_email
 
   has_many :posts
   has_many :comments
@@ -20,7 +21,9 @@ class User < ActiveRecord::Base
 
   validates_uniqueness_of :name, :email, :case_sensitive => false, :message => 'is already in use by another user'
   validates_format_of :name, :with => /^([a-z0-9_]{2,16})$/i, :message => 'must be 2 to 16 letters, numbers or underscores and have no spaces'
+  validates_exclusion_of :name, :in => %w(admin moderator), :message => "you don't belong here"
   validates_format_of :email, :with => /^\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z$/i, :message => 'must be valid'
+  validates_length_of :bot_email, :is => 0, :message => 'bots must not register'
   validates_format_of :password, :with => /^([\x20-\x7E]){4,16}$/, :message => 'must be 4 to 16 characters', :if => :password_is_being_updated?
   validates_confirmation_of :password
 
