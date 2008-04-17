@@ -19,9 +19,9 @@
     }
   }
   function setSliderMax(max) {
-    $('#slider').slider('updateMaxValue', max);
+    $('#slider').slider('updateMax', max);
   }
-  $('#slider').slider({minValue: 1, maxValue: 1, startValue: 1, stepping: 1, change: function(e, ui) {
-    try { document.getElementById("chart").setItemCount(Math.ceil(ui.value)) } catch (e) {}
+  $('#slider').slider({min: 1, max: 1, startValue: 1, stepping: 1, change: function(e, ui) {
+    try { document.getElementById("chart").setItemCount(ui.value) } catch (e) {}
   }});
 <%- end -%>
