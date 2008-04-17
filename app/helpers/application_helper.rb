@@ -57,9 +57,14 @@ module ApplicationHelper
   def m(text)
     markdown text
   end
-  
+
   def li_for(record, *args, &block)
     content_tag_for :li, record, *args, &block
+  end
+
+  def options_for_user_select
+    users = User.find_by_sql ['SELECT u.id, u.name FROM clocks r LEFT OUTER JOIN users u ON r.user_id = u.id WHERE r.puzzle_id = ? AND r.record = ? AND r.type = ? AND u.id <> ? ORDER BY u.name', params[:puzzle_id], true, 'Average', user.id]
+    options_for_select users.collect { |u| [u.name, u.id] }.unshift ['Compare with ...']
   end
 end
 

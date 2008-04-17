@@ -13,7 +13,7 @@
 					slider[options].apply(slider, args);
 
 				} else if(!$.data(this, "ui-slider"))
-					new $.ui.slider(this, options);
+				  new $.ui.slider(this, options).value;
 			});
 		}
 	});
@@ -168,6 +168,15 @@
 		},
 		handleSize: function(handle) {
 			return $(handle != undefined ? this.handle[handle] : this.currentHandle)['outer'+this.properties[1].substr(0,1).toUpperCase()+this.properties[1].substr(1)]();	
+		},
+		updateMaxValue: function(value) {
+		  var o = this.options;
+		  var prevValue = this.value();
+		  var wasMax = o.maxValue == Math.ceil(this.value());
+		  o.maxValue = value;
+		  o.realMaxValue = o.maxValue - o.minValue;
+		  //o.stepping = parseInt(o.stepping,10) || (o.steps ? o.realMaxValue/o.steps : 0);
+		  this.moveTo(wasMax ? o.maxValue : prevValue);
 		},
 		click: function(e) {
 		

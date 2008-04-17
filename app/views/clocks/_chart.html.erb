@@ -5,7 +5,7 @@
     </a>
   </div>
   <div id="slider"><div class="ui-slider-handle"></div></div>
-  <%= select_tag 'user_id', options_for_select(User.find(:all, :conditions => ['id <> ?', user.id]).collect { |u| [u.name, u.id] }.unshift(['Compare with ...'])), :onchange => 'addSeries(this)' %>
+  <%= select_tag 'user_id', options_for_user_select, :onchange => 'addSeries(this)' %>
 </div>
 
 <%- content_for :head, javascript_tag("swfobject.embedSWF('/movies/chart.swf', 'chart', '750', '400', '9.0.28.0', '/movies/expressInstall.swf', {dataUrl: '#{formatted_kind_puzzle_averages_path params[:kind_id], params[:puzzle_id], :xml}'}, {wmode: 'transparent'});") -%>
@@ -18,9 +18,10 @@
       select.selectedIndex = 0;
     }
   }
-  $('#slider').slider({minValue: 0, maxValue: <%= user.averages.for(params[:puzzle_id]).size - 1 %>, startValue: 20, change: function(e, ui) {
-    try {
-      document.getElementById("chart").setItemCount(Math.ceil(ui.value));
-    } catch (e) {}
+  function setSliderMax(max) {
+    $('#slider').slider('updateMaxValue', max);
+  }
+  $('#slider').slider({minValue: 1, maxValue: 1, startValue: 1, stepping: 1, change: function(e, ui) {
+    try { document.getElementById("chart").setItemCount(Math.ceil(ui.value)) } catch (e) {}
   }});
 <%- end -%>
