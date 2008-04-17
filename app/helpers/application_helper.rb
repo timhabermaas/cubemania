@@ -1,6 +1,6 @@
 module ApplicationHelper
   def page_title
-    params[:controller].titleize
+    current_item.nil? ? params[:controller].titleize : current_item.name
   end
   
   def action_label(new = 'Create', edit = 'Update')
@@ -10,6 +10,18 @@ module ApplicationHelper
       when :edit, :update
         edit
     end
+  end
+  
+  def navigation
+    Item.all
+  end
+  
+  def current_item
+    navigation.find { |item| current_item? item }
+  end
+  
+  def kinds
+    Kind.all
   end
   
   def controller?(*names)
