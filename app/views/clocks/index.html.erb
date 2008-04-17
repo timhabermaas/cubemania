@@ -96,6 +96,7 @@
     $("#scramble").text($("#timer li:not(.done):first .scramble").text());
   }
   function commitTimes() {
+    $("#timer input").attr("disabled", "disabled");
     var average = calculateAverage();
     var map = {"average[time]": average, "average[dnf]": $("#average span").hasClass("dnf"), "average[puzzle_id]": "<%= @puzzle.id %>", "authenticity_token": "<%= form_authenticity_token %>"};
     $("#timer li.done").each(function(index) {
