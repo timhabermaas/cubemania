@@ -130,6 +130,10 @@
 #content label.error, #content span.error {
   color: #a00;
 }
+#content span.error {
+  display: block;
+  margin-left: 150px;
+}
 #content input.error {
   border: 2px solid #a00;
 }
