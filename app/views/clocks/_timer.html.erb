@@ -1,6 +1,9 @@
 <div id="timer">
   <p id="scramble"></p>
   <a id="go" href="#" onclick="toggleTimer(); return false">GO!</a>
+  <p id="help">
+    Press <strong>space</strong> to start or stop the timer. There will be a <strong>countdown</strong> of <%= @puzzle.countdown %> seconds.
+  </p>
   <table>
   <%- @puzzle.attempt_count.times do |index| -%>
     <tr>

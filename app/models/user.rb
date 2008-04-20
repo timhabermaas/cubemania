@@ -34,8 +34,8 @@ class User < ActiveRecord::Base
     user if user and user.encrypted_password == ENCRYPT.hexdigest(password + user.salt)
   end
 
-  def self.max_clocks_count
-    find(:first, :select => 'clocks_count', :order => 'clocks_count desc').clocks_count
+  def self.max_averages_count
+    find(:first, :select => 'averages_count', :order => 'averages_count desc').averages_count
   end
 
   def password=(password)
@@ -66,7 +66,7 @@ class User < ActiveRecord::Base
     if max.zero?
       1
     else
-      clocks.size / max.to_f
+      averages.size / max.to_f
     end
   end
 

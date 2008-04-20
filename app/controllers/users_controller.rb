@@ -3,7 +3,7 @@ class UsersController < ResourceController::Base
   logout :only => [:new, :create]
   permit :self, :only => [:edit, :update, :destroy]
 
-  index.before { @max_clocks_count = User.max_clocks_count }
+  index.before { @max_averages_count = User.max_averages_count }
 
   show.before { @records = @user.averages.records }
 

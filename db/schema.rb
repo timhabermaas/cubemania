@@ -23,7 +23,9 @@ ActiveRecord::Schema.define(:version => 27) do
     t.boolean  "dnf",        :default => false,    :null => false
   end
 
-  add_index "clocks", ["user_id", "puzzle_id", "created_at"], :name => "index_clocks_on_user_id_and_puzzle_id_and_created_at"
+  add_index "clocks", ["puzzle_id", "record", "type", "time"], :name => "index_clocks_on_puzzle_id_and_record_and_type_and_time"
+  add_index "clocks", ["user_id", "record", "type"], :name => "index_clocks_on_user_id_and_record_and_type"
+  add_index "clocks", ["user_id", "puzzle_id", "type", "created_at"], :name => "index_clocks_on_user_id_and_puzzle_id_and_type_and_created_at"
 
   create_table "comments", :force => true do |t|
     t.text     "content",    :null => false
@@ -78,11 +80,12 @@ ActiveRecord::Schema.define(:version => 27) do
     t.string   "encrypted_password", :limit => 16,                     :null => false
     t.datetime "created_at"
     t.string   "role",               :limit => 16, :default => "user"
-    t.integer  "clocks_count",                     :default => 0,      :null => false
+    t.integer  "averages_count",                   :default => 0,      :null => false
   end
 
   add_index "users", ["name", "encrypted_password"], :name => "index_users_on_name_and_encrypted_password", :unique => true
   add_index "users", ["name"], :name => "index_users_on_name", :unique => true
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
+  add_index "users", ["averages_count"], :name => "index_users_on_averages_count"
 
 end

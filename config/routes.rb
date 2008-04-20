@@ -4,7 +4,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :posts, :has_many => :comments
   map.resources :kinds do |kinds|
     kinds.resources :puzzles do |puzzles|
-      puzzles.resources :clocks, :singles, :averages
+      puzzles.resources :times, :controller => :clocks
+      puzzles.resources :singles, :averages
       puzzles.records 'records/:type', :controller => 'records', :defaults => { :type => 'single' }, :type => /(single)|(average)/
     end
   end

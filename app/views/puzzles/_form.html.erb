@@ -5,6 +5,21 @@
     <%= form.error_message_on :name %>
   </p>
   <p>
+    <%= form.label :attempt_count %>
+    <%= form.text_field :attempt_count %>
+    <%= form.error_message_on :attempt_count %>
+  </p>
+  <p>
+    <%= form.label :scramble_length %>
+    <%= form.text_field :scramble_length %>
+    <%= form.error_message_on :scramble_length %>
+  </p>
+  <p>
+    <%= form.label :countdown %>
+    <%= form.text_field :countdown %>
+    <%= form.error_message_on :countdown %>
+  </p>
+  <p>
     <%= form.label :image %>
     <%= file_column_field 'puzzle', 'image' %>
     <%= form.error_message_on :image %>

@@ -226,6 +226,10 @@
   color: #2f2f2f;
   background-color: #df0;
 }
+#timer #help {
+  font-size: 0.75em;
+  margin-bottom: 16px;
+}
 #timer #scramble {
   font-size: 0.875em;
 }
@@ -235,7 +239,7 @@
   height: 30px;
   padding: 10px 0;
   margin: 0 auto;
-  margin-bottom: 1em;
+  margin-bottom: 16px;
   font-size: 1.5em;
   background: url(/images/go.gif) no-repeat;
 }
