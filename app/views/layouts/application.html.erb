@@ -6,6 +6,9 @@
     <title><%= page_title %> &middot; Cubemania</title>
     <%= stylesheet_link_tag 'reset', 'site', 'header', 'navigation', 'subnavigation', 'notice', 'content', 'footer', :cache => true %>
     <%= stylesheet_link_tag params[:controller], :cache => true %>
+    <!--[if IE]>
+      <%= stylesheet_link_tag 'ie' %>
+    <![endif]-->
     <%= javascript_include_tag 'jquery', 'base', 'slider', 'swfobject', 'application', :cache => true %>
     <%= yield :head %>
     <link rel="shortcut icon" href="/favicon.ico" type="image/ico" />

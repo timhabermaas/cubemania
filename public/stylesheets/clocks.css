@@ -3,41 +3,36 @@
   width: 200px;
   text-align: center;
 }
-#timer p, #timer ol {
+#timer p, #timer table {
   margin-bottom: 1em;
 }
-#timer ol {
-  list-style-type: decimal;
-  margin-left: 2em;
-}
-#timer li {
+#timer tr {
   color: #83a1bf;
 }
-#timer li div {
-  position: relative;
-}
-#timer li.done {
+#timer tr.done {
   color: #fff;
 }
-#timer li.dnf {
+#timer tr.dnf {
   color: #83a1bf;
 }
-#timer li.dnf .time, #average .dnf {
+#timer tr.dnf .time, #average .dnf {
   text-decoration: line-through;
 }
-#timer li .scramble, li .milliseconds {
+#timer tr .time {
+  width: 100%;
+}
+#timer tr .scramble, tr .milliseconds {
   display: none;
 }
-#timer li .flags {
+#timer tr .flags {
   display: none;
-  position: absolute;
-  right: 0;
   font-size: 0.75em;
+  white-space: nowrap;
 }
-#timer li.done .flags {
-  display: inline;
+#timer tr.done .flags {
+  display: block;
 }
-#timer li.dnf .flags .dnf, #timer li.plus2 .flags .plus2 {
+#timer tr.dnf .flags .dnf, #timer tr.plus2 .flags .plus2 {
   color: #2f2f2f;
   background-color: #df0;
 }

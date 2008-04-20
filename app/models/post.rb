@@ -1,6 +1,6 @@
 class Post < ActiveRecord::Base
   belongs_to :user; attr_protected :user_id, :user
-  has_many :comments, :include => :user, :order => 'created_at', :dependent => :destroy
+  has_many :comments, :include => :user, :order => 'comments.created_at', :dependent => :destroy
 
   validates_presence_of :title, :content, :user_id
   validates_length_of :title, :maximum => 64

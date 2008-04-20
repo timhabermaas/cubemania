@@ -1,21 +1,22 @@
 <div id="timer">
   <p id="scramble"></p>
   <a id="go" href="#" onclick="toggleTimer(); return false">GO!</a>
-  <ol>
+  <table>
   <%- @puzzle.attempt_count.times do |index| -%>
-    <li>
-      <div>
-        <span class="time">-</span>
-        <span class="milliseconds"></span>
+    <tr>
+      <th><%= index + 1 %>.</th>
+      <td class="time">-</td>
+      <td class="milliseconds"></td>
+      <td>
         <div class="flags">
           <a class="dnf" href="#" onclick="toggleDnf(<%= index %>); return false">DNF</a>
           <a class="plus2" href="#" onclick="togglePlus2(<%= index %>); return false">+2</a>
         </div>
-      </div>
-      <div class="scramble"><%= @puzzle.scramble %></div>
-    </li>
+      </td>
+      <td class="scramble"><%= @puzzle.scramble %></td>
+    </tr>
   <%- end -%>
-  </ol>
+  </table>
   <p id="average">&Oslash; <span>0.00</span></p>
-  <%= button_to_function 'Add', 'commitTimes()', :disabled => true %>
+  <form><%= button_to_function 'Add', 'commitTimes()', :disabled => true %></form>
 </div>

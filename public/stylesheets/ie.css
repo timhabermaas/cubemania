@@ -1,0 +1,7 @@
+#puzzles {
+  position: relative;
+}
+#puzzles .puzzle {
+  margin: 0;
+  cursor: hand;
+}

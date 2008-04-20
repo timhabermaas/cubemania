@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 26) do
+ActiveRecord::Schema.define(:version => 27) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                             :null => false
@@ -41,6 +41,8 @@ ActiveRecord::Schema.define(:version => 26) do
     t.integer "position",                  :default => 0,  :null => false
   end
 
+  add_index "items", ["position"], :name => "index_items_on_position"
+
   create_table "kinds", :force => true do |t|
     t.string "name",  :limit => 64, :null => false
     t.string "image", :limit => 64
@@ -54,6 +56,8 @@ ActiveRecord::Schema.define(:version => 26) do
     t.datetime "updated_at"
     t.integer  "comments_count", :default => 0, :null => false
   end
+
+  add_index "posts", ["created_at"], :name => "index_posts_on_created_at"
 
   create_table "puzzles", :force => true do |t|
     t.string  "name",            :limit => 64,                 :null => false
@@ -78,5 +82,7 @@ ActiveRecord::Schema.define(:version => 26) do
   end
 
   add_index "users", ["name", "encrypted_password"], :name => "index_users_on_name_and_encrypted_password", :unique => true
+  add_index "users", ["name"], :name => "index_users_on_name", :unique => true
+  add_index "users", ["email"], :name => "index_users_on_email", :unique => true
 
 end

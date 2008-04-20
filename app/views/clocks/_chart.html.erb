@@ -8,7 +8,7 @@
   <%= select_tag 'user', options_for_user_select, :onchange => 'addSeries(this)' %>
 </div>
 
-<%- content_for :head, javascript_tag("swfobject.embedSWF('/movies/chart.swf', 'chart', '750', '400', '9.0.28.0', '/movies/expressInstall.swf', {dataUrl: '#{formatted_kind_puzzle_averages_path params[:kind_id], params[:puzzle_id], :xml}'}, {wmode: 'transparent'});") -%>
+<%- content_for :head, javascript_tag("swfobject.embedSWF('/movies/chart.swf', 'chart', '750', '400', '9.0.28.0', '/movies/expressInstall.swf', {dataUrl: '#{formatted_kind_puzzle_averages_path params[:kind_id], params[:puzzle_id], :xml}'});") -%>
 <%- javascript_tag do -%>
   function addSeries(select) {
     var index = select.selectedIndex;
