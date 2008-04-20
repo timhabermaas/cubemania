@@ -37,6 +37,8 @@
 }
 #puzzles li li {
   margin-right: 1em;
+}
+#puzzles li li, x:-moz-any-link {
   display: table; /* Firefox */
 }
 #puzzles span {
