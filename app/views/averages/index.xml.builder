@@ -1,3 +1,3 @@
-xml.series :title => @user.name do
+xml.times :title => @user.name do
   xml << partial(@averages)
 end

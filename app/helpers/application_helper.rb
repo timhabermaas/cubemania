@@ -29,7 +29,7 @@ module ApplicationHelper
   end
   
   def controller?(*names)
-    names.include? params[:controller].to_sym == :clocks ? :times : params[:controller].to_sym
+    names.include? params[:controller].to_sym
   end
   
   def action?(*names)
@@ -37,7 +37,8 @@ module ApplicationHelper
   end
   
   def current_item?(item)
-    controller? item.url.split('/').last.to_sym
+    controller = item.url.split('/').last.to_sym
+    controller? controller == :times ? :clocks : controller
   end
   
   def current_puzzle?(puzzle)
