@@ -84,7 +84,6 @@ ActiveRecord::Schema.define(:version => 27) do
   end
 
   add_index "users", ["name", "encrypted_password"], :name => "index_users_on_name_and_encrypted_password", :unique => true
-  add_index "users", ["name"], :name => "index_users_on_name", :unique => true
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["averages_count"], :name => "index_users_on_averages_count"
 
