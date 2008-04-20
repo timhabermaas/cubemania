@@ -24,6 +24,10 @@ module ApplicationHelper
     Kind.all
   end
   
+  def clocks_path
+    navigation.find { |item| item.url.split('/').last.to_sym == :clocks }.url
+  end
+  
   def controller?(*names)
     names.include? params[:controller].to_sym
   end

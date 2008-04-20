@@ -8,7 +8,7 @@
           <li class="<%= 'checked' if current_puzzle? puzzle %>">
             <a href="<%= url_for :puzzle_id => puzzle.id, :kind_id => kind.id, :type => params[:type] %>">
               <span class="puzzle" style="background-image: url(<%= url_for_file_column puzzle, :image %>)">
-                <%= "<span class='kind' style='background-image: url(#{url_for_file_column kind, :image})'></span>" unless kind.image.nil? %>
+                <%= "<span class='kind' style='background-image: url(#{url_for_file_column kind, :image})'></span>" if kind.image? %>
               </span>
               <span class="name"><%= puzzle.name %></span>
             </a>
