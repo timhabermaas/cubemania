@@ -269,6 +269,9 @@
 #users {
   font-size: 1.5em;
 }
+#users, x:-moz-any-link {
+  display: table;
+}
 #users li {
   display: inline;
   margin-right: 16px;
