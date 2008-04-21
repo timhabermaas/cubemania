@@ -220,7 +220,7 @@
 		  o.max = { x: parseInt(max, 10), y: parseInt(max, 10) };
 		  o.realMax = { x: o.max.x - o.min.x, y: o.max.y - o.min.y };
 		  //o.stepping = parseInt(o.stepping,10) || (o.steps ? o.realMaxValue/o.steps : 0);
-		  this.moveTo(wasMax ? o.max : prevValue);
+		  this.moveTo(wasMax ? o.max.x : prevValue);
 		},
 		click: function(e) {
 		
