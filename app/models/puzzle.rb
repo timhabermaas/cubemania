@@ -2,8 +2,8 @@ class Puzzle < ActiveRecord::Base
   belongs_to :kind, :order => 'name'
   belongs_to :record
   has_many :records, :conditions => ['record = ?', true], :order => 'time', :class_name => 'Clock' do
-    def single; @single ||= find_all_by_type 'Single'; end
-    def average; @average ||= find_all_by_type 'Average'; end
+    def single; @single ||= find_all_by_type 'Single', :include => :user; end
+    def average; @average ||= find_all_by_type 'Average', :include => :user; end
   end
   
   file_column :image, :store_dir => 'public/images/puzzles', :base_url => 'images/puzzles'

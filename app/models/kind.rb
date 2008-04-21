@@ -9,6 +9,6 @@ class Kind < ActiveRecord::Base
   validates_file_format_of :image, :in => [ 'gif', 'png' ]
   
   def self.all
-    find :all
+    find :all, :include => :puzzles
   end
 end
