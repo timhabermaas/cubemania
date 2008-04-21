@@ -4,6 +4,5 @@ class SinglesController < ApplicationController
   def index
     @user = User.find params[:user_id]
     @singles = @user.singles.for params[:puzzle_id]
-    respond_to &:xml
   end
 end

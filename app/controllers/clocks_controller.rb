@@ -3,7 +3,6 @@ class ClocksController < ApplicationController
 
   def index
     @puzzle = Puzzle.find params[:puzzle_id]
-    respond_to &:html
   end
   
   def create
@@ -11,18 +10,13 @@ class ClocksController < ApplicationController
     @average.singles = params[:singles].map { |index, single| current_user.singles.build single }
 
     if @average.save
+      #records should be updated within the same transaction, i.e. in after_save callback in model Average
       average = update_record current_user.averages.record(@average.puzzle_id), @average
       single = update_record current_user.singles.record(@average.puzzle_id), @average.singles.sort_by(&:time).first
-      if average
-        flash[:notice] = "You have a new personal average record!"
-      end
-      if single
-        flash[:notice] = "You have a new personal single record!"
-      end
-      if average && single
-        flash[:notice] = "You have a new personal single and average record!"
-      end
-      respond_to { |format| format.js { @puzzle = @average.puzzle } }
+      flash[:notice] = 'You have a new personal average record!' if average
+      flash[:notice] = 'You have a new personal single record!' if single
+      flash[:notice] = 'You have a new personal single and average record!' if average and single
+      @puzzle = @average.puzzle
     end
   end
 
