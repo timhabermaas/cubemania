@@ -28,7 +28,7 @@ class ClocksController < ApplicationController
 
   private
     def update_record(old, new)
-      if updated = (old.nil? or new.time < old.time) and not new.dnf?
+      if updated = ((old.nil? or new.time < old.time) and not new.dnf?)
         old.update_attribute :record, false unless old.nil?
         new.update_attribute :record, true
       end
