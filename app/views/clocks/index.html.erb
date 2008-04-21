@@ -105,9 +105,7 @@
       map["singles[" + index + "][dnf]"] = $(this).hasClass("dnf");
       map["singles[" + index + "][puzzle_id]"] = "<%= @puzzle.id %>";
     });
-    $.post("<%= kind_puzzle_times_path %>", map, function(data, status) {
-      eval(data);
-    }, "js");
+    $.post("<%= kind_puzzle_times_path %>", map, null, "script");
   }
   function toggleDnf(index) {
     if ($("#timer tr:eq(" + index + ")").hasClass("plus2"))
