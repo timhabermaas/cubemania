@@ -3,7 +3,8 @@
 <%- if @records.empty? -%>
 <p class="challenge">
 <%- if @user == current_user -%>
-  How fast do you solve the cube? <%= link_to 'Stop your times and get the record!', times_path %>
+  How fast do you solve the cube?<br/>
+  <%= link_to 'Stop your times and get the record!', times_path %>
 <%- else -%>
   <%= @user.name %> has no personal records yet. <%= link_to 'Do you?', times_path if logged_in? %>
 <%- end -%>
