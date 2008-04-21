@@ -1,5 +1,5 @@
 page << "document.getElementById(\"chart\").addItem(\"#{partial 'averages/average.xml.erb'}\");"
-page['timer'].replaceWith partial 'timer.html.erb'
+page['timer'].replaceWith partial('timer.html.erb')
 page << "updateScramble()"
 page << "if ($('#notice')) {$('#notice').remove();}"
 unless flash[:notice].nil?
