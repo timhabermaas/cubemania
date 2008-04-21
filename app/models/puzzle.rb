@@ -11,7 +11,7 @@ class Puzzle < ActiveRecord::Base
   validates_presence_of :name, :image, :attempt_count, :countdown, :kind_id
   validates_length_of :name, :maximum => 64
   validates_length_of :scramble_length, :maximum => 255
-  validates_filesize_of :image, :in => 0..10.kilobytes
+  validates_filesize_of :image, :in => 0..20.kilobytes
   validates_file_format_of :image, :in => ['gif', 'png']
   
   def scramble
