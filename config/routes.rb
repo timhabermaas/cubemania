@@ -10,7 +10,11 @@ ActionController::Routing::Routes.draw do |map|
     end
   end
   map.resources :competitions
-  map.resources :users
+  map.resources :users do |users|
+    users.resources :kinds do |kinds|
+      kinds.resources :puzzles, :has_many => [:singles, :averages]
+    end
+  end
   map.resources :items
 
   map.resource :login

@@ -13,8 +13,7 @@
   function addSeries(select) {
     var index = select.selectedIndex;
     if (index > 0) {
-      var id = select.options[index].value;
-      document.getElementById("chart").addSeries("<%= formatted_kind_puzzle_averages_path params[:kind_id], params[:puzzle_id], :xml %>?user_id=" + id);
+      document.getElementById("chart").addSeries(select.options[index].value);
       select.selectedIndex = 0;
     }
   }
