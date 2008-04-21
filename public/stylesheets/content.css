@@ -182,7 +182,7 @@
   width: 600px;
   height: 23px;
   position: relative;
-  background-image: url(/images/slider.png);
+  background-image: url(/images/slider.gif);
   background-position: center center;
 }
 #times .ui-slider-handle {
@@ -192,7 +192,7 @@
   width: 12px;
   top: 0px;
   left: 0px;
-  background-image: url(/images/slider-handle.gif);
+  background-image: url(/images/handle.gif);
 }
 #times .ui-slider-handle-active {
   border: 1px dotted black;
