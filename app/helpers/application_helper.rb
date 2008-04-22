@@ -7,7 +7,7 @@ module ApplicationHelper
     case params[:action].to_sym
       when :new, :create
         new
-      when :edit, :update
+      when :edit, :update, :show
         edit
     end
   end
