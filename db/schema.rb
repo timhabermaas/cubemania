@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 27) do
+ActiveRecord::Schema.define(:version => 28) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                             :null => false
@@ -77,7 +77,7 @@ ActiveRecord::Schema.define(:version => 27) do
     t.string   "name",               :limit => 32,                     :null => false
     t.string   "email",              :limit => 32,                     :null => false
     t.string   "salt",               :limit => 8,                      :null => false
-    t.string   "encrypted_password", :limit => 16,                     :null => false
+    t.string   "encrypted_password",                                   :null => false
     t.datetime "created_at"
     t.string   "role",               :limit => 16, :default => "user"
     t.integer  "averages_count",                   :default => 0,      :null => false
