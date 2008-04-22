@@ -110,6 +110,15 @@
   color: #83a1bf;
 }
 
+#content #admin {
+  text-align: right;
+}
+#content #form {
+  margin: 1em 0;
+  padding: 1em;
+  background-color: #485f77;
+}
+
 #content form p {
   margin-bottom: 0.5em;
 }

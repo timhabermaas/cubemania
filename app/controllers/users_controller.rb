@@ -1,5 +1,5 @@
 class UsersController < ResourceController::Base
-  skip_login :only => [:new, :create]
+  skip_login :only => [:new, :create, :password]
   logout :only => [:new, :create]
   permit :self, :only => [:edit, :update, :destroy]
 
