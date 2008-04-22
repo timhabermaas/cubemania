@@ -22,6 +22,6 @@
     else $('#slider').slider('updateMax', max);
   }
   $('#slider').slider({min: 1, max: 1, startValue: 1, stepping: 1, change: function(e, ui) {
-    try { document.getElementById("chart").setItemCount(ui.value) } catch (e) {}
+    try { setTimeout("document.getElementById('chart').setItemCount(" + ui.value + ")", 1) } catch (e) {}
   }});
 <%- end -%>
