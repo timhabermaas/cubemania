@@ -71,7 +71,6 @@
       $("#timer tr.done:not(.dnf):eq(" + maxIndex + ")").addClass("worst");
     }
     $("#timer tr.done:not(.dnf):eq(" + minIndex + ")").addClass("best");
-    $("#timer .scramble").text(minIndex);
   }
   function calculateAverageOfAllTimes() {
     var times = getMilliseconds();
