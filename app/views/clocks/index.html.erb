@@ -48,14 +48,33 @@
         $("#timer input").removeAttr("disabled");
       } else {
         updateScramble();
+        updateWorstAndBest();
       }
     }
   }
-  function calculateAverageOfAllTimes() {
-    var times = $("#timer tr.done .milliseconds").map(function() {
+  function getMilliseconds() {
+    return $("#timer tr.done .milliseconds").map(function() {
       var time = parseInt($(this).text());
       return isNaN(time) ? 0 : time;
     }).get();
+  }
+  function updateWorstAndBest() {
+    $("#timer tr.done:not(dnf)").removeClass("worst").removeClass("best");
+    var times = $("#timer tr.done .milliseconds").map(function() {
+      var time = parseInt($(this).text());
+      return isNaN(time) ? 0 : time;  
+    }).get();
+    var minIndex = times.inArray(times.min());
+    var maxIndex = times.inArray(times.max());
+    if ($("#timer tr.dnf").length > 0) {
+      $("#timer tr.dnf:first").addClass("worst");
+    } else {
+      $("#timer tr.done:eq(" + maxIndex + ")").addClass("worst");
+    }
+    $("#timer tr.done:eq(" + minIndex + ")").addClass("best");
+  }
+  function calculateAverageOfAllTimes() {
+    var times = getMilliseconds();
     count = times.length;
     if (count == 0) return 0;
     var sum = 0;
@@ -108,8 +127,10 @@
     $.post("<%= kind_puzzle_times_path %>", map, null, "script");
   }
   function toggleDnf(index) {
-    if ($("#timer tr:eq(" + index + ")").hasClass("plus2"))
+    if ($("#timer tr:eq(" + index + ")").hasClass("plus2")) {
       $("#timer tr:eq(" + index + ") .milliseconds").text(parseInt($("#timer tr:eq(" + index + ") .milliseconds").text()) - 2000);
+      $("#timer tr:eq(" + index + ") .time").text(formatTime($("#timer tr:eq(" + index + ") .milliseconds").text())) 
+    }
     $("#timer tr:eq(" + index + ")").toggleClass("dnf").removeClass("plus2");
     $("#average span").text(formatTime(calculateAverage()));
     if ($("#timer tr.dnf").length >= <%= @puzzle.attempt_count > 4 ? 2 : 1 %>) {
@@ -121,6 +142,7 @@
       }
       $("#average span").removeClass("dnf");
     }
+    updateWorstAndBest();
   }
   function togglePlus2(index) {
     $("#timer tr:eq(" + index + ")").toggleClass("plus2").removeClass("dnf");
@@ -133,6 +155,19 @@
     $("#timer tr:eq(" + index + ") .time").text(formatTime(time));
     $("#timer tr:eq(" + index + ") .milliseconds").text(time);
     $("#average span").text(formatTime(calculateAverage()));
+    updateWorstAndBest();
+  }
+  Array.prototype.max = function() {
+    return Math.max.apply(Math, this);
+  };
+  Array.prototype.min = function() {
+    return Math.min.apply(Math, this);
+  };
+  Array.prototype.inArray = function(value) {
+    for (var i = 0; i < this.length; i++) {
+      if (this[i] == value) return i;
+    }
+    return -1;
   }
   function formatTime(time) {
     var seconds = time / 1000;
