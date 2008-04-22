@@ -1,5 +1,5 @@
 class Kind < ActiveRecord::Base
-  has_many :puzzles, :order => 'name'
+  has_many :puzzles, :order => 'name', :dependent => :destroy
   
   file_column :image, :store_dir => 'public/images/kinds', :base_url => 'images/kinds'
   
