@@ -42,13 +42,11 @@
       $("#go").text(formatTime(time));
       $("#timer tr:not(.done):first").find(".milliseconds").text(time)
       $("#timer tr:not(.done):first").addClass("done").find(".time").text(formatTime(time));
-      $("#average span").text(formatTime(calculateAverage()));
       $("#go").removeClass("running");
-      if ($("#timer tr.done").length == <%= @puzzle.attempt_count %>) {
-        $("#timer input").removeAttr("disabled");
-      } else {
+      updateAverage();
+      updateWorstAndBest();
+      if ($("#timer tr.done").length < <%= @puzzle.attempt_count %>) {
         updateScramble();
-        updateWorstAndBest();
       }
     }
   }
@@ -126,13 +124,7 @@
     });
     $.post("<%= kind_puzzle_times_path %>", map, null, "script");
   }
-  function toggleDnf(index) {
-    if ($("#timer tr:eq(" + index + ")").hasClass("plus2")) {
-      $("#timer tr:eq(" + index + ") .milliseconds").text(parseInt($("#timer tr:eq(" + index + ") .milliseconds").text()) - 2000);
-      $("#timer tr:eq(" + index + ") .time").text(formatTime($("#timer tr:eq(" + index + ") .milliseconds").text())) 
-    }
-    $("#timer tr:eq(" + index + ")").toggleClass("dnf").removeClass("plus2");
-    $("#average span").text(formatTime(calculateAverage()));
+  function updateAverage() {
     if ($("#timer tr.dnf").length >= <%= @puzzle.attempt_count > 4 ? 2 : 1 %>) {
       $("#timer input").removeAttr("disabled");
       $("#average span").addClass("dnf");
@@ -142,6 +134,15 @@
       }
       $("#average span").removeClass("dnf");
     }
+    $("#average span").text(formatTime(calculateAverage()));
+  }
+  function toggleDnf(index) {
+    if ($("#timer tr:eq(" + index + ")").hasClass("plus2")) {
+      $("#timer tr:eq(" + index + ") .milliseconds").text(parseInt($("#timer tr:eq(" + index + ") .milliseconds").text()) - 2000);
+      $("#timer tr:eq(" + index + ") .time").text(formatTime($("#timer tr:eq(" + index + ") .milliseconds").text())) 
+    }
+    $("#timer tr:eq(" + index + ")").toggleClass("dnf").removeClass("plus2");
+    updateAverage();
     updateWorstAndBest();
   }
   function togglePlus2(index) {
@@ -154,7 +155,7 @@
     }
     $("#timer tr:eq(" + index + ") .time").text(formatTime(time));
     $("#timer tr:eq(" + index + ") .milliseconds").text(time);
-    $("#average span").text(formatTime(calculateAverage()));
+    updateAverage();
     updateWorstAndBest();
   }
   Array.prototype.max = function() {
