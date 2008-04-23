@@ -116,7 +116,8 @@
   function commitTimes() {
     $("#timer input").attr("disabled", "disabled");
     var average = calculateAverage();
-    var map = {"average[time]": average, "average[dnf]": $("#average span").hasClass("dnf"), "authenticity_token": "<%= form_authenticity_token %>"};
+    alert($("#comment").val())
+    var map = {"average[time]": average, "average[dnf]": $("#average span").hasClass("dnf"), "average[comment]": $("#comment").val(), "authenticity_token": "<%= form_authenticity_token %>"};
     $("#timer tr.done").each(function(index) {
       map["singles[" + index + "][time]"] = $(this).find(".milliseconds").text();
       map["singles[" + index + "][scramble]"] = $(this).find(".scramble").text();

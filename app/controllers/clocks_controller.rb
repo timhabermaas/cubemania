@@ -10,7 +10,6 @@ class ClocksController < ApplicationController
     @average.singles = params[:singles].map { |index, single| current_user.singles.build single.merge(:puzzle_id => params[:puzzle_id]) }.sort_by(&:time)
 
     if @average.save
-      flash[:notice] = @average.notice
       @puzzle = @average.puzzle
     end
   end
