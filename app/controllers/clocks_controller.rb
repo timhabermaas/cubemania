@@ -6,17 +6,12 @@ class ClocksController < ApplicationController
   end
   
   def create
-    params[:average][:puzzle_id] = params[:puzzle_id]
-    @average = current_user.averages.build params[:average]
-    @average.singles = params[:singles].map { |index, single| single[:puzzle_id] = params[:puzzle_id]; current_user.singles.build single }
+    @average = current_user.averages.build params[:average].merge(:puzzle_id => params[:puzzle_id])
+    @average.singles = params[:singles].map { |index, single| current_user.singles.build single.merge(:puzzle_id => params[:puzzle_id]) }.sort_by(&:time)
 
-    Average.transaction do
-      if @average.save
-        flash[:notice] = 'You have a new personal average record!' if @average.record
-        flash[:notice] = 'You have a new personal single record!' unless @average.singles.select(&:record).empty?
-        flash[:notice] = 'You have a new personal single and average record!' if @average.record and not @average.singles.select(&:record).empty?
-        @puzzle = @average.puzzle
-      end
+    if @average.save
+      flash[:notice] = @average.notice
+      @puzzle = @average.puzzle
     end
   end
 end
