@@ -188,17 +188,17 @@
 }
 #times .ui-slider {
   float: left;
-  width: 600px;
+  width: 511px;
   height: 23px;
+  margin-left: 89px;
   position: relative;
-  background-image: url(/images/slider.gif);
-  background-position: center center;
+  background: url(/images/slider.gif) center left repeat-x;
 }
 #times .ui-slider-handle {
   position: absolute;
   z-index: 1;
-  height: 23px;
-  width: 12px;
+  height: 21px;
+  width: 15px;
   top: 0px;
   left: 0px;
   background-image: url(/images/handle.gif);
@@ -208,7 +208,8 @@
 }
 #times select {
   float: right;
-  width: 150px;
+  width: 137px;
+  margin-left: 13px;
 }
 
 #timer {
