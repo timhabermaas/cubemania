@@ -4,11 +4,11 @@ if @average.errors.empty?
   page << "updateScramble()"
   flash[:notice] = @average.notice
 else
-  page << "$('#timer input').removeAttr('disabled');"
-  flash[:notice] = @average.errors.full_messages.join("<br/>")
+  page['timer input'].removeAttr('disabled')
+  flash[:notice] = @average.errors.full_messages.join('<br/>')
 end
-page << "if ($('#notice')) {$('#notice').remove();}"
+page << "if ($('#notice')) $('#notice').remove();"
 unless flash[:notice].nil?
-  page.insert_html :after, 'subnavigation', :partial => 'layouts/notice.html.erb'
+  page['subnavigation'].append partial('layouts/notice.html.erb')
   flash.discard
 end
