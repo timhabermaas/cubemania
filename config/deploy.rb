@@ -15,7 +15,7 @@ namespace :deploy do
 
   task :restart, :roles => :app do
     invoke_command "cd #{application_path}; svn up"
-    invoke_command "cd #{application_path}; rake db:migrate"
+    invoke_command "cd #{application_path}; RAILS_ENV=production rake db:migrate"
     invoke_command "rm #{application_path}/public/javascripts/all.js #{application_path}/public/stylesheets/all.css"
     invoke_command "/usr/local/bin/mongrel_rails restart -P #{home}/var/run/mongrel-#{application}-#{mongrel_port}.pid"
   end
