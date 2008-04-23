@@ -116,12 +116,11 @@
   function commitTimes() {
     $("#timer input").attr("disabled", "disabled");
     var average = calculateAverage();
-    var map = {"average[time]": average, "average[dnf]": $("#average span").hasClass("dnf"), "average[puzzle_id]": "<%= @puzzle.id %>", "authenticity_token": "<%= form_authenticity_token %>"};
+    var map = {"average[time]": average, "average[dnf]": $("#average span").hasClass("dnf"), "authenticity_token": "<%= form_authenticity_token %>"};
     $("#timer tr.done").each(function(index) {
       map["singles[" + index + "][time]"] = $(this).find(".milliseconds").text();
       map["singles[" + index + "][scramble]"] = $(this).find(".scramble").text();
       map["singles[" + index + "][dnf]"] = $(this).hasClass("dnf");
-      map["singles[" + index + "][puzzle_id]"] = "<%= @puzzle.id %>";
     });
     $.post("<%= kind_puzzle_times_path %>", map, null, "script");
   }
