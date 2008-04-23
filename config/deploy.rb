@@ -18,7 +18,7 @@ namespace :deploy do
     invoke_command "svn up"
     invoke_command "RAILS_ENV=production rake db:migrate"
     invoke_command "rm #{application_path}/public/javascripts/all.js"
-    invoke_command "rm #{application_path}/public/stylesheets/all.js"
+    invoke_command "rm #{application_path}/public/stylesheets/all.css"
     invoke_command "/usr/local/bin/mongrel_rails restart -P #{home}/var/run/mongrel-#{application}-#{mongrel_port}.pid"
   end
 
