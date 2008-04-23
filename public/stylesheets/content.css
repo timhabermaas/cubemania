@@ -225,17 +225,17 @@
 #timer tr.done {
   color: #fff;
 }
-#timer tr.best {
-  color: #0f0;
-}
-#timer tr.worst {
-  color: #a00;
-}
 #timer tr.dnf {
   color: #83a1bf;
 }
 #timer tr.dnf .time, #average .dnf {
   text-decoration: line-through;
+}
+#timer tr.best {
+  color: #0f0;
+}
+#timer tr.worst {
+  color: #a00;
 }
 #timer tr .time {
   width: 100%;
