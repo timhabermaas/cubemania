@@ -232,10 +232,10 @@
   text-decoration: line-through;
 }
 #timer tr.best {
-  color: #0f0;
+  color: #0d0;
 }
 #timer tr.worst {
-  color: #a00;
+  color: #c00;
 }
 #timer tr .time {
   width: 100%;
