@@ -9,6 +9,6 @@ else
 end
 page << "if ($('#notice')) $('#notice').remove();"
 unless flash[:notice].nil?
-  page['subnavigation'].append partial('layouts/notice.html.erb')
+  page['subnavigation'].after partial('layouts/notice.html.erb')
   flash.discard
 end
