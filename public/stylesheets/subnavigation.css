@@ -73,8 +73,9 @@
 #kinds {
   clear: both;
   height: 1em;
-  padding: 0.4375em 0;
-  background: #373737 url(/images/kinds.gif) bottom repeat-x;
+  padding: 0.3750em 0;
+  padding-top: 0.5em;
+  background: #1c1c1c url(/images/kinds.gif) bottom repeat-x;
 }
 #kinds li a {
   font-size: 0.75em;
