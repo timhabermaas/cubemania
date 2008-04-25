@@ -40,15 +40,16 @@
     else {
       var time = (new Date().getTime() - startTime);
       $("#go").text(formatTime(time));
+      $("#timer tr.done:last .flags .delete").hide();
       $("#timer tr:not(.done):first").find(".milliseconds").text(time)
       $("#timer tr:not(.done):first").addClass("done").find(".time").text(formatTime(time));
       $("#go").removeClass("running");
       updateWorstAndBest();
+      updateAverage();
       if ($("#timer tr.done").length < <%= @puzzle.attempt_count %>) {
         updateScramble();
       }
     }
-    updateAverage();
   }
   function getMilliseconds() {
     return $("#timer tr.done .milliseconds").map(function() {
@@ -137,6 +138,19 @@
       $("#average span").removeClass("dnf");
     }
     $("#average span").text(formatTime(calculateAverage()));
+  }
+  function updateDeleteButtons() {
+    var length = $("#timer tr.done").length;
+    for (var i = 0; i < length; i++) {
+      $("#timer tr:eq(" + i + ") .flags .delete").hide();
+    }
+    $("#timer tr:eq(" + (length - 1) + ") .flags .delete").show();
+  }
+  function deleteTime() {
+    $("#timer tr.done:last .time").text("-");
+    $("#timer tr.done:last .milliseconds").text("");
+    $("#timer tr.done:last").removeClass();
+    $("#timer tr.done:last .flags .delete").show()
   }
   function toggleDnf(index) {
     if ($("#timer tr:eq(" + index + ")").hasClass("plus2")) {

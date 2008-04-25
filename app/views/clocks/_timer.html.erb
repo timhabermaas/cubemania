@@ -15,6 +15,7 @@
         <div class="flags">
           <a class="dnf" href="#" onclick="toggleDnf(<%= index %>); return false">DNF</a>
           <a class="plus2" href="#" onclick="togglePlus2(<%= index %>); return false">+2</a>
+          <a class="delete" href="#" onclick="deleteTime(); return false">X</a>
         </div>
       </td>
       <td class="scramble"><%= @puzzle.scramble %></td>
