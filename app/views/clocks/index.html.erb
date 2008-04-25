@@ -146,7 +146,7 @@
     }
     $("#timer tr:eq(" + (length - 1) + ") .flags .delete").show();
   }
-  function deleteTime() {
+  function deleteLastTime() {
     $("#timer tr.done:last .time").text("-");
     $("#timer tr.done:last .milliseconds").text("");
     $("#timer tr.done:last").removeClass();
