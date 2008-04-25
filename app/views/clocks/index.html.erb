@@ -139,18 +139,12 @@
     }
     $("#average span").text(formatTime(calculateAverage()));
   }
-  function updateDeleteButtons() {
-    var length = $("#timer tr.done").length;
-    for (var i = 0; i < length; i++) {
-      $("#timer tr:eq(" + i + ") .flags .delete").hide();
-    }
-    $("#timer tr:eq(" + (length - 1) + ") .flags .delete").show();
-  }
   function deleteLastTime() {
     $("#timer tr.done:last .time").text("-");
     $("#timer tr.done:last .milliseconds").text("");
     $("#timer tr.done:last").removeClass();
-    $("#timer tr.done:last .flags .delete").show()
+    $("#timer tr.done:last .flags .delete").show();
+    updateAverage();
   }
   function toggleDnf(index) {
     if ($("#timer tr:eq(" + index + ")").hasClass("plus2")) {
