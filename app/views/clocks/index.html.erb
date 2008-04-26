@@ -145,6 +145,7 @@
     $("#timer tr.done:last").removeClass();
     $("#timer tr.done:last .flags .delete").show();
     updateAverage();
+    updateWorstAndBest();
   }
   function toggleDnf(index) {
     if ($("#timer tr:eq(" + index + ")").hasClass("plus2")) {
