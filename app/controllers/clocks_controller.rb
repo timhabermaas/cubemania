@@ -7,8 +7,8 @@ class ClocksController < ApplicationController
   
   def create
     @average = current_user.averages.build params[:average].merge(:puzzle_id => params[:puzzle_id])
-    @average.singles = params[:singles].map { |index, single| current_user.singles.build single.merge(:puzzle_id => params[:puzzle_id]) }.sort_by(&:time)
-
+    @average.singles = params[:singles].map { |index, single| current_user.singles.build single.merge(:puzzle_id => params[:puzzle_id], :position => index) }
+    
     if @average.save
       @puzzle = @average.puzzle
     end
