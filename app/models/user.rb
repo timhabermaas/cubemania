@@ -6,8 +6,8 @@ class User < ActiveRecord::Base
   attr_reader :password
   attr_accessor :bot_email
 
-  has_many :posts
-  has_many :comments
+  has_many :posts, :dependent => :nullify
+  has_many :comments, :dependent => :nullify
   has_many :clocks
   has_many :singles, :order => 'created_at desc', :dependent => :delete_all do
     def record(puzzle_id); find_by_puzzle_id_and_record puzzle_id, true; end

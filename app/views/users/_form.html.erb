@@ -26,5 +26,6 @@
   </p>
   <p>
     <%= form.submit action_label 'Register' %>
+    <%= link_to 'Destroy', @user, :confirm => 'Are you sure?', :method => :delete if edit? %>
   </p>
 <% end %>

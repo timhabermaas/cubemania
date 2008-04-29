@@ -36,6 +36,10 @@ module ApplicationHelper
     names.include? params[:action].to_sym
   end
   
+  def edit?
+    action? :edit, :update, :show
+  end
+  
   def current_item?(item)
     controller = item.url.split('/').last.to_sym
     controller? controller == :times ? :clocks : controller
