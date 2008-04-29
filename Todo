@@ -5,4 +5,29 @@
 * Leertaste wieder als Submit zulassen (prüfen auf input.disable)
 * Loeschen von Usern für Moderatoren
 * Bei Rekorden die Einzelzeiten auflisten
-* Bild vom gecrambleten puzzle (schwierig, aber bestimmt spassig ;))
+* Bild vom gecrambleten puzzle (schwierig, aber bestimmt spaßig ;))
+
+
+Stop your times, track your progress in a chart, compare yourself with others and get the record!
+
+
+Bugs:
+
+  average.xml: comment, encode '
+  comment='<%=h average.comment %>'
+  chart: coloring
+  
+
+Enhancements:
+
+  Chart: Comment in ToolTip
+  Clocks Create: Slide Notice Up / Down
+
+
+New Features:
+
+  Admin Buttons
+  timer: set time manually (textfield)
+  
+  
+Add cubemania to portfolio

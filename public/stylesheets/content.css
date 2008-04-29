@@ -248,6 +248,7 @@
   display: none;
   font-size: 0.75em;
   white-space: nowrap;
+  text-align: left;
 }
 #timer tr.done .flags {
   display: block;
@@ -255,6 +256,13 @@
 #timer tr.dnf .flags .dnf, #timer tr.plus2 .flags .plus2 {
   color: #2f2f2f;
   background-color: #df0;
+}
+#timer .delete {
+  color: #c00;
+}
+#timer .delete:hover {
+  color: #fff;
+  background-color: #c00;
 }
 #timer #help {
   font-size: 0.75em;
