@@ -70,6 +70,9 @@
   margin-bottom: 2em;
   background-color: #517397;
 }
+#content .announcement a {
+  white-space: nowrap;
+}
 #content .announcement cite, #content .announcement em {
   font-style: italic;
 }
