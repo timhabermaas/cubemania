@@ -2,7 +2,7 @@
 <p class="announcement">
   <strong><%= @announcement.title %></strong>
   <cite><%= link_to @announcement.user.name, @announcement.user unless @announcement.user.nil? %></cite>
-  <span><%= @announcement.content %></span>
+  <span><%= m(@announcement.content)[3..-5] %></span>
 </p>
 <%- end -%>
 <p class="introduction">
