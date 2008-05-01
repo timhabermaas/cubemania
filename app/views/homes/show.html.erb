@@ -3,7 +3,7 @@
   <strong><%= @announcement.title %></strong>
   <cite><%= link_to @announcement.user.name, @announcement.user unless @announcement.user.nil? %></cite>
   <span><%= m(@announcement.content)[3..-5] %></span>
-  <span class="comment"><%= link_to "#{pluralize @announcement.comments.size, 'Comment'} &raquo;", post_path(@announcement, :anchor => 'comments') %></span>
+  <%= link_to "#{pluralize @announcement.comments.size, 'Comment'} &raquo;", post_path(@announcement, :anchor => 'comments') %>
 </p>
 <%- end -%>
 <p class="introduction">
