@@ -1,6 +1,7 @@
 ActionController::Routing::Routes.draw do |map|
-  map.root :controller => 'posts'
+  map.root :controller => 'homes', :action => 'show'
 
+  map.resource :home
   map.resources :posts, :has_many => :comments
   map.resources :kinds do |kinds|
     kinds.resources :puzzles do |puzzles|

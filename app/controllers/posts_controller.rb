@@ -3,7 +3,7 @@ class PostsController < ResourceController::Base
 
   private
     def collection
-      @collection ||= Post.paginate :include => :user, :order => 'created_at desc', :page => params[:page], :per_page => 10
+      @collection ||= Post.paginate :include => :user, :order => 'created_at desc', :page => params[:page], :per_page => 5
     end
     
     def object

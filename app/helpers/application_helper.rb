@@ -25,7 +25,11 @@ module ApplicationHelper
   end
   
   def times_path
-    navigation.find { |item| item.url.split('/').last.to_sym == :times }.url
+    navigation.find { |item| item.url.split('/').last.to_sym == :times unless item.url == '/' }.url
+  end
+  
+  def records_path
+    navigation.find { |item| item.url.split('/').last.to_sym == :records unless item.url == '/' }.url
   end
   
   def controller?(*names)

@@ -1,0 +1,33 @@
+<%- unless @announcement.nil? -%>
+<p class="announcement">
+  <strong><%= @announcement.title %></strong>
+  <cite><%= link_to @announcement.user.name, @announcement.user unless @announcement.user.nil? %></cite>
+  <span><%= @announcement.content %></span>
+</p>
+<%- end -%>
+<p class="introduction">
+  You want to keep track of your times, compare yourself with others and become the best?
+  Then Cubemania is the right place for you: <%= link_to 'Register', register_path %> now and get the record!
+</p>
+<ul id="features">
+  <li class="odd">
+    <%= link_to image_tag('screenshots/timer.jpg'), times_path, :class => 'image' %><br/>
+    <p>Stop your times and submit your averages.</p>
+  </li>
+  <li>
+    <%= link_to image_tag('screenshots/puzzles.jpg'), times_path, :class => 'image' %><br/>
+    <p>Organize your times properly.</p>
+  </li>
+  <li class="odd">
+    <%= link_to image_tag('screenshots/chart.jpg'), times_path, :class => 'image' %>
+    <p>Keep track of your progress and compare yourself with other cubers.</p>
+  </li>
+  <li>
+    <%= link_to image_tag('screenshots/records.jpg'), records_path, :class => 'image' %>
+    <p>Get the record!</p>
+  </li>
+</ul>
+<div class="clear"></div>
+<p class="footnote">
+  If you come across a bug or miss a feature let us know: <%= mail_to 'th@cubemania.org' %>
+</p>

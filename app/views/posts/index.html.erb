@@ -1,22 +1,2 @@
 <%= partial @posts %>
 <%= will_paginate @posts %>
-
-<h2>Get Started</h2>
-<p id="introduction">
-  Cubemania is for people who want to keep track of their times and want to compare with other cubers. So <%= link_to 'register', register_path %> now and get the <%= link_to 'records', 'kinds/2/puzzles/4/records' %>!
-</p>
-<div class="feature">
-  <%= link_to image_tag('tutorial/timer.gif'), times_path %><br/>
-  <p class="description">Stop your times and submit your averages.</p>
-</div>
-<div class="feature">
-  <%= link_to image_tag('tutorial/chart.gif'), times_path %>
-  <p class="description">Compare yourself with other cubers and keep track of your progress.</p>
-</div>
-<div class="feature">
-  <%= link_to image_tag('tutorial/records.gif'), 'kinds/2/puzzles/4/records' %>
-  <p class="description">Get the record!</p>
-</div>
-<p>
-  If you find any bugs or want some new features, let me know under <%= link_to 'th@cubemania.org', 'mailto:th@cubemania.org' %>.
-</p>
