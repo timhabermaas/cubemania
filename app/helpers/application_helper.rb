@@ -45,7 +45,7 @@ module ApplicationHelper
   end
   
   def current_item?(item)
-    controller = item.url.split('/').last.to_sym
+    controller = item.url == '/' ? :homes : item.url.split('/').last.to_sym
     controller? controller == :times ? :clocks : controller
   end
   
