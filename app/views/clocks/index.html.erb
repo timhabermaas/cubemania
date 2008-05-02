@@ -111,12 +111,18 @@
       return Math.round(sum / (count - 2));
     }
   }
+  function calculateMean() {
+    return calculateAverageOfAllTimes();
+  }
+  function calculateBestOf() {
+    return getMilliseconds().min();
+  }
   function updateScramble() {
     $("#scramble").text($("#timer tr:not(.done):first .scramble").text());
   }
   function commitTimes() {
     $("#timer input").attr("disabled", "disabled");
-    var average = calculateAverage();
+    var average = calculate<%= @puzzle.average_format.camelize %>();
     var map = {"average[time]": average, "average[dnf]": $("#average span").hasClass("dnf"), "average[comment]": $("#comment").val(), "authenticity_token": "<%= form_authenticity_token %>"};
     $("#timer tr.done").each(function(index) {
       map["singles[" + index + "][time]"] = $(this).find(".milliseconds").text();
@@ -137,7 +143,7 @@
       }
       $("#average span").removeClass("dnf");
     }
-    $("#average span").text(formatTime(calculateAverage()));
+    $("#average span").text(formatTime(calculate<%= @puzzle.average_format.camelize %>()));
   }
   function deleteLastTime() {
     $("#timer tr.done:last .time").text("-");

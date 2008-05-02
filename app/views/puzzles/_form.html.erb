@@ -15,6 +15,11 @@
     <%= form.error_message_on :scramble_length %>
   </p>
   <p>
+    <%= form.label :format %>
+    <%= form.select :average_format, [['Average', 'average'], ['Mean', 'mean'], ['Best Of', 'best_of']] %>
+    <%= form.error_message_on :format %>
+  </p>
+  <p>
     <%= form.label :countdown %>
     <%= form.text_field :countdown %>
     <%= form.error_message_on :countdown %>
