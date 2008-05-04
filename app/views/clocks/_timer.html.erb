@@ -22,7 +22,7 @@
     </tr>
   <%- end -%>
   </table>
-  <p id="average">&Oslash; <span>0.00</span></p>
+  <p id="average"><%= @puzzle.average_format == 'best_of' ? 'Best' : '&Oslash;' %> <span>0.00</span></p>
   <form>
     <p><%= text_area_tag 'comment', nil, :rows => 3 %></p>
     <p><%= button_to_function 'Add', 'commitTimes()', :disabled => true %></p>

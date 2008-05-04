@@ -74,19 +74,12 @@
     $("#timer tr.done:not(.dnf):eq(" + minIndex + ")").addClass("best");
   }
   function calculateAverageOfAllTimes() {
-    var times = getMilliseconds();
-    count = times.length;
-    if (count == 0) return 0;
-    var sum = 0;
-    for (var i = 0; i < times.length; i++) {
-      sum += times[i];
-    }
-    return Math.round(sum / count);
+    return getMilliseconds().average();
   }
   function calculateAverage() {
     var count = $("#timer tr.done").length;
     var dnfCount = $("#timer tr.dnf").length;
-    if (count == 0) return 0; //? siehe caclu..OfAllTimes
+    if (count == 0) return 0;
     if (count < 5) {
       return calculateAverageOfAllTimes();
     } else {
@@ -104,18 +97,26 @@
         times.pop();
       }
       times.shift();
-      var sum = 0;
-      for (var i = 0; i < times.length; i++) {
-        sum += times[i];
-      }
-      return Math.round(sum / (count - 2));
+      return Math.round(times.average());
     }
   }
   function calculateMean() {
-    return calculateAverageOfAllTimes();
+    if ($("#timer tr.done:not(.dnf)").length == 0) {
+      return calculateAverageOfAllTimes();
+    } else {
+      return $("#timer tr.done:not(.dnf) .milliseconds").map(function() {
+        var time = parseInt($(this).text());
+        return isNaN(time) ? 0 : time;
+      }).get().average();
+    }
   }
   function calculateBestOf() {
-    return getMilliseconds().min();
+    if ($("#timer tr.done:not(.dnf)").length == 0)
+      return 0;
+    return $("#timer tr.done:not(.dnf) .milliseconds").map(function() {
+      var time = parseInt($(this).text());
+      return isNaN(time) ? 0 : time;
+    }).get().min();
   }
   function updateScramble() {
     $("#scramble").text($("#timer tr:not(.done):first .scramble").text());
@@ -132,15 +133,21 @@
     $.post("<%= kind_puzzle_times_path %>", map, null, "script");
   }
   function updateAverage() {
-    if ($("#timer tr.dnf").length >= <%= @puzzle.attempt_count > 4 ? 2 : 1 %>) {
+    if ($("#timer tr.done").length == <%= @puzzle.attempt_count %>) {
       $("#timer input").removeAttr("disabled");
+    } else {
+      $("#timer input").attr("disabled", "disabled");
+    }
+    <% case @puzzle.average_format
+         when 'best_of' %>
+    if ($("#timer tr.done").length > 0 && $("#timer tr.done").length - $("#timer tr.dnf").length == 0) {
+    <%   when 'mean' %>
+    if ($("#timer tr.dnf").length > 0) {
+    <%   when 'average' %>
+    if ($("#timer tr.dnf").length > 1) {
+    <% end %>
       $("#average span").addClass("dnf");
     } else {
-      if($("#timer tr.done").length < <%= @puzzle.attempt_count %>) {
-        $("#timer input").attr("disabled", "disabled");
-      } else {
-        $("#timer input").removeAttr("disabled");
-      }
       $("#average span").removeClass("dnf");
     }
     $("#average span").text(formatTime(calculate<%= @puzzle.average_format.camelize %>()));
@@ -188,6 +195,13 @@
     }
     return -1;
   }
+  Array.prototype.average = function() {
+    var sum = 0;
+    for (var i = 0; i < this.length; i++) {
+      sum += this[i];
+    }
+    return Math.round(sum/this.length);
+  }
   function formatTime(time) {
     var seconds = time / 1000;
     if (seconds < 60) {
@@ -204,13 +218,5 @@
       toggleTimer();
     }
   });
-  /*$(document).keydown(function(event) {
-    if (event.keyCode == 32) {
-      if (this.intervall != null) {
-        stopTimer();
-        flag = true;
-      }
-    }
-  });*/
   updateScramble();
 <%- end -%>
