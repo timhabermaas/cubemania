@@ -1,8 +1,8 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ClockTest < ActiveSupport::TestCase
-  # Replace this with your real tests.
+  fixtures :clocks, :users, :kinds, :puzzles
   def test_truth
-    assert true
+    assert puzzles('3x3x3').scramble_length == 25
   end
 end

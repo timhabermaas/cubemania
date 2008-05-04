@@ -1,13 +1,10 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-standard:
-  name: Standard
-  puzzles: one, two, three
+speed:
+  name: Speed
 
 blindfolded:
   name: Blindfolded
-  puzzles: four, five
 
-weird:
-  name: Weird
-  puzzles: six 
+feet:
+  name: Feet

@@ -1,12 +1,7 @@
-* megaminx scramble_length updaten
-* square-1 scrambler schreiben
-* 6x6 & 7x7 scrambler schreiben
 * Admin-Interface
-* Leertaste wieder als Submit zulassen (prüfen auf input.disable)
 * Loeschen von Usern für Moderatoren
 * Bei Rekorden die Einzelzeiten auflisten
 * Bild vom gecrambleten puzzle (schwierig, aber bestimmt spaßig ;))
-
 
 Stop your times, track your progress in a chart, compare yourself with others and get the record!
 
@@ -22,12 +17,13 @@ Enhancements:
 
   Chart: Comment in ToolTip
   Clocks Create: Slide Notice Up / Down
-
+  User: list single record
 
 New Features:
 
   Admin Buttons
-  timer: set time manually (textfield)
-  
+  Timer: set time manually (textfield)
+  Timer: Allow Rolling Average
+  Puzzle: Square-1 + 6x6 + 7x7 Scrambler
   
 Add cubemania to portfolio

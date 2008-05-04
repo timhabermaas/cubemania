@@ -5,7 +5,7 @@
     </div>
     
   </th>
-  <td><cite><%=h record.puzzle.name %> <small>(<%=h record.puzzle.kind.name %>)</small></cite></td>
+  <td><cite><%= moderator? ? link_to(record.puzzle.name, user_kind_puzzle_averages_path(record.user, record.puzzle.kind, record.puzzle)) : h(record.puzzle.name) %> <small>(<%=h record.puzzle.kind.name %>)</small></cite></td>
   <td><strong><%=t record.time %></strong></td>
   <td><small><%=d record.created_at %></small></td>
 </tr>

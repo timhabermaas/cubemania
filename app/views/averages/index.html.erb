@@ -1,0 +1,11 @@
+<h2><%=h @user.name %> <small>(<%=h @puzzle.name %> / <%=h @puzzle.kind.name %>)</small></h2>
+<ul>
+<% for average in @averages %>
+  <li>
+    <span><%=t average.time %></span>
+    <small><%= average.singles.map{|s| t(s.time)}.join(" ") %></small>
+    <small><%=dt average.created_at %></small>
+    <%= link_to 'Destroy', user_kind_puzzle_average_path(@user, @puzzle.kind, @puzzle, average), :confirm => 'Are you sure?', :method => :delete if moderator? %>
+  </li>
+<% end %>
+</ul>

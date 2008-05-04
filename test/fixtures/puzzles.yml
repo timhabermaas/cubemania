@@ -1,25 +1,28 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-one:
+3x3x3:
   name: 3x3x3
-  dimension: 3
-  
-two:
-  name: 2x2x2
-  dimension: 2
+  kind: speed
+  scramble_length: 25
+  attempt_count: 12
+  average_format: average
+  countdown: 0
+  image: "dummy"
 
-three:
+2x2x2:
+  name: 2x2x2
+  kind: speed
+  scramble_length: 25
+  attempt_count: 12
+  average_format: average
+  countdown: 0
+  image: "dummy"
+
+4x4x4:
   name: 4x4x4
-  dimension: 4
-
-four:
-  name: 3x3x3
-  dimension: 3
-
-five:
-  name: 2x2x2
-  dimension: 2
-
-six:
-  name: multi bld
-  dimension: 1000
+  kind: speed
+  scramble_length: 25
+  attempt_count: 5
+  average_format: average
+  countdown: 0
+  image: "dummy"

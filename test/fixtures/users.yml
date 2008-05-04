@@ -1,7 +1,6 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-
-# one:
-#   column: value
-#
-# two:
-#   column: value
+peter:
+  name: peter
+  email: peter@de.do
+  role: user
+  encrypted_password: dasadds
+  salt: asdda
