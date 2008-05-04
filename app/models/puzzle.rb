@@ -14,7 +14,9 @@ class Puzzle < ActiveRecord::Base
   
   validates_presence_of :name, :image, :attempt_count, :countdown, :kind_id
   validates_length_of :name, :maximum => 64
-  validates_length_of :scramble_length, :maximum => 255
+  validates_numericality_of :scramble_length, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 255, :only_integer => true
+  validates_numericality_of :countdown, :greater_than_or_equal_to => 0, :only_integer => true
+  validates_numericality_of :attempt_count, :greater_than => 0, :only_integer => true
   validates_inclusion_of :average_format, :in => formats
   validates_filesize_of :image, :in => 0..20.kilobytes
   validates_file_format_of :image, :in => ['gif', 'png']
