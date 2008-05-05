@@ -1,6 +1,6 @@
 class IncreaseScrambleLimit < ActiveRecord::Migration
   def self.up
-    change_column :clocks, :scramble, :string, :limit => 1000
+    change_column :clocks, :scramble, :string, :limit => 1024
   end
 
   def self.down

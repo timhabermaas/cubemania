@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(:version => 33) do
     t.integer  "puzzle_id",                                        :null => false
     t.datetime "created_at"
     t.integer  "user_id",                    :default => 0,        :null => false
-    t.string   "scramble",   :limit => 1000
+    t.string   "scramble",   :limit => 1024
     t.string   "type",                       :default => "Single", :null => false
     t.integer  "average_id"
     t.boolean  "record",                     :default => false,    :null => false
