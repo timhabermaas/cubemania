@@ -8,6 +8,10 @@ class AveragesController < ApplicationController
     @puzzle = Puzzle.find params[:puzzle_id]
   end
   
+  def show
+    @average = Average.find params[:id], :include => :singles
+  end
+  
   def destroy
     @average = Average.find params[:id]
     @average.destroy
