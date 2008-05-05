@@ -1,13 +1,13 @@
 <h2><%=h @user.name %> <small>(<%=h @puzzle.name %> / <%=h @puzzle.kind.name %>)</small></h2>
-<ul>
+<table>
 <%- for average in @averages -%>
-  <li>
-    <span title="<%=h average.comment %>"><%=t average.time %></span>
-    <% for single in average.singles %>
-    <small title="<%= single.scramble %>"<%= ' style="text-decoration: line-through;"' if single.dnf %>><%=t single.time %></small>
-    <% end %>
-    <small><%=dt average.created_at %></small>
-    <%= link_to 'Destroy', user_kind_puzzle_average_path(@user, @puzzle.kind, @puzzle, average), :confirm => 'Are you sure?', :method => :delete if moderator? %>
-  </li>
+  <tr>
+    <td title="<%=h average.comment %>"><%=t average.time %></td>
+    <%- for single in average.singles -%>
+    <td><small title="<%= single.scramble %>"<%= ' style="text-decoration: line-through;"' if single.dnf %>><%=t single.time %></small></td>
+    <%- end -%>
+    <td><small><%=dt average.created_at %></small></td>
+    <td><%= link_to 'Destroy', user_kind_puzzle_average_path(@user, @puzzle.kind, @puzzle, average), :confirm => 'Are you sure?', :method => :delete if moderator? %></td>
+  </tr>
 <%- end -%>
-</ul>
+</table>
