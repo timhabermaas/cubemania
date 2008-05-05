@@ -2,7 +2,7 @@
 <table>
 <%- for average in @averages -%>
   <tr>
-    <td<%= ' title="#{h average.comment}"' if average.comment != "" %>><%= link_to t(average.time), user_kind_puzzle_average_path(@user, @puzzle.kind, @puzzle, average) %></td>
+    <td><%= link_to t(average.time), user_kind_puzzle_average_path(@user, @puzzle.kind, @puzzle, average) %></td>
     <%- for single in average.singles -%>
     <td><small title="<%= single.scramble %>"<%= ' style="text-decoration: line-through;"' if single.dnf %>><%=t single.time %></small></td>
     <%- end -%>
