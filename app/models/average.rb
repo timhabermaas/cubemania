@@ -22,7 +22,7 @@ class Average < Clock
     end
 
     def update_record(old, new)
-      if (old.nil? or new.time < old.time) and not new.dnf?
+      if not new.nil? and not new.dnf? and (old.nil? or new.time < old.time)
         old.update_attribute :record, false unless old.nil?
         new.record = true
       end
