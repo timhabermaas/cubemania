@@ -9,18 +9,18 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 32) do
+ActiveRecord::Schema.define(:version => 33) do
 
   create_table "clocks", :force => true do |t|
-    t.integer  "time",                             :null => false
-    t.integer  "puzzle_id",                        :null => false
+    t.integer  "time",                                             :null => false
+    t.integer  "puzzle_id",                                        :null => false
     t.datetime "created_at"
-    t.integer  "user_id",    :default => 0,        :null => false
-    t.string   "scramble"
-    t.string   "type",       :default => "Single", :null => false
+    t.integer  "user_id",                    :default => 0,        :null => false
+    t.string   "scramble",   :limit => 1000
+    t.string   "type",                       :default => "Single", :null => false
     t.integer  "average_id"
-    t.boolean  "record",     :default => false,    :null => false
-    t.boolean  "dnf",        :default => false,    :null => false
+    t.boolean  "record",                     :default => false,    :null => false
+    t.boolean  "dnf",                        :default => false,    :null => false
     t.string   "comment"
     t.integer  "position"
   end
