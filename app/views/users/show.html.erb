@@ -1,4 +1,4 @@
-<%- if @user == current_user -%>
+<%- if @user == current_user || admin? -%>
 <div id="admin">
   <%= link_to_function 'Edit Account', "$(this).textToggle('Edit Account', 'Close'); $('#form').slideToggle('fast')" %>
 </div>
