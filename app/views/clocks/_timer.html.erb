@@ -2,7 +2,7 @@
   <p id="scramble"></p>
   <a id="go" href="#" onclick="toggleTimer(); return false">GO!</a>
   <p id="help">
-    Press <strong>space</strong> to start or stop the timer.
+    Press <strong>space</strong>/<strong>s</strong> to start or stop the timer.
     There will be <%= @puzzle.countdown.zero? ? 'no countdown' : "a <strong>countdown</strong> of #{pluralize @puzzle.countdown, 'second'}" %>.
   </p>
   <table>
