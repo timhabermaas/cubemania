@@ -7,7 +7,7 @@ ActionController::Routing::Routes.draw do |map|
     kinds.resources :puzzles do |puzzles|
       puzzles.resources :times, :controller => :clocks
       puzzles.resources :singles, :averages
-      puzzles.records 'records/:type', :controller => 'records', :defaults => { :type => 'single' }, :type => /(single)|(average)/
+      puzzles.records 'records/:type', :controller => 'records', :defaults => { :type => 'average' }, :type => /(single)|(average)/
     end
   end
   map.resources :competitions
