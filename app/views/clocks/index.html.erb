@@ -80,7 +80,7 @@
     var count = $("#timer tr.done").length;
     var dnfCount = $("#timer tr.dnf").length;
     if (count == 0) return 0;
-    if (count < 5) {
+    if (count < 3) {
       return calculateAverageOfAllTimes();
     } else {
       if (dnfCount > 1) {
@@ -97,7 +97,7 @@
         times.pop();
       }
       times.shift();
-      return Math.round(times.average());
+      return times.average();
     }
   }
   function calculateMean() {
