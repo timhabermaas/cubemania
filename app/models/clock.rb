@@ -4,5 +4,5 @@ class Clock < ActiveRecord::Base
 
   validates_presence_of :time, :puzzle_id, :user_id
   validates_length_of :comment, :maximum => 255, :allow_nil => true
-  validates_length_of :scramble, :maximum => 1000, :allow_nil => true
+  validates_length_of :scramble, :maximum => 1024, :allow_nil => true
 end
