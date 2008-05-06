@@ -1,15 +1,17 @@
 <tr class="record">
   <th>
-    <div class="puzzle" style="background-image: url(<%= url_for_file_column record.puzzle, :image %>)">
-      <%= "<div class='kind' style='background-image: url(#{url_for_file_column record.puzzle.kind, :image})'></div>" if record.puzzle.kind.image? %>
+    <div class="puzzle" style="background-image: url(<%= url_for_file_column record[:single].puzzle, :image %>)">
+      <%= "<div class='kind' style='background-image: url(#{url_for_file_column record[:single].puzzle.kind, :image})'></div>" if record[:single].puzzle.kind.image? %>
     </div>
   </th>
   <td>
     <cite>
-      <%= link_to_if moderator?, record.puzzle.name, user_kind_puzzle_averages_path(record.user, record.puzzle.kind, record.puzzle) %>
-      <small>(<%=h record.puzzle.kind.name %>)</small>
+      <%= link_to_if moderator?, record[:single].puzzle.name, user_kind_puzzle_averages_path(record[:single].user, record[:single].puzzle.kind, record[:single].puzzle) %>
+      <small>(<%=h record[:single].puzzle.kind.name %>)</small>
     </cite>
   </td>
-  <td><strong><%=t record.time %></strong></td>
-  <td><small><%=d record.created_at %></small></td>
+  <td><strong><%=t record[:single].time %></strong></td>
+  <td><small><%=d record[:single].created_at %></small></td>
+  <td><strong><%=t record[:average].time unless record[:average].nil? %></strong></td>
+  <td><small><%=d record[:average].created_at unless record[:average].nil? %></small></td>
 </tr>

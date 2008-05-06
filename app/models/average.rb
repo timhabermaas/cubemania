@@ -1,6 +1,5 @@
 class Average < Clock
   belongs_to :user, :counter_cache => true; attr_protected :user_id, :user
-  belongs_to :puzzle
   has_many :singles, :order => 'position', :dependent => :destroy
   
   before_save :update_records_on_create

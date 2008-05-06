@@ -5,7 +5,7 @@ class UsersController < ResourceController::Base
 
   index.before { @max_averages_count = User.max_averages_count }
 
-  show.before { @records = @user.averages.records }
+  show.before { @records = @user.singles.records.map{|s| {:single => s, :average => @user.averages.record(s.puzzle)} } }
 
   create do
     flash 'Hello, you are now registered'
