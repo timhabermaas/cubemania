@@ -15,7 +15,7 @@
       Enter the time in <strong>milliseconds</strong> and press return to add it.
     </p>
   </div>
-  <%= link_to_function 'Set time manually?', "$(this).textToggle('Set time manually?', 'Changed your mind?'); $('#dynamic').toggle(); $('#manual').toggle(); $('#type').focus()", :class => 'toggle' %>
+  <%= link_to_function 'Set times manually?', "$(this).textToggle('Set times manually?', 'Changed your mind?'); $('#dynamic').toggle(); $('#manual').toggle(); $('#type').focus()", :class => 'toggle' %>
   <table>
   <%- @puzzle.attempt_count.times do |index| -%>
     <tr>

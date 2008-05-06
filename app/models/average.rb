@@ -17,11 +17,11 @@ class Average < Clock
 
   private
     def update_records_on_create
-      update_record user.averages.record(puzzle_id), self
-      update_record user.singles.record(puzzle_id), singles.reject(&:dnf).sort_by(&:time).first
+      update_record_on_create user.averages.record(puzzle_id), self
+      update_record_on_create user.singles.record(puzzle_id), singles.reject(&:dnf).sort_by(&:time).first
     end
 
-    def update_record(old, new)
+    def update_record_on_create(old, new)
       if not new.nil? and not new.dnf? and (old.nil? or new.time < old.time)
         old.update_attribute :record, false unless old.nil?
         new.record = true
@@ -29,13 +29,11 @@ class Average < Clock
     end
     
     def update_records_on_destroy
-      unless singles.select(&:record).empty?
-        best_single = user.singles.for(puzzle).first
-        best_single.update_attribute :record, true unless best_single.nil?
-      end
-      if record?
-        best_average = user.averages.for(puzzle).sort{|a,b| a.time <=> b.time}.first
-        best_average.update_attribute :record, true unless best_average.nil?
-      end
+      update_record_on_destroy user.averages.best(puzzle.id) if record?
+      update_record_on_destroy user.singles.best(puzzle.id) unless singles.select(&:record).empty?
+    end
+    
+    def update_record_on_destroy(new)
+      new.update_attribute :record, true unless new.nil?
     end
 end
