@@ -1,0 +1,5 @@
+Date,Average,<%= (0..@averages.sort_by{|a| a.singles.size}.last.singles.size - 1).to_a.join(',,') %>
+<%- for average in @averages -%>
+<%-   singles = average.singles -%>
+<%=   average.created_at.to_s + ',' + average.time.to_s + ',' + singles.map {|s| "#{s.time},#{s.scramble}"}.join(',') %>
+<%- end -%>

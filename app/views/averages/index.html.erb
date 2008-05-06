@@ -11,3 +11,5 @@
   </tr>
 <%- end -%>
 </table>
+
+<%= link_to 'Get the times as a CSV file!', kind_puzzle_averages_path(@puzzle.kind, @puzzle) + '.csv' %>
