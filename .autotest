@@ -1,14 +1,24 @@
-module Autotest::Growl
-  def self.growl title, msg, img, pri=0, sticky=""
-    system "growlnotify -n autotest --image #{img} -p #{pri} -m #{msg.inspect} #{title} #{sticky}"
-  end
+require 'autotest/redgreen'
+require 'autotest/timestamp'
 
-  Autotest.add_hook :ran_command do |at|
-    output = at.results.last.slice(/(\d+)\s.*specifications?,\s(\d+)\s.*failures?/)
-    if output =~ /[1-9]\sfailures?/
-      growl "Test Results", "#{output}", "~/Pictures/Icons/Autotest/rails_fail.png", 2, "-s"
-    else
-      growl "Test Results", "#{output}", "~/Pictures/Icons/Autotest/rails_ok.png"
-    end
-  end
+module Autotest::Growl
+	def self.growl title, msg, img, pri=0, stick=""
+		system "growlnotify -n autotest --image #{img} -p #{pri} -m #{msg.inspect} #{title} #{stick}"
+	end
+
+	Autotest.add_hook :ran_command do |at|
+
+		output = at.results.last.strip
+		counts = output.split( ', ' ).inject(Hash.new) do |hash,s| 
+			count, type = s.match( /^([\d])+ (.*)/ )[1..2]
+			hash[type.to_sym] = count.to_i
+			hash
+		end
+
+		if counts[:failures] > 0 || counts[:errors] > 0
+			growl "Test Results", "#{output}", '~/Pictures/Icons/Autotest/rails_fail.png', 2, "-s"
+		else
+			growl "Test Results", "#{output}", '~/Pictures/Icons/Autotest/rails_ok.png'
+		end
+	end
 end
