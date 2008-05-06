@@ -1,5 +1,5 @@
 class AveragesController < ApplicationController
-  login :only => :index
+  login :except => []
   permit :moderator, :only => :destroy
 
   def index
@@ -15,7 +15,7 @@ class AveragesController < ApplicationController
   def destroy
     @average = Average.find params[:id]
     @average.destroy
-    flash[:notice] = "Successfully removed!"
+    flash[:notice] = 'Successfully removed!'
     redirect_to user_kind_puzzle_averages_path
   end
 end

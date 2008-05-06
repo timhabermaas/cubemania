@@ -1,4 +1,4 @@
-<%- if @user == current_user || admin? -%>
+<%- if current_user? @user -%>
 <div id="admin">
   <%= link_to_function 'Edit Account', "$(this).textToggle('Edit Account', 'Close'); $('#form').slideToggle('fast')" %>
 </div>
@@ -11,7 +11,7 @@
 
 <%- if @records.empty? -%>
 <p class="challenge">
-<%- if @user == current_user -%>
+<%- if current_user? @user -%>
   How fast do you solve the cube?<br/>
   <%= link_to 'Stop your times and get the record!', times_path %>
 <%- else -%>

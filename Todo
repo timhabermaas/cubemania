@@ -11,6 +11,7 @@ Bugs:
   average.xml: comment, encode '
   comment='<%=h average.comment %>'
   chart: coloring
+  IE6: We had 20 unique visitors who used IE6. Grml.
   
 
 Enhancements:

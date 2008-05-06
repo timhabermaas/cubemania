@@ -1,10 +1,21 @@
 <div id="timer">
   <p id="scramble"></p>
-  <a id="go" href="#" onclick="toggleTimer(); return false">GO!</a>
-  <p id="help">
-    Press <strong>space</strong>&#47;<strong>s</strong> to start or stop the timer.
-    There will be <%= @puzzle.countdown.zero? ? 'no countdown' : "a <strong>countdown</strong> of #{pluralize @puzzle.countdown, 'second'}" %>.
-  </p>
+  <div id="dynamic">
+    <%= link_to_function 'GO!', 'toggleTimer()', :id => 'go' %>
+    <p class="help">
+      Press <strong>space</strong>&#47;<strong>s</strong> to start or stop the timer.
+      There will be <%= @puzzle.countdown.zero? ? 'no countdown' : "a <strong>countdown</strong> of #{pluralize @puzzle.countdown, 'second'}" %>.
+    </p>
+  </div>
+  <div id="manual" style="display: none">
+    <form onsubmit="insertTime(); return false">
+      <div><%= text_field_tag 'type' %></div>
+    </form>
+    <p class="help">
+      Enter the time in <strong>milliseconds</strong> and press return to add it.
+    </p>
+  </div>
+  <%= link_to_function 'Set time manually?', "$(this).textToggle('Set time manually?', 'Changed your mind?'); $('#dynamic').toggle(); $('#manual').toggle(); $('#type').focus()", :class => 'toggle' %>
   <table>
   <%- @puzzle.attempt_count.times do |index| -%>
     <tr>
@@ -13,9 +24,9 @@
       <td class="milliseconds"></td>
       <td>
         <div class="flags">
-          <a class="dnf" href="#" onclick="toggleDnf(<%= index %>); return false">DNF</a>
-          <a class="plus2" href="#" onclick="togglePlus2(<%= index %>); return false">+2</a>
-          <a class="delete" href="#" onclick="deleteLastTime(); return false">X</a>
+          <%= link_to_function 'DNF', "toggleDnf(#{index})", :class => 'dnf' %>
+          <%= link_to_function '+2', "togglePlus2(#{index})", :class => 'plus2' %>
+          <%= link_to_function 'X', "deleteLastTime()", :class => 'delete' %>
         </div>
       </td>
       <td class="scramble"><%= @puzzle.scramble %></td>

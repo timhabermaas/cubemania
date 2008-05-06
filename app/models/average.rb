@@ -33,7 +33,7 @@ class Average < Clock
         best_single = user.singles.for(puzzle).first
         best_single.update_attribute :record, true unless best_single.nil?
       end
-      if record
+      if record?
         best_average = user.averages.for(puzzle).sort{|a,b| a.time <=> b.time}.first
         best_average.update_attribute :record, true unless best_average.nil?
       end

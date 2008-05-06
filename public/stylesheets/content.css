@@ -313,22 +313,26 @@
   color: #fff;
   background-color: #c00;
 }
-#timer #help {
+#timer .help {
+  margin-bottom: 0.5em;
+}
+#timer .help, #timer .toggle {
   font-size: 0.75em;
-  margin-bottom: 16px;
 }
 #timer #scramble {
   font-size: 0.875em;
 }
-#timer #go {
+#timer #go, #timer #type {
   display: block;
-  width: 200px;
+  width: 180px;
   height: 30px;
-  padding: 10px 0;
-  margin: 0 auto;
-  margin-bottom: 16px;
+  padding: 10px;
+  margin: 16px auto;
   font-size: 1.5em;
   background: url(/images/go.gif) no-repeat;
+}
+#timer #type {
+  border: none;
 }
 #timer #go:hover {
   color: #000;
@@ -340,11 +344,14 @@
 #timer #go.countdown {
   background-position: -600px;
 }
-#timer #go.running {
+#timer #go.running, #timer #type {
   background-position: -800px;
 }
-#timer #go.countdown, #timer #go.running {
+#timer #go.countdown, #timer #go.running, #timer #type {
   color: #fff;
+}
+#timer table {
+  margin-top: 16px;
 }
 #timer #average {
   padding-top: 0.5em;

@@ -5,7 +5,7 @@
   interval = null;
   
   function toggleTimer() {
-    if ($("#timer tr.done").length != <%= @puzzle.attempt_count %>)
+    if ($("#dynamic").is(":visible") && $("#timer tr.done").length != <%= @puzzle.attempt_count %>)
       this.interval == null ? startTimer() : stopTimer();
   }
   function startTimer() {
@@ -39,16 +39,29 @@
     }
     else {
       var time = (new Date().getTime() - startTime);
-      $("#go").text(formatTime(time));
-      $("#timer tr.done:last .flags .delete").hide();
-      $("#timer tr:not(.done):first").find(".milliseconds").text(time)
-      $("#timer tr:not(.done):first").addClass("done").find(".time").text(formatTime(time));
+      addTime(time);
       $("#go").removeClass("running");
-      updateWorstAndBest();
-      updateAverage();
-      if ($("#timer tr.done").length < <%= @puzzle.attempt_count %>) {
-        updateScramble();
-      }
+    }
+  }
+  function insertTime() {
+    var time = $('#type').val();
+    if (isNaN(time)) {
+      alert('Please enter the time in milliseconds.');
+    }
+    else {
+      $('#type').val('');
+      addTime(time);
+    }
+  }
+  function addTime(time) {
+    $("#go").text(formatTime(time));
+    $("#timer tr.done:last .flags .delete").hide();
+    $("#timer tr:not(.done):first").find(".milliseconds").text(time)
+    $("#timer tr:not(.done):first").addClass("done").find(".time").text(formatTime(time));
+    updateWorstAndBest();
+    updateAverage();
+    if ($("#timer tr.done").length < <%= @puzzle.attempt_count %>) {
+      updateScramble();
     }
   }
   function getMilliseconds() {
@@ -122,7 +135,7 @@
     $("#scramble").text($("#timer tr:not(.done):first .scramble").text());
   }
   function commitTimes() {
-    $("#timer input").attr("disabled", "disabled");
+    $("#timer input[type=button]").attr("disabled", "disabled");
     var average = calculate<%= @puzzle.average_format.camelize %>();
     var map = {"average[time]": average, "average[dnf]": $("#average span").hasClass("dnf"), "average[comment]": $("#comment").val(), "authenticity_token": "<%= form_authenticity_token %>"};
     $("#timer tr.done").each(function(index) {
@@ -130,13 +143,14 @@
       map["singles[" + index + "][scramble]"] = $(this).find(".scramble").text();
       map["singles[" + index + "][dnf]"] = $(this).hasClass("dnf");
     });
-    $.post("<%= kind_puzzle_times_path %>", map, null, "script");
+    var dynamic = $("#dynamic").is(":visible");
+    $.post("<%= kind_puzzle_times_path %>", map, function() { if (!dynamic) $("#timer .toggle").click() }, "script");
   }
   function updateAverage() {
     if ($("#timer tr.done").length == <%= @puzzle.attempt_count %>) {
-      $("#timer input").removeAttr("disabled");
+      $("#timer input[type=button]").removeAttr("disabled");
     } else {
-      $("#timer input").attr("disabled", "disabled");
+      $("#timer input[type=button]").attr("disabled", "disabled");
     }
     <% case @puzzle.average_format
          when 'best_of' %>

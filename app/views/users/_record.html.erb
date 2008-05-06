@@ -3,9 +3,13 @@
     <div class="puzzle" style="background-image: url(<%= url_for_file_column record.puzzle, :image %>)">
       <%= "<div class='kind' style='background-image: url(#{url_for_file_column record.puzzle.kind, :image})'></div>" if record.puzzle.kind.image? %>
     </div>
-    
   </th>
-  <td><cite><%= moderator? ? link_to(record.puzzle.name, user_kind_puzzle_averages_path(record.user, record.puzzle.kind, record.puzzle)) : h(record.puzzle.name) %> <small>(<%=h record.puzzle.kind.name %>)</small></cite></td>
+  <td>
+    <cite>
+      <%= link_to_if moderator?, record.puzzle.name, user_kind_puzzle_averages_path(record.user, record.puzzle.kind, record.puzzle) %>
+      <small>(<%=h record.puzzle.kind.name %>)</small>
+    </cite>
+  </td>
   <td><strong><%=t record.time %></strong></td>
   <td><small><%=d record.created_at %></small></td>
 </tr>
