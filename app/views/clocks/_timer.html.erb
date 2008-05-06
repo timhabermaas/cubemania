@@ -12,7 +12,6 @@
     <form onsubmit="insertTime(); return false">
       <div><%= text_field_tag 'type' %></div>
     </form>
-    <%= javascript_tag "$('#type').focus()" if params[:input_method] == 'manual' %>
     <p class="help">
       Enter the time in <strong>milliseconds</strong> and press return to add it.
     </p>

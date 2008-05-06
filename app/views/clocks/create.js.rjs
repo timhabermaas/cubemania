@@ -2,6 +2,7 @@ if @average.errors.empty?
   page << "document.getElementById(\"chart\").addItem(\"#{partial 'averages/average.xml.erb'}\");"
   page['timer'].replaceWith partial('timer.html.erb')
   page << "updateScramble()"
+  page['type'].focus if params[:input_method] == 'manual'
   flash[:notice] = @average.notice
 else
   page['timer input'].removeAttr('disabled')
