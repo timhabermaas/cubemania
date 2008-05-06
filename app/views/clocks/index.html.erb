@@ -49,8 +49,8 @@
       alert('Please enter the time in milliseconds.');
     }
     else {
-      $('#type').val('');
       addTime(time);
+      $('#type').val('');
     }
   }
   function addTime(time) {
@@ -149,8 +149,10 @@
   function updateAverage() {
     if ($("#timer tr.done").length == <%= @puzzle.attempt_count %>) {
       $("#timer input[type=button]").removeAttr("disabled");
+      $('#type').attr("disabled", "disabled");
     } else {
       $("#timer input[type=button]").attr("disabled", "disabled");
+      $('#type').removeAttr("disabled", "disabled").focus();
     }
     <% case @puzzle.average_format
          when 'best_of' %>
@@ -225,6 +227,14 @@
       seconds = seconds - minutes * 60;
       var s = seconds < 10 ? "0" : "";
       return minutes + ":" + s + seconds.toFixed(2);
+    }
+  }
+  function toggleInputMethod() {
+    $('#dynamic').toggle();
+    $('#manual').toggle();
+    $('#type').focus();
+    if ($("#timer tr.done").length == <%= @puzzle.attempt_count %>) {
+      $('#type').attr("disabled", "disabled");
     }
   }
   $(document).keyup(function(event) {
