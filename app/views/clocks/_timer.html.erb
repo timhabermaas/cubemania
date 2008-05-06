@@ -1,21 +1,22 @@
 <div id="timer">
   <p id="scramble"></p>
-  <div id="dynamic">
+  <div id="dynamic"<%= "style='display: none'" if params[:input_method] == 'manual' %>>
     <%= link_to_function 'GO!', 'toggleTimer()', :id => 'go' %>
     <p class="help">
       Press <strong>space</strong>&#47;<strong>s</strong> to start or stop the timer.
       There will be <%= @puzzle.countdown.zero? ? 'no countdown' : "a <strong>countdown</strong> of #{pluralize @puzzle.countdown, 'second'}" %>.
     </p>
+    <%= link_to_function 'Set times manually?', 'toggleInputMethod()', :class => 'toggle' %>
   </div>
-  <div id="manual" style="display: none">
+  <div id="manual"<%= "style='display: none'" unless params[:input_method] == 'manual' %>>
     <form onsubmit="insertTime(); return false">
       <div><%= text_field_tag 'type' %></div>
     </form>
     <p class="help">
       Enter the time in <strong>milliseconds</strong> and press return to add it.
     </p>
+    <%= link_to_function 'Changed your mind?', 'toggleInputMethod()', :class => 'toggle' %>
   </div>
-  <%= link_to_function 'Set times manually?', "$(this).textToggle('Set times manually?', 'Changed your mind?'); toggleInputMethod()", :class => 'toggle' %>
   <table>
   <%- @puzzle.attempt_count.times do |index| -%>
     <tr>

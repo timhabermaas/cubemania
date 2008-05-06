@@ -143,8 +143,8 @@
       map["singles[" + index + "][scramble]"] = $(this).find(".scramble").text();
       map["singles[" + index + "][dnf]"] = $(this).hasClass("dnf");
     });
-    var dynamic = $("#dynamic").is(":visible");
-    $.post("<%= kind_puzzle_times_path %>", map, function() { if (!dynamic) $("#timer .toggle").click() }, "script");
+    map["input_method"] = $("#dynamic").is(":visible") ? 'dynamic' : 'manual';
+    $.post("<%= kind_puzzle_times_path %>", map, null, "script");
   }
   function updateAverage() {
     if ($("#timer tr.done").length == <%= @puzzle.attempt_count %>) {
