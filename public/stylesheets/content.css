@@ -260,6 +260,12 @@
   width: 137px;
   margin-left: 13px;
 }
+#times #formats {
+  clear: both;
+  display: block;
+  padding-top: 1em;
+  text-align: center;
+}
 
 #timer {
   margin-left: 768px;
