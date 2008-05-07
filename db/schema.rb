@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 33) do
+ActiveRecord::Schema.define(:version => 34) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                                             :null => false
@@ -84,6 +84,7 @@ ActiveRecord::Schema.define(:version => 33) do
     t.datetime "created_at"
     t.string   "role",               :limit => 16, :default => "user"
     t.integer  "averages_count",                   :default => 0,      :null => false
+    t.string   "wca"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

@@ -8,24 +8,24 @@
   padding: 32px 16px;
 }
 #content h1 {
-  font-size: 1.75em;
+  font-size: 2em;
   margin-bottom: 1em;
   color: #df0;
 }
 #content h2 {
-  font-size: 1.5em;
+  font-size: 1.25em;
   margin: 1em 0;
   padding-bottom: 0.25em;
   color: #df0;
   border-bottom: 2px solid;
 }
 #content h3 {
-  font-size: 1.5em;
+  font-size: 1.25em;
   margin: 1em 0;
   color: #df0;
 }
 #content h4 {
-  font-size: 1.25em;
+  font-size: 1.125em;
   color: #df0;
   margin-bottom: 1em;
 }
@@ -371,13 +371,28 @@
   display: inline;
   margin-right: 16px;
 }
+#wca {
+  margin: 3em 0;
+  text-align: center;
+}
+#wca a.logo {
+  padding: 15px 25px;
+  margin-right: 1em;
+  background: transparent url(/images/wca.gif) center no-repeat;
+}
+#wca a {
+  font-size: 1.25em;
+}
 
 #records {
   margin: 0 auto;
-  line-height: 1.5em;
+}
+#records thead th {
+  color: #df0;
 }
 #records th, #records td {
   text-align: center;
+  padding: 0.25em 1em;
 }
 #records td {
   padding-left: 1em;
@@ -387,6 +402,9 @@
 }
 #records cite {
   text-transform: capitalize;
+}
+#records .odd {
+  background-color: #517397;
 }
 #records .puzzle {
   margin: 0.25em 0;

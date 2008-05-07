@@ -15,6 +15,11 @@
     <%= form.error_message_on :bot_email %>
   </p>
   <p>
+    <%= form.label :wca, 'Your WCA Profile' %>
+    <%= form.text_field :wca %>
+    <%= form.error_message_on :wca %>
+  </p>
+  <p>
     <%= form.label :password %>
     <%= form.password_field :password %>
     <%= form.error_message_on :password %>
