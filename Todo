@@ -1,32 +1,24 @@
-User Bereicht (Link YouTube Playlist)
-
-
 * Admin-Interface
 * Loeschen von Usern für Moderatoren
 * Bei Rekorden die Einzelzeiten auflisten
 * Bild vom gecrambleten puzzle (schwierig, aber bestimmt spaßig ;))
 
-Stop your times, track your progress in a chart, compare yourself with others and get the record!
-
 
 Bugs:
 
-  average.xml: comment, encode '
-  comment='<%=h average.comment %>'
   chart: coloring
   IE6: We had 20 unique visitors who used IE6. Grml.
-  
 
 Enhancements:
 
-  Chart: Comment in ToolTip
   Clocks Create: Slide Notice Up / Down
-  User: list single record
 
 New Features:
 
   Admin Buttons
   Timer: Allow Rolling Average
   Puzzle: Square-1 + 6x6 + 7x7 Scrambler
-  
+  User Show: YouTube Playlist
+
+
 Add cubemania to portfolio
