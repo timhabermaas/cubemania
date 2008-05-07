@@ -27,7 +27,7 @@ class User < ActiveRecord::Base
   validates_exclusion_of :name, :in => %w(admin moderator), :message => "you don't belong here"
   validates_format_of :email, :with => /^\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z$/i, :message => 'must be valid'
   validates_length_of :bot_email, :is => 0, :message => 'bots must not register'
-  validates_length_of :wca, :maximum => 255
+  validates_length_of :wca, :maximum => 20
   validates_format_of :password, :with => /^([\x20-\x7E]){4,16}$/, :message => 'must be 4 to 16 characters', :if => :password_is_being_updated?
   validates_confirmation_of :password
 
