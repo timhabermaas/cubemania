@@ -17,7 +17,7 @@
 <%- elsif not @user.wca.blank? -%>
 <div id="wca">
   <%= link_to '&nbsp;', 'http://www.worldcubeassociation.org', :class => 'logo' %>
-  <%= link_to "#{@user.name}'s World Cube Association Profile", @user.wca %>
+  <%= link_to "#{@user.name}'s World Cube Association Profile", wca(@user.wca) %>
 </div>
 <%- end -%>
 

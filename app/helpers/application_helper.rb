@@ -82,6 +82,10 @@ module ApplicationHelper
   def m(text)
     markdown text
   end
+  
+  def wca(id)
+    'http://www.worldcubeassociation.org/results/p.php?i=' + id
+  end
 
   def li_for(record, *args, &block)
     content_tag_for :li, record, *args, &block
