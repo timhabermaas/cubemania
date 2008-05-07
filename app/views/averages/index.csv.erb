@@ -1,5 +1,6 @@
-Date,Average,<%= (0..@averages.sort_by{|a| a.singles.size}.last.singles.size - 1).to_a.join(',,') %>
+<%- count = @averages.sort_by{|a| a.singles.size}.last.singles.size -%>
+Date,Average Time,Attempt Count,Singles<%= ',' * (count - 1)  %>,Scrambles
 <%- for average in @averages -%>
 <%-   singles = average.singles -%>
-<%=   average.created_at.to_s + ',' + average.time.to_s + ',' + singles.map {|s| "#{s.time},#{s.scramble}"}.join(',') %>
+<%=   [average.created_at.to_s, average.time.to_s, singles.length, singles.map(&:time), singles.map(&:scramble)].flatten.join(',') %>
 <%- end -%>
