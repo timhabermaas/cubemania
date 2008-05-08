@@ -72,11 +72,77 @@ class Puzzle < ActiveRecord::Base
         axis = (axis + rand(turns.size - 1) + 1) % turns.size
         turns[axis] + variants.rand
       end
-      scramble.join(" ")
+      scramble.join(' ')
     end
     
     def square1_scramble
-    	"blub"
+      scramble = []
+      degrees = {:corner => 60, :edge => 30}
+    	up = (0..7).map{|i| i%2 == 0 ? 30 : 60}
+    	down = []
+      down.replace up
+      scramble_length.times do
+        up_move = check_moves(up).rand
+        down_move = check_moves(down).rand
+        up_move = 0 if up_move.nil?
+        down_move = 0 if down_move.nil? # TODO avoid (0,0)
+        scramble << [up_move, down_move * -1] # TODO return moves in degrees*30 and not steps
+        do_move up, up_move
+        do_move down, down_move
+        do_slice(up, down)
+      end
+      scramble.map {|s| "(#{s.join(',')})"}.join(" / ")
+    end
+    
+    def check_moves(layer)
+      layer_moves = []
+      layer.length.times do |start|
+        sum = 0
+        possible = false
+        layer.length.times do |i|
+          sum += layer[(start + i) % layer.length]
+          possible = true if sum == 180
+        end
+        if start >= (layer.length / 2)
+          start -= layer.length
+        end
+        layer_moves << start if possible
+      end
+      layer_moves
+    end
+    
+    def do_move(layer, l)
+      a = []
+      l %= layer.length
+      if l < 0
+        l *= -1
+        l.times do
+          a << layer.pop
+        end
+        a.reverse!
+        return layer.replace(a + layer)
+      else
+        l.times do
+          a << layer.shift
+        end
+        return layer.replace(layer + a)
+      end
+    end
+    
+    def do_slice(up, down)
+      sum = 0
+      to_down = up.select {|u| sum += u; sum <= 180}
+      to_down.reverse!
+      sum = 0
+      up.delete_if {|u| sum += u; sum <= 180}
+      
+      sum = 0
+      to_up = down.select {|d| sum += d; sum <= 180}
+      to_up.reverse!
+      sum = 0
+      down.delete_if {|d| sum += d; sum <= 180}
+      up.insert(0, to_up).flatten!
+      down.insert(0, to_down).flatten!
     end
     
     def clock_scramble

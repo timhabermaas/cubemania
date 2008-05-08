@@ -16,7 +16,7 @@ module Autotest::Growl
 		end
 
 		if counts[:failures] > 0 || counts[:errors] > 0
-			growl "Test Results", "#{output}", '~/Pictures/Icons/Autotest/rails_fail.png', 2, "-s"
+			growl "Test Results", "#{output}", '~/Pictures/Icons/Autotest/rails_fail.png', 2
 		else
 			growl "Test Results", "#{output}", '~/Pictures/Icons/Autotest/rails_ok.png'
 		end
