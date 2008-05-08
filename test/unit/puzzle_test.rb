@@ -41,15 +41,15 @@ class PuzzleTest < ActiveSupport::TestCase
   def test_square_one_check_moves
     Puzzle.publicize_methods do
       layer = [60,60,30,60,30,30,60,30]
-      assert Puzzle.new.check_moves(layer) == [1,3,-3,-1]
+      assert Puzzle.new.possible_moves(layer) == [1,3,-3,-1]
       layer = [60,60,60,60,60,60]
-      assert Puzzle.new.check_moves(layer) == [0,1,2,-3,-2,-1]
+      assert Puzzle.new.possible_moves(layer) == [0,1,2,-3,-2,-1]
       layer = [30,60,30,30,60,60,30,60]
-      assert Puzzle.new.check_moves(layer) == [1,2,3,-3,-2,-1]
+      assert Puzzle.new.possible_moves(layer) == [1,2,3,-3,-2,-1]
       layer = [30,60,30,60,30,60,60,30]
-      assert Puzzle.new.check_moves(layer) == [0,1,2,-4,-3,-2]
+      assert Puzzle.new.possible_moves(layer) == [0,1,2,-4,-3,-2]
       layer = [60,60,130]
-      assert Puzzle.new.check_moves(layer) == []
+      assert Puzzle.new.possible_moves(layer) == []
     end
   end
   def test_square_one
@@ -58,9 +58,9 @@ class PuzzleTest < ActiveSupport::TestCase
       layer1 = [30,60,30,60,30,60,30,60]
       layer2 = [30,60,30,60,30,60,30,60]
       100.times do
-        up_move = p.check_moves(layer1).rand
+        up_move = p.possible_moves(layer1).rand
         up_move = 0 if up_move.nil?
-        down_move = p.check_moves(layer2).rand
+        down_move = p.possible_moves(layer2).rand
         down_move = 0 if down_move.nil?
         p.do_move layer1, up_move
         p.do_move layer2, down_move

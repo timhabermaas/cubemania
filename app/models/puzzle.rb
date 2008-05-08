@@ -82,8 +82,8 @@ class Puzzle < ActiveRecord::Base
     	down = []
       down.replace up
       scramble_length.times do
-        up_move = check_moves(up).rand
-        down_move = check_moves(down).rand
+        up_move = possible_moves(up).rand
+        down_move = possible_moves(down).rand
         up_move = 0 if up_move.nil?
         down_move = 0 if down_move.nil? # TODO avoid (0,0)
         scramble << [up_move, down_move * -1] # TODO return moves in degrees*30 and not steps
@@ -94,7 +94,7 @@ class Puzzle < ActiveRecord::Base
       scramble.map {|s| "(#{s.join(',')})"}.join(" / ")
     end
     
-    def check_moves(layer)
+    def possible_moves(layer)
       layer_moves = []
       layer.length.times do |start|
         sum = 0
