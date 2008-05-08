@@ -1,7 +1,9 @@
+<%- unless @puzzle.average_format == 'best_of' -%>
 <p class="tabs">
   <%= link_to 'Single', kind_puzzle_records_path(:type => 'single'), :class => ('checked' if type? :single) %>
   <%= link_to 'Average', kind_puzzle_records_path(:type => 'average'), :class => ('checked' if type? :average) %>
 </p>
+<%- end -%>
 
 <%- if @records.empty? -%>
 <p class="challenge">
