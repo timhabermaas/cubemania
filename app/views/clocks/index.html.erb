@@ -241,9 +241,6 @@
     if (event.keyCode == 32 || event.keyCode == 83) {
       toggleTimer();
     }
-    if (event.keyCode == 13 && $("#timer tr.done").length == <%= @puzzle.attempt_count %>) {
-      commitTimes();
-    }
   });
   updateScramble();
 <%- end -%>
