@@ -1,6 +1,13 @@
 <%- count = @averages.sort_by{|a| a.singles.size}.last.singles.size -%>
-Date,Average Time,Attempt Count,Singles<%= ',' * (count - 1)  %>,Scrambles
+Date,Average,DNF,<%= (%w(Single DNF Scramble) * count).join ',' %>,Comment
 <%- for average in @averages -%>
 <%-   singles = average.singles -%>
-<%=   [average.created_at.to_s, average.time.to_s, singles.length, singles.map(&:time), singles.map(&:scramble)].flatten.join(',') %>
+<%-   dnf = average.dnf? ? 'X' : '' -%>
+<%-   output = [average.created_at.to_s, average.time.to_s, dnf] -%>
+<%-   for single in singles -%>
+<%-     dnf = single.dnf? ? 'X' : '' -%>
+<%-     output << [single.time, dnf, single.scramble] -%>
+<%-   end -%>
+<%-   comment = average.comment.nil? ? '' : '"' + average.comment.gsub('"','""') + '"' -%>
+<%=   (output << comment).flatten.join(',') %>
 <%- end -%>
