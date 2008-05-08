@@ -31,7 +31,7 @@ class Puzzle < ActiveRecord::Base
         megaminx_scramble
       when 'pyraminx'
         pyraminx_scramble
-      when 'square one'
+      when 'square-1'
       	square1_scramble
       when 'clock'
       	clock_scramble
