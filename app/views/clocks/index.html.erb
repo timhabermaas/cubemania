@@ -62,8 +62,6 @@
     updateAverage();
     if ($("#timer tr.done").length < <%= @puzzle.attempt_count %>) {
       updateScramble();
-    } else {
-      $("#timer input[type=button]").focus();
     }
   }
   function getMilliseconds() {
