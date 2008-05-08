@@ -22,7 +22,7 @@ class Puzzle < ActiveRecord::Base
   validates_file_format_of :image, :in => ['gif', 'png']
   
   def scramble
-    case name
+    case name.downcase
       when '2x2x2', '3x3x3'
         cube_scramble [%w{R L}, %w{F B}, %w{D U}]
       when '4x4x4', '5x5x5'
