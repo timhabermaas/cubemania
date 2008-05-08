@@ -77,21 +77,25 @@ class Puzzle < ActiveRecord::Base
     
     def square1_scramble
       scramble = []
-      degrees = {:corner => 60, :edge => 30}
-    	up = (0..7).map{|i| i%2 == 0 ? 30 : 60}
-    	down = []
-      down.replace up
+    	up_layer = (0..7).map{|i| i%2 == 0 ? 30 : 60}
+    	down_layer = [up_layer].flatten!
       scramble_length.times do
-        up_move = possible_moves(up).rand
-        down_move = possible_moves(down).rand
-        up_move = 0 if up_move.nil?
-        down_move = 0 if down_move.nil? # TODO avoid (0,0)
-        scramble << [up_move, down_move * -1] # TODO return moves in degrees*30 and not steps
-        do_move up, up_move
-        do_move down, down_move
-        do_slice(up, down)
+        up_moves = possible_moves up_layer
+        down_moves = possible_moves down_layer
+        up_move = up_moves.rand
+        down_moves.delete 0 if up_move == 0
+        down_move = down_moves.rand
+        scramble << [humanize_sq_one_move(up_layer, up_move), humanize_sq_one_move(down_layer, down_move) * -1] # -1, dadurch gibt's -6...
+        do_move up_layer, up_move
+        do_move down_layer, down_move
+        do_slice(up_layer, down_layer)
       end
-      scramble.map {|s| "(#{s.join(',')})"}.join(" / ")
+      scramble.map {|s| "(#{s.join(',')})"}.join(' ')
+    end
+    
+    def humanize_sq_one_move(layer, move)
+      move = layer[0..move - 1].inject(0){|sum, x| x == 30 ? sum + 1 : sum + 2} unless move == 0
+      move > 6 ? move - 12 : move
     end
     
     def possible_moves(layer)
@@ -103,33 +107,23 @@ class Puzzle < ActiveRecord::Base
           sum += layer[(start + i) % layer.length]
           possible = true if sum == 180
         end
-        if start >= (layer.length / 2)
-          start -= layer.length
-        end
         layer_moves << start if possible
       end
       layer_moves
     end
     
+    # replace with Array.slice_right?
     def do_move(layer, l)
       a = []
       l %= layer.length
-      if l < 0
-        l *= -1
-        l.times do
-          a << layer.pop
-        end
-        a.reverse!
-        return layer.replace(a + layer)
-      else
-        l.times do
-          a << layer.shift
-        end
-        return layer.replace(layer + a)
+      l.times do
+        a << layer.shift
       end
+      layer.replace(layer + a)
     end
     
     def do_slice(up, down)
+      # duplicated code...
       sum = 0
       to_down = up.select {|u| sum += u; sum <= 180}
       to_down.reverse!
