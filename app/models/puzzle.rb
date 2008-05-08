@@ -79,7 +79,8 @@ class Puzzle < ActiveRecord::Base
       scramble = []
     	up_layer = (0..7).map{|i| i%2 == 0 ? 30 : 60}
     	down_layer = [up_layer].flatten!
-      scramble_length.times do
+    	length = 0
+      begin
         up_moves = possible_moves up_layer
         down_moves = possible_moves down_layer
         up_move = up_moves.rand
@@ -88,8 +89,11 @@ class Puzzle < ActiveRecord::Base
         scramble << [humanize_sq_one_move(up_layer, up_move), humanize_sq_one_move(down_layer, down_move) * -1] # -1, dadurch gibt's -6...
         do_move up_layer, up_move
         do_move down_layer, down_move
+        length += up_move == 0 ? 0 : 1
+        length += down_move == 0 ? 0 : 1
         do_slice(up_layer, down_layer)
-      end
+        length += 1
+      end while length <= scramble_length + 1
       scramble.map {|s| "(#{s.join(',')})"}.join(' ')
     end
     
