@@ -25,6 +25,6 @@ one_handed.puzzles.each do |puzzle|
 end
 
 feet.puzzles.each do |puzzle|
-  puzzle.update_attribute :attempt_count, 5
-  puzzle.update_attribute :average_format, 'average'
+  puzzle.update_attribute :attempt_count, 3
+  puzzle.update_attribute :average_format, 'mean'
 end
