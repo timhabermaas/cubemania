@@ -12,7 +12,7 @@
     if (<%= @puzzle.countdown %> == 0) {
       startTime = new Date().getTime();
       $("#go").addClass("running");
-      interval = setInterval(countUp, 1);
+      interval = setInterval(countUp, 10);
     } else {
       $("#go").text(<%= @puzzle.countdown %>).addClass("countdown");
       interval = setInterval(countDown, 1000);
@@ -25,7 +25,7 @@
       $("#go").removeClass("countdown").addClass("running");
       clearInterval(interval);
       startTime = new Date().getTime();
-      interval = setInterval(countUp, 1);
+      interval = setInterval(countUp, 10);
     }
   }
   function countUp() {
@@ -46,10 +46,10 @@
   function insertTime() {
     var time = $('#type').val();
     if (isNaN(time)) {
-      alert('Please enter the time in milliseconds.');
+      alert('Please enter the time in seconds.');
     }
     else {
-      addTime(time);
+      addTime(time * 1000);
       $('#type').val('');
     }
   }
