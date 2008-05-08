@@ -49,7 +49,7 @@
       alert('Please enter the time in seconds.');
     }
     else {
-      addTime(time * 1000);
+      addTime(Math.round(time * 1000));
       $('#type').val('');
     }
   }
