@@ -11,8 +11,6 @@ speed.puzzles.find_by_name('clock').update_attribute :attempt_count, 3
 speed.puzzles.find_by_name('clock').update_attribute :average_format, 'mean'
 speed.puzzles.find_by_name('megaminx').update_attribute :attempt_count, 3
 speed.puzzles.find_by_name('megaminx').update_attribute :average_format, 'mean'
-speed.puzzles.find_by_name('square-1').update_attribute :attempt_count, 3
-speed.puzzles.find_by_name('square-1').update_attribute :average_format, 'mean'
 
 blindfolded.puzzles.each do |puzzle|
   puzzle.update_attribute :attempt_count, 3
