@@ -1,5 +1,5 @@
 class PuzzlesController < ResourceController::Base
-  permit :moderator
+  permit :admin
 
   belongs_to :kind
   
