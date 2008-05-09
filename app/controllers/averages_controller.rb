@@ -12,8 +12,8 @@ class AveragesController < ApplicationController
       format.csv do
         @averages = @user.averages.for params[:puzzle_id], true
         if @averages.empty?
-          flash[:notice] = "You don't have any times, use the timer!"
-          redirect_to kind_puzzle_times_path params[:kind_id], params[:puzzle_id]
+          flash[:notice] = 'You have no times yet. Use the timer!'
+          redirect_to kind_puzzle_times_path
         end
         response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
         response.headers['Content-Disposition'] = "attachment; filename=#{@puzzle.kind.name}_#{@puzzle.name}.csv"
