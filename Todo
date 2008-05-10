@@ -14,6 +14,7 @@ Enhancements:
 
   Disable Space Bar in Timer when Comment Text Field has focus
   Clocks Create: Slide Notice Up / Down
+  Login: Add "remember me"
 
 New Features:
 
@@ -21,3 +22,7 @@ New Features:
   Timer: Allow Rolling Average
   Puzzle: 6x6 + 7x7 Scrambler
   User Show: YouTube Playlist
+
+Tasks:
+
+  Puzzle: Add Magic + Master Magic (i just need the images ;))
