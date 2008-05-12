@@ -1,5 +1,31 @@
 COMPETITIONS!
 
+Some basic thoughts:
+* Every user can create a competition and becomes the competition owner.
+* Each competition has several "competition events" (e.g. weekly contest #31 of the p0rn0 competition)
+* Every user can take part in several competitions (competitions_users table)
+* Each competition can have any amount of puzzles (1 to Puzzle.count) (competition_puzzles table)
+* Competitions are held once per week, once per day or just once in earth's life ;) (competitions.duration(?))
+* Each Competition event must have equal scrambles for each competitor.
+* Maybe we don't need the competition_events table if we use clocks.created_at to split all solves for a competition into different weeks.
+
+Every week happens the following (if we use an extra competition_events table):
+* create a new compeition event for the competition and set it's expire_date.
+ (if we don't use an extra competition_events table):
+* save the scrambles for each puzzle and each attempt somewhere
+
+Comeptition#show:
+* Equal to timer, except: replace the chart with the current results of the competitors and remove/mark all puzzles which aren't part of
+  the competition. Also: Disable the timer/submit button after the competitor has submitted his result.
+
+Some further thoughts for future releases:
+* The winner gets x points, the second one x*0.5 points, the third one 1/3*x...
+* private compeitions (password protected/invitatin only)
+* comment feature for each competition event. to discuss easy scrambles, awesome solves and ...
+
+Competition conclusion:
+* OMG! Let's start simple...
+
 
 * Admin-Interface
 * Loeschen von Usern für Moderatoren
@@ -19,6 +45,7 @@ Enhancements:
   Clocks Create: Slide Notice Up / Down
   Login: Add "remember me"
   DateTimes: Add TimeZones
+  ESL-like awards: Most solves/day, ...
 
 New Features:
 
@@ -27,6 +54,3 @@ New Features:
   Puzzle: 6x6 + 7x7 Scrambler
   User Show: YouTube Playlist
   Shoutbox (Live User Interaction)
-  
-Tim's Tasks:
-  Remove scramble tag at timer, if there's no scramble
