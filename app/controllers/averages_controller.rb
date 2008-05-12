@@ -12,7 +12,7 @@ class AveragesController < ApplicationController
       format.csv do
         @averages = @user.averages.for params[:puzzle_id], true
         response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
-        response.headers['Content-Disposition'] = "attachment; filename=#{@puzzle.kind.name}_#{@puzzle.name}.csv"
+        response.headers['Content-Disposition'] = 'attachment; filename="' + @puzzle.kind.name + '_' + @puzzle.name + '.csv"'
       end
     end
   end
