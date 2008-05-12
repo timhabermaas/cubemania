@@ -1,4 +1,4 @@
-<%- count = @averages.sort_by{|a| a.singles.size}.last.singles.size -%>
+<%- count = @averages.empty? ? 0 : @averages.sort_by{|a| a.singles.size}.last.singles.size -%>
 Date,Average,DNF,<%= (%w(Single DNF Scramble) * count).join ',' %>,Comment
 <%- for average in @averages -%>
 <%-   singles = average.singles -%>
