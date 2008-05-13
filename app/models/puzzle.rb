@@ -118,29 +118,19 @@ class Puzzle < ActiveRecord::Base
     
     # replace with Array.slice_right?
     def do_move(layer, l)
-      a = []
       l %= layer.length
       l.times do
-        a << layer.shift
+        layer << layer.shift
       end
-      layer.replace(layer + a)
+      layer
     end
-    
+
     def do_slice(up, down)
-      # duplicated code...
       sum = 0
-      to_down = up.select {|u| sum += u; sum <= 180}
-      to_down.reverse!
-      sum = 0
-      up.delete_if {|u| sum += u; sum <= 180}
-      
-      sum = 0
-      to_up = down.select {|d| sum += d; sum <= 180}
-      to_up.reverse!
-      sum = 0
-      down.delete_if {|d| sum += d; sum <= 180}
-      up.insert(0, to_up).flatten!
-      down.insert(0, to_down).flatten!
+      small_up, big_up = up.partition {|n| sum += n; sum <= 180}
+      small_down, big_down = down.partition {|n| sum += n; sum <= 540}
+      up.replace(small_down.reverse + big_up)
+      down.replace(small_up.reverse + big_down)
     end
     
     def clock_scramble
