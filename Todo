@@ -24,7 +24,21 @@ Some further thoughts for future releases:
 * comment feature for each competition event. to discuss easy scrambles, awesome solves and ...
 
 Competition conclusion:
-* OMG! Let's start simple...
+* OMG! Let's start simple:
+
+competitions
+  - name
+  - format ('weekly', 'daily', 'once')
+  - user_id (owner)
+  
+competitions_users
+  - user_id
+  - competition_id
+
+competitions_puzzles
+  - user_id
+  - puzzle_id
+  - scrambles(?)
 
 
 * Admin-Interface
