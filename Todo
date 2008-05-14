@@ -31,7 +31,7 @@ competitions
   - format ('weekly', 'daily', 'once')
   - user_id (owner)
   
-competitions_users
+participations
   - user_id
   - competition_id
 
@@ -52,6 +52,7 @@ Bugs:
   chart: coloring
   chart: long comments
   IE6: We had 20 unique visitors who used IE6. Grml.
+  Windows Vista + Firefox: keyUp() triggers on keyDown
 
 Enhancements:
 
