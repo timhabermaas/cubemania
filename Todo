@@ -24,7 +24,8 @@ Some further thoughts for future releases:
 * comment feature for each competition event. to discuss easy scrambles, awesome solves and ...
 
 Competition conclusion:
-* OMG! Let's start simple:
+* OMG! Let's start simple.
+* Ich werde dich wieder auf den Boden der Tatsachen bringen. Keine Sorge! :P
 
 competitions
   - name
@@ -58,7 +59,6 @@ Enhancements:
 
   Disable Space Bar in Timer when Comment Text Field has focus
   Clocks Create: Slide Notice Up / Down
-  Login: Add "remember me"
   DateTimes: Add TimeZones
   ESL-like awards: Most solves/day, ...
   Users: Display ranking for each puzzle (puzzle.records.average.index(User.find_by_name('tim').averages.record(2) + 1)
