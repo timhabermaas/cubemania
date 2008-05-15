@@ -13,13 +13,13 @@ class User < ActiveRecord::Base
     def for(puzzle_id); find_all_by_puzzle_id puzzle_id, :order => 'time'; end
     def record(puzzle_id); find_by_puzzle_id_and_record puzzle_id, true; end
     def records; find_all_by_record true, :include => { :puzzle => :kind }, :order => 'puzzles.name, kinds.name'; end
-    def best(puzzle_id); find_by_puzzle_id puzzle_id, :conditions => ['dnf = ?', 'f'], :order => 'time'; end
+    def best(puzzle_id); find_by_puzzle_id puzzle_id, :conditions => ['dnf = ?', false], :order => 'time'; end
   end
   has_many :averages, :order => 'created_at desc', :dependent => :delete_all do
     def for(puzzle_id, include_singles = false); find_all_by_puzzle_id puzzle_id, :include => (include_singles ? :singles : nil); end
     def record(puzzle_id); find_by_puzzle_id_and_record puzzle_id, true; end
     def records; find_all_by_record true, :include => { :puzzle => :kind }, :order => 'puzzles.name, kinds.name'; end
-    def best(puzzle_id); find_by_puzzle_id puzzle_id, :conditions => ['dnf = ?', 'f'], :order => 'time'; end
+    def best(puzzle_id); find_by_puzzle_id puzzle_id, :conditions => ['dnf = ?', false], :order => 'time'; end
   end
   
   validates_uniqueness_of :name, :email, :case_sensitive => false, :message => 'is already in use by another user'
