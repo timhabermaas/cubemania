@@ -1,14 +1,23 @@
-if @average.errors.empty?
-  page << "document.getElementById(\"chart\").addItem(\"#{partial 'averages/average.xml.erb'}\");"
-  page['timer'].replaceWith partial('timer.html.erb')
-  page << "updateScramble()"
-  page['type'].focus if params[:input_method] == 'manual'
-  flash[:notice] = @average.notice
+unless @average.competition.nil?
+  if @average.errors.empty?
+    page.redirect_to kind_puzzle_competition_path @puzzle.kind, @puzzle, @average.competition
+  else
+    flash[:notice] = @average.errors.full_messages.join('<br/>')
+  end
 else
-  page['timer input'].removeAttr('disabled')
-  flash[:notice] = @average.errors.full_messages.join('<br/>')
+  if @average.errors.empty?
+    page << "document.getElementById(\"chart\").addItem(\"#{partial 'averages/average.xml.erb'}\");"
+    page['timer'].replaceWith partial('timer.html.erb')
+    page << "updateScramble()"
+    page['type'].focus if params[:input_method] == 'manual'
+    flash[:notice] = @average.notice
+  else
+    page['timer input'].removeAttr('disabled')
+    flash[:notice] = @average.errors.full_messages.join('<br/>')
+  end
+  page << "if ($('#notice')) $('#notice').remove();"
 end
-page << "if ($('#notice')) $('#notice').remove();"
+
 unless flash[:notice].nil?
   page['subnavigation'].after partial('layouts/notice.html.erb')
   flash.discard

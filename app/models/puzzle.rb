@@ -86,7 +86,7 @@ class Puzzle < ActiveRecord::Base
         up_move = up_moves.rand
         down_moves.delete 0 if up_move == 0
         down_move = down_moves.rand
-        scramble << [humanize_sq_one_move(up_layer, up_move), humanize_sq_one_move(down_layer, down_move) * -1] # -1, dadurch gibt's -6...
+        scramble << [humanize_sq_one_move(up_layer, up_move), humanize_sq_one_move(down_layer, down_move) * -1]
         do_move up_layer, up_move
         do_move down_layer, down_move
         length += up_move == 0 ? 0 : 1
@@ -116,7 +116,6 @@ class Puzzle < ActiveRecord::Base
       layer_moves
     end
     
-    # replace with Array.slice_right?
     def do_move(layer, l)
       l %= layer.length
       l.times do

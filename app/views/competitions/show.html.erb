@@ -1,0 +1,27 @@
+<h2><%= @competition.name %></h2>
+<table id="results">
+  <%= render :partial => 'records/record', :collection => @results %>
+</table>
+<%- if logged_in? and @competition.users.include? current_user and @results.select{|r| r.user == current_user}.empty? -%>
+  <%= partial 'clocks/timer' %>
+  <%= render(:partial => 'clocks/timer_js', :locals => { :competition_id => @competition.id }) %>
+<%- end -%>
+
+<div id="participation">
+  <h3>Competitors</h3>
+  <ul>
+  <%- @users.each do |user| -%>
+    <li>
+      <small><%= user.name %></small>
+    </li>
+  <%- end -%>
+  </ul>
+  <% if logged_in? and not @competition.users.include? current_user %>
+    <% form_for :participation, @participation, :url => participations_path(:puzzle_id => @puzzle, :kind_id => @puzzle.kind) do |form| %>
+      <%= form.hidden_field :competition_id, :value => @competition.id %>
+      <%= form.submit 'Take part' %>
+    <% end %>
+  <% elsif logged_in? and @competition.users.include? current_user %>
+    <%= link_to 'Leave Competition', @participation, :confirm => 'Are you sure?', :method => :delete %>
+  <% end %>
+</div>

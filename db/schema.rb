@@ -9,20 +9,21 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 34) do
+ActiveRecord::Schema.define(:version => 37) do
 
   create_table "clocks", :force => true do |t|
-    t.integer  "time",                                             :null => false
-    t.integer  "puzzle_id",                                        :null => false
+    t.integer  "time",                                                 :null => false
+    t.integer  "puzzle_id",                                            :null => false
     t.datetime "created_at"
-    t.integer  "user_id",                    :default => 0,        :null => false
-    t.string   "scramble",   :limit => 1024
-    t.string   "type",                       :default => "Single", :null => false
+    t.integer  "user_id",                        :default => 0,        :null => false
+    t.string   "scramble",       :limit => 1024
+    t.string   "type",                           :default => "Single", :null => false
     t.integer  "average_id"
-    t.boolean  "record",                     :default => false,    :null => false
-    t.boolean  "dnf",                        :default => false,    :null => false
+    t.boolean  "record",                         :default => false,    :null => false
+    t.boolean  "dnf",                            :default => false,    :null => false
     t.string   "comment"
     t.integer  "position"
+    t.integer  "competition_id"
   end
 
   add_index "clocks", ["user_id", "puzzle_id", "type", "created_at"], :name => "index_clocks_on_user_id_and_puzzle_id_and_type_and_created_at"
@@ -38,6 +39,14 @@ ActiveRecord::Schema.define(:version => 34) do
 
   add_index "comments", ["post_id", "created_at"], :name => "index_comments_on_post_id_and_created_at"
 
+  create_table "competitions", :force => true do |t|
+    t.string   "name",        :null => false
+    t.string   "description"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "items", :force => true do |t|
     t.string  "name",        :limit => 64,                 :null => false
     t.string  "description",                               :null => false
@@ -50,6 +59,12 @@ ActiveRecord::Schema.define(:version => 34) do
   create_table "kinds", :force => true do |t|
     t.string "name",  :limit => 64, :null => false
     t.string "image", :limit => 64
+  end
+
+  create_table "participations", :force => true do |t|
+    t.integer  "competition_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
   end
 
   create_table "posts", :force => true do |t|

@@ -1,3 +1,8 @@
-<p>
-  Stay tuned.
-</p>
+<ul>
+<%- for competition in @competitions -%>
+  <li>
+    <strong><%= link_to competition.name, kind_puzzle_competition_path(params[:kind_id] ||= 2, params[:puzzle_id] ||= 4, competition) %></strong>
+    <cite><%= competition.description %></cite>
+  </li>
+<%- end -%>
+</ul>

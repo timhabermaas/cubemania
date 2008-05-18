@@ -1,0 +1,15 @@
+<% form_for @competition, {:url => kind_puzzle_competitions_url} do |form| %>
+  <p>
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+    <%= form.error_message_on :name %>
+  </p>
+  <p>
+    <%= form.label :description %>
+    <%= form.text_field :description %>
+    <%= form.error_message_on :description %>
+  </p>
+  <p>
+    <%= form.submit action_label %>
+  </p>
+<% end %>
