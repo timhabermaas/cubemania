@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
   has_many :posts, :dependent => :nullify
   has_many :comments, :dependent => :nullify
   has_many :clocks
-  has_many :participations
+  has_many :participations, :dependent => :nullify
   has_many :competitions, :dependent => :nullify
   has_many :competition_participations, :through => :participations # i need a proper name...
   has_many :singles, :order => 'created_at desc', :dependent => :delete_all do

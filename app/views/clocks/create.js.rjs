@@ -1,10 +1,4 @@
-unless @average.competition.nil?
-  if @average.errors.empty?
-    page.redirect_to kind_puzzle_competition_path @puzzle.kind, @puzzle, @average.competition
-  else
-    flash[:notice] = @average.errors.full_messages.join('<br/>')
-  end
-else
+if @average.competition.nil?
   if @average.errors.empty?
     page << "document.getElementById(\"chart\").addItem(\"#{partial 'averages/average.xml.erb'}\");"
     page['timer'].replaceWith partial('timer.html.erb')
@@ -16,6 +10,12 @@ else
     flash[:notice] = @average.errors.full_messages.join('<br/>')
   end
   page << "if ($('#notice')) $('#notice').remove();"
+else
+  if @average.errors.empty?
+    page.redirect_to kind_puzzle_competition_path @puzzle.kind, @puzzle, @average.competition
+  else
+    flash[:notice] = @average.errors.full_messages.join('<br/>')
+  end
 end
 
 unless flash[:notice].nil?

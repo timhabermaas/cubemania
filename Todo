@@ -1,5 +1,8 @@
 COMPETITIONS!
 
+clock.rb: user_must_belong_to_competition wtf?
+participations: what for? why does the submitted time not suffice as participation indicator?
+
 Some basic thoughts:
 * Every user can create a competition and becomes the competition owner.
 * Each competition has several "competition events" (e.g. weekly contest #31 of the p0rn0 competition)
