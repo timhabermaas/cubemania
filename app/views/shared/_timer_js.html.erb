@@ -1,5 +1,6 @@
 <%- javascript_tag do -%>
   interval = null;
+  commentHasFocus = false;
   
   function toggleTimer() {
     if ($("#dynamic").is(":visible") && $("#timer tr.done").length != <%= @puzzle.attempt_count %>)
@@ -235,13 +236,19 @@
       $('#type').attr("disabled", "disabled");
     }
   }
+  $("#timer #comment").focus(function() {
+    commentHasFocus = true;
+  });
+  $("#timer #comment").blur(function() {
+    commentHasFocus = false;
+  });
   $(document).keydown(function(event) {
-    if (event.keyCode == 32) {
+    if (event.keyCode == 32 && !commentHasFocus) {
       return false;
     }
   });
   $(document).keyup(function(event) {
-    if (event.keyCode == 32 || event.keyCode == 83) {
+    if ((event.keyCode == 32 || event.keyCode == 83) && !commentHasFocus) {
       toggleTimer();
     }
   });
