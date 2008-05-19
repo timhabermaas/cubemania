@@ -1,4 +1,5 @@
 ActionController::Routing::Routes.draw do |map|
+
   map.root :controller => 'homes', :action => 'show'
 
   map.resource :home
@@ -22,6 +23,7 @@ ActionController::Routing::Routes.draw do |map|
   
   map.resources :competitions
   map.resources :participations
+  map.resources :puzzleipations
   
   map.resources :items
 
