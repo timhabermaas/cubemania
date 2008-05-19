@@ -8,7 +8,7 @@
   display: block;
   float: left;
 }
-#navigation #login {
+#navigation #login, #navigation #profile {
   float: right;
 }
 #navigation li a {
@@ -21,7 +21,7 @@
   color: #2f2f2f;
   background: #df0 url(/images/item.gif) repeat-x bottom;
 }
-#navigation #login a:hover, #navigation #login.checked a {
+#navigation #login a:hover, #navigation #login.checked a, #navigation #profile a:hover, #navigation #profile.checked a {
   color: #df0;
   background: none;
 }

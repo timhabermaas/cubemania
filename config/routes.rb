@@ -21,7 +21,6 @@ ActionController::Routing::Routes.draw do |map|
     end
   end
   
-  map.resources :competitions
   map.resources :participations
   map.resources :puzzleipations
   
