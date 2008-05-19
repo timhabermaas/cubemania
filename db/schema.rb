@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 37) do
+ActiveRecord::Schema.define(:version => 38) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                                                 :null => false
@@ -77,6 +77,11 @@ ActiveRecord::Schema.define(:version => 37) do
   end
 
   add_index "posts", ["created_at"], :name => "index_posts_on_created_at"
+
+  create_table "puzzleipations", :force => true do |t|
+    t.integer "puzzle_id",      :null => false
+    t.integer "competition_id", :null => false
+  end
 
   create_table "puzzles", :force => true do |t|
     t.string  "name",            :limit => 64,                        :null => false
