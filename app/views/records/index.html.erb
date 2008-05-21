@@ -1,13 +1,13 @@
 <%- unless @puzzle.average_format == 'best_of' -%>
 <p class="tabs">
-  <%= link_to 'Single', kind_puzzle_records_path(:type => 'single'), :class => ('checked' if type? :single) %>
-  <%= link_to @puzzle.average_format.titleize, kind_puzzle_records_path(:type => 'average'), :class => ('checked' if type? :average) %>
+  <%= link_to 'Single', puzzle_records_path(:type => 'single'), :class => ('checked' if type? :single) %>
+  <%= link_to @puzzle.average_format.titleize, puzzle_records_path(:type => 'average'), :class => ('checked' if type? :average) %>
 </p>
 <%- end -%>
 
 <%- if @records.empty? -%>
 <p class="challenge">
-  Be the first: <%= link_to 'Get the record!', kind_puzzle_times_path %>
+  Be the first: <%= link_to 'Get the record!', puzzle_times_path %>
 </p>
 <%- else -%>
 <table id="records">

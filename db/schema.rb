@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 38) do
+ActiveRecord::Schema.define(:version => 37) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                                                 :null => false
@@ -40,11 +40,13 @@ ActiveRecord::Schema.define(:version => 38) do
   add_index "comments", ["post_id", "created_at"], :name => "index_comments_on_post_id_and_created_at"
 
   create_table "competitions", :force => true do |t|
-    t.string   "name",        :null => false
+    t.string   "name",        :limit => 64,                     :null => false
     t.string   "description"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "puzzle_id",                 :default => 0,      :null => false
+    t.string   "repeat",      :limit => 32, :default => "once", :null => false
   end
 
   create_table "items", :force => true do |t|
@@ -61,12 +63,6 @@ ActiveRecord::Schema.define(:version => 38) do
     t.string "image", :limit => 64
   end
 
-  create_table "participations", :force => true do |t|
-    t.integer  "competition_id"
-    t.integer  "user_id"
-    t.datetime "created_at"
-  end
-
   create_table "posts", :force => true do |t|
     t.string   "title"
     t.text     "content"
@@ -77,11 +73,6 @@ ActiveRecord::Schema.define(:version => 38) do
   end
 
   add_index "posts", ["created_at"], :name => "index_posts_on_created_at"
-
-  create_table "puzzleipations", :force => true do |t|
-    t.integer "puzzle_id",      :null => false
-    t.integer "competition_id", :null => false
-  end
 
   create_table "puzzles", :force => true do |t|
     t.string  "name",            :limit => 64,                        :null => false

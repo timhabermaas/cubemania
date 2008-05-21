@@ -6,7 +6,7 @@
   </th>
   <td>
     <cite>
-      <%= link_to_if moderator?, record[:single].puzzle.name, user_kind_puzzle_averages_path(record[:single].user, record[:single].puzzle.kind, record[:single].puzzle) %>
+      <%= link_to_if moderator?, record[:single].puzzle.name, user_puzzle_averages_path(record[:single].user, record[:single].puzzle) %>
       <small>(<%=h record[:single].puzzle.kind.name %>)</small>
     </cite>
   </td>

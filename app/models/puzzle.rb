@@ -1,25 +1,22 @@
 class Puzzle < ActiveRecord::Base
+  FORMATS = %w{average mean best_of}
+
   belongs_to :kind, :order => 'name'
+  has_many :competitions, :dependent => :destroy
   has_many :records, :conditions => ['record = ?', true], :order => 'time', :class_name => 'Clock' do
     def single; @single ||= find_all_by_type 'Single', :include => :user; end
     def average; @average ||= find_all_by_type 'Average', :include => :user; end
   end
   has_many :clocks, :dependent => :delete_all
-  has_many :puzzleipations
-  has_many :competitions, :through => :puzzleipations
-  
+
   file_column :image, :store_dir => 'public/images/puzzles', :base_url => 'images/puzzles'
-  
-  def self.formats
-    %w{average mean best_of}
-  end
   
   validates_presence_of :name, :image, :attempt_count, :countdown, :kind_id
   validates_length_of :name, :maximum => 64
   validates_numericality_of :scramble_length, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 255, :only_integer => true
   validates_numericality_of :countdown, :greater_than_or_equal_to => 0, :only_integer => true
   validates_numericality_of :attempt_count, :greater_than => 0, :only_integer => true
-  validates_inclusion_of :average_format, :in => formats
+  validates_inclusion_of :average_format, :in => FORMATS
   validates_filesize_of :image, :in => 0..20.kilobytes
   validates_file_format_of :image, :in => ['gif', 'png']
   

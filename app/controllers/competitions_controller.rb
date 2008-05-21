@@ -1,25 +1,21 @@
-class CompetitionsController < ApplicationController
-  def index
-    @competitions = Competition.find :all, :order => 'created_at'
+class CompetitionsController < ResourceController::Base
+  belongs_to :puzzle
+
+  [update, create].each do |action|
+    action.wants.html { redirect_to puzzle_competition_path params[:puzzle_id], @competition }
   end
-  
-  def show
-    @competition = Competition.find params[:id], :include => :users
-    @puzzle = Puzzle.find params[:puzzle_id]
-    @users = @competition.users
-    @results = @competition.averages.for @puzzle
-    @participation = current_user.participations.find_by_competition_id @competition if logged_in?
-  end
-  
-  def new
-    @competition = Competition.new
-  end
-  
-  def create
-    @competition = current_user.competitions.build params[:competition]
-    puzzle = Puzzle.find params[:puzzle_id]
-    if @competition.save
-      redirect_to kind_puzzle_competition_path(params[:kind_id], params[:puzzle_id], @competition)
+
+  private
+    def collection
+      @collection ||= @puzzle.competitions.paginate :include => :user, :order => 'created_at desc', :page => params[:page], :per_page => 10
     end
-  end
+    
+    def object
+      @object ||= @puzzle.competitions.find params[:id], :include => :user
+    end
+    
+    def build_object
+      @object ||= current_user.competitions.build object_params
+      @object.puzzle_id = params[:puzzle_id]
+    end
 end

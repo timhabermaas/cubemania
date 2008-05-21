@@ -25,6 +25,6 @@ class AveragesController < ApplicationController
     @average = Average.find params[:id]
     @average.destroy
     flash[:notice] = 'Successfully removed!'
-    redirect_to user_kind_puzzle_averages_path
+    redirect_to user_puzzle_averages_path
   end
 end

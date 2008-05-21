@@ -1,4 +1,4 @@
-<% form_for @competition, {:url => kind_puzzle_competitions_url} do |form| %>
+<% form_for [@puzzle, @competition] do |form| %>
   <p>
     <%= form.label :name %>
     <%= form.text_field :name %>
@@ -6,8 +6,13 @@
   </p>
   <p>
     <%= form.label :description %>
-    <%= form.text_field :description %>
+    <%= form.text_area :description, :rows => 5 %>
     <%= form.error_message_on :description %>
+  </p>
+  <p>
+    <%= form.label :repeat %>
+    <%= form.select :repeat, Competition::REPEATS.collect { |f| [f.titleize, f] } %>
+    <%= form.error_message_on :repeat %>
   </p>
   <p>
     <%= form.submit action_label %>

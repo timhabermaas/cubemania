@@ -143,7 +143,7 @@
       <%= 'map["singles[" + index + "][competition_id]"] = ' + competition_id.to_s + ';' unless competition_id.nil? %>
     });
     map["input_method"] = $("#dynamic").is(":visible") ? 'dynamic' : 'manual';
-    $.post("<%= kind_puzzle_times_path params[:kind_id], params[:puzzle_id] %>", map, null, "script");
+    $.post("<%= puzzle_times_path params[:puzzle_id] %>", map, null, "script");
   }
   function updateAverage() {
     if ($("#timer tr.done").length == <%= @puzzle.attempt_count %>) {

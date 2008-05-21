@@ -16,7 +16,7 @@
   </p>
   <p>
     <%= form.label :average_format, 'Format' %>
-    <%= form.select :average_format, Puzzle.formats.collect { |f| [f.titleize, f] } %>
+    <%= form.select :average_format, Puzzle::FORMATS.collect { |f| [f.titleize, f] } %>
     <%= form.error_message_on :average_format %>
   </p>
   <p>
