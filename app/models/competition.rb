@@ -2,9 +2,7 @@ class Competition < ActiveRecord::Base
   REPEATS = %w{once daily weekly monthly}
 
   belongs_to :puzzle
-  has_many :averages, :dependent => :nullify do
-    def for(puzzle); find_all_by_puzzle_id puzzle, :order => 'time'; end
-  end
+  has_many :averages, :order => 'time', :dependent => :nullify
   has_many :singles, :dependent => :nullify
   belongs_to :user; attr_protected :user_id, :user
 
