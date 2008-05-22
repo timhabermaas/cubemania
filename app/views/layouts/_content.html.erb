@@ -1,5 +1,6 @@
 <div id="content">
   <div class="center">
+    <%= partial 'layouts/admin' if logged_in? and controller?(:competitions, :users) %>
     <%= yield %>
     <div class="clear"></div>
   </div>

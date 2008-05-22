@@ -1,0 +1,7 @@
+<tr class="result rank<%= result_counter %>">
+  <th><span><%= result_counter %></span></th>
+  <td><strong><%=t result.time %></strong></td>
+  <td><cite><%= link_to result.user.name, result.user %></cite></td>
+  <td><small><%=d result.created_at %></small></td>
+  <td><blockquote><%= result.comment %></blockquote></td>
+</tr>

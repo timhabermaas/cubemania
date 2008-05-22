@@ -5,11 +5,20 @@ module ApplicationHelper
   
   def action_label(new = 'Create', edit = 'Update')
     case params[:action].to_sym
-      when :new, :create
+      when :new, :create, :index
         new
       when :edit, :update, :show
         edit
     end
+  end
+  
+  def admin_label(new = 'New', edit = 'Edit')
+    case params[:action].to_sym
+      when :index, :create
+        new
+      when :show, :update
+        edit
+    end.+ " #{params[:controller].singularize.titleize}"
   end
   
   def navigation
