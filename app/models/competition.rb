@@ -31,6 +31,14 @@ class Competition < ActiveRecord::Base
       date.send "end_of_#{nominalize_repeat}"
     end
   end
+  
+  def previous_date(date)
+    started_at date.ago 1.send(nominalize_repeat)
+  end
+  
+  def next_date(date)
+    ended_at date.in 1.send(nominalize_repeat)
+  end
 
   private    
     def nominalize_repeat

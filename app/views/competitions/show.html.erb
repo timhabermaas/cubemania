@@ -22,3 +22,8 @@
   Please <%= link_to 'login', login_path %> or <%= link_to 'register', register_path %> to compete.
 </p>
 <%- end -%>
+
+<div class="pagination">
+  <%= link_to 'Previous', puzzle_competition_path(@puzzle, :date => @competition.previous_date(@date)) %>
+  <%= link_to 'Next', puzzle_competition_path(@puzzle, :date => @competition.next_date(@date)) %>
+</div>
