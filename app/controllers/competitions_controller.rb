@@ -3,6 +3,10 @@ class CompetitionsController < ResourceController::Base
 
   belongs_to :puzzle
 
+  show.before do
+    @date = params[:date].nil? ? Time.now : Time.parse(params[:date])
+  end
+
   [update, create].each do |action|
     action.wants.html { redirect_to puzzle_competition_path params[:puzzle_id], @competition }
   end

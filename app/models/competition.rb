@@ -3,9 +3,8 @@ class Competition < ActiveRecord::Base
 
   belongs_to :puzzle
   has_many :averages, :include => :user, :order => 'time', :dependent => :nullify do
-    def current(competition); self.for competition; end
-    def for(competition, time = Time.now)
-      find :all, :conditions => ['created_at >= ? and created_at < ?', competition.started_at(time), competition.ended_at(time)]
+    def for(competition, date)
+      find :all, :conditions => ['created_at >= ? and created_at < ?', competition.started_at(date), competition.ended_at(date)]
     end
   end
   has_many :singles, :dependent => :nullify
@@ -17,19 +16,19 @@ class Competition < ActiveRecord::Base
     averages.collect { |a| a.user }.include? user
   end
 
-  def started_at(time = Time.now)
+  def started_at(date)
     if repeat == 'once'
       created_at
     else
-      time.send "beginning_of_#{nominalize_repeat}"
+      date.send "beginning_of_#{nominalize_repeat}"
     end
   end
 
-  def ended_at(time = Time.now)
+  def ended_at(date)
     if repeat == 'once'
       created_at.next_month
     else
-      time.send "end_of_#{nominalize_repeat}"
+      date.send "end_of_#{nominalize_repeat}"
     end
   end
 
