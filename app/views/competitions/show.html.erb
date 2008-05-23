@@ -6,7 +6,7 @@
 
 <div id="results">
   <table>
-    <%= partial 'result', :collection => @competition.averages %>
+    <%= partial 'result', :collection => @competition.averages.current(@competition) %>
   </table>
 </div>
 
