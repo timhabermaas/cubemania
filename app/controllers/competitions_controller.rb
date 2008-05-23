@@ -1,4 +1,6 @@
 class CompetitionsController < ResourceController::Base
+  permit :owner, :only => [:update, :destroy]
+
   belongs_to :puzzle
 
   [update, create].each do |action|
@@ -7,11 +9,11 @@ class CompetitionsController < ResourceController::Base
 
   private
     def collection
-      @collection ||= @puzzle.competitions.paginate :include => :user, :order => 'created_at desc', :page => params[:page], :per_page => 10
+      @collection ||= end_of_association_chain.paginate :include => :user, :order => 'created_at desc', :page => params[:page], :per_page => 10
     end
     
     def object
-      @object ||= @puzzle.competitions.find params[:id], :include => :user
+      @object ||= end_of_association_chain.find params[:id], :include => :user
     end
     
     def build_object

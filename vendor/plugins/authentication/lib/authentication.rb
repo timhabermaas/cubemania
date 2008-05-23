@@ -1,7 +1,7 @@
 module Authentication
   def self.included(base)
     base.extend ClassMethods
-    base.helper_method :current_user, :current_user?, :logged_in?, :role?, :admin?, :moderator?
+    base.helper_method :current_user, :current_user?, :logged_in?, :role?, :self?, :owner?, :admin?, :moderator?
   end
 
   module ClassMethods
@@ -58,7 +58,15 @@ module Authentication
     end
     
     def role?(role)
-      current_user.role? role, params[:id] if logged_in?
+      current_user.role? role, params[:id], object if logged_in?
+    end
+    
+    def self?
+      role? :self
+    end
+    
+    def owner?
+      role? :owner
     end
     
     def admin?

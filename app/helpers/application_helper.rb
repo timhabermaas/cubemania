@@ -75,6 +75,17 @@ module ApplicationHelper
     params[:type] == type.to_s
   end
   
+  def permit?
+    case params[:controller].to_sym
+      when :competitions
+        edit? ? owner? : logged_in?
+      when :users
+        edit? and self?
+      else
+        false
+    end
+  end
+  
   def d(date)
     date.strftime '%B %d, %Y'
   end

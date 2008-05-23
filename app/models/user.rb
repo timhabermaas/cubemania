@@ -52,14 +52,17 @@ class User < ActiveRecord::Base
     end
   end
 
-  def role?(required_role, request_id)
+  def role?(required_role, request_id, object)
     if admin?
       true
     else
-      if required_role == :self
-        id.to_s == request_id
-      else
-        role.to_sym == required_role
+      case required_role
+        when :self
+          id.to_s == request_id
+        when :owner
+          id == object.user_id
+        else
+          role.to_sym == required_role
       end
     end
   end

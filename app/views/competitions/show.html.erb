@@ -1,10 +1,24 @@
 <h1><%=h @competition.name %></h1>
 
+<div class="text description">
+  <%=m @competition.description %>
+</div>
+
 <div id="results">
   <table>
     <%= partial 'result', :collection => @competition.averages %>
   </table>
 </div>
 
+<%- if logged_in? -%>
+  <%- if @competition.participated? current_user -%>
+<p class="challenge">See your ranking on the left.</p>
+  <%- else -%>
 <%= partial 'shared/timer' %>
 <%= partial 'shared/timer_js', :competition_id => @competition.id %>
+  <%- end -%>
+<%- else -%>
+<p class="challenge">
+  Please <%= link_to 'login', login_path %> or <%= link_to 'register', register_path %> to compete.
+</p>
+<%- end -%>

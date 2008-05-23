@@ -83,6 +83,10 @@
   margin-bottom: 1.5em;
 }
 
+#content .description {
+  margin-bottom: 2em;
+}
+
 #content .text a {
   text-decoration: underline;
 }
