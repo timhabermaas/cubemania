@@ -1,10 +1,5 @@
-<% div_for competition do %>
-  <h1><%= link_to competition.name.titleize, puzzle_competition_path(params[:puzzle_id], competition) %></h1>
-  <div class="text">
-    <%=m competition.description %>
-  </div>
-  <div class="meta">
-    <%= competition.repeat.titleize %> &middot;
-    <cite><%= competition.user.nil? ? 'Unknown' : link_to(competition.user.name, competition.user) %></cite>
-  </div>
+<% div_for competition, :class => ('sticky' if competition.sticky?) do %>
+  <strong><%= link_to competition.name.titleize, puzzle_competition_path(params[:puzzle_id], competition) %></strong>
+  <small><%= competition.repeat.titleize %></small>
+  <span><%= m(competition.description)[3..-5] %></span>
 <% end %>

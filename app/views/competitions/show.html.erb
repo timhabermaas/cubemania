@@ -1,30 +1,48 @@
-<h1><%=h @competition.name %></h1>
-
-<div class="text description">
-  <%=m @competition.description %>
-</div>
-
-<div id="results">
-  <table>
-    <%= partial 'result', :collection => @competition.averages.for(@competition, @date) %>
-  </table>
-</div>
-
-<%- if logged_in? -%>
-  <%- if @competition.participated? current_user -%>
-<p class="challenge">See your ranking on the left.</p>
+<div id="competition">
+  <small><%= @competition.repeat.titleize %></small>
+  <h1><%=h @competition.name %></h1>
+  
+  <div class="text description">
+    <%=m @competition.description %>
+  </div>
+  
+  <%- if (results = @competition.averages.for(@competition, @date)).empty? -%>
+  <p class="challenge">
+    Be the first to compete!
+  </p>
   <%- else -%>
+  <div id="results">
+    <table>
+      <%= partial 'result', :collection => results %>
+    </table>
+  </div>
+  <%- end -%>
+</div>
+
+<%- if @competition.old?(@date) -%>
+<p class="suggestion">
+  This competition ended on <%=d @competition.ended_at @date %>.
+</p>
+<%- else -%>
+  <%- if logged_in? -%>
+    <%- if @competition.participated? current_user -%>
+<p class="suggestion">
+  See your ranking on the left.
+</p>
+    <%- else -%>
 <%= partial 'shared/timer' %>
 <%= partial 'shared/timer_js', :competition_id => @competition.id %>
-  <%- end -%>
-<%- else -%>
-<p class="challenge">
+    <%- end -%>
+  <%- else -%>
+<p class="suggestion">
   Please <%= link_to 'login', login_path %> or <%= link_to 'register', register_path %> to compete.
 </p>
+  <%- end -%>
 <%- end -%>
 <div class="clear"></div>
 
 <div class="pagination">
-  <%= link_to 'Previous', puzzle_competition_path(@puzzle, :date => @competition.previous_date(@date)) %>
-  <%= link_to 'Next', puzzle_competition_path(@puzzle, :date => @competition.next_date(@date)) %>
+  <%= @competition.previous?(@date) ? link_to('&laquo; Previous', puzzle_competition_date_path(@puzzle, :date => d(@competition.previous_date(@date)))) : '<span class="disabled">&laquo; Previous</span>' %> &middot;
+  <%= link_to 'Current', puzzle_competition_date_path(@puzzle, :date => d(@competition.started_at(@date))) %> &middot;
+  <%= @competition.next?(@date) ? link_to('Next &raquo;', puzzle_competition_date_path(@puzzle, :date => d(@competition.next_date(@date)))) : '<span class="disabled">Next &raquo;</span>' %>
 </div>

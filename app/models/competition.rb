@@ -32,12 +32,24 @@ class Competition < ActiveRecord::Base
     end
   end
   
+  def previous?(date)
+    started_at(date) != started_at(created_at)
+  end
+  
   def previous_date(date)
     started_at date.ago 1.send(nominalize_repeat)
   end
   
+  def next?(date)
+    ended_at(date) != ended_at(Time.now)
+  end
+  
   def next_date(date)
-    ended_at date.in 1.send(nominalize_repeat)
+    started_at date.in 1.send(nominalize_repeat)
+  end
+
+  def old?(date)
+    started_at(date) != started_at(Time.now)
   end
 
   private    

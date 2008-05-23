@@ -1,6 +1,6 @@
 <div class="admin">
   <%= link_to_function admin_label, "$(this).textToggle('#{admin_label}', 'Changed your mind?'); $('.admin .form').slideToggle('fast')" %>
-  <div class="form" style="display: none">
+  <div class="form"<%= 'style="display: none"' if @object.nil? or @object.errors.empty? %>>
     <%= partial 'form' %>
   </div>
 </div>

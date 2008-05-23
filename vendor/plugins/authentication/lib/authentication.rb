@@ -58,7 +58,7 @@ module Authentication
     end
     
     def role?(role)
-      current_user.role? role, params[:id], object if logged_in?
+      current_user.role? role, params[:id], object_if_available if logged_in?
     end
     
     def self?
@@ -90,5 +90,10 @@ module Authentication
     def redirect_back(default)
       redirect_to(session[:return_to] || default)
       session[:return_to] = nil
+    end
+
+  private
+    def object_if_available
+      object if [:show, :edit, :update, :destroy].include? params[:action].to_sym
     end
 end

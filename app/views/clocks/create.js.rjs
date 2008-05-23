@@ -7,7 +7,7 @@ if @average.competition.nil?
     flash[:notice] = @average.notice
   else
     page['timer input'].removeAttr('disabled')
-    flash[:notice] = @average.errors.full_messages.join('<br/>')
+    flash[:notice] = @average.errors.full_messages.join(', ')
   end
   page << "if ($('#notice')) $('#notice').remove();"
 else

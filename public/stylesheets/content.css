@@ -65,15 +65,15 @@
   margin-bottom: 2em;
 }
 
-#content .announcement {
+#content .announcement, #content .sticky {
   padding: 0.5em;
   margin-bottom: 2em;
   background-color: #517397;
 }
-#content .announcement a {
+#content .announcement a, #content .sticky a {
   white-space: nowrap;
 }
-#content .announcement cite, #content .announcement em {
+#content .announcement cite, #content .announcement em, #content .sticky cite, , #content .sticky em {
   font-style: italic;
 }
 
@@ -122,7 +122,7 @@
   margin: 2em 0;
 }
 
-#content .challenge {
+#content .challenge, #content .suggestion {
   font-size: 2em;
   text-align: center;
 }
@@ -135,6 +135,7 @@
 
 #content .pagination {
   text-align: center;
+  margin-top: 2em;
 }
 #content .pagination span, #content .pagination a {
   padding: 0.25em;
@@ -186,6 +187,10 @@
   border: 2px solid #a00;
 }
 
+#content .competition {
+  margin-bottom: 1em;
+}
+
 #features {
   text-align: center;
 }
@@ -223,7 +228,7 @@
   margin-left: 0;
 }
 
-#times, #results {
+#times, #competition {
   float: left;
   width: 750px;
 }
@@ -273,7 +278,7 @@
   text-align: center;
 }
 
-#timer {
+#timer, #content .suggestion {
   margin-left: 768px;
   width: 200px;
   text-align: center;
@@ -435,7 +440,7 @@
   height: 50px;
   background-repeat: no-repeat;
 }
-#records .rank1 strong, #records .rank1 cite, #records .rank1 small {
+#records .rank1 strong, #records .rank1 cite, #records .rank1 small, #records .rank1 blockquote {
   font-size: 2em;
   line-height: 2.25em;
 }
@@ -446,7 +451,7 @@
 #content .rank1 th {
   background-image: url(/images/rank1.gif);
 }
-#records .rank2 strong, #records .rank2 cite, #records .rank2 small {
+#records .rank2 strong, #records .rank2 cite, #records .rank2 small, #records .rank2 blockquote {
   font-size: 1.5em;
   line-height: 2em;
 }
@@ -457,11 +462,11 @@
 #content .rank2 th {
   background-image: url(/images/rank2.gif);
 }
-#records .rank3 strong, #records .rank3 cite, #records .rank3 small, #results .rank3 blockquote {
+#records .rank3 strong, #records .rank3 cite, #records .rank3 small, #records .rank3 blockquote {
   font-size: 1.25em;
   line-height: 1.75em;
 }
-#results .rank3 strong, #results .rank3 cite, #results .rank3 small {
+#results .rank3 strong, #results .rank3 cite, #results .rank3 small, #results .rank3 blockquote {
   font-size: 1em;
   line-height: 1.75em;
 }
@@ -480,6 +485,6 @@
 #content .rank1 span, #content .rank2 span, #content .rank3 span {
   display: none;
 }
-#results .rank1 blockquote, #results .rank2 blockquote, #results .rank3 blockquote {
+#content .rank1 blockquote, #content .rank2 blockquote, #content .rank3 blockquote {
   line-height: 1em;
 }

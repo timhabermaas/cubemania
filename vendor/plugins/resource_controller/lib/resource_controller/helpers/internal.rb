@@ -33,7 +33,10 @@ module ResourceController::Helpers::Internal
     # Sets the flash for the action, if it is present.
     #
     def set_flash(action)
-      flash[:notice] = options_for(action).flash if options_for(action).flash
+      message = options_for(action).flash
+      if not message.nil?
+        flash[:notice] = message.is_a?(String) ? message : message.call
+      end
     end
     
     # Returns the options for an action, which is a symbol.

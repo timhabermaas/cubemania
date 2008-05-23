@@ -14,6 +14,13 @@
     <%= form.select :repeat, Competition::REPEATS.collect { |f| [f.titleize, f] } %>
     <%= form.error_message_on :repeat %>
   </p>
+<%- if admin? -%>
+  <p>
+    <%= form.label :sticky %>
+    <%= form.check_box :sticky %>
+    <%= form.error_message_on :sticky %>
+  </p>
+<%- end -%>
   <p>
     <%= form.submit action_label %>
     <%= link_to 'Destroy', [@puzzle, @competition], :confirm => 'Are you sure?', :method => :delete if edit? %>
