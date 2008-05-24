@@ -12,9 +12,9 @@ if @average.competition.nil?
   page << "if ($('#notice')) $('#notice').remove();"
 else
   if @average.errors.empty?
-    page.redirect_to puzzle_competition_path @puzzle, @average.competition
+    page.redirect_to [@puzzle, @average.competition]
   else
-    flash[:notice] = @average.errors.full_messages.join('<br/>')
+    flash[:notice] = @average.errors.full_messages.join(', ')
   end
 end
 

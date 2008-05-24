@@ -16,6 +16,10 @@ class UsersController < ResourceController::Base
     wants.html { redirect_back user_path(@user) }
   end
 
+  update do
+    wants.js
+  end
+
   destroy.after { if self.current_user == @user; self.current_user = nil; end }
   
   private

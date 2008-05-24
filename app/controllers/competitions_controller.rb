@@ -7,16 +7,9 @@ class CompetitionsController < ResourceController::Base
     @date = params[:date].nil? ? Time.now : Time.parse(params[:date])
   end
 
-  [update, create].each do |action|
-    action.wants.html { redirect_to puzzle_competition_path params[:puzzle_id], @competition }
+  [create, update].each do |action|
+    action.wants.js; action.failure.wants.js
   end
-  
-  create do
-    failure.flash Proc.new { "Competition could not be created because: #{"object.errors.full_messages.join(', ')"}" }
-    failure.wants.html { redirect_to puzzle_competitions_path }
-  end
-  
-  update.failure.wants.html { render :action => 'show' }
 
   private
     def collection

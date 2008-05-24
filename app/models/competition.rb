@@ -4,19 +4,22 @@ class Competition < ActiveRecord::Base
   belongs_to :puzzle
   has_many :averages, :include => :user, :order => 'time', :dependent => :nullify do
     def for(competition, date)
-      find :all, :conditions => ['created_at >= ? and created_at < ?', competition.started_at(date), competition.ended_at(date)]
+      find :all, :conditions => ['created_at between ? and ?', competition.started_at(date), competition.ended_at(date)]
     end
   end
   has_many :singles, :dependent => :nullify
   belongs_to :user; attr_protected :user_id, :user
 
   validates_presence_of :name, :repeat, :user_id
+  validates_length_of :name, :in => 2..64
+  validates_length_of :description, :maximum => 256, :allow_nil => true
+  validates_inclusion_of :repeat, :in => REPEATS
 
-  def participated?(user)
-    averages.collect { |a| a.user }.include? user
+  def participated?(date, user)
+    averages.for(self, date).collect { |a| a.user }.include? user
   end
 
-  def started_at(date)
+  def started_at(date = Time.now)
     if repeat == 'once'
       created_at
     else
@@ -24,7 +27,7 @@ class Competition < ActiveRecord::Base
     end
   end
 
-  def ended_at(date)
+  def ended_at(date = Time.now)
     if repeat == 'once'
       created_at.next_month
     else
@@ -37,7 +40,7 @@ class Competition < ActiveRecord::Base
   end
   
   def previous_date(date)
-    started_at date.ago 1.send(nominalize_repeat)
+    started_at date.ago(1.send(nominalize_repeat))
   end
   
   def next?(date)
@@ -45,11 +48,15 @@ class Competition < ActiveRecord::Base
   end
   
   def next_date(date)
-    started_at date.in 1.send(nominalize_repeat)
+    started_at date.in(1.send(nominalize_repeat))
   end
 
   def old?(date)
     started_at(date) != started_at(Time.now)
+  end
+  
+  def once?
+    repeat == 'once'
   end
 
   private    

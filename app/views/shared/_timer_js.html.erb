@@ -135,15 +135,14 @@
   function commitTimes() {
     $("#timer input[type=button]").attr("disabled", "disabled");
     var average = calculate<%= @puzzle.average_format.camelize %>();
-    var map = {"average[time]": average, <%= '"average[competition_id]": ' + competition_id.to_s + ',' unless competition_id.nil? %> "average[dnf]": $("#average span").hasClass("dnf"), "average[comment]": $("#comment").val(), "authenticity_token": "<%= form_authenticity_token %>"};
+    var map = {"average[time]": average, "average[dnf]": $("#average span").hasClass("dnf"), "average[comment]": $("#comment").val(), "authenticity_token": "<%= form_authenticity_token %>"};
     $("#timer tr.done").each(function(index) {
       map["singles[" + index + "][time]"] = $(this).find(".milliseconds").text();
       map["singles[" + index + "][scramble]"] = $(this).find(".scramble").text();
       map["singles[" + index + "][dnf]"] = $(this).hasClass("dnf");
-      <%= 'map["singles[" + index + "][competition_id]"] = ' + competition_id.to_s + ';' unless competition_id.nil? %>
     });
     map["input_method"] = $("#dynamic").is(":visible") ? 'dynamic' : 'manual';
-    $.post("<%= puzzle_times_path params[:puzzle_id] %>", map, null, "script");
+    $.post("<%= competition_id.nil? ? puzzle_times_path(params[:puzzle_id]) : puzzle_competition_times_path(params[:puzzle_id], competition_id) %>", map, null, "script");
   }
   function updateAverage() {
     if ($("#timer tr.done").length == <%= @puzzle.attempt_count %>) {
