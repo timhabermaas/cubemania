@@ -35,7 +35,7 @@ module ResourceController::Helpers::Internal
     def set_flash(action)
       message = options_for(action).flash
       if not message.nil?
-        flash[:notice] = message.is_a?(String) ? message : message.call
+        flash[:notice] = message.is_a?(String) ? message : invoke_callbacks(message)
       end
     end
     
