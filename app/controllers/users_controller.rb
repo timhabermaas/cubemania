@@ -7,7 +7,12 @@ class UsersController < ResourceController::Base
 
   show.before do
     single_records, average_records = @user.singles.records, @user.averages.records
-    @records = (0...single_records.size).map { |i| { :single => single_records[i], :average => average_records[i] } }
+    @records = (0...single_records.size).map do |i|
+      if average_records[i].nil? or single_records[i].puzzle_id != average_records[i].puzzle_id
+        average_records.insert i, nil
+      end
+      { :single => single_records[i], :average => average_records[i] }
+    end
   end
 
   create do
