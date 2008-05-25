@@ -63,7 +63,7 @@
     }
   }
   function getMilliseconds() {
-    return $("#timer tr.done .milliseconds").map(function() {
+    return $("#timer tr.done:not('.dnf') .milliseconds").map(function() {
       var time = parseInt($(this).text());
       return isNaN(time) ? 0 : time;
     }).get();
@@ -214,7 +214,7 @@
     for (var i = 0; i < this.length; i++) {
       sum += this[i];
     }
-    return Math.round(sum/this.length);
+    return this.length == 0 ? 0 : Math.round(sum/this.length);
   }
   function formatTime(time) {
     var seconds = time / 1000;
