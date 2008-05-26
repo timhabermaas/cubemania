@@ -29,7 +29,7 @@ class Competition < ActiveRecord::Base
 
   def ended_at(date = Time.now)
     if repeat == 'once'
-      created_at.next_month
+      created_at.next_year
     else
       date.send "end_of_#{nominalize_repeat}"
     end
