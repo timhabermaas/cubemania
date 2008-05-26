@@ -12,6 +12,6 @@
   </td>
   <td><strong><%=t record[:single].time %></strong></td>
   <td><small><%=d record[:single].created_at %></small></td>
-  <td><strong><%= record[:average].nil? ? "none" : t(record[:average].time) %></strong></td>
+  <td><strong><%= record[:average].nil? ? 'none' : t(record[:average].time) %></strong></td>
   <td><small><%=d record[:average].created_at unless record[:average].nil? %></small></td>
 </tr>
