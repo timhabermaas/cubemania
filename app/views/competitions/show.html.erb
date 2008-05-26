@@ -1,9 +1,10 @@
 <div id="competition">
-  <small><%= @competition.repeat.titleize %></small>
-  <h1><%=h @competition.name %></h1>
-  
-  <div class="text description">
-    <%=m @competition.description %>
+  <div class="<%= @competition.repeat %>">
+    <small><%= @competition.repeat.titleize %></small>
+    <h2><%=h @competition.name %></h2>
+    <div class="text description">
+      <%=m @competition.description %>
+    </div>
   </div>
   
   <%- if (results = @competition.averages.for(@competition, @date)).empty? -%>
