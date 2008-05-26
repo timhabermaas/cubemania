@@ -14,10 +14,9 @@
 }
 #content h2 {
   font-size: 1.25em;
-  margin: 1em 0;
+  margin-bottom: 0.25em;
   padding-bottom: 0.25em;
   color: #df0;
-  border-bottom: 2px solid;
 }
 #content h3 {
   font-size: 1.25em;
@@ -189,6 +188,23 @@
 
 #content .competition {
   margin-bottom: 1em;
+}
+#content .once {
+  background-image: url(/images/once.png);
+}
+#content .daily {
+  background-image: url(/images/daily.png);
+}
+#content .weekly {
+  background-image: url(/images/weekly.png);
+}
+#content .monthly {
+  background-image: url(/images/monthly.png);
+}
+#content .once, #content .daily, #content .weekly, #content .monthly {
+  padding-left: 60px;
+  background-position: center left;
+  background-repeat: no-repeat;
 }
 
 #features {
