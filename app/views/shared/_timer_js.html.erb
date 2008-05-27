@@ -235,12 +235,6 @@
       $('#type').attr("disabled", "disabled");
     }
   }
-  $("#timer #comment").focus(function() {
-    commentHasFocus = true;
-  });
-  $("#timer #comment").blur(function() {
-    commentHasFocus = false;
-  });
   $(document).keydown(function(event) {
     if (event.keyCode == 32 && !commentHasFocus) {
       return false;

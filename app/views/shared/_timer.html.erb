@@ -40,7 +40,7 @@
   </table>
   <p id="average"><%= @puzzle.average_format == 'best_of' ? 'Best' : '&Oslash;' %> <span>0.00</span></p>
   <form>
-    <p><%= text_area_tag 'comment', nil, :rows => 3 %></p>
+    <p><%= text_area_tag 'comment', nil, :rows => 3, :onfocus => 'commentHasFocus = true', :onblur => 'commentHasFocus = false' %></p>
     <p><%= button_to_function 'Submit Average', 'commitTimes()', :disabled => true %></p>
   </form>
 </div>
