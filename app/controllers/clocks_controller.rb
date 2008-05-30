@@ -15,6 +15,4 @@ class ClocksController < ApplicationController
     end
     @scrambles = @puzzle.all_scrambles
   end
-  
-  def object
 end
