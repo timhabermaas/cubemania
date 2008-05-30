@@ -1,6 +1,5 @@
 class Scramble < ActiveRecord::Base
   belongs_to :competition
-  belongs_to :puzzle
   
   serialize :scrambles
   
