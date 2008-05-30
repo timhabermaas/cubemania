@@ -3,5 +3,5 @@ class Scramble < ActiveRecord::Base
   
   serialize :scrambles
   
-  validates_presence_of :competiiton_id
+  validates_presence_of :competition_id
 end
