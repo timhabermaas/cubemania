@@ -3,6 +3,7 @@ class ClocksController < ApplicationController
 
   def index
     @puzzle = Puzzle.find params[:puzzle_id]
+    @scrambles = @puzzle.all_scrambles
   end
 
   def create
@@ -12,5 +13,6 @@ class ClocksController < ApplicationController
     if @average.save
       @puzzle = @average.puzzle
     end
+    @scrambles = @puzzle.all_scrambles
   end
 end

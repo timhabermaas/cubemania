@@ -8,6 +8,7 @@ class Competition < ActiveRecord::Base
     end
   end
   has_many :singles, :dependent => :nullify
+  has_many :scrambles, :order => 'created_at desc', :dependent => :delete_all
   belongs_to :user; attr_protected :user_id, :user
 
   validates_presence_of :name, :repeat, :user_id

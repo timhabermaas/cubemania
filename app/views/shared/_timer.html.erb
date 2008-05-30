@@ -1,5 +1,5 @@
 <div id="timer">
-<%- unless (scrambles = (1..@puzzle.attempt_count).map {|i| @puzzle.scramble }).compact.empty? -%>
+<%- unless @scrambles.empty? -%>
   <p id="scramble"></p>
 <%- end -%>
   <div id="dynamic"<%= "style='display: none'" if params[:input_method] == 'manual' %>>
@@ -20,7 +20,7 @@
     <%= link_to_function 'Changed your mind?', 'toggleInputMethod()', :class => 'toggle' %>
   </div>
   <table>
-  <%- scrambles.each_index do |index| -%>
+  <%- @scrambles.each_index do |index| -%>
     <tr>
       <th><%= index + 1 %>.</th>
       <td class="time">-</td>
@@ -32,8 +32,8 @@
           <%= link_to_function 'X', "deleteLastTime()", :class => 'delete' %>
         </div>
       </td>
-    <%- unless scrambles[index].nil? -%>
-      <td class="scramble"><%= scrambles[index] %></td>
+    <%- unless @scrambles[index].nil? -%>
+      <td class="scramble"><%= @scrambles[index] %></td>
     <%- end -%>
     </tr>
   <%- end -%>

@@ -5,6 +5,7 @@ class CompetitionsController < ResourceController::Base
 
   show.before do
     @date = params[:date].nil? ? Time.now : Time.parse(params[:date])
+    @scrambles = %w(asdas ads das asd ads)
   end
 
   [create, update].each do |action|
