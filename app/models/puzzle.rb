@@ -8,6 +8,7 @@ class Puzzle < ActiveRecord::Base
     def average; @average ||= find_all_by_type 'Average', :include => :user; end
   end
   has_many :clocks, :dependent => :delete_all
+  has_many :scrambles, :dependent => :delete_all
 
   file_column :image, :store_dir => 'public/images/puzzles', :base_url => 'images/puzzles'
   
@@ -35,6 +36,10 @@ class Puzzle < ActiveRecord::Base
       when 'clock'
       	clock_scramble
     end
+  end
+  
+  def all_scrambles
+    (1..attempt_count).map {|i| scramble}
   end
   
   private
