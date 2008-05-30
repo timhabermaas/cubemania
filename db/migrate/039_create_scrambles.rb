@@ -1,9 +1,9 @@
 class CreateScrambles < ActiveRecord::Migration
   def self.up
     create_table :scrambles do |t|
-      t.string :scrambles, :null => false
+      t.text :scrambles, :null => false
       t.integer :competition_id, :null => false
-      t.timestamps
+      t.datetime :created_at
     end
   end
 

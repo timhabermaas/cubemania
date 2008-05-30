@@ -19,6 +19,13 @@
     <%= form.text_field :wca %>
     <%= form.error_message_on :wca %>
   </p>
+<%- if admin? -%>
+  <p>
+    <%= form.label :sponsor %>
+    <%= form.check_box :sponsor %>
+    <%= form.error_message_on :sponsor %>
+  </p>
+<%- end -%>
   <p>
     <%= form.label :password %>
     <%= form.password_field :password %>

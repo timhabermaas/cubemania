@@ -5,12 +5,13 @@ class CompetitionsController < ResourceController::Base
 
   show.before do
     @date = params[:date].nil? ? Time.now : Time.parse(params[:date])
-    scramble = @competition.scrambles.first # no need to load this, if the user visits an old competition, but i don't want to make it too complicated for now
-    if scramble.nil? or @competition.old? scramble.created_at
-      scramble = @competition.scrambles.build :scrambles => @competition.puzzle.all_scrambles
-      scramble.save
+    unless @competition.old? @date
+      scramble = @competition.scramble
+      if scramble.nil? or @competition.old? scramble.created_at
+        scramble = @competition.create_scramble :scrambles => @competition.puzzle.scrambles
+      end
+      @scrambles = scramble.scrambles
     end
-    @scrambles = scramble.scrambles
   end
 
   [create, update].each do |action|

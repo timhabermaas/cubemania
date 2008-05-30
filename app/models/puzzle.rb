@@ -20,6 +20,10 @@ class Puzzle < ActiveRecord::Base
   validates_filesize_of :image, :in => 0..20.kilobytes
   validates_file_format_of :image, :in => ['gif', 'png']
   
+  def scrambles
+    (1..attempt_count).map {|i| scramble}
+  end
+  
   def scramble
     case name.downcase
       when '2x2x2', '3x3x3'
@@ -36,11 +40,7 @@ class Puzzle < ActiveRecord::Base
       	clock_scramble
     end
   end
-  
-  def all_scrambles
-    (1..attempt_count).map {|i| scramble}
-  end
-  
+
   private
     def cube_scramble(turns)
       variants = ['', "'", '2']

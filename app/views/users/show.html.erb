@@ -1,4 +1,4 @@
-<h1><%= @user.name %></h1>
+<h1 class="<%= 'sponsor' if @user.sponsor? %>"><%= @user.name %></h1>
 
 <%- if @user.wca.blank? and current_user?(@user) -%>
 <div id="wca">

@@ -18,7 +18,7 @@ class AveragesController < ApplicationController
   end
   
   def show
-    @average = object true
+    object :include => :singles
   end
   
   def destroy
@@ -28,11 +28,7 @@ class AveragesController < ApplicationController
   end
   
   private
-    def object(singles = false)
-      if singles
-        Average.find params[:id], :include => :singles
-      else
-        Average.find params[:id]
-      end
+    def object(options = nil)
+      @average ||= Average.find params[:id], options
     end
 end

@@ -12,6 +12,10 @@
   margin-bottom: 1em;
   color: #df0;
 }
+#content h1.sponsor {
+  height: 52px;
+  background: url(/images/sponsor.gif) center right no-repeat;
+}
 #content h2 {
   font-size: 1.25em;
   margin-bottom: 0.25em;
