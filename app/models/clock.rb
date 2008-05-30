@@ -9,7 +9,7 @@ class Clock < ActiveRecord::Base
   
   def validate
     unless competition_id.nil?
-      unless Clock.find_by_user_id_and_puzzle_id_and_competition_id(user_id, puzzle_id, competition_id, :conditions => ['created_at between ? and ?', competition.started_at, competition.ended_at]).nil?
+      unless Clock.find_by_user_id_and_puzzle_id_and_competition_id_and_type(user_id, puzzle_id, competition_id, 'average', :conditions => ['created_at between ? and ?', competition.started_at, competition.ended_at]).nil?
         errors.add_to_base 'Get out of here!'
       end
     end
