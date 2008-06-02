@@ -1,4 +1,5 @@
 Competition Improve Performance (Database Indexes, Includes, Caching?)
+User: An welchen Competitions habe ich teilgenommen?
 
 Timer: Amount of solves relies on scrambles.length, but the underlying javascript relies on @puzzle.attempt_count. This could (maybe) lead to problems.
   I'll keep an eye on it :).
