@@ -1,9 +1,4 @@
 Competition Improve Performance (Database Indexes, Includes, Caching?)
-<<<<<<< .mine
-=======
-Enable Space in Text field even if all times have been stopped! and disable space to stop time if text field selected
-Sponsors: float right, clickable (link paypal)
->>>>>>> .r367
 
 Timer: Amount of solves relies on scrambles.length, but the underlying javascript relies on @puzzle.attempt_count. This could (maybe) lead to problems.
   I'll keep an eye on it :).
