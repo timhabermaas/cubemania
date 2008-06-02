@@ -7,7 +7,7 @@ class CompetitionsController < ResourceController::Base
     @date = params[:date].nil? ? Time.now : Time.parse(params[:date])
     unless @competition.old? @date
       scrambles = @competition.scrambles.for @competition, @date
-      if scrambles.empty? or @competition.old? scrambles.first.created_at
+      if scrambles.empty?
         @scrambles = @competition.create_scrambles
       else
         @scrambles = scrambles.map(&:scramble)

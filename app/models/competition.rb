@@ -20,16 +20,18 @@ class Competition < ActiveRecord::Base
   validates_length_of :description, :maximum => 256, :allow_nil => true
   validates_inclusion_of :repeat, :in => REPEATS
 
+  def create_scrambles
+    new_scrambles = puzzle.scrambles
+    Scramble.transaction do
+      new_scrambles.each_index do |i|
+        scrambles.create :scramble => new_scrambles[i], :position => i
+      end
+    end
+    new_scrambles
+  end
+
   def participated?(date, user)
     averages.for(self, date).collect { |a| a.user }.include? user
-  end
-  
-  def create_scrambles
-    pure_scrambles = puzzle.scrambles
-    pure_scrambles.each_index do |i|
-      scrambles.create :scramble => pure_scrambles[i], :position => i
-    end
-    pure_scrambles
   end
 
   def started_at(date = Time.now)

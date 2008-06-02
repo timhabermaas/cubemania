@@ -1,6 +1,6 @@
 <%- javascript_tag do -%>
   interval = null;
-  commentHasFocus = false;
+  keyEnabled = true;
   
   function toggleTimer() {
     if ($("#dynamic").is(":visible") && $("#timer tr.done").length != <%= @puzzle.attempt_count %>)
@@ -150,7 +150,7 @@
       $('#type').attr("disabled", "disabled");
     } else {
       $("#timer input[type=button]").attr("disabled", "disabled");
-      $('#type').removeAttr("disabled", "disabled").focus();
+      if ($('#manual').is(":visible")) $('#type').removeAttr("disabled", "disabled").focus();
     }
     <% case @puzzle.average_format
          when 'best_of' %>
@@ -230,18 +230,30 @@
   function toggleInputMethod() {
     $('#dynamic').toggle();
     $('#manual').toggle();
-    $('#type').focus();
+    if ($('#manual').is(":visible")) $('#type').focus();
     if ($("#timer tr.done").length == <%= @puzzle.attempt_count %>) {
       $('#type').attr("disabled", "disabled");
     }
   }
+  $(":text").focus(function(event) {
+    keyEnabled = false;
+  });
+  $("textarea").focus(function(event) {
+    keyEnabled = false;
+  });
+  $(":text").blur(function(event) {
+    keyEnabled = true;
+  });
+  $("textarea").blur(function(event) {
+    keyEnabled = true;
+  });
   $(document).keydown(function(event) {
-    if (event.keyCode == 32 && !commentHasFocus) {
+    if (keyEnabled && event.keyCode == 32) {
       return false;
     }
   });
   $(document).keyup(function(event) {
-    if ((event.keyCode == 32 || event.keyCode == 83) && !commentHasFocus) {
+    if (keyEnabled && (event.keyCode == 32 || event.keyCode == 83)) {
       toggleTimer();
     }
   });
