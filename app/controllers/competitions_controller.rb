@@ -8,10 +8,7 @@ class CompetitionsController < ResourceController::Base
     unless @competition.old? @date
       scrambles = @competition.scrambles.for @competition, @date
       if scrambles.empty? or @competition.old? scrambles.first.created_at
-        @scrambles = @competition.puzzle.scrambles
-        @scrambles.each_index do |i|
-          @competition.scrambles.create :scramble => @scrambles[i], :position => i
-        end
+        @scrambles = @competition.create_scrambles
       else
         @scrambles = scrambles.map(&:scramble)
       end

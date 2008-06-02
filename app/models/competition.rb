@@ -23,6 +23,14 @@ class Competition < ActiveRecord::Base
   def participated?(date, user)
     averages.for(self, date).collect { |a| a.user }.include? user
   end
+  
+  def create_scrambles
+    pure_scrambles = puzzle.scrambles
+    pure_scrambles.each_index do |i|
+      scrambles.create :scramble => pure_scrambles[i], :position => i
+    end
+    pure_scrambles
+  end
 
   def started_at(date = Time.now)
     if repeat == 'once'
