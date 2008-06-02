@@ -3,14 +3,17 @@ class Competition < ActiveRecord::Base
 
   belongs_to :puzzle
   belongs_to :user; attr_protected :user_id, :user
-  has_one :scramble, :order => 'created_at desc'
   has_many :averages, :include => :user, :order => 'time', :dependent => :nullify do
     def for(competition, date)
       find :all, :conditions => ['created_at between ? and ?', competition.started_at(date), competition.ended_at(date)]
     end
   end
   has_many :singles, :dependent => :nullify
-  has_many :scrambles, :dependent => :delete_all
+  has_many :scrambles, :order => 'created_at desc, position', :dependent => :delete_all do
+    def for(competition, date)
+      find :all, :conditions => ['created_at between ? and ?', competition.started_at(date), competition.ended_at(date)]
+    end
+  end
 
   validates_presence_of :name, :repeat, :user_id
   validates_length_of :name, :in => 2..64

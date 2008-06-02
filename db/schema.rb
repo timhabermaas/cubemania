@@ -89,7 +89,8 @@ ActiveRecord::Schema.define(:version => 40) do
   add_index "puzzles", ["kind_id", "name"], :name => "index_puzzles_on_kind_id_and_name", :unique => true
 
   create_table "scrambles", :force => true do |t|
-    t.text     "scrambles",      :null => false
+    t.string   "scramble",       :null => false
+    t.integer  "position",       :null => false
     t.integer  "competition_id", :null => false
     t.datetime "created_at"
   end

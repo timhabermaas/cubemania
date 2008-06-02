@@ -6,11 +6,15 @@ class CompetitionsController < ResourceController::Base
   show.before do
     @date = params[:date].nil? ? Time.now : Time.parse(params[:date])
     unless @competition.old? @date
-      scramble = @competition.scramble
-      if scramble.nil? or @competition.old? scramble.created_at
-        scramble = @competition.create_scramble :scrambles => @competition.puzzle.scrambles
+      scrambles = @competition.scrambles.for @competition, @date
+      if scrambles.empty? or @competition.old? scrambles.first.created_at
+        @scrambles = @competition.puzzle.scrambles
+        @scrambles.each_index do |i|
+          @competition.scrambles.create :scramble => @scrambles[i], :position => i
+        end
+      else
+        @scrambles = scrambles.map(&:scramble)
       end
-      @scrambles = scramble.scrambles
     end
   end
 

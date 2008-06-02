@@ -1,7 +1,5 @@
 class Scramble < ActiveRecord::Base
   belongs_to :competition
   
-  serialize :scrambles
-  
-  validates_presence_of :competition_id
+  validates_presence_of :competition_id, :position, :scramble
 end
