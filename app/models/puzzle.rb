@@ -1,7 +1,7 @@
 class Puzzle < ActiveRecord::Base
   FORMATS = %w{average mean best_of}
 
-  belongs_to :kind, :order => 'name'
+  belongs_to :kind
   has_many :competitions, :dependent => :destroy
   has_many :records, :conditions => ['record = ?', true], :order => 'time', :class_name => 'Clock' do
     def single; @single ||= find_all_by_type 'Single', :include => :user; end
