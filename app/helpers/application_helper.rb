@@ -34,11 +34,19 @@ module ApplicationHelper
   end
   
   def times_path
-    navigation.find { |item| item.url.split('/').last.to_sym == :times unless item.url == '/' }.url
+    navigation_path :times
+  end
+  
+  def competitions_path
+    navigation_path :competitions
   end
   
   def records_path
-    navigation.find { |item| item.url.split('/').last.to_sym == :records unless item.url == '/' }.url
+    navigation_path :records
+  end
+  
+  def navigation_path(controller)
+    navigation.find { |item| item.url.split('/').last.to_sym == controller unless item.url == '/' }.url
   end
   
   def controller?(*names)

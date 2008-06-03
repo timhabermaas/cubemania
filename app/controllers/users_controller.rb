@@ -13,6 +13,7 @@ class UsersController < ResourceController::Base
       end
       { :single => single_records[i], :average => average_records[i] }
     end
+    @participations = @user.participations
   end
 
   create do

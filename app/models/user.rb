@@ -10,6 +10,8 @@ class User < ActiveRecord::Base
   has_many :comments, :dependent => :nullify
   has_many :clocks
   has_many :competitions, :dependent => :nullify
+  has_many :participations, :select => 'competitions.*, clocks.created_at as date', :through => :clocks,
+      :order => 'clocks.created_at desc', :source => 'competition', :group => 'competitions.id'
   has_many :singles, :order => 'created_at desc', :dependent => :delete_all do
     def for(puzzle_id); find_all_by_puzzle_id puzzle_id, :order => 'time'; end
     def record(puzzle_id); find_by_puzzle_id_and_record puzzle_id, true; end

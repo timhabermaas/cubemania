@@ -134,6 +134,9 @@
   font-size: 2em;
   text-align: center;
 }
+#content .challenge {
+  margin: 1em 0;
+}
 
 #content .footnote {
   text-align: center;
@@ -512,4 +515,9 @@
 }
 #content .rank1 blockquote, #content .rank2 blockquote, #content .rank3 blockquote {
   line-height: 1em;
+}
+
+#participations {
+  margin-top: 2em;
+  text-align: center;
 }

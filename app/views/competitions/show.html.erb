@@ -45,7 +45,7 @@
 <%- unless @competition.once? -%>
 <div class="pagination">
   <%= @competition.previous?(@date) ? link_to('&laquo; Previous', puzzle_competition_date_path(@puzzle, :date => d(@competition.previous_date(@date)))) : '<span class="disabled">&laquo; Previous</span>' %> &middot;
-  <%= link_to 'Current', puzzle_competition_date_path(@puzzle, :date => d(@competition.started_at(@date))) %> &middot;
+  <%= link_to 'Current', puzzle_competition_date_path(@puzzle, :date => d(@competition.started_at)) %> &middot;
   <%= @competition.next?(@date) ? link_to('Next &raquo;', puzzle_competition_date_path(@puzzle, :date => d(@competition.next_date(@date)))) : '<span class="disabled">Next &raquo;</span>' %>
 </div>
 <%- end -%>
