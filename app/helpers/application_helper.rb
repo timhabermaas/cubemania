@@ -83,6 +83,10 @@ module ApplicationHelper
     params[:type] == type.to_s
   end
   
+  def repeat?(repeat)
+    params[:repeat] == repeat.to_s
+  end
+  
   def permit?
     case params[:controller].to_sym
       when :competitions
