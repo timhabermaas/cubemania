@@ -235,16 +235,10 @@
       $('#type').attr("disabled", "disabled");
     }
   }
-  $(":text").focus(function(event) {
+  $(":text, textarea").focus(function(event) {
     keyEnabled = false;
   });
-  $("textarea").focus(function(event) {
-    keyEnabled = false;
-  });
-  $(":text").blur(function(event) {
-    keyEnabled = true;
-  });
-  $("textarea").blur(function(event) {
+  $(":text, textarea").blur(function(event) {
     keyEnabled = true;
   });
   $(document).keydown(function(event) {
