@@ -21,7 +21,7 @@
   </p>
   <p>
     <%= form.label :time_zone, 'Time Zone' %>
-    <%= form.time_zone_select :time_zone, TimeZone.us_zones %>
+    <%= form.time_zone_select :time_zone, TimeZone.all %>
     <%= form.error_message_on :time_zone %>
   </p>
 <%- if admin? -%>
@@ -29,6 +29,11 @@
     <%= form.label :sponsor %>
     <%= form.check_box :sponsor %>
     <%= form.error_message_on :sponsor %>
+  </p>
+  <p>
+    <%= form.label :ignore %>
+    <%= form.check_box :ignore %>
+    <%= form.error_message_on :ignore %>
   </p>
 <%- end -%>
   <p>

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080603152821) do
+ActiveRecord::Schema.define(:version => 20080603180812) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                                                 :null => false
@@ -96,16 +96,17 @@ ActiveRecord::Schema.define(:version => 20080603152821) do
   end
 
   create_table "users", :force => true do |t|
-    t.string   "name",               :limit => 32,                     :null => false
-    t.string   "email",              :limit => 32,                     :null => false
-    t.string   "salt",               :limit => 8,                      :null => false
-    t.string   "encrypted_password",                                   :null => false
+    t.string   "name",               :limit => 32,                      :null => false
+    t.string   "email",              :limit => 32,                      :null => false
+    t.string   "salt",               :limit => 8,                       :null => false
+    t.string   "encrypted_password",                                    :null => false
     t.datetime "created_at"
-    t.string   "role",               :limit => 16, :default => "user"
-    t.integer  "averages_count",                   :default => 0,      :null => false
+    t.string   "role",               :limit => 16,  :default => "user"
+    t.integer  "averages_count",                    :default => 0,      :null => false
     t.string   "wca"
-    t.boolean  "sponsor",                          :default => false,  :null => false
-    t.string   "time_zone"
+    t.boolean  "sponsor",                           :default => false,  :null => false
+    t.boolean  "ignore"
+    t.string   "time_zone",          :limit => 100, :default => "UTC"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
