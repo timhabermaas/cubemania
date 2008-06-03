@@ -4,8 +4,8 @@ class Competition < ActiveRecord::Base
   belongs_to :puzzle
   belongs_to :user; attr_protected :user_id, :user
   has_many :averages, :include => :user, :order => 'time', :dependent => :nullify do
-    def for(competition, date, ignore = true)
-      find :all, :conditions => ['clocks.created_at between ? and ? and users.ignore = ?', competition.started_at(date), competition.ended_at(date), !ignore], :include => :user
+    def for(competition, date)
+      find :all, :conditions => ['clocks.created_at between ? and ? and users.ignored = ?', competition.started_at(date), competition.ended_at(date), false], :include => :user
     end
   end
   has_many :singles, :dependent => :nullify
@@ -31,7 +31,7 @@ class Competition < ActiveRecord::Base
   end
 
   def participated?(date, user)
-    averages.for(self, date, false).collect { |a| a.user }.include? user
+    averages.for(self, date).collect { |a| a.user }.include? user
   end
 
   def started_at(date = Time.now)
