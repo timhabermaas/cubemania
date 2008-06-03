@@ -26,7 +26,7 @@
 </p>
 <%- else -%>
   <%- if logged_in? -%>
-    <%- if @competition.participated?(@date, current_user) or current_user.ignored? -%>
+    <%- if @competition.participated?(@date, current_user) -%>
 <p class="suggestion">
     <%- if current_user.ignored -%>
   Get out of here!

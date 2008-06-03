@@ -4,8 +4,12 @@ class Competition < ActiveRecord::Base
   belongs_to :puzzle
   belongs_to :user; attr_protected :user_id, :user
   has_many :averages, :include => :user, :order => 'time', :dependent => :nullify do
-    def for(competition, date)
-      find :all, :conditions => ['clocks.created_at between ? and ? and users.ignored = ?', competition.started_at(date), competition.ended_at(date), false], :include => :user
+    def for(competition, date, ignore = true)
+      if ignore
+        find :all, :conditions => ['clocks.created_at between ? and ? and users.ignored = ?', competition.started_at(date), competition.ended_at(date), false], :include => :user
+      else
+        find :all, :conditions => ['clocks.created_at between ? and ?', competition.started_at(date), competition.ended_at(date)], :include => :user
+      end
     end
   end
   has_many :singles, :dependent => :nullify
@@ -31,10 +35,10 @@ class Competition < ActiveRecord::Base
   end
 
   def participated?(date, user)
-    averages.for(self, date).collect { |a| a.user }.include? user
+    averages.for(self, date, false).collect { |a| a.user }.include? user
   end
 
-  def started_at(date = Time.now)
+  def started_at(date = Time.now.utc)
     if repeat == 'once'
       created_at_utc
     else
@@ -42,7 +46,7 @@ class Competition < ActiveRecord::Base
     end
   end
 
-  def ended_at(date = Time.now)
+  def ended_at(date = Time.now.utc)
     if repeat == 'once'
       created_at_utc.next_year
     else
@@ -59,7 +63,7 @@ class Competition < ActiveRecord::Base
   end
   
   def next?(date)
-    ended_at(date) != ended_at(Time.now)
+    ended_at(date) != ended_at(Time.now.utc)
   end
   
   def next_date(date)
@@ -67,7 +71,7 @@ class Competition < ActiveRecord::Base
   end
 
   def old?(date)
-    started_at(date) != started_at(Time.now)
+    started_at(date) != started_at(Time.now.utc)
   end
   
   def once?
@@ -80,6 +84,6 @@ class Competition < ActiveRecord::Base
     end
     
     def created_at_utc
-      Time.parse(created_at_before_type_cast)
+      created_at.utc
     end
 end

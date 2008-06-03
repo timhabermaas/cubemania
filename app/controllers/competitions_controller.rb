@@ -4,7 +4,13 @@ class CompetitionsController < ResourceController::Base
   belongs_to :puzzle
 
   show.before do
-    @date = params[:date].nil? ? Time.now : Time.parse(params[:date])
+    if params[:date].nil?
+      time = Time.now.utc
+    else
+      time = Time.parse(params[:date])
+      time = Time.utc(time.year, time.month, time.day)
+    end
+    @date = time
     unless @competition.old? @date
       scrambles = @competition.scrambles.for @competition, @date
       if scrambles.empty?
