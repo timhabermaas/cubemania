@@ -5,12 +5,12 @@ class AveragesController < ApplicationController
   def index
     @user = User.find params[:user_id]
     @puzzle = Puzzle.find params[:puzzle_id]
+    @averages = @user.averages.for params[:puzzle_id]
     
     respond_to do |format|
-      format.html { @averages = @user.averages.for params[:puzzle_id], true }
-      format.xml { @averages = @user.averages.for params[:puzzle_id] }
+      format.html
+      format.xml
       format.csv do
-        @averages = @user.averages.for params[:puzzle_id], true
         response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
         response.headers['Content-Disposition'] = 'attachment; filename="' + @puzzle.kind.name + '_' + @puzzle.name + '.csv"'
       end
