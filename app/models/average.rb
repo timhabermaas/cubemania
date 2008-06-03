@@ -5,6 +5,14 @@ class Average < Clock
   before_save :update_records_on_create
   after_destroy :update_records_on_destroy
 
+  def validate
+    unless competition_id.nil?
+      unless Clock.find_by_user_id_and_puzzle_id_and_competition_id_and_type(user_id, puzzle_id, competition_id, 'Average', :conditions => ['created_at between ? and ?', competition.started_at, competition.ended_at]).nil?
+        errors.add_to_base 'Get out of here!'
+      end
+    end
+  end
+
   def notice
     if singles.select(&:record).empty?
       return 'You have a new personal average record!' if record?
