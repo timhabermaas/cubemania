@@ -22,7 +22,7 @@
 
 <%- if @competition.old?(@date) -%>
 <p class="suggestion">
-  This competition ended on <%=d @competition.ended_at @date %>.
+  This competition ended on <%=d Time.zone.parse @competition.ended_at(@date).to_s %>.
 </p>
 <%- else -%>
   <%- if logged_in? -%>

@@ -1,5 +1,4 @@
 Competition Improve Performance (Database Indexes, Includes, Caching?)
-Timezone?
 
 Timer: Amount of solves relies on scrambles.length, but the underlying javascript relies on @puzzle.attempt_count. This could (maybe) lead to problems.
   I'll keep an eye on it :).
@@ -14,10 +13,9 @@ Bugs:
 Enhancements:
 
   Clocks Create: Slide Notice Up / Down
-  DateTimes: Add TimeZones
   ESL-like awards: Most solves/day, ...
   Users: Display ranking for each puzzle (puzzle.records.average.index(User.find_by_name('tim').averages.record(2) + 1)
-  Compeitions: password protected/invitatin only
+  Competitions: password protected/invitatin only
   Timer: Image of scrambled puzzle
   Competition Messages/Challenges Vertical Align
 
