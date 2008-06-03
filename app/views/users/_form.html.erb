@@ -20,7 +20,7 @@
     <%= form.error_message_on :wca %>
   </p>
   <p>
-    <%= form.label :time_zone %>
+    <%= form.label :time_zone, 'Time Zone' %>
     <%= form.time_zone_select :time_zone, TimeZone.us_zones %>
     <%= form.error_message_on :time_zone %>
   </p>
