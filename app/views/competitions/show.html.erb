@@ -28,7 +28,11 @@
   <%- if logged_in? -%>
     <%- if @competition.participated? @date, current_user -%>
 <p class="suggestion">
+    <%- if current_user.ignore -%>
+  Get out of here!
+    <%- else -%>
   See your ranking on the left.
+    <%- end -%>
 </p>
     <%- else -%>
 <%= partial 'shared/timer' %>
