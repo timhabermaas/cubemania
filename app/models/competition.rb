@@ -36,7 +36,7 @@ class Competition < ActiveRecord::Base
 
   def started_at(date = Time.now)
     if repeat == 'once'
-      created_at
+      created_at_utc
     else
       date.send "beginning_of_#{nominalize_repeat}"
     end
@@ -44,14 +44,14 @@ class Competition < ActiveRecord::Base
 
   def ended_at(date = Time.now)
     if repeat == 'once'
-      created_at.next_year
+      created_at_utc.next_year
     else
       date.send "end_of_#{nominalize_repeat}"
     end
   end
   
   def previous?(date)
-    started_at(date) != started_at(created_at)
+    started_at(date) != started_at(created_at_utc)
   end
   
   def previous_date(date)
@@ -77,5 +77,9 @@ class Competition < ActiveRecord::Base
   private    
     def nominalize_repeat
       repeat == 'daily' ? 'day' : repeat[0..-3]
+    end
+    
+    def created_at_utc
+      Time.parse(created_at_before_type_cast)
     end
 end

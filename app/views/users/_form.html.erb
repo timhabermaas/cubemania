@@ -19,6 +19,11 @@
     <%= form.text_field :wca %>
     <%= form.error_message_on :wca %>
   </p>
+	<p>
+		<%= form.label :time_zone %>
+		<%= form.time_zone_select :time_zone, TimeZone.us_zones %>
+		<%= form.error_message_on :time_zone %>
+	</p>
 <%- if admin? -%>
   <p>
     <%= form.label :sponsor %>
