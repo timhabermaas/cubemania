@@ -3,9 +3,9 @@ class Puzzle < ActiveRecord::Base
 
   belongs_to :kind
   has_many :competitions, :dependent => :destroy
-  has_many :records, :conditions => ['record = ?', true], :order => 'time', :class_name => 'Clock' do
-    def single; @single ||= find_all_by_type 'Single', :include => :user; @single.reject {|s| s.user.ignore}; end
-    def average; @average ||= find_all_by_type 'Average', :include => :user; @average.reject {|a| a.user.ignore}; end
+  has_many :records, :conditions => ['record = ? and users.ignore = ?', true, false], :order => 'time', :class_name => 'Clock' do
+    def single; @single ||= find_all_by_type 'Single', :include => :user; end
+    def average; @average ||= find_all_by_type 'Average', :include => :user; end
   end
   has_many :clocks, :dependent => :delete_all
 

@@ -105,8 +105,8 @@ ActiveRecord::Schema.define(:version => 20080603180812) do
     t.integer  "averages_count",                    :default => 0,      :null => false
     t.string   "wca"
     t.boolean  "sponsor",                           :default => false,  :null => false
-    t.boolean  "ignore"
     t.string   "time_zone",          :limit => 100, :default => "UTC"
+    t.boolean  "ignore",                            :default => false
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
