@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080604183753) do
+ActiveRecord::Schema.define(:version => 20080604213800) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                                                 :null => false
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(:version => 20080604183753) do
     t.integer  "competition_id"
   end
 
+  add_index "clocks", ["competition_id", "created_at", "type", "time"], :name => "index_clocks_on_competition_id_and_created_at_and_type_and_time"
   add_index "clocks", ["user_id", "puzzle_id", "type", "created_at"], :name => "index_clocks_on_user_id_and_puzzle_id_and_type_and_created_at"
   add_index "clocks", ["user_id", "record", "type"], :name => "index_clocks_on_user_id_and_record_and_type"
   add_index "clocks", ["puzzle_id", "record", "type", "time"], :name => "index_clocks_on_puzzle_id_and_record_and_type_and_time"
@@ -50,6 +51,8 @@ ActiveRecord::Schema.define(:version => 20080604183753) do
     t.boolean  "sticky"
     t.integer  "averages_count",               :default => 0,      :null => false
   end
+
+  add_index "competitions", ["puzzle_id", "sticky", "averages_count", "created_at"], :name => "index_competitions_on_p_id_and_sticky_and_a_count_and_c_at"
 
   create_table "items", :force => true do |t|
     t.string  "name",        :limit => 64,                 :null => false
@@ -95,6 +98,8 @@ ActiveRecord::Schema.define(:version => 20080604183753) do
     t.integer  "competition_id", :null => false
     t.datetime "created_at"
   end
+
+  add_index "scrambles", ["competition_id", "created_at", "position"], :name => "index_scrambles_on_competition_id_and_created_at_and_position"
 
   create_table "users", :force => true do |t|
     t.string   "name",               :limit => 32,                      :null => false
