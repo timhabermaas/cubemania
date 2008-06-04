@@ -22,7 +22,7 @@ module ApplicationHelper
   end
   
   def navigation
-    Item.all
+    @navigation ||= Item.all
   end
   
   def current_item
