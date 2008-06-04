@@ -28,7 +28,7 @@ class CompetitionsController < ResourceController::Base
   private
     def collection
       params[:repeat] ||= 'all'
-      options = { :include => :user, :order => 'sticky desc, created_at desc', :page => params[:page], :per_page => 10 }
+      options = { :include => :user, :order => 'sticky desc, averages_count desc, created_at desc', :page => params[:page], :per_page => 10 }
       if params[:repeat] == 'all'
         @collection ||= end_of_association_chain.paginate options
       else

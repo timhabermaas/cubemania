@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080603180812) do
+ActiveRecord::Schema.define(:version => 20080604183753) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                                                 :null => false
@@ -40,14 +40,15 @@ ActiveRecord::Schema.define(:version => 20080603180812) do
   add_index "comments", ["post_id", "created_at"], :name => "index_comments_on_post_id_and_created_at"
 
   create_table "competitions", :force => true do |t|
-    t.string   "name",        :limit => 64,                     :null => false
+    t.string   "name",           :limit => 64,                     :null => false
     t.string   "description"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "puzzle_id",                 :default => 0,      :null => false
-    t.string   "repeat",      :limit => 32, :default => "once", :null => false
+    t.integer  "puzzle_id",                    :default => 0,      :null => false
+    t.string   "repeat",         :limit => 32, :default => "once", :null => false
     t.boolean  "sticky"
+    t.integer  "averages_count",               :default => 0,      :null => false
   end
 
   create_table "items", :force => true do |t|

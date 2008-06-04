@@ -1,4 +1,5 @@
 Competition Improve Performance (Database Indexes, Includes, Caching?)
+Announcement: Down for 30 minutes. Specify date and time (in utc)
 
 Timer: Amount of solves relies on scrambles.length, but the underlying javascript relies on @puzzle.attempt_count. This could (maybe) lead to problems.
   I'll keep an eye on it :).
@@ -18,6 +19,7 @@ Enhancements:
   Competitions: password protected/invitatin only
   Timer: Image of scrambled puzzle
   Competition Messages/Challenges Vertical Align
+  Proper route for competitions index repeat
 
 New Features:
 
