@@ -84,7 +84,7 @@ module ApplicationHelper
   end
   
   def repeat?(repeat)
-    params[:repeat] == repeat.to_s
+    self.repeat == repeat.to_s
   end
   
   def repeat
