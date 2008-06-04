@@ -87,6 +87,10 @@ module ApplicationHelper
     params[:repeat] == repeat.to_s
   end
   
+  def repeat
+    params[:repeat] || (@competition.repeat unless @competition.nil?)
+  end
+  
   def permit?
     case params[:controller].to_sym
       when :competitions
