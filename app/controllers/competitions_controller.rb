@@ -37,7 +37,7 @@ class CompetitionsController < ResourceController::Base
     end
     
     def object
-      @object ||= end_of_association_chain.find params[:id], :include => :user
+      @object ||= end_of_association_chain.find params[:id]
     end
     
     def build_object
