@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080604213800) do
+ActiveRecord::Schema.define(:version => 20080605131355) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                                                 :null => false
@@ -93,9 +93,9 @@ ActiveRecord::Schema.define(:version => 20080604213800) do
   add_index "puzzles", ["kind_id", "name"], :name => "index_puzzles_on_kind_id_and_name", :unique => true
 
   create_table "scrambles", :force => true do |t|
-    t.string   "scramble",       :null => false
-    t.integer  "position",       :null => false
-    t.integer  "competition_id", :null => false
+    t.string   "scramble",       :limit => 1024, :null => false
+    t.integer  "position",                       :null => false
+    t.integer  "competition_id",                 :null => false
     t.datetime "created_at"
   end
 
