@@ -1,8 +1,13 @@
-<% form_for [@kind, @puzzle], :html => { :multipart => true } do |form| %>
+<% form_for @puzzle, :html => { :multipart => true } do |form| %>
   <p>
     <%= form.label :name %>
     <%= form.text_field :name %>
     <%= form.error_message_on :name %>
+  </p>
+  <p>
+    <%= form.label :kind %>
+    <%= form.select :kind_id, @kinds.collect{|k| [k.name, k.id]} %>
+    <%= form.error_message_on :kind_id %>
   </p>
   <p>
     <%= form.label :attempt_count %>

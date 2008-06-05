@@ -1,9 +1,16 @@
 class PuzzlesController < ResourceController::Base
   permit :admin
-
-  belongs_to :kind
+  
+  [new_action, edit].each do |action|
+    action.before { @kinds = Kind.all }
+  end
   
   [update, create].each do |action|
-    action.wants.html { redirect_to kind_puzzles_path }
+    action.wants.html { redirect_to puzzles_path }
+  end
+  
+private
+  def collection
+    @collection ||= Puzzle.find :all, :order => 'kind_id, name', :include => :kind
   end
 end
