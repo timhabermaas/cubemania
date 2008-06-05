@@ -1,26 +1,23 @@
-set :application, 'cubemania'
-set :user, 'fortytwo'
-set :home, "/users/home/#{user}"
-set :mongrel_port, 4008
-set :rails_env, 'production'
-set :domain, 'cubemania.org'
-set :application_path , "#{home}/domains/#{domain}/web"
+set :application, 'cubemania.org'
+set :user, 'simon'
+set :svn_user, 'simonwacker'
+set :svn_password, Proc.new { Capistrano::CLI.password_prompt('SVN Password: ') }
+set :repository, Proc.new { "--username #{svn_user} --password #{svn_password} --no-auth-cache http://svn2.assembla.com/svn/cubemania/trunk" }
+set :deploy_to, "/srv/#{application}"
+set :ip, '209.20.70.85'
 
-role :app, 'spring.joyent.us'
+role :app, ip
+role :web, ip
+role :db, ip, :primary => true
 
 namespace :deploy do
-  task :start, :roles => :app do
-    invoke_command "/usr/local/bin/mongrel_rails start -c #{application_path} -p #{mongrel_port} -d -e #{rails_env} -a 127.0.0.1 -P #{home}/var/run/mongrel-#{application}-#{mongrel_port}.pid"
+  task :start do
+    sudo 'thin start -C /etc/thin/cubemania.org.yml'
   end
-
-  task :restart, :roles => :app do
-    invoke_command "cd #{application_path}; svn up"
-    invoke_command "cd #{application_path}; RAILS_ENV=production rake db:migrate"
-    invoke_command "rm #{application_path}/public/javascripts/all.js #{application_path}/public/stylesheets/all.css"
-    invoke_command "/usr/local/bin/mongrel_rails restart -P #{home}/var/run/mongrel-#{application}-#{mongrel_port}.pid"
+  task :stop do 
+    sudo 'thin stop -C /etc/thin/cubemania.org.yml'
   end
-
-  task :stop, :roles => :app do
-    invoke_command "/usr/local/bin/mongrel_rails stop -P #{home}/var/run/mongrel-#{application}-#{mongrel_port}.pid"
+  task :restart do 
+    sudo 'thin restart -C /etc/thin/cubemania.org.yml'
   end
 end

@@ -14,21 +14,8 @@ ActionController::Routing::Routes.draw do |map|
     puzzles.records 'records/:type', :controller => 'records', :defaults => { :type => 'average' }, :type => /(single)|(average)/
   end
 
-  # don't break old URLs
-  map.resources :kinds do |kinds|
-    kinds.resources :puzzles do |puzzles|
-      puzzles.resources :times, :controller => :clocks
-      puzzles.resources :singles, :averages
-      puzzles.records 'records/:type', :controller => 'records', :defaults => { :type => 'average' }, :type => /(single)|(average)/
-    end
-  end
-
   map.resources :users do |users|
     users.resources :puzzles, :has_many => [:singles, :averages]
-    # don't break old URLs
-    users.resources :kinds do |kinds|
-      users.resources :puzzles, :has_many => [:singles, :averages]
-    end
   end
 
   map.resources :kinds
