@@ -1,5 +1,9 @@
 <% remote_form_for [@puzzle, @competition ||= @puzzle.competitions.build] do |form| %>
   <p>
+    <%= form.label :puzzle %>
+    <%= "#{@puzzle.name.titleize} (#{@puzzle.kind.name.titleize})" %>
+  </p>
+  <p>
     <%= form.label :name %>
     <%= form.text_field :name %>
     <%= form.error_message_on :name %>
