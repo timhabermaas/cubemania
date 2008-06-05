@@ -37,7 +37,7 @@ module Authentication
     def login
       unless logged_in?
         flash[:notice] = 'Please login or <a href="/register">register</a> to continue'
-        session[:return_to] = request.request_uri
+        store_location
         redirect_to login_path
       end
     end
@@ -90,6 +90,10 @@ module Authentication
     def redirect_back(default)
       redirect_to(session[:return_to] || default)
       session[:return_to] = nil
+    end
+    
+    def store_location(return_to = request.request_uri)
+      session[:return_to] = return_to
     end
 
   private
