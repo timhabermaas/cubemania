@@ -46,7 +46,8 @@ module ApplicationHelper
   end
   
   def navigation_path(controller)
-    navigation.find { |item| item.url.split('/').last.to_sym == controller unless item.url == '/' }.url
+    item = navigation.find { |item| item.url.split('/').last.to_sym == controller unless item.url == '/' }
+    item.nil? root_path ||Êitem.url
   end
   
   def controller?(*names)
