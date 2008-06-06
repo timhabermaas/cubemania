@@ -21,3 +21,9 @@ namespace :deploy do
     sudo 'thin restart -C /etc/thin/cubemania.org.yml'
   end
 end
+
+namespace :svn do
+  task :update do
+    run "cd #{deploy_to}/current; svn up"
+  end
+end
