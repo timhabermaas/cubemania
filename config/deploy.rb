@@ -24,6 +24,6 @@ end
 
 namespace :svn do
   task :update do
-    run "cd #{deploy_to}/current; svn up"
+    sudo "cd #{deploy_to}/current; svn up"
   end
 end
