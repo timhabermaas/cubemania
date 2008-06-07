@@ -11,7 +11,7 @@
   
   <%- if (results = @competition.averages.for(@competition, @date)).empty? -%>
   <p class="challenge">
-    Be the first to compete!
+    <%= if @competition.old?(@date) ? 'Be the first to compete!' : 'No one competed. :(' %>
   </p>
   <%- else -%>
   <div id="results">
