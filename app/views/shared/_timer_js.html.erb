@@ -233,6 +233,8 @@
     if ($('#manual').is(":visible")) $('#type').focus();
     if ($("#timer tr.done").length == <%= @puzzle.attempt_count %>) {
       $('#type').attr("disabled", "disabled");
+    } else {
+      $('#type').attr("disabled", false);
     }
   }
   $(":text, textarea").focus(function(event) {
