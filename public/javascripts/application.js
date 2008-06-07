@@ -6,3 +6,5 @@ function checkKind(index) {
 $.fn.textToggle = function(open, close) {
   $(this).text($(this).text() == open ? close : open);
 };
+
+document.cookie = 'tz_offset=' + (new Date()).getTimezoneOffset();
