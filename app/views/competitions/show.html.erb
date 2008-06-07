@@ -42,7 +42,8 @@
     <%- end -%>
   <%- else -%>
 <p class="suggestion">
-  Please <%= link_to 'login', login_path %> or <%= link_to 'register', register_path %> to compete.
+  Please <%= link_to 'login', login_path(:return_to => request.request_uri) %> or
+  <%= link_to 'register', register_path(:return_to => request.request_uri) %> to compete.
 </p>
   <%- end -%>
 <%- end -%>

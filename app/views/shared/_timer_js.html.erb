@@ -230,12 +230,12 @@
   function toggleInputMethod() {
     $('#dynamic').toggle();
     $('#manual').toggle();
-    if ($('#manual').is(":visible")) $('#type').focus();
     if ($("#timer tr.done").length == <%= @puzzle.attempt_count %>) {
       $('#type').attr("disabled", "disabled");
     } else {
       $('#type').attr("disabled", false);
     }
+    if ($('#manual').is(":visible")) $('#type').focus();
   }
   $(":text, textarea").focus(function(event) {
     keyEnabled = false;
