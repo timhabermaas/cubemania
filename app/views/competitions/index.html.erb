@@ -20,16 +20,16 @@
     <strong><%=dt Time.now.utc.send("end_of_#{nominalize_repeat}").in_time_zone %></strong> your local time.
   <%- end -%>
   </p>
-  <p class="<%= 'highlight' if repeat? 'once' %>">
+  <p class="<%= 'highlight' if repeat? :once %>">
     <strong>One-Time</strong> competitions never end.
   </p>
-  <p class="<%= 'highlight' if repeat? 'daily' %>">
+  <p class="<%= 'highlight' if repeat? :daily %>">
     <strong>Daily</strong> competitions start and end at midnight of each day (GMT time).<br/>
   </p>
-  <p class="<%= 'highlight' if repeat? 'weekly' %>">
+  <p class="<%= 'highlight' if repeat? :weekly %>">
     <strong>Weekly</strong> competitions start at the beginning and end at the ending of each week at midnight (GMT time).
   </p>
-  <p class="<%= 'highlight' if repeat? 'monthly' %>">
+  <p class="<%= 'highlight' if repeat? :monthly %>">
     <strong>Monthly</strong> competitions start at the beginning and end at the ending of each month at midnight (GMT time).
   </p>
 </div>
