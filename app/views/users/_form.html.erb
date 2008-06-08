@@ -21,7 +21,7 @@
   </p>
   <p>
     <%= form.label :time_zone, 'Time Zone' %>
-    <%= form.time_zone_select :time_zone, TimeZone.all %>
+    <%= @user.time_zone = Time.zone.name if @user.new_record?; form.time_zone_select :time_zone, TimeZone.all %>
     <%= form.error_message_on :time_zone %>
   </p>
 <%- if admin? -%>
