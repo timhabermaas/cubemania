@@ -1,5 +1,7 @@
 Competitions: Recent Activity
 
+Only permit deletion of averages for admins. And allow ignoring users for moderators.
+
 Multiple Blindfolded!
 
 Timer: Amount of solves relies on scrambles.length, but the underlying javascript relies on @puzzle.attempt_count. This could (maybe) lead to problems.
