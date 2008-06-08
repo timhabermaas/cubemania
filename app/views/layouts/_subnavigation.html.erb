@@ -24,8 +24,8 @@
     <%- kinds.each_with_index do |kind, index| -%>
       <li style="width: <%= 100 / kinds.size %>%">
         <%= link_to_function kind.name, "checkKind(#{index})" %>
+        <%= javascript_tag "checkKind(#{index})" if current_kind? kind %>
       </li>
-      <%= javascript_tag "checkKind(#{index})" if current_kind? kind %>
     <%- end -%>
     </ul>
   </div>

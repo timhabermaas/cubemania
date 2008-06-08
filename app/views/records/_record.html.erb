@@ -3,5 +3,5 @@
   <td><strong><%=t record.time %></strong></td>
   <td><cite><%= link_to record.user.name, record.user %></cite></td>
   <td><small><%=d record.created_at %></small></td>
-  <td><blockquote><p><%=h record.comment %></p></blockquote></td>
+  <td><blockquote><p><%=sanitize record.comment %></p></blockquote></td>
 </tr>
