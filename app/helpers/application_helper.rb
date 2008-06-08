@@ -84,12 +84,16 @@ module ApplicationHelper
     params[:type] == type.to_s
   end
   
-  def repeat?(repeat)
-    self.repeat == repeat.to_s
+  def repeat?(*repeats)
+    repeats.include? self.repeat.to_sym
   end
   
   def repeat
     params[:repeat] || (@competition.repeat unless @competition.nil?)
+  end
+  
+  def nominalize_repeat
+    repeat == 'daily' ? 'day' : repeat[0..-3]
   end
   
   def permit?

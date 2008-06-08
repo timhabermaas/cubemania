@@ -2,7 +2,7 @@
 
 <%- if @competitions.empty? -%>
 <p class="challenge">
-  No<%= repeat == 'once' ? ' one-time' : " #{repeat}" unless repeat == 'all' %> competitions for <%= @puzzle.name %> <%= @puzzle.kind.name %> yet.<br/>
+  No<%= repeat?(:once) ? ' one-time' : " #{repeat}" unless repeat? :all %> competitions for <%= @puzzle.name %> <%= @puzzle.kind.name %> yet.<br/>
   <%= link_to_function 'Create One!', "$('.admin a.toggle').click(); $('#competition_name').focus()" if logged_in? %>
   <%= link_to 'Login To Create One!', login_path(:return_to => request.request_uri) unless logged_in? %>
 </p>
@@ -14,11 +14,17 @@
   <p>
     Competitions start immediately after creation.
   </p>
+  <%- unless repeat? :all, :once -%>
+  <p>
+    The next <%= repeat %> iteration starts at
+    <strong><%=dt Time.now.utc.send("end_of_#{nominalize_repeat}").in_time_zone %></strong> your local time.
+  <%- end -%>
+  </p>
   <p class="<%= 'highlight' if repeat? 'once' %>">
     <strong>One-Time</strong> competitions never end.
   </p>
   <p class="<%= 'highlight' if repeat? 'daily' %>">
-    <strong>Daily</strong> competitions start and end at midnight of each day (GMT time).
+    <strong>Daily</strong> competitions start and end at midnight of each day (GMT time).<br/>
   </p>
   <p class="<%= 'highlight' if repeat? 'weekly' %>">
     <strong>Weekly</strong> competitions start at the beginning and end at the ending of each week at midnight (GMT time).
