@@ -15,7 +15,7 @@
   </p>
   <p>
     <%= form.label :repeat %>
-    <%= form.select :repeat, Competition::REPEATS.collect { |f| [f.titleize, f] }, :selected => (params[:repeat] || @competition.repeat) %>
+    <%= form.select :repeat, Competition::REPEATS.collect { |f| [f.titleize, f] }, :selected => repeat %>
     <%= form.error_message_on :repeat %>
   </p>
 <%- if admin? -%>
