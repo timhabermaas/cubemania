@@ -7,7 +7,27 @@
   <%= link_to 'Login To Create One!', login_path(:return_to => request.request_uri) unless logged_in? %>
 </p>
 <%- else -%>
-<%= partial @competitions %>
+<div id="competitions">
+  <%= partial @competitions %>
+</div>
+<div id="info">
+  <p>
+    Competitions start immediately after creation.
+  </p>
+  <p class="<%= 'highlight' if repeat? 'once' %>">
+    <strong>One-Time</strong> competitions never end.
+  </p>
+  <p class="<%= 'highlight' if repeat? 'daily' %>">
+    <strong>Daily</strong> competitions start and end at midnight of each day (GMT time).
+  </p>
+  <p class="<%= 'highlight' if repeat? 'weekly' %>">
+    <strong>Weekly</strong> competitions start at the beginning and end at the ending of each week at midnight (GMT time).
+  </p>
+  <p class="<%= 'highlight' if repeat? 'monthly' %>">
+    <strong>Monthly</strong> competitions start at the beginning and end at the ending of each month at midnight (GMT time).
+  </p>
+</div>
 <%- end -%>
+<div class="clear"></div>
 
 <%= will_paginate @competitions %>
