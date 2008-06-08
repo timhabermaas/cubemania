@@ -21,6 +21,7 @@ Enhancements:
   Proper route for competitions index repeat
   Reevaluate Indexes and Includes
   Competitions: Challange another user
+  Chart: Either limit the amount of averages or add a scrollbar. It's too hard to navigate to one specific average.
 
 New Features:
 
