@@ -7,8 +7,8 @@ class CompetitionsController < ResourceController::Base
     if params[:date].nil?
       time = Time.now.utc
     else
-      time = Time.parse(params[:date])
-      time = Time.utc(time.year, time.month, time.day)
+      time = Time.parse params[:date]
+      time = Time.utc time.year, time.month, time.day
     end
     @date = time
     unless @competition.old? @date
