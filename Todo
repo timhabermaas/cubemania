@@ -1,7 +1,3 @@
-Competitions: Recent Activity
-
-Allow ignoring users for moderators.
-
 Multiple Blindfolded!
 
 Timer: Amount of solves relies on scrambles.length, but the underlying javascript relies on @puzzle.attempt_count. This could (maybe) lead to problems.
@@ -27,6 +23,7 @@ Enhancements:
   Competitions: Challange another user
   Chart: Either limit the amount of averages or add a scrollbar. It's too hard to navigate to one specific average. <-- There IS a scrollbar! Just beneath the chart!
   Records: Subnavigation: Don't stick to selected repeat when clicking on a puzzle.
+  Allow ignoring users for moderators.
   
 
 New Features:
@@ -39,3 +36,4 @@ New Features:
   Add tags to competitions
   Icons for Beginner, Intermediate, Professional in Competitions (Sub-Categories or tags?)
   Time Overview in HTML for Users
+  Competitions: Recent Activity
