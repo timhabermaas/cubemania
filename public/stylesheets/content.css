@@ -469,9 +469,6 @@
   text-transform: capitalize;
   white-space: nowrap;
 }
-#results .dnf span {
-  display: none;
-}
 #records .odd {
   background-color: #517397;
 }
