@@ -1,6 +1,6 @@
-<tr class="result rank<%= result_counter %>">
+<tr class="result rank<%= result_counter %><%= ' dnf' if result.dnf? %>">
   <th><span><%= result_counter %></span></th>
-  <td><strong<%= " class=dnf" if result.dnf? %>><%=t result.time %></strong></td>
+  <td><strong><%=t result.time %></strong></td>
   <td><cite><%= link_to result.user.name, result.user %></cite></td>
   <td><small><%=d result.created_at %></small></td>
   <td><blockquote><p><%= result.comment %></p></blockquote></td>

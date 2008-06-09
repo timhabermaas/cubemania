@@ -1,6 +1,7 @@
+Daylight Saving Time (always one hour, always positive?)
 Competitions: Recent Activity
 
-Only permit deletion of averages for admins. And allow ignoring users for moderators.
+Allow ignoring users for moderators.
 
 Multiple Blindfolded!
 
@@ -25,7 +26,9 @@ Enhancements:
   Proper route for competitions index repeat
   Reevaluate Indexes and Includes
   Competitions: Challange another user
-  Chart: Either limit the amount of averages or add a scrollbar. It's too hard to navigate to one specific average.
+  Chart: Either limit the amount of averages or add a scrollbar. It's too hard to navigate to one specific average. <-- There IS a scrollbar! Just beneath the chart!
+  Records: Subnavigation: Don't stick to selected repeat when clicking on a puzzle.
+  
 
 New Features:
 
@@ -34,3 +37,6 @@ New Features:
   Puzzle: 6x6 + 7x7 Scrambler
   User Show: YouTube Playlist
   Shoutbox (Live User Interaction)
+  Add tags to competitions
+  Icons for Beginner, Intermediate, Professional in Competitions (Sub-Categories or tags?)
+  Time Overview in HTML for Users

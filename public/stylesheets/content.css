@@ -218,8 +218,12 @@
 }
 #content .once, #content .daily, #content .weekly, #content .monthly {
   padding-left: 60px;
-  background-position: center left;
+  background-position: 0.375em left;
   background-repeat: no-repeat;
+}
+#content .sticky {
+  padding-top: 0;
+  background-position: 0.3125em left;
 }
 
 #features {
@@ -452,6 +456,10 @@
 }
 #records strong, #results strong {
   white-space: nowrap;
+}
+#results .dnf strong {
+  color: #83a1bf;
+  text-decoration: line-through;
 }
 #records small, #results small {
   font-size: 1em;

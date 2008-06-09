@@ -1,6 +1,6 @@
 class AveragesController < ApplicationController
   login :except => []
-  permit :moderator, :only => :destroy
+  permit :admin, :only => :destroy
 
   def index
     @user = User.find params[:user_id]
