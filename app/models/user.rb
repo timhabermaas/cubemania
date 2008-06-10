@@ -10,6 +10,7 @@ class User < ActiveRecord::Base
   has_many :comments, :dependent => :nullify
   has_many :clocks
   has_many :competitions, :dependent => :nullify
+  has_many :shouts, :dependent => :nullify
   has_many :participations, :select => 'competitions.*, clocks.created_at as date', :through => :clocks,
       :order => 'clocks.created_at desc', :source => 'competition', :group => 'competitions.id'
   has_many :singles, :order => 'created_at desc', :dependent => :delete_all do

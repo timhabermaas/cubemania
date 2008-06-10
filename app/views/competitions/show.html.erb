@@ -1,3 +1,5 @@
+<%=dt @date %>
+
 <%= partial 'tabs' %>
 
 <div id="competition">
@@ -20,6 +22,10 @@
     </table>
   </div>
   <%- end -%>
+  <div id="shouts">
+    <%= render :partial => 'shouts/shouts' %>
+    <%= partial 'shouts/form' if logged_in? and not @competition.old?(@date) %>
+  </div>
 </div>
 
 <%- if @competition.old?(@date) -%>

@@ -19,6 +19,7 @@ class CompetitionsController < ResourceController::Base
         @scrambles = scrambles.map(&:scramble)
       end
     end
+    @shouts = @competition.shouts.for @competition, @date
   end
 
   [create, update].each do |action|
