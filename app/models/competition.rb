@@ -6,9 +6,9 @@ class Competition < ActiveRecord::Base
   has_many :averages, :include => :user, :order => 'dnf, time', :dependent => :nullify do
     def for(competition, date, ignore = true)
       if ignore
-        find :all, :conditions => ['clocks.created_at between ? and ? and users.ignored = ?', competition.started_at(date), competition.ended_at(date), false], :include => :user
+        find :all, :conditions => { 'clocks.created_at' => competition.range(date), 'users.ignored' => false }, :include => :user
       else
-        find :all, :conditions => ['clocks.created_at between ? and ?', competition.started_at(date), competition.ended_at(date)], :include => :user
+        find :all, :conditions => { 'clocks.created_at' => competition.range(date) }, :include => :user
       end
     end
   end
