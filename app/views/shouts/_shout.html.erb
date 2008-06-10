@@ -1,6 +1,7 @@
 <li class="shout">
   <cite><%= link_to shout.user.name, shout.user %></cite>
   <small><%=dt shout.created_at %></small>
+  <%= link_to 'X', puzzle_competition_shout_path(@puzzle, @competition, shout), :method => :delete, :confirm => 'Are you sure?' if moderator? %>
   <div class="text">
     <%=m shout.content %>
   </div>
