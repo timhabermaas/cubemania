@@ -18,7 +18,7 @@ class Competition < ActiveRecord::Base
       find :all, :conditions => ['created_at between ? and ?', competition.started_at(date), competition.ended_at(date)]
     end
   end
-  has_many :shouts, :dependent => :delete_all do
+  has_many :shouts, :order => 'created_at' :dependent => :delete_all do
     def for(competition, date)
       find :all, :conditions => ['shouts.created_at between ? and ?', competition.started_at(date), competition.ended_at(date)], :include => :user
     end
