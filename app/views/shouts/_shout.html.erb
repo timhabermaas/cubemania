@@ -1,5 +1,7 @@
-<li>
-  <small><%= link_to shout.user.name, user_path(shout.user) %></small>
-  <cite><%= shout.content %></cite>
+<li class="shout">
+  <cite><%= link_to shout.user.name, shout.user %></cite>
   <small><%=dt shout.created_at %></small>
+  <div class="text">
+    <%=m shout.content %>
+  </div>
 </li>

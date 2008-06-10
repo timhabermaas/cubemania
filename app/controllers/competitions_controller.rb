@@ -1,5 +1,6 @@
 class CompetitionsController < ResourceController::Base
   permit :owner, :only => [:update, :destroy]
+  #protect :sticky, :but => :admin, :only => [:create, :update]
 
   belongs_to :puzzle
 

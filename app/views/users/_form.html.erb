@@ -35,6 +35,11 @@
     <%= form.check_box :ignored %>
     <%= form.error_message_on :ignored %>
   </p>
+  <p>
+    <%= form.label :role %>
+    <%= form.select :role, User::ROLES.collect { |r| [r.titleize, r] } %>
+    <%= form.error_message_on :role %>
+  </p>
 <%- end -%>
   <p>
     <%= form.label :password %>

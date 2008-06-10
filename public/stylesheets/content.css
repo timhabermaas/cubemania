@@ -255,13 +255,14 @@
   display: block;
   margin-bottom: 0.25em;
 }
-#comments .new_comment textarea {
+#comments .new_comment textarea, #shouts .new_shout textarea {
   width: 99%;
   height: 8em;
 }
-#comments .new_comment input[type=submit] {
+#comments .new_comment input[type=submit], #shouts .new_shout input[type=submit] {
   margin-left: 0;
 }
+
 
 #times, #competition, #competitions {
   float: left;
