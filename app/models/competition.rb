@@ -15,12 +15,12 @@ class Competition < ActiveRecord::Base
   has_many :singles, :dependent => :nullify
   has_many :scrambles, :order => 'created_at desc, position', :dependent => :delete_all do
     def for(competition, date)
-      find :all, :conditions => ['created_at between ? and ?', competition.started_at(date), competition.ended_at(date)]
+      find :all, :conditions => { :created_at => competition.range(date) }
     end
   end
   has_many :shouts, :order => 'created_at', :dependent => :delete_all do
     def for(competition, date)
-      find :all, :conditions => ['shouts.created_at between ? and ?', competition.started_at(date), competition.ended_at(date)], :include => :user
+      find :all, :conditions => { :created_at => competition.range(date) }, :include => :user
     end
   end
 
@@ -81,6 +81,10 @@ class Competition < ActiveRecord::Base
   
   def once?
     repeat == 'once'
+  end
+  
+  def range(date)
+    started_at(date)..ended_at(date)
   end
 
   private    
