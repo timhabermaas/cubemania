@@ -71,7 +71,7 @@
   display: none;
 }
 
-#content .tabs {
+#content .advert, #content .tabs {
   text-align: center;
   margin-bottom: 2em;
 }
