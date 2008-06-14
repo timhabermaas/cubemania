@@ -6,15 +6,16 @@ if @average.competition.nil?
     page['type'].focus if params[:input_method] == 'manual'
     flash[:notice] = @average.notice
   else
-    page['timer input'].removeAttr('disabled')
-    flash[:notice] = @average.errors.full_messages.join(', ')
+    page['timer input'].removeAttr 'disabled'
+    flash[:notice] = @average.errors.full_messages.join ', '
   end
   page << "if ($('#notice')) $('#notice').remove();"
 else
   if @average.errors.empty?
+    flash[:notice] = @average.notice
     page.redirect_to [@puzzle, @average.competition]
   else
-    flash[:notice] = @average.errors.full_messages.join(', ')
+    flash[:notice] = @average.errors.full_messages.join ', '
   end
 end
 
