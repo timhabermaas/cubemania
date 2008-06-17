@@ -15,8 +15,13 @@
   </p>
   <p>
     <%= form.label :repeat %>
-    <%= form.select :repeat, Competition::REPEATS.collect { |f| [f.titleize, f] }, :selected => repeat %>
+    <%= form.select :repeat, Competition::REPEATS.collect { |r| [r.titleize, r] }, :selected => repeat %>
     <%= form.error_message_on :repeat %>
+  </p>
+  <p>
+    <%= form.label :skill %>
+    <%= form.select :skill, Competition::SKILLS.collect { |s| [s.titleize, s] } %>
+    <%= form.error_message_on :skill %>
   </p>
 <%- if admin? -%>
   <p>

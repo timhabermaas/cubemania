@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080610164227) do
+ActiveRecord::Schema.define(:version => 20080617161831) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                                                 :null => false
@@ -50,6 +50,7 @@ ActiveRecord::Schema.define(:version => 20080610164227) do
     t.string   "repeat",         :limit => 32, :default => "once", :null => false
     t.boolean  "sticky"
     t.integer  "averages_count",               :default => 0,      :null => false
+    t.string   "skill",          :limit => 32, :default => "all",  :null => false
   end
 
   add_index "competitions", ["puzzle_id", "sticky", "averages_count", "created_at"], :name => "index_competitions_on_p_id_and_sticky_and_a_count_and_c_at"

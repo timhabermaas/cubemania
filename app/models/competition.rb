@@ -1,5 +1,6 @@
 class Competition < ActiveRecord::Base
   REPEATS = %w{once daily weekly monthly}
+  SKILLS  = %w{all beginner intermediate expert}
 
   belongs_to :puzzle
   belongs_to :user; attr_protected :user_id, :user
@@ -28,6 +29,7 @@ class Competition < ActiveRecord::Base
   validates_length_of :name, :in => 2..64
   validates_length_of :description, :maximum => 256, :allow_nil => true
   validates_inclusion_of :repeat, :in => REPEATS
+  validates_inclusion_of :skill, :in => SKILLS
 
   def create_scrambles
     new_scrambles = puzzle.scrambles
