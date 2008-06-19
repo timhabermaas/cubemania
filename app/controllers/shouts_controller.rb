@@ -2,14 +2,15 @@ class ShoutsController < ApplicationController
   permit :moderator, :only => :destroy
 
   def create
-    shout = current_user.shouts.build params[:shout].merge :competition_id => params[:competition_id]
-    shout.save
-    redirect_to puzzle_competition_path(params[:puzzle_id], params[:competition_id])
+    @puzzle = Puzzle.find params[:puzzle_id]
+    @competition = @puzzle.competitions.find params[:competition_id]
+    @shout = current_user.shouts.build params[:shout].merge :competition_id => @competition
+    @shout.save
   end
 
   def destroy
     object.destroy
-    redirect_to puzzle_competition_path(params[:puzzle_id], params[:competition_id])
+    redirect_to puzzle_competition_path params[:puzzle_id], params[:competition_id], :anchor => 'comments'
   end
 
   private

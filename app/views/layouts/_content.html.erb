@@ -1,6 +1,6 @@
 <div id="content">
   <div class="center">
-    <%= partial 'layouts/advert' unless controller? :homes %>
+    <%= partial 'layouts/advert' unless controller? :homes, :logins %>
     <%= partial 'layouts/admin' if permit? %>
     <%= yield %>
     <div class="clear"></div>

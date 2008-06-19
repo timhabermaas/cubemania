@@ -6,9 +6,7 @@ Timer: Amount of solves relies on scrambles.length, but the underlying javascrip
 Bugs:
 
   chart: coloring
-  chart: long comments
-  IE6: We had 20 unique visitors who used IE6. Grml.
-  Windows Vista + Firefox: keyUp() triggers on keyDown
+  IE6: We had 20++ unique visitors who used IE6. Grml.
 
 Enhancements:
 
@@ -23,12 +21,10 @@ Enhancements:
   Competitions: Challange another user
   Competitions: Add notice for new record
   Chart: Either limit the amount of averages or add a scrollbar. It's too hard to navigate to one specific average. <-- There IS a scrollbar! Just beneath the chart! <-- Uhm, yeah, i didn't see it. But that's more a scalebar than a scrollbar. We should stick to a scale of about 30(?) averages per "page" and use the scrollbar to scroll through the solves.
-  Records: Subnavigation: Don't stick to selected repeat when clicking on a puzzle.
   Allow ignoring users for moderators.
   Records: Write a method which repairs record flags.
   Competitions: Disable updating of competitions#repeat after first iteration
   Timer: Add the countdown again + let the user disable the countdown (and save his decision)
-  
 
 New Features:
 

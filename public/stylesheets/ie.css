@@ -5,3 +5,6 @@
   margin: 0;
   cursor: hand;
 }
+#shouts .new_shout .flag {
+  width: 88px;
+}

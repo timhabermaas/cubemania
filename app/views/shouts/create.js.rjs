@@ -1,0 +1,6 @@
+unless @shout.new_record?
+  page['shouts ol'].append partial 'shout.html.erb'
+  page[@shout].hide.slideDown 'normal'
+  @shout = Shout.new
+end
+page['new_shout'].replaceWith partial 'form.html.erb'

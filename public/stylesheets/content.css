@@ -255,7 +255,7 @@
   display: block;
   margin-bottom: 0.25em;
 }
-#comments .new_comment textarea, #shouts .new_shout textarea {
+#comments .new_comment textarea {
   width: 99%;
   height: 8em;
 }
@@ -263,6 +263,59 @@
   margin-left: 0;
 }
 
+#shouts {
+  margin-top: 2em;
+}
+#shouts .shout {
+  text-align: center;
+  margin-bottom: 1em;
+}
+#shouts .text p {
+  margin: 0;
+  padding: 0.25em 0;
+}
+#shouts .top_left {
+  max-width: 500px;
+  background: #8ba4c0 url(/images/top-left-shout.gif) top left no-repeat;
+}
+#shouts .top_right {
+  background: url(/images/top-right-shout.gif) top right no-repeat;
+}
+#shouts .bottom_left {
+  background: url(/images/bottom-left-shout.gif) bottom left no-repeat;
+}
+#shouts .bottom_right {
+  padding: 0.25em 0.5em;
+  text-align: left;
+  background: url(/images/bottom-right-shout.gif) bottom right no-repeat;
+}
+#shouts .shout .flag {
+  padding-left: 16px;
+  background: url(/images/shout-flag.gif) top left no-repeat;
+}
+#shouts .shout .flag, #shouts .shout .top_left, #shouts .shout .top_right, #shouts .shout .bottom_left, #shouts .shout .bottom_right {
+  display: -moz-inline-box;
+  -moz-box-orient:vertical;
+  display: inline-block;
+  zoom: 1;
+  *display: inline;
+}
+#shouts .new_shout {
+  width: 300px;
+  margin: 0 auto;
+}
+#shouts .new_shout textarea {
+  width: 280px;
+  margin-bottom: 0.5em;
+  margin-top: 0.75em;
+}
+#shouts .new_shout .flag {
+  width: 80px;
+  height: 21px;
+  padding-top: 6px;
+  padding-left: 200px;
+  background: url(/images/new-shout-flag.gif) top right no-repeat;
+}
 
 #times, #competition, #competitions {
   float: left;

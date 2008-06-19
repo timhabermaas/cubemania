@@ -12,7 +12,7 @@ ActionController::Routing::Routes.draw do |map|
       competitions.resources :shouts
     end
     puzzles.competition_date 'competitions/:id/:date', :controller => 'competitions', :action => 'show'
-    puzzles.records 'records/:type', :controller => 'records', :defaults => { :type => 'average' }, :type => /(single)|(average)/
+    puzzles.records 'records/:type/:page', :controller => 'records', :defaults => { :type => 'average', :page => 1 }, :type => /(single)|(average)/
   end
 
   map.resources :users do |users|

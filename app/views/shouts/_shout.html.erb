@@ -1,10 +1,6 @@
-<li class="shout">
+<% li_for shout do %>
   <cite><%= link_to shout.user.name, shout.user %></cite>
-  <small>
-    <%=dt shout.created_at %>
-    <%= link_to 'Destroy', puzzle_competition_shout_path(@puzzle, @competition, shout), :method => :delete, :confirm => 'Are you sure?' if moderator? %>
-  </small>
-  <div class="text">
-    <%=m shout.content %>
-  </div>
-</li>
+  <div class="flag"><div class="top_left"><div class="top_right"><div class="bottom_left"><div class="bottom_right">
+    <div class="text"><%=m shout.content %></div>
+  </div></div></div></div></div>
+<% end %>

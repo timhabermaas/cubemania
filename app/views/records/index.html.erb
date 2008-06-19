@@ -11,6 +11,8 @@
 </p>
 <%- else -%>
 <table id="records">
-  <%= partial 'record', :collection => @records %>
+  <%= partial 'record', :collection => @records, :offset => @records.offset %>
 </table>
 <%- end -%>
+
+<%= will_paginate @records, { :params => { :user_id => nil } } %>
