@@ -1,10 +1,14 @@
 <%- javascript_tag do -%>
   interval = null;
   keyEnabled = true;
+  timerStopped = false;
   
   function toggleTimer() {
-    if ($("#dynamic").is(":visible") && $("#timer tr.done").length != <%= @puzzle.attempt_count %>)
+    if (timerEnabled())
       this.interval == null ? startTimer() : stopTimer();
+  }
+  function timerEnabled() {
+    return ($("#dynamic").is(":visible") && $("#timer tr.done").length != <%= @puzzle.attempt_count %>)
   }
   function startTimer() {
     if (<%= @puzzle.countdown %> == 0) {
@@ -250,14 +254,20 @@
     keyEnabled = true;
   });
   $(document).keydown(function(event) {
-    if (keyEnabled && event.keyCode == 32) {
+    if (keyEnabled && (event.keyCode == 32 || event.keyCode == 83)) {
+      if (interval != null) {
+        stopTimer();
+        timerStopped = true;
+      }
       return false;
     }
   });
   $(document).keyup(function(event) {
-    if (keyEnabled && (event.keyCode == 32 || event.keyCode == 83)) {
-      toggleTimer();
+    if (timerEnabled() && keyEnabled && (event.keyCode == 32 || event.keyCode == 83)) {
+      if (interval == null && !timerStopped)
+        startTimer();
     }
+    timerStopped = false;
   });
   updateScramble();
 <%- end -%>
