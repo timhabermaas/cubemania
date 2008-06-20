@@ -62,8 +62,14 @@
       updateScramble();
     }
   }
-  function getMilliseconds() {
+  function getAllMillisecondsWithoutDNF() {
     return $("#timer tr.done:not('.dnf') .milliseconds").map(function() {
+      var time = parseInt($(this).text());
+      return isNaN(time) ? 0 : time;
+    }).get();
+  }
+  function getAllMilliseconds() {
+    return $("#timer tr.done .milliseconds").map(function() {
       var time = parseInt($(this).text());
       return isNaN(time) ? 0 : time;
     }).get();
@@ -85,7 +91,7 @@
     $("#timer tr.done:not(.dnf):eq(" + minIndex + ")").addClass("best");
   }
   function calculateAverageOfAllTimes() {
-    return getMilliseconds().average();
+    return getAllMillisecondsWithoutDNF().average();
   }
   function calculateAverage() {
     var count = $("#timer tr.done").length;
@@ -123,7 +129,7 @@
   }
   function calculateBestOf() {
     if ($("#timer tr.done:not(.dnf)").length == 0)
-      return getMilliseconds().min();
+      return getAllMilliseconds().min();
     return $("#timer tr.done:not(.dnf) .milliseconds").map(function() {
       var time = parseInt($(this).text());
       return isNaN(time) ? 0 : time;
