@@ -48,7 +48,7 @@ class Puzzle < ActiveRecord::Base
       (1..scramble_length).map do
         axis = (axis + rand(turns.size - 1) + 1) % turns.size
         turns[axis].rand + variants.rand
-      end.join(" ")
+      end.join(' ')
     end
     
     def megaminx_scramble
@@ -147,6 +147,6 @@ class Puzzle < ActiveRecord::Base
     	scramble << Array.new(4).map do
     		pins.rand
     	end.join
-    	scramble.join(" / ")
+    	scramble.join(' / ')
     end
 end
