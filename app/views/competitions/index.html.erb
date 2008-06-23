@@ -36,4 +36,4 @@
 <%- end -%>
 <div class="clear"></div>
 
-<%= will_paginate @competitions %>
+<%= will_paginate @competitions, { :params => { :user_id => nil } } %>
