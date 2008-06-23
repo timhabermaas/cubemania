@@ -1,3 +1,5 @@
+"cap deploy" should do: RAILS_ENV=production rake db:migrate
+
 Protect Attributes (User Update, Competition Update)
 Secure SVN!
 Sending mails does NOT work.
