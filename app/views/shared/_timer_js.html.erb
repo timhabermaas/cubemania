@@ -122,22 +122,12 @@
     }
   }
   function calculateMean() {
-    if ($("#timer tr.done:not(.dnf)").length == 0) {
-      return calculateAverageOfAllTimes();
-    } else {
-      return $("#timer tr.done:not(.dnf) .milliseconds").map(function() {
-        var time = parseInt($(this).text());
-        return isNaN(time) ? 0 : time;
-      }).get().average();
-    }
+    return calculateAverageOfAllTimes();
   }
   function calculateBestOf() {
     if ($("#timer tr.done:not(.dnf)").length == 0)
       return getAllMilliseconds().min();
-    return $("#timer tr.done:not(.dnf) .milliseconds").map(function() {
-      var time = parseInt($(this).text());
-      return isNaN(time) ? 0 : time;
-    }).get().min();
+    return getAllMillisecondsWithoutDNF().min();
   }
   function updateScramble() {
     $("#scramble").text($("#timer tr:not(.done):first .scramble").text());
