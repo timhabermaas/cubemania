@@ -202,6 +202,7 @@
 }
 
 #content .competition {
+  overflow: hidden;
   margin-bottom: 1em;
 }
 #content .once {
@@ -221,8 +222,32 @@
   background-position: 0.375em left;
   background-repeat: no-repeat;
 }
+#content .all {
+  display: none;
+}
+#content .beginner {
+  background-image: url(/images/beginner.gif);
+}
+#content .intermediate {
+  background-image: url(/images/intermediate.gif);
+}
+#content .expert {
+  background-image: url(/images/expert.gif);
+}
+#content .skill {
+  float: right;
+  width: 50px;
+  height: 51px;
+  padding: 0.25em;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+#content .skill span {
+  display: none;
+}
 #content .sticky {
   padding-top: 0;
+  padding-right: 0;
   background-position: 0.3125em left;
 }
 
