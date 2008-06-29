@@ -217,9 +217,9 @@
     return this.length == 0 ? 0 : Math.round(sum/this.length);
   }
   function formatTime(time) {
-    var seconds = time / 1000;
+    var seconds = (time / 1000).toFixed(2);
     if (seconds < 60) {
-      return seconds.toFixed(2);
+      return seconds;
     } else {
       var minutes = Math.floor(seconds / 60);
       seconds = seconds - minutes * 60;

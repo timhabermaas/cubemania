@@ -112,10 +112,10 @@ module ApplicationHelper
   end
   
   def t(time)
-    if time > 60000
+    if time >= 60000
       min = time / 60000
       sec = (time - min * 60000) / 1000.0
-      '%d:%05.2f' % [min, sec] + ' min'
+      '%d:%05.2f' % [min, sec] + ' min' # 12.555 => "12.55"
     else
       '%.2f' % (time.to_f / 1000) + ' s'
     end
