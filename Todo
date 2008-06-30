@@ -2,11 +2,11 @@ Chart: fix rounding mistakes
 
 "cap deploy" should do: RAILS_ENV=production rake db:migrate
 
-Protect Attributes (User Update, Competition Update) # http://www.embracingchaos.com/2007/05/model_security_.html
+Protect Attributes (User Update, Competition Update) # override User#write_attribute
 Secure SVN!
 Sending mails does NOT work.
 Show single on roll over. Tooltip.
-Stop time before ifs.
+Provide countdown for people who want it.
 
 Multiple Blindfolded!
 
