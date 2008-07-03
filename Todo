@@ -1,5 +1,3 @@
-Chart: fix rounding mistakes
-
 Ads for Times and Competitions
 
 "cap deploy" should do: RAILS_ENV=production rake db:migrate
