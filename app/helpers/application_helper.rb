@@ -134,6 +134,10 @@ module ApplicationHelper
     'http://www.worldcubeassociation.org/results/p.php?i=' + id
   end
 
+  def singles_as_string(singles)
+    singles.map { |s| s.dnf? ? 'DNF' : t(s.time) }.join ', '
+  end
+
   def li_for(record, *args, &block)
     content_tag_for :li, record, *args, &block
   end

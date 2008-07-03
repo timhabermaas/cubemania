@@ -3,6 +3,26 @@ function checkKind(index) {
   $("#puzzles > ul").animate({left: -100 * index + "%"}, "normal");
 }
 
+function tooltip() {
+  xOffset = 10;
+  yOffset = 20;
+  $(".tooltip").hover(function(e) {
+    this.t = this.title;
+    this.title = "";
+    $("#tooltip").text(this.t);
+    $("#tooltip")
+      .animate({top: (e.pageY - xOffset) + "px", left: (e.pageX + yOffset) + "px"}, {queue: false, duration: 400})
+      .fadeIn("normal");
+    },
+  function() {
+    this.title = this.t;
+  });
+  $(".tooltip").mousemove(function(e) {
+    $("#tooltip")
+      .animate({top: (e.pageY - xOffset) + "px", left: (e.pageX + yOffset) + "px"}, {queue: false, duration: 400});
+  });
+};
+
 $.fn.textToggle = function(open, close) {
   $(this).text($(this).text() == open ? close : open);
 };
@@ -25,3 +45,7 @@ function calculateDst() {
 }
 
 document.cookie = 'tz_offset=' + ((new Date()).getTimezoneOffset() + calculateDst() * 60);
+
+$(document).ready(function() {
+  tooltip();
+});

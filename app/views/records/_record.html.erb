@@ -1,4 +1,4 @@
-<tr class="record rank<%= record_counter + offset %>">
+<tr class="record rank<%= record_counter + offset %><%= ' tooltip' unless record.is_a? Single%>" title="Singles: <%= singles_as_string record.singles unless record.is_a? Single %>">
   <th><span><%= record_counter + offset %></span></th>
   <td><strong><%=t record.time %></strong></td>
   <td><cite><%= link_to record.user.name, record.user %></cite></td>

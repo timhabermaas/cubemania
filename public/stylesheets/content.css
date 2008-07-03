@@ -625,3 +625,11 @@
   margin-top: 2em;
   text-align: center;
 }
+
+#tooltip {
+  position: absolute;
+  border: 2px solid #df0;
+  background: #fff;
+  padding: 2px 5px;
+  color: #000;
+}
