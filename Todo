@@ -1,8 +1,15 @@
 Chart: fix rounding mistakes
 
+Ads for Times and Competitions
+
 "cap deploy" should do: RAILS_ENV=production rake db:migrate
 
-Protect Attributes (User Update, Competition Update) # override User#write_attribute
+Protect Attributes (User Update, Competition Update) # override User#write_attribute <--- nope, that's an ugly solution. take a look at the competitions and
+                                                       users controller. the code is already in there:
+                                                             #protect :sticky, :but => :admin, :only => [:create, :update]
+                                                       read it like: protect attribute sticky from everyone but admins (only necessary for create and update)
+                                                       the protect method should be put into the authentication plugin. would also be nice to split the
+                                                       authentication class into authentication and authorization.
 Secure SVN!
 Sending mails does NOT work.
 Show single on roll over. Tooltip.
