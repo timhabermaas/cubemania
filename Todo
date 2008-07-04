@@ -1,5 +1,3 @@
-Include Singles in Records if Tooltip Stays
-
 Ads for Times and Competitions
 
 "cap deploy" should do: RAILS_ENV=production rake db:migrate
