@@ -7,6 +7,7 @@ function tooltip() {
   xOffset = 10;
   yOffset = 20;
   $(".tooltip").hover(function(e) {
+    if (this.title == "") return;
     this.t = this.title;
     this.title = "";
     $("#tooltip").text(this.t);
@@ -15,11 +16,9 @@ function tooltip() {
       .fadeIn("normal");
     },
   function() {
+    if (this.t == null) return;
     this.title = this.t;
-  });
-  $(".tooltip").mousemove(function(e) {
-    $("#tooltip")
-      .animate({top: (e.pageY - xOffset) + "px", left: (e.pageX + yOffset) + "px"}, {queue: false, duration: 400});
+    $("#tooltip").hide();
   });
 };
 

@@ -134,8 +134,8 @@ module ApplicationHelper
     'http://www.worldcubeassociation.org/results/p.php?i=' + id
   end
 
-  def singles_as_string(singles)
-    singles.map { |s| s.dnf? ? 'DNF' : t(s.time) }.join ', '
+  def singles_as_string(time)
+    time.singles.map { |s| s.dnf? ? 'DNF' : t(s.time) }.join ', ' if time.respond_to? :singles
   end
 
   def li_for(record, *args, &block)
