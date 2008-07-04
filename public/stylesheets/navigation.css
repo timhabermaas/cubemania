@@ -1,8 +1,8 @@
 #navigation {
   display: block;
-  height: 3.1875em;
   border-top: 1px solid #df0;
   background: #1e1e1e url(/images/navigation.gif) repeat-x;
+  overflow: hidden;
 }
 #navigation li {
   display: block;
