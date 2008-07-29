@@ -80,12 +80,10 @@
   }
   function updateWorstAndBest() {
     $("#timer tr.done").removeClass("worst").removeClass("best");
-    if ($("#timer tr.done:not(.dnf)").length < 2) return;
-    var times = $("#timer tr.done:not(.dnf) .milliseconds").map(function() {
-      var time = parseInt($(this).text());
-      return isNaN(time) ? 0 : time;
-    }).get();
+    if ($("#timer tr.done").length < 2) return;
+    var times = getAllMillisecondsWithoutDNF();
     var minIndex = times.inArray(times.min());
+    times[minIndex] = times[minIndex] - 1;
     var maxIndex = times.inArray(times.max());
     if ($("#timer tr.dnf").length > 0) {
       $("#timer tr.dnf:first").addClass("worst");
