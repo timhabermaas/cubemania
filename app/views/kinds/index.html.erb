@@ -8,7 +8,7 @@
 <%- for kind in @kinds -%>
   <tr>
     <td><%=h kind.name %></td>
-    <td><%= image_tag kind.image.url unless kind.image.nil? %></td>
+    <td><%= image_tag kind.image.url unless kind.image_file_name.nil? %></td>
     <td><%= link_to 'Edit', edit_kind_path(kind) %></td>
     <td><%= link_to 'Destroy', kind, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>

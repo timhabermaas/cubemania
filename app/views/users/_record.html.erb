@@ -1,7 +1,7 @@
 <tr class="record <%= cycle 'even', 'odd' %>">
   <th>
     <div class="puzzle" style="background-image: url(<%= record[:single].puzzle.image.url %>)">
-      <%= "<div class='kind' style='background-image: url(#{record[:single].puzzle.kind.image.url})'></div>" if record[:single].puzzle.kind.image? %>
+      <%= "<div class='kind' style='background-image: url(#{record[:single].puzzle.kind.image.url})'></div>" unless record[:single].puzzle.kind.image_file_name.nil? %>
     </div>
   </th>
   <td>
