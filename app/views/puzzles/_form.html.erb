@@ -31,8 +31,8 @@
   </p>
   <p>
     <%= form.label :image %>
-    <%= file_column_field 'puzzle', 'image' %>
-    <%= form.error_message_on :image %>
+    <%= form.file_field :image %>
+    <%= form.error_message_on :countdown %>
   </p>
   <p>
     <%= form.submit action_label %>

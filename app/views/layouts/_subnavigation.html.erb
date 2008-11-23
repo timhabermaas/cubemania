@@ -7,8 +7,8 @@
         <% for puzzle in kind.puzzles -%>
           <li class="<%= 'checked' if current_puzzle? puzzle %>">
             <a href="<%= url_for :puzzle_id => puzzle.id, :type => params[:type], :controller => params[:controller] %>">
-              <span class="puzzle" style="background-image: url(<%= url_for_file_column puzzle, :image %>)">
-                <%= "<span class='kind' style='background-image: url(#{url_for_file_column kind, :image})'></span>" if kind.image? %>
+              <span class="puzzle" style="background-image: url(<%= puzzle.image.url %>)">
+                <%= "<span class='kind' style='background-image: url(#{kind.image.url})'></span>" if kind.image? %>
               </span>
               <span class="name"><%= puzzle.name %></span>
             </a>
