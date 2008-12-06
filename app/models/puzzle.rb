@@ -31,7 +31,7 @@ class Puzzle < ActiveRecord::Base
       when '2x2x2', '3x3x3'
         cube_scramble [%w{R L}, %w{F B}, %w{D U}]
       when '4x4x4', '5x5x5'
-        cube_scramble [%w{R L r l}, %w{F B f b}, %w{D U d u}]
+        cube_scramble [%w{R L Rw Lw}, %w{F B Fw Bw}, %w{D U Dw Uw}]
       when '6x6x6', '7x7x7'
         cube_scramble [['R', 'L', 'R&sup2;', 'L&sup2;', 'R&sup3;', 'L&sup3;'], ['F', 'B', 'F&sup2;', 'B&sup2;', 'F&sup3;', 'B&sup3;'], ['D', 'U', 'D&sup2;', 'U&sup2;', 'D&sup3;', 'U&sup3;']]
       when 'megaminx'
