@@ -59,9 +59,10 @@ class Puzzle < ActiveRecord::Base
       scramble = ''
       turns = %w(R D)
       variants = %w(-- ++)
+      variants_for_u = ['\'', '']
       scramble_length.times do |index|
         scramble += (scramble.empty? ? '' : ' ') + turns[index % 2] + variants.rand
-        scramble += ' Y' + variants.rand + "<br/>" if index % 10 == 9
+        scramble += ' U' + variants_for_u.rand + "<br/>" if index % 10 == 9
       end
       scramble
     end
