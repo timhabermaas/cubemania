@@ -27,6 +27,6 @@ class UsersController < ResourceController::Base
   
   private
     def collection
-      @collection ||= User.find :all, :order => 'name'
+      @collection ||= User.paginate :page => params[:page], :per_page => 100, :order => 'name'
     end
 end
