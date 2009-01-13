@@ -9,7 +9,7 @@
         <%= link_to 'Logout', logout_path if logged_in? %>
       </li>
       <li id="profile" class="<%= 'checked' if logged_in? and current_page? current_user %>">
-        <%= link_to 'My Profile', current_user if logged_in? %>
+        <%= link_to "#{current_user.name}'s Profile", current_user if logged_in? %>
       </li>
     </ul>
   </div>
