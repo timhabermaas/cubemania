@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20081207131905) do
+ActiveRecord::Schema.define(:version => 20090305103953) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                                                 :null => false
@@ -117,7 +117,7 @@ ActiveRecord::Schema.define(:version => 20081207131905) do
 
   create_table "users", :force => true do |t|
     t.string   "name",               :limit => 32,                      :null => false
-    t.string   "email",              :limit => 32,                      :null => false
+    t.string   "email",              :limit => 64,                      :null => false
     t.string   "salt",               :limit => 8,                       :null => false
     t.string   "encrypted_password",                                    :null => false
     t.datetime "created_at"
