@@ -526,15 +526,19 @@
   font-size: 1.25em;
 }
 
-#records, #results table {
+#records, #results, #averages table {
   margin: 0 auto;
 }
-#records thead th, #results thead th {
+#records thead th, #results thead th, #averages th {
   color: #df0;
 }
 #records th, #records td, #results th, #results td {
   text-align: center;
   padding: 0.25em 1em;
+}
+#averages td {
+  text-align: left;
+  padding: 0em 0.2em;
 }
 #records td, #results td {
   padding-left: 1em;

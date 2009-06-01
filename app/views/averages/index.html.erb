@@ -1,12 +1,12 @@
 <small><%=h @puzzle.kind.name %> <%= link_to @user.name, @user %></small>
 <h1><%=h @puzzle.name %></h1>
 
-<table>
+<table id="averages">
 <%- for average in @averages -%>
   <tr>
-    <td><%= link_to t(average.time), user_puzzle_average_path(@user, @puzzle, average) %></td>
+    <th <%=' style="text-decoration: line-through;"' if average.dnf %>><%= t average.time %></th>
   <%- for single in average.singles -%>
-    <td><small title="<%= single.scramble %>"<%= ' style="text-decoration: line-through;"' if single.dnf %>><%=t single.time %></small></td>
+    <td><small<%= ' style="text-decoration: line-through;"' if single.dnf %>><%=t single.time %></small></td>
   <%- end -%>
     <td><small><%=dt average.created_at %></small></td>
     <td><%= link_to 'Destroy', user_puzzle_average_path(@user, @puzzle, average), :confirm => 'Are you sure?', :method => :delete if admin? %></td>
