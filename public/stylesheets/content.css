@@ -536,9 +536,10 @@
   text-align: center;
   padding: 0.25em 1em;
 }
-#averages td {
+#averages td, #averages th {
   text-align: left;
-  padding: 0em 0.5em;
+  white-space: nowrap;
+  padding: 0.1em 0.5em;
 }
 #records td, #results td {
   padding-left: 1em;
