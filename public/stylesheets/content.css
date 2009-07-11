@@ -513,6 +513,9 @@
   display: inline;
   margin-right: 16px;
 }
+#users input[type=submit] {
+  margin-left: 1em;
+}
 #wca {
   margin: 3em 0;
   text-align: center;

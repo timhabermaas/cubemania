@@ -27,6 +27,11 @@ class UsersController < ResourceController::Base
   
   private
     def collection
-      @collection ||= User.paginate :page => params[:page], :per_page => 100, :order => 'name'
+      @collection ||=
+        if params[:search]
+          User.paginate :page => params[:page], :per_page => 100, :order => 'name', :conditions => ['name LIKE ?', "%#{params[:search]}%"]
+        else
+          User.paginate :page => params[:page], :per_page => 100, :order => 'name'
+        end
     end
 end
