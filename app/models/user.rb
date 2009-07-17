@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
 
   attr_reader :password
   attr_accessor :bot_email
+  attr_protected :role, :sponsor
 
   has_many :posts, :dependent => :nullify
   has_many :comments, :dependent => :nullify
