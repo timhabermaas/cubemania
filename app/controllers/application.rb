@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::Base
   include Authentication
-  include ExceptionNotifiable
 
   before_filter :update_session_expiration_date, :set_time_zone, :store_return_to, :authenticate
 
