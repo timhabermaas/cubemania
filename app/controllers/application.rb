@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   include Authentication
   include ExceptionNotifiable
 
-  before_filter :update_session_expiration_date, :set_time_zone, :store_return_to
+  before_filter :update_session_expiration_date, :set_time_zone, :store_return_to, :authenticate
 
   login :except => [:index, :show]
 
@@ -31,5 +31,14 @@ class ApplicationController < ActionController::Base
 
     def store_return_to
       store_location params[:return_to] unless params[:return_to].nil?
+    end
+    
+    def authenticate
+      if request.format.json?
+        authenticate_or_request_with_http_basic("Cubemania API") do |user_name, password|
+          @login = Login.new :name => user_name, :password => password
+          @login.validate
+        end
+      end
     end
 end
