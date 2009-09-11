@@ -6,7 +6,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :puzzles do |puzzles|
     puzzles.resources :times, :controller => :clocks
-    puzzles.resources :singles, :averages
+    puzzles.resources :averages
     puzzles.resources :competitions do |competitions|
       competitions.resources :times, :controller => :clocks
       competitions.resources :shouts
@@ -16,7 +16,7 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   map.resources :users do |users|
-    users.resources :puzzles, :has_many => [:singles, :averages]
+    users.resources :puzzles, :has_many => :averages
   end
 
   map.resources :kinds
