@@ -1,4 +1,4 @@
-class AveragesController < ApplicationController
+class AveragesController < ApplicationController::Base
   login :except => []
   permit :owner, :only => :destroy
 
