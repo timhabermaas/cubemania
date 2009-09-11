@@ -7,7 +7,7 @@
   attempt_count: 12
   average_format: average
   countdown: 0
-  image: "dummy"
+  image_file_name: "dummy"
 
 2x2x2:
   name: 2x2x2
@@ -16,7 +16,7 @@
   attempt_count: 12
   average_format: average
   countdown: 0
-  image: "dummy"
+  image_file_name: "dummy"
 
 4x4x4:
   name: 4x4x4
@@ -25,4 +25,4 @@
   attempt_count: 5
   average_format: average
   countdown: 0
-  image: "dummy"
+  image_file_name: "dummy"
