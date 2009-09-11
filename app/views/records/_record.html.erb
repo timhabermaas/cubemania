@@ -1,5 +1,5 @@
-<tr class="record rank<%= record_counter + offset %>">
-  <th><span><%= record_counter + offset %></span></th>
+<tr class="record rank<%= record_counter + offset + 1 %>">
+  <th><span><%= record_counter + offset + 1 %></span></th>
   <td><strong><%=t record.time %></strong></td>
   <td><cite><%= link_to record.user.name, record.user %></cite></td>
   <td><small><%=d record.created_at %></small></td>

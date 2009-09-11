@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
       if logged_in?
         Time.zone = current_user.time_zone
       elsif not cookies[:tz_offset].blank?
-        Time.zone = TimeZone[-cookies[:tz_offset].to_i.minutes]
+        Time.zone = ActiveSupport::TimeZone[-cookies[:tz_offset].to_i.minutes]
       end
     end
 
