@@ -10,6 +10,7 @@ class AveragesController < ApplicationController
     respond_to do |format|
       format.html
       format.xml
+      format.json { render :json => {:averages => @averages, :user => @user} }
       format.csv do
         response.headers['Content-Type'] = 'text/csv; charset=iso-8859-1; header=present'
         response.headers['Content-Disposition'] = 'attachment; filename="' + @puzzle.kind.name + '_' + @puzzle.name + '.csv"'

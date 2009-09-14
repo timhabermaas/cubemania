@@ -5,6 +5,10 @@ class UsersController < ResourceController::Base
   #protect [:role, :sponsor, :ignored], :but => :admin, :only => [:create, :update]
 
   index.before { @max_averages_count = User.max_averages_count }
+  
+  index do
+    wants.json { render :json => @users.to_json }
+  end
 
   show.before do
     single_records, average_records = @user.singles.records, @user.averages.records

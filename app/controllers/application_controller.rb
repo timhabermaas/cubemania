@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   include Authentication
 
-  before_filter :update_session_expiration_date, :set_time_zone, :store_return_to, :authenticate
+  before_filter :update_session_expiration_date, :set_time_zone, :store_return_to
 
   login :except => [:index, :show]
 
@@ -11,6 +11,26 @@ class ApplicationController < ActionController::Base
 
   def rescue_action_in_public(exception)
     render :template => "errors/#{response_code_for_rescue(exception)}"
+  end
+  
+  alias_method :orig_login, :login
+  def login
+    if request.format.json?
+      #authenticate_or_request_with_http_basic do |user_name, password|
+      #  @login = Login.new :name => user_name, :password => password
+      #  current_user = @login.validate
+      #end
+    else
+      orig_login
+    end
+  end
+  
+  alias_method :orig_permit, :permit
+  def permit(role)
+    if request.format.json?
+    else
+      orig_permit role
+    end
   end
 
   private
@@ -30,14 +50,5 @@ class ApplicationController < ActionController::Base
 
     def store_return_to
       store_location params[:return_to] unless params[:return_to].nil?
-    end
-    
-    def authenticate
-      if request.format.json?
-        authenticate_or_request_with_http_basic("Cubemania API") do |user_name, password|
-          @login = Login.new :name => user_name, :password => password
-          @login.validate
-        end
-      end
     end
 end
