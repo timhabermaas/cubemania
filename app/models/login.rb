@@ -33,4 +33,12 @@ class Login
   def self.human_attribute_name(attr)
     attr.to_s.titleize
   end
+  
+  def self.human_name
+    'Login'
+  end
+  
+  def self.self_and_descendants_from_active_record
+    [self]
+  end
 end
