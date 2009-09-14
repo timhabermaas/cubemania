@@ -3,10 +3,9 @@ class UsersController < ResourceController::Base
   logout :only => [:new, :create]
   permit :self, :only => [:edit, :update, :destroy]
   #protect [:role, :sponsor, :ignored], :but => :admin, :only => [:create, :update]
-
-  index.before { @max_averages_count = User.max_averages_count }
   
   index do
+    before { @max_averages_count = User.max_averages_count }
     wants.json { render :json => @users.to_json }
   end
 
@@ -20,13 +19,13 @@ class UsersController < ResourceController::Base
     end
     @participations = @user.participations
   end
+  show.wants.json { render :json => @user, :status => :ok }
+  show.failure.wants.json { head :not_found }
 
   create do
     flash { "Hello #{@user.name}, you are now registered" }
     after { self.current_user = @user }
     wants.html { redirect_back user_path(@user) }
-    wants.json { head :ok }
-    failure.wants.json { render :json => @user.errors, :status => :unprocessable_entity }
   end
 
   destroy.after { if self.current_user == @user; self.current_user = nil; end }
