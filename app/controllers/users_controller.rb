@@ -25,6 +25,8 @@ class UsersController < ResourceController::Base
     flash { "Hello #{@user.name}, you are now registered" }
     after { self.current_user = @user }
     wants.html { redirect_back user_path(@user) }
+    wants.json { head :ok }
+    failure.wants.xml { render :xml => @user.errors, :status => :unprocessable_entity }
   end
 
   destroy.after { if self.current_user == @user; self.current_user = nil; end }

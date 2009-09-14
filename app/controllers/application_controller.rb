@@ -16,10 +16,10 @@ class ApplicationController < ActionController::Base
   alias_method :orig_login, :login
   def login
     if request.format.json?
-      #authenticate_or_request_with_http_basic do |user_name, password|
-      #  @login = Login.new :name => user_name, :password => password
-      #  current_user = @login.validate
-      #end
+      authenticate_or_request_with_http_basic do |user_name, password|
+        @login = Login.new :name => user_name, :password => password
+        self.current_user = @login.validate
+      end
     else
       orig_login
     end
@@ -28,6 +28,7 @@ class ApplicationController < ActionController::Base
   alias_method :orig_permit, :permit
   def permit(role)
     if request.format.json?
+      head(403) unless self.role? role # consider changing to 401 (Unauthorized)
     else
       orig_permit role
     end
