@@ -84,6 +84,13 @@ class User < ActiveRecord::Base
       averages.size / max.to_f
     end
   end
+  
+  alias_method :ar_to_json, :to_json
+  def to_json(options = {})
+    default_except = [:encrypted_password, :salt, :ignored, :email]
+    options[:except] = (options[:except] ? options[:ecept] + default_except : default_except)
+    ar_to_json(options)
+  end
 
   private
     def flush_passwords
