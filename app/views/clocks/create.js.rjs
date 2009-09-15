@@ -1,6 +1,6 @@
 if @average.competition.nil?
   if @average.errors.empty?
-    page << "document.getElementById(\"chart\").addItem(\"#{partial 'averages/average.xml.erb'}\");"
+    page << "document.getElementById(\"chart\").addItem(\"#{render :partial => 'averages/average.xml.erb', :object => @average}\");"
     page['timer'].replaceWith partial('shared/timer.html.erb')
     page << "updateScramble()"
     page['type'].focus if params[:input_method] == 'manual'
