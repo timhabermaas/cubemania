@@ -7,7 +7,7 @@
   <div id="slider"><div class="ui-slider-handle"></div></div>
   <%= select_tag 'user', options_for_user_select, :onchange => 'addSeries(this)' %>
   <div id="formats">
-    <%= link_to 'Get your times in CSV format!', formatted_puzzle_averages_path(@puzzle, :csv) %>
+    <%= link_to 'Get your times in CSV format!', puzzle_averages_path(@puzzle, :format => :csv) %>
   </div>
 </div>
 
