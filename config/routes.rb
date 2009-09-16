@@ -1,17 +1,17 @@
 ActionController::Routing::Routes.draw do |map|
   map.root :controller => 'homes', :action => 'show'
 
-  map.resource :home
+  map.resource :home, :only => :show
   map.resources :posts, :has_many => :comments
 
-  map.resources :puzzles do |puzzles|
-    puzzles.resources :times, :controller => :clocks
+  map.resources :puzzles, :except => :show do |puzzles|
+    puzzles.resources :times, :controller => :clocks, :only => [:index, :create]
     puzzles.resources :averages
     puzzles.resources :competitions do |competitions|
-      competitions.resources :times, :controller => :clocks
-      competitions.resources :shouts
+      competitions.resources :times, :controller => :clocks, :only => [:index, :create]
+      competitions.resources :shouts, :only => [:create, :destroy]
     end
-    puzzles.resources :scrambles, :only => 'new'
+    puzzles.resources :scrambles, :only => :new
     puzzles.competition_date 'competitions/:id/:date', :controller => 'competitions', :action => 'show'
     puzzles.records 'records/:type', :controller => 'records', :defaults => { :type => 'average' }, :type => /(single)|(average)/
   end
@@ -20,10 +20,10 @@ ActionController::Routing::Routes.draw do |map|
     users.resources :puzzles, :has_many => :averages
   end
 
-  map.resources :kinds
-  map.resources :items
+  map.resources :kinds, :exclude => :show
+  map.resources :items # delete?
 
-  map.resource :login
+  map.resource :login, :only => [:show, :create, :destroy]
   map.logout 'logout', :controller => 'logins', :action => 'destroy'
   map.register 'register', :controller => 'users', :action => 'new'
 
