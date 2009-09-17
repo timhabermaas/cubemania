@@ -98,17 +98,15 @@
   function calculateAverage() {
     var count = $("#timer tr.done").length;
     var dnfCount = $("#timer tr.dnf").length;
+		var nonDnfCount = count - dnfCount;
     if (count == 0) return 0;
-    if (count < 3) {
+    if (count < 3 || nonDnfCount == 0) {
       return calculateAverageOfAllTimes();
     } else {
+      var times = getAllMillisecondsWithoutDNF();
       if (dnfCount > 1) {
-        return calculateAverageOfAllTimes();
+        return times.average();
       }
-      var times = $("#timer tr.done:not('.dnf') .milliseconds").map(function() {
-        var time = parseInt($(this).text());
-        return isNaN(time) ? 0 : time;
-      }).get();
       times.sort(function(a, b) {
         return a - b;
       });
@@ -123,6 +121,8 @@
     return calculateAverageOfAllTimes();
   }
   function calculateBestOf() {
+		if ($("#timer tr.done").length == 0)
+			return 0;
     if ($("#timer tr.done:not(.dnf)").length == 0)
       return getAllMilliseconds().min();
     return getAllMillisecondsWithoutDNF().min();
