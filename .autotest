@@ -1,0 +1,14 @@
+module Autotest::Growl
+  def self.growl title, msg, img, pri=0, stick="" 
+    system "growlnotify -n autotest --image #{img} -p #{pri} -m #{msg.inspect} #{title} #{stick}" 
+  end
+
+  Autotest.add_hook :ran_command do |at|
+    output = at.results.last.slice(/(\d+).*errors/)
+    if output =~ /ns.*[1-9]/
+      growl "Test Results", "#{output}", '~/Pictures/Icons/autotest/rails_fail.png' #, 2 , "-s" 
+    else
+      growl "Test Results", "#{output}", '~/Pictures/Icons/autotest/rails_ok.png'
+    end
+  end
+end
