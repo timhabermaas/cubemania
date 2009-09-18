@@ -6,8 +6,8 @@ class UpdateIndexes < ActiveRecord::Migration
   end
 
   def self.down
-    remove_index :competitions, 'index_competitions_on_p_id_and_sticky_and_a_count_and_c_at'
-    remove_index :scrambles, [:competition_id, :created_at, :position]
-    remove_index :clocks, [:competition_id, :created_at, :type, :time]
+    remove_index :competitions, :name => 'index_competitions_on_p_id_and_sticky_and_a_count_and_c_at'
+    remove_index :scrambles, :column => [:competition_id, :created_at, :position]
+    remove_index :clocks, :column => [:competition_id, :created_at, :type, :time]
   end
 end

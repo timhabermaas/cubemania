@@ -10,7 +10,7 @@ class CreateComments < ActiveRecord::Migration
   end
 
   def self.down
-    remove_index :comments, [:post_id, :created_at]
+    remove_index :comments, :column => [:post_id, :created_at]
     drop_table :comments
   end
 end
