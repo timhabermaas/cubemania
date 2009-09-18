@@ -2,13 +2,13 @@ class CommentsController < ApplicationController
   permit :moderator, :only => :destroy
 
   def create
-    @comment = current_user.comments.build params[:comment].merge :post_id => parent.id
+    @comment = current_user.comments.build(params[:comment].merge :post_id => parent.id)
     @comment.save
   end
 
   def destroy
     object.destroy
-    redirect_to post_path @post, :anchor => 'comments'
+    redirect_to post_path(@post, :anchor => 'comments')
   end
 
   private
