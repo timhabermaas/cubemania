@@ -100,6 +100,10 @@ ActiveRecord::Schema.define(:version => 20090918162947) do
 
   add_index "puzzles", ["kind_id", "name"], :name => "index_puzzles_on_kind_id_and_name", :unique => true
 
+  create_table "schema_info", :id => false, :force => true do |t|
+    t.integer "version"
+  end
+
   create_table "scrambles", :force => true do |t|
     t.string   "scramble",       :limit => 1024, :null => false
     t.integer  "position",                       :null => false
@@ -118,7 +122,7 @@ ActiveRecord::Schema.define(:version => 20090918162947) do
 
   create_table "users", :force => true do |t|
     t.string   "name",               :limit => 32,                      :null => false
-    t.string   "email",              :limit => 64,                      :null => false
+    t.string   "email",              :limit => 64
     t.string   "salt",               :limit => 8,                       :null => false
     t.string   "encrypted_password",                                    :null => false
     t.datetime "created_at"

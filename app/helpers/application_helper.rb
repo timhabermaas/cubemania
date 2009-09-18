@@ -127,7 +127,7 @@ module ApplicationHelper
   end
   
   def m(text)
-    BlueCloth::new(text).to_html
+    RedCloth::new(text).to_html
   end
   
   def wca(id)
