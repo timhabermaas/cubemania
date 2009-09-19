@@ -2,7 +2,7 @@
 <%- unless @scrambles.empty? -%>
   <p id="scramble"></p>
 <%- end -%>
-  <div id="dynamic"<%= "style='display: none'" if params[:input_method] == 'manual' %>>
+  <div id="dynamic"<%= " style='display: none'" if params[:input_method] == 'manual' %>>
     <%= link_to_function 'GO!', 'toggleTimer()', :id => 'go' %>
     <p class="help">
       Press <strong>space</strong>&#47;<strong>s</strong> to start or stop the timer.
@@ -10,7 +10,7 @@
     </p>
     <%= link_to_function 'Set times manually?', 'toggleInputMethod()', :class => 'toggle' %>
   </div>
-  <div id="manual"<%= "style='display: none'" unless params[:input_method] == 'manual' %>>
+  <div id="manual"<%= " style='display: none'" unless params[:input_method] == 'manual' %>>
     <form onsubmit="insertTime(); return false">
       <div><%= text_field_tag 'type' %></div>
     </form>
