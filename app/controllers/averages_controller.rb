@@ -5,7 +5,7 @@ class AveragesController < ApplicationController
   def index
     @user = User.find params[:user_id]
     @puzzle = Puzzle.find params[:puzzle_id]
-    @averages = @user.averages.paginate_for params[:puzzle_id], params[:page]
+    @averages = @user.averages.for params[:puzzle_id], params[:page]
     
     respond_to do |format|
       format.html

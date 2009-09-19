@@ -22,8 +22,7 @@ class User < ActiveRecord::Base
     def best(puzzle_id); find_by_puzzle_id puzzle_id, :conditions => {:dnf => false}, :order => 'time'; end
   end
   has_many :averages, :order => 'created_at desc', :dependent => :delete_all do
-    def for(puzzle_id); find_all_by_puzzle_id puzzle_id, :include => :singles; end
-    def paginate_for(puzzle_id, page); find_all_by_puzzle_id puzzle_id, :include => :singles, :limit => 100; end
+    def for(puzzle_id, page = nil); paginate_by_puzzle_id puzzle_id, :per_page => 100, :page => page, :include => :singles; end
     def record(puzzle_id); find_by_puzzle_id_and_record puzzle_id, true; end
     def records; find_all_by_record true, :include => { :puzzle => :kind }, :order => 'puzzles.name, kinds.name'; end
     def best(puzzle_id); find_by_puzzle_id puzzle_id, :conditions => {:dnf => false}, :order => 'time'; end
