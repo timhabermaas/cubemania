@@ -86,7 +86,7 @@ class User < ActiveRecord::Base
   
   alias_method :ar_to_json, :to_json
   def to_json(options = {})
-    default_except = [:encrypted_password, :salt, :ignored, :email]
+    default_except = [:encrypted_password, :salt, :ignored, :email, :created_at, :role, :sponsor]
     options[:except] = (options[:except] ? options[:ecept] + default_except : default_except)
     ar_to_json(options)
   end
