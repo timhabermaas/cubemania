@@ -35,7 +35,7 @@ class User < ActiveRecord::Base
   validates_length_of :bot_email, :is => 0, :message => 'bots must not register'
   validates_format_of :wca, :with => /[0-9]{4}[A-Z]{4}[0-9]{2}/, :message => 'is not a valid WCA ID', :unless => Proc.new { |user| user.wca.blank? }
   validates_format_of :password, :with => /^([\x20-\x7E]){4,16}$/, :message => 'must be 4 to 16 characters', :if => :password_is_being_updated?
-  validates_confirmation_of :password
+  validates_confirmation_of :password, :message => 'should match confirmation'
   validates_inclusion_of :role, :in => ROLES
 
   after_save :flush_passwords
