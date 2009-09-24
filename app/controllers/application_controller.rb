@@ -28,7 +28,7 @@ class ApplicationController < ActionController::Base
   alias_method :orig_permit, :permit
   def permit(role)
     if request.format.json?
-      head(403) unless self.role? role # consider changing to 401 (Unauthorized)
+      head(401) unless self.role? role
     else
       orig_permit role
     end

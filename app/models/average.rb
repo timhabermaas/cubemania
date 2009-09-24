@@ -3,6 +3,8 @@ class Average < Clock
   belongs_to :user, :counter_cache => true; attr_protected :user_id, :user
   has_many :singles, :order => 'position', :dependent => :destroy
   
+  validate :size_of_singles
+  
   before_save :update_records_on_create
   after_destroy :update_records_on_destroy
 
@@ -43,5 +45,9 @@ class Average < Clock
     
     def update_record_on_destroy(new)
       new.update_attribute :record, true unless new.nil?
+    end
+    
+    def size_of_singles
+      errors.add_to_base "An average requires #{puzzle.attempt_count} singles" unless singles.size == puzzle.attempt_count
     end
 end
