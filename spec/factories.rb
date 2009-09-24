@@ -1,34 +1,47 @@
 Factory.define :user do |u|
-  u.name 'tim'
+  u.sequence(:name) { |n| "tim#{n}"}
   u.password 'some_password'
-  u.password_confirmation 'some_password'
-  u.email 'foo@bar.com'
+  u.password_confirmation { |u| u.password }
+  u.sequence(:email) { |n| "foo#{n}@bar.com" }
   u.bot_email ''
+  u.role 'user'
 end
 
-Factory.define :admin, :class => User do |u|
-  u.name 'admin'
-  u.password 'some_password'
-  u.password_confirmation 'some_password'
-  u.email 'foo@bar2.com'
+Factory.define :admin, :parent => :user do |u|
   u.role 'admin'
-  u.bot_email ''
+end
+
+Factory.define :post do |p|
+  p.sequence(:title) { |n| "title #{n}" }
+  p.content 'some stupid content full of stuff'
+  p.association(:user)
 end
 
 Factory.define :kind do |k|
   k.name 'blindfolded'
-  k.image 'some.jpg'
 end
 
 Factory.define :puzzle do |p|
   p.name '3x3x3'
   p.scramble_length 25
-  p.attempts_count 5
+  p.attempt_count 5
   p.association :kind
 end
 
 Factory.define :single do |s|
   s.time rand(16000) + 5000
   s.dnf false
+  s.record false
   s.association :puzzle
+  s.association :user
+  s.position 1
+end
+
+Factory.define :average do |a|
+  a.time 21012
+  a.dnf false
+  a.record false
+  a.association :puzzle
+  a.association :user
+  a.singles { |average| (1..5).to_a.map{|i| average.association(:single)} }
 end
