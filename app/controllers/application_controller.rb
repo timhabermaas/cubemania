@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   include Authentication
 
-  before_filter :update_session_expiration_date, :set_time_zone, :store_return_to
+  before_filter :set_time_zone, :store_return_to
 
   login :except => [:index, :show]
 
@@ -35,12 +35,6 @@ class ApplicationController < ActionController::Base
   end
 
   private
-    def update_session_expiration_date
-      unless ActionController::Base.session_options[:session_expires]
-        ActionController::Base.session_options[:session_expires] = 1.month.from_now
-      end
-    end
-
     def set_time_zone
       if logged_in?
         Time.zone = current_user.time_zone
