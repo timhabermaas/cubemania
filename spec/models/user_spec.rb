@@ -13,22 +13,58 @@ describe User do
     user.should have(1).error_on(:password)
   end
   
-  it "should require a minimum length of 5 for a password" do
+  it "should require a minimum length of 4 for a password" do
     user = Factory.build(:user, :password => 'sho')
     user.should_not be_valid
     user.should have(1).error_on(:password)
   end
-end
-
-describe User, "json and xml" do
   
-  it "should not display sensible information via json" do
-    user = Factory.create(:user)
-    user.to_json.should_not =~ /password/
-    user.to_json.should_not =~ /salt/
-    user.to_json.should_not =~ /ignored/
-    user.to_json.should_not =~ /email/
-    user.to_json.should_not =~ /role/
+  it "should not allow two users with the same name" do
+    user1 = Factory.create(:user, :name => 'peter')
+    user2 = Factory.build(:user, :name => 'peter')
+    user1.should be_valid
+    user2.should_not be_valid
   end
   
+  it "should not allow two useres with the same email" do
+    user1 = Factory.create(:user, :email => 'peter@test.com')
+    user2 = Factory.build(:user, :email => 'peter@test.com')
+    user1.should be_valid
+    user2.should_not be_valid
+  end
+  
+  it "should not allow invalid email addresses" do
+    invalid_emails = ['foo@bar.', 'foo@bar.de.', 'foo.de.de', '@bar.de']
+    invalid_emails.each do |email|
+      user = Factory.build(:user, :email => email)
+      user.should_not be_valid
+    end
+  end
+end
+
+describe User, "to_json" do
+  before(:each) do
+    @user = Factory.create(:user, :name => 'peter', :email => 'peter@doc.com', :wca => '2007JDAE01')
+    @user_hash = ActiveSupport::JSON.decode(@user.to_json)
+    @forbidden_attributes = [:password, :ignored, :role, :salt, :email, :created_at, :sponsor]
+    @necessary_attributes = [:id, :averages_count, :time_zone, :wca, :name]
+  end
+  
+  it "should not display sensible information via json" do
+    @forbidden_attributes.each do |attribute|
+      @user_hash.keys.should_not include(attribute.to_s)
+    end
+  end
+  
+  it "should contain necessary informations about a user" do
+    @necessary_attributes.each do |attribute|
+      @user_hash.keys.should include(attribute.to_s)
+    end
+  end
+  
+  it "should contain proper values" do
+    @user_hash['name'].should == 'peter'
+    @user_hash['averages_count'].should == 0
+    @user_hash['wca'].should == '2007JDAE01'
+  end
 end
