@@ -44,6 +44,7 @@ Rails::Initializer.run do |config|
   # Run "rake -D time" for a list of tasks for finding time zone names. Uncomment to use default local time.
   config.time_zone = 'UTC'
   
+  config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     :tls => true,
     :address => "smtp.gmail.com",
