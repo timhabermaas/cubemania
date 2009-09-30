@@ -1,42 +1,23 @@
-Ads for Times and Competitions
-
-"cap deploy" should do: RAILS_ENV=production rake db:migrate
-
-Protect Attributes (User Update, Competition Update) # override User#write_attribute <--- nope, that's an ugly solution. take a look at the competitions and
-                                                       users controller. the code is already in there:
-                                                             #protect :sticky, :but => :admin, :only => [:create, :update]
-                                                       read it like: protect attribute sticky from everyone but admins (only necessary for create and update)
-                                                       the protect method should be put into the authentication plugin. would also be nice to split the
-                                                       authentication class into authentication and authorization.
-Secure SVN!
-Sending mails does NOT work.
-Show single on roll over. Tooltip.
-Provide countdown for people who want it.
-
-Multiple Blindfolded!
-
-Timer: Amount of solves relies on scrambles.length, but the underlying javascript relies on @puzzle.attempt_count. This could (maybe) lead to problems.
-  I'll keep an eye on it :).
-
 Bugs:
 
-  chart: coloring
-  IE6: We had 20++ unique visitors who used IE6. Grml.
 
 Enhancements:
 
+  Protect Attributes (User Update, Competition Update) # override User#write_attribute <--- nope, that's an ugly solution. take a look at the competitions and
+                                                         users controller. the code is already in there:
+                                                               #protect :sticky, :but => :admin, :only => [:create, :update]
+                                                         read it like: protect attribute sticky from everyone but admins (only necessary for create and update)
+                                                         the protect method should be put into the authentication plugin. would also be nice to split the
+                                                         authentication class into authentication and authorization.
   Clocks Create: Slide Notice Up / Down
   ESL-like awards: Most solves/day, ...
   Users: Display ranking for each puzzle (puzzle.records.average.index(User.find_by_name('tim').averages.record(2) + 1)
   Competitions: password protected/invitatin only
-  Timer: Image of scrambled puzzle
   Competition Messages/Challenges Vertical Align
   Proper route for competitions index repeat
   Reevaluate Indexes and Includes
   Competitions: Challange another user
   Competitions: Add notice for new record
-  Chart: Either limit the amount of averages or add a scrollbar. It's too hard to navigate to one specific average. <-- There IS a scrollbar! Just beneath the chart! <-- Uhm, yeah, i didn't see it. But that's more a scalebar than a scrollbar. We should stick to a scale of about 30(?) averages per "page" and use the scrollbar to scroll through the solves.
-  Allow ignoring users for moderators.
   Records: Write a method which repairs record flags.
   Competitions: Disable updating of competitions#repeat after first iteration
   Timer: Add the countdown again + let the user disable the countdown (and save his decision)
@@ -44,10 +25,5 @@ Enhancements:
 New Features:
 
   Admin Buttons
-  Timer: Allow Rolling Average
-  Puzzle: 6x6 + 7x7 Scrambler
-  User Show: YouTube Playlist
   Add tags to competitions
-  Icons for Beginner, Intermediate, Professional in Competitions (Sub-Categories or tags?)
-  Time Overview in HTML for Users
-  Competitions: Recent Activity
+  Multiple Blindfolded!
