@@ -23,7 +23,19 @@
 <%- end -%>
 </p>
 <%- else -%>
-
+<table id="records">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Puzzle</th>
+      <th colspan="2">Single</th>
+      <th colspan="2">Average</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= partial 'record', :collection => @records %>
+  </tbody>
+</table>
 <%- end -%>
 
 <%- if @participations.empty? -%>
@@ -41,20 +53,3 @@
   <%= partial 'participation', :collection => @participations, :spacer_template => 'spacer' %>.
 </p>
 <%- end -%>
-
-<table id="records">
-  <thead>
-    <tr>
-      <td>
-        <h2>records</h2>
-      </td>
-      <td colspan="2">
-        <a href="#">Single</a>
-        <a href="#" class="checked">Average</a>
-      </td>
-    </tr>
-  </thead>
-  <tbody>
-    <%= render :partial => 'record', :collection => @records %>
-  </tbody>
-</table>
