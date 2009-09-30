@@ -19,4 +19,4 @@ config.action_view.cache_template_loading            = true
 # config.action_mailer.raise_delivery_errors = false
 
 ExceptionNotifier.exception_recipients = %w(tim.habermaas+cubemania@gmail.com)
-ExceptionNotifier.sender_address = %("Application Error" <cubemania.org@gmail.com>)
+ExceptionNotifier.sender_address = %("cubemania.org@gmail.com")

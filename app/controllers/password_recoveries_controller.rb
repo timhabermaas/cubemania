@@ -13,7 +13,7 @@ class PasswordRecoveriesController < ApplicationController
       user.reset_password!
       UserMailer.deliver_password_reset_mail(user, user.password)
       if user.save
-        flash[:notice] = "Your new password has been sent to #{@recovery.email}"
+        flash[:notice] = "Your new password has been sent to #{@recovery.email}."
         redirect_to root_path
       else
         render :show
