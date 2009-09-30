@@ -24,7 +24,8 @@
     <%= form.error_message_on :password %>
   </p>
   <p>
-    <%= form.submit 'Login' %>
-    <%= link_to 'Register', new_user_path %>
+    <%= form.submit 'Login' %> &middot;
+    <%= link_to 'Register', new_user_path %> &middot;
+    <%= link_to 'Forgot your password?', password_recovery_path %>
   </p>
 <% end %>

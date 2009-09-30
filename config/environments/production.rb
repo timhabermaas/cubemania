@@ -17,3 +17,6 @@ config.action_view.cache_template_loading            = true
 
 # Disable delivery errors, bad email addresses will be ignored
 # config.action_mailer.raise_delivery_errors = false
+
+ExceptionNotifier.exception_recipients = %w(tim.habermaas+cubemania@gmail.com)
+ExceptionNotifier.sender_address = %("Application Error" <error@cubemania.org>)

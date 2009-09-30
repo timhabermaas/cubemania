@@ -32,7 +32,7 @@ class User < ActiveRecord::Base
   validates_format_of :name, :with => /^([a-z0-9_]{2,16})$/i, :message => 'must be 2 to 16 letters, numbers or underscores and have no spaces'
   validates_exclusion_of :name, :in => %w(admin moderator), :message => "you don't belong here"
   validates_format_of :email, :with => /^\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z$/i, :message => 'must be valid'
-  validates_length_of :bot_email, :is => 0, :message => 'bots must not register'
+  validates_length_of :bot_email, :is => 0, :message => 'bots must not register', :if => Proc.new { |user| user.new_record? }
   validates_format_of :wca, :with => /[0-9]{4}[A-Z]{4}[0-9]{2}/, :message => 'is not a valid WCA ID', :unless => Proc.new { |user| user.wca.blank? }
   validates_format_of :password, :with => /^([\x20-\x7E]){4,16}$/, :message => 'must be 4 to 16 characters', :if => :password_is_being_updated?
   validates_confirmation_of :password, :message => 'should match confirmation'
@@ -55,6 +55,11 @@ class User < ActiveRecord::Base
       self.salt = [Array.new(6) { rand(256).chr }.join].pack('m').chomp
       self.encrypted_password = ENCRYPT.hexdigest password + salt
     end
+  end
+  
+  def reset_password!
+    available_characters = ('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a
+    self.password = Array.new(12) { available_characters.rand }.join
   end
 
   def role?(required_role, request_id, object)

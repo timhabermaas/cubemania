@@ -43,7 +43,16 @@ Rails::Initializer.run do |config|
   # in the database in UTC, and return them converted to the specified local zone.
   # Run "rake -D time" for a list of tasks for finding time zone names. Uncomment to use default local time.
   config.time_zone = 'UTC'
-
+  
+  config.action_mailer.smtp_settings = {
+    :tls => true,
+    :address => "smtp.gmail.com",
+    :port => 587,
+    :domain => "cubemania.org",
+    :authentication => :plain,
+    :user_name => "cubemania.org",
+    :password => "QvzQkL0JkyHXv7gsA"
+  }
 
   # Use the database for sessions instead of the cookie-based default,
   # which shouldn't be used to store highly confidential information
@@ -57,4 +66,6 @@ Rails::Initializer.run do |config|
 
   # Activate observers that should always be running
   # config.active_record.observers = :cacher, :garbage_collector
+  
+  config.active_record.observers = :user_observer
 end

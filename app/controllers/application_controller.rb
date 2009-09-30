@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   include Authentication
+  include ExceptionNotifiable
 
   before_filter :set_time_zone, :store_return_to
 
@@ -9,9 +10,9 @@ class ApplicationController < ActionController::Base
 
   filter_parameter_logging 'password'
 
-  def rescue_action_in_public(exception)
-    render :template => "errors/#{response_code_for_rescue(exception)}"
-  end
+  #def rescue_action_in_public(exception)
+  #  render :template => "errors/#{response_code_for_rescue(exception)}"
+  #end
   
   alias_method :orig_login, :login
   def login

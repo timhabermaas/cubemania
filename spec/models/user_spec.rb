@@ -68,3 +68,18 @@ describe User, "to_json" do
     @user_hash['wca'].should == '2007JDAE01'
   end
 end
+
+describe User, "password" do
+  before(:each) do
+    @user = Factory.create(:user)
+  end
+  it "should flash the password after save" do
+    @user.password.should be_nil
+    @user.password_confirmation.should be_nil
+  end
+  
+  it "should reset the password to a at least 12 characters long string"do
+    @user.reset_password!
+    @user.password.should =~ /[a-z0-9A-Z]{12}/
+  end
+end

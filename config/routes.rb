@@ -22,7 +22,9 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :kinds, :exclude => :show
   map.resources :items # delete?
-
+  
+  map.resource :password_recovery
+  
   map.resource :login, :only => [:show, :create, :destroy]
   map.logout 'logout', :controller => 'logins', :action => 'destroy'
   map.register 'register', :controller => 'users', :action => 'new'
