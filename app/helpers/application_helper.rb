@@ -121,15 +121,25 @@ module ApplicationHelper
       '%.2f' % (hs.to_f / 100) + ' s'
     end
   end
-  
+
   def dt(datetime)
     datetime.strftime '%B %d, %Y at %H:%M'
   end
-  
+
   def m(text)
     RedCloth::new(text).to_html
   end
-  
+
+  def result_tag(result)
+    if result < 0
+      '<cite class="negative">' + result.to_s + '</cite>'
+    elsif result > 0
+      '<cite class="positive">+' + result.to_s + '</cite>'
+    else
+      '<cite class="neutral">0</cite>'
+    end
+  end
+
   def wca(id)
     'http://www.worldcubeassociation.org/results/p.php?i=' + id
   end

@@ -1,0 +1,10 @@
+<tr class="match <%= cycle('odd', 'even', :name => 'match') %>">
+  <th>
+    <div class="puzzle" style="background-image: url(<%= Puzzle.find(4).image.url(:small) %>)">
+      <%= "<div class='kind' style='background-image: url(#{Kind.find(3).image.url(:small)})'></div>" %>
+    </div>
+  </th>
+  <td><strong>vs. <%= User.all.collect{|u| u.name}.rand %></strong></td>
+  <td><small><%= d(Time.now - rand(201010102))%></small></td>
+  <td class="result"><%= result_tag(rand(20)-10) %></td>
+</tr>

@@ -529,6 +529,63 @@
   font-size: 1.25em;
 }
 
+#user_records, #matches table {
+  width: 350px;
+}
+#user_records {
+  float: left;
+}
+#matches {
+  float: right;
+}
+#user_records .disabled {
+  display: none;
+}
+#user_records th, #user_records td, #matches th, #matches td {
+  padding: 0.1875em 0.5em;
+}
+#user_records thead th, #matches thead th {
+  color: #df0;
+  padding: 1em 0;
+}
+#user_records td, #matches td {
+  padding-left: 0.5em;
+}
+#user_records strong, #user_records small, #matches strong, #matches small {
+  white-space: nowrap;
+}
+#user_records cite {
+  /*text-transform: capitalize;*/
+  white-space: nowrap;
+}
+#matches cite.positive {
+  color: #0f0;
+}
+#matches cite.negative {
+  color: #f00;
+}
+#matches cite.neutral {
+  color: #df0;
+}
+#matches td.result, #user_records td.time, #user_records .tabs {
+  text-align: right;
+}
+#user_records .odd, #matches .odd {
+  background-color: #517397;
+}
+#user_records .puzzle, #matches .puzzle {
+  background-position: center right;
+}
+#user_records .kind, #matches .kind {
+  background-position: bottom right;
+}
+#user_records .puzzle, #user_records .kind, #matches .puzzle, #matches .kind {
+  width: 25px;
+  height: 25px;
+  background-repeat: no-repeat;
+}
+
+
 #records, #results, #averages table {
   margin: 0 auto;
 }
@@ -564,18 +621,6 @@
 }
 #records .odd {
   background-color: #517397;
-}
-#records .puzzle {
-  margin: 0.25em 0;
-  background-position: center right;
-}
-#records .kind {
-  background-position: bottom right;
-}
-#records .puzzle, #records .kind {
-  width: 50px;
-  height: 50px;
-  background-repeat: no-repeat;
 }
 #records .rank1 strong, #records .rank1 cite, #records .rank1 small, #records .rank1 blockquote {
   font-size: 2em;
