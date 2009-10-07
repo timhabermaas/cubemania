@@ -21,7 +21,7 @@
       <%= partial 'layouts/content' %>
       <%= partial 'layouts/footer' %>
       <%= partial 'layouts/tooltip' %>
-      <%= partial 'layouts/feedback' %>
+      <%= partial 'layouts/feedback' if controller? :clocks, :competitions, :records, :users, :homes %>
     </div>
     <script type="text/javascript">
       var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
