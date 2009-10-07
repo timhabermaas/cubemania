@@ -31,7 +31,7 @@ a#feedback {
   -webkit-border-bottom-left-radius: 0;
 }
 a#feedback:hover, a#feedback:link:hover {
-  background-color: #00ff00;
+  background-color: #284a6d;
   border: outset 1px #10af10;
   border-left: 0;
   /*width: 45px !important;
