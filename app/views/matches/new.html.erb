@@ -1,0 +1,37 @@
+<h2>You compete with <%= link_to @user.name, user_path(@user) %></h2>
+in <small><%= @puzzle.name %> <%= @puzzle.kind.name %></small>
+<div class="clear"></div>
+<table id="you">
+  <thead>
+    <tr>
+      <th><strong>you</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= render :partial => 'details', :locals => { :user => current_user } %>
+  </tbody>
+</table>
+<div id="prediction">
+  <div id="max_win">
+    max win<br />
+    <strong>+11</strong><br />
+  </div>
+  <div id="max_loss">
+    <strong>-9</strong><br />
+    max loss
+  </div>
+</div>
+<table id="other">
+  <thead>
+    <tr>
+      <th><strong><%= @user.name %></strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= render :partial => 'details', :locals => { :user => @user } %>
+  </tbody>
+</table>
+<div class="clear"></div>
+<% form_for [@puzzle, @user, Match.new], :html => { :id => 'match_form' } do |form| %>
+  <%= form.submit 'Submit' %>
+<% end %>

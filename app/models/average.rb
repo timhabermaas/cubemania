@@ -4,6 +4,7 @@ class Average < Clock
   has_many :singles, :order => 'position', :dependent => :destroy
   
   validate :size_of_singles
+  validate :first_average_for_match, :user_belongs_to_match
   
   before_save :update_records_on_create
   after_destroy :update_records_on_destroy
@@ -49,5 +50,19 @@ class Average < Clock
     
     def size_of_singles
       errors.add_to_base "An average requires #{puzzle.attempt_count} singles" unless singles.size == puzzle.attempt_count
+    end
+    
+    def first_average_for_match
+      if not match_id.nil?
+        if Clock.find_by_match_id_and_user_id(match_id, user_id)
+          errors.add_to_base "Get out of here!"
+        end
+      end
+    end
+    
+    def user_belongs_to_match
+      if not match_id.nil? and match.user_id != user_id and match.opponent_id != user_id
+        errors.add_to_base "Get out of here!"
+      end
     end
 end

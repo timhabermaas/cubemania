@@ -6,11 +6,11 @@
   </th>
   <td>
     <cite>
-      <strong><%= record[:single].puzzle.name %></strong>
+      <strong><%= link_to_if self?, record[:single].puzzle.name, user_puzzle_averages_path(params[:user_id], record[:single].puzzle) %></strong>
     </cite>
   </td>
   <td class="single disabled"><small><%=d record[:single].created_at %></small></td>
   <td class="single disabled time"><strong><%=t record[:single].time %></strong></td>
   <td class="average"><small><%=d record[:average].created_at unless record[:average].nil? %></small></td>
-  <td class="average time"><%= record[:average].nil? ? 'none' : link_to(t(record[:average].time), user_puzzle_averages_path(record[:average].user, record[:average].puzzle)) %></td>
+  <td class="average time"><strong><%= record[:average].nil? ? 'none' : t(record[:average].time) %></strong></td>
 </tr>

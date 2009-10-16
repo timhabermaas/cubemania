@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe Puzzle, "scrambling length" do
   
   it "should give a 25 move scramble for a 3x3x3" do
-    puzzle = Factory.create(:puzzle)
+    puzzle = Factory.create(:puzzle, :name => '3x3x3', :scramble_length => 25)
     puzzle.scramble.split(/ /).size.should eql(25)
   end
   
@@ -32,7 +32,7 @@ describe Puzzle, "proper scrambling turns" do
   end
   
   it "should give only the available moves for 3x3x3" do
-    puzzle = Factory.create(:puzzle)
+    puzzle = Factory.create(:puzzle, :name => '3x3x3')
     puzzle.scramble.split(/ /).each do |move|
       @available_moves.should include(move)
     end

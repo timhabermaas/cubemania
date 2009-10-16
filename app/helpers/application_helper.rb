@@ -33,6 +33,14 @@ module ApplicationHelper
     Kind.all
   end
   
+  def subnavigation_path(puzzle)
+    if params[:controller] == 'matches'
+      url_for :puzzle_id => puzzle.id, :type => params[:type], :controller => params[:controller], :user_id => params[:user_id], :action => params[:action]
+    else
+      url_for :puzzle_id => puzzle.id, :type => params[:type], :controller => params[:controller]
+    end
+  end
+  
   def times_path
     navigation_path :times
   end

@@ -529,33 +529,64 @@
   font-size: 1.25em;
 }
 
-#user_records, #matches table {
-  width: 350px;
+#prediction {
+  float: left;
+  width: 20%;
+  padding-top: 3em;
+  text-align: center;
 }
-#user_records {
+#prediction #max_loss {
+  margin-top: 0.5em;
+}
+#prediction #max_win strong {
+  font-size: 150%;
+  color: #0f0;
+}
+#prediction #max_loss strong {
+  font-size: 150%;
+  color: #f00;
+}
+#match_form {
+  margin-top: 3em;
+  text-align: center;
+}
+#match_form input[type=submit] {
+  margin-left: 0;
+}
+
+#user_records, #matches {
+  width: 40%;
+}
+#you, #other {
+  width: 40%;
+}
+#user_records, #you {
   float: left;
 }
-#matches {
+#matches, #other {
   float: right;
 }
 #user_records .disabled {
   display: none;
 }
-#user_records th, #user_records td, #matches th, #matches td {
+#user_records th, #user_records td, #matches th, #matches td, #records th, #records td, #you th, #other th, #you td, #other td {
   padding: 0.1875em 0.5em;
 }
-#user_records thead th, #matches thead th {
-  color: #df0;
-  padding: 1em 0;
+#user_records thead, #matches thead, #records thead, #you thead, #other thead {
+  border-bottom: 1px solid #fff;
 }
-#user_records td, #matches td {
+#user_records thead th, #matches thead th, #records thead th, #you thead th, #other thead th {
+  color: #df0;  
+  padding: 0.5em 0;
+}
+#user_records td, #matches td, #records td, #you td, #other td {
   padding-left: 0.5em;
 }
-#user_records strong, #user_records small, #matches strong, #matches small {
+#user_records strong, #user_records small, #matches strong, #matches small, #records strong, #records small {
   white-space: nowrap;
 }
 #user_records cite {
-  /*text-transform: capitalize;*/
+  text-transform: capitalize;
   white-space: nowrap;
 }
 #matches cite.positive {
@@ -570,7 +601,10 @@
 #matches td.result, #user_records td.time, #user_records .tabs {
   text-align: right;
 }
-#user_records .odd, #matches .odd {
+#records strong {
+  text-align: left;
+}
+#user_records .odd, #matches .odd, #records .odd, #you tbody, #other tbody {
   background-color: #517397;
 }
 #user_records .puzzle, #matches .puzzle {
@@ -584,13 +618,31 @@
   height: 25px;
   background-repeat: no-repeat;
 }
-
+#records blockquote {
+  font-style: italic;
+}
+#you tr.loss td, #other tr.loss td {
+  color: #f00;
+}
+#you tr.wins td, #other tr.wins td {
+  color: #0f0;
+}
+#you tbody, #other tbody {
+  background-color: #4a6480;
+}
 
 #records, #results, #averages table {
   margin: 0 auto;
 }
-#records thead th, #results thead th, #averages th {
+/*#records thead th, #results thead th, #averages th {
   color: #df0;
+}
+#records thead th {
+  color: #df0;  
+  padding: 1em 0;
+}
+#records thead {
+  border-bottom: 1px solid #fff;
 }
 #records th, #records td, #results th, #results td {
   text-align: center;
@@ -622,10 +674,6 @@
 #records .odd {
   background-color: #517397;
 }
-#records .rank1 strong, #records .rank1 cite, #records .rank1 small, #records .rank1 blockquote {
-  font-size: 2em;
-  line-height: 2.25em;
-}
 #results .rank1 strong, #results .rank1 cite, #results .rank1 small, #results .rank1 blockquote {
   font-size: 1.5em;
   line-height: 2.25em;
@@ -633,20 +681,12 @@
 #content .rank1 th {
   background-image: url(/images/rank1.gif);
 }
-#records .rank2 strong, #records .rank2 cite, #records .rank2 small, #records .rank2 blockquote {
-  font-size: 1.5em;
-  line-height: 2em;
-}
 #results .rank2 strong, #results .rank2 cite, #results .rank2 small, #results .rank2 blockquote {
   font-size: 1.125em;
   line-height: 2em;
 }
 #content .rank2 th {
   background-image: url(/images/rank2.gif);
-}
-#records .rank3 strong, #records .rank3 cite, #records .rank3 small, #records .rank3 blockquote {
-  font-size: 1.25em;
-  line-height: 1.75em;
 }
 #results .rank3 strong, #results .rank3 cite, #results .rank3 small, #results .rank3 blockquote {
   font-size: 1em;
@@ -666,10 +706,7 @@
 }
 #content .rank1 span, #content .rank2 span, #content .rank3 span {
   display: none;
-}
-#content .rank1 blockquote, #content .rank2 blockquote, #content .rank3 blockquote {
-  line-height: 1em;
-}
+}*/
 #content .dnf th {
   background-image: none;
 }

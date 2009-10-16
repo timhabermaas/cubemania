@@ -1,6 +1,7 @@
 class Clock < ActiveRecord::Base
   belongs_to :puzzle
   belongs_to :competition
+  belongs_to :match
   belongs_to :user; attr_protected :user_id, :user
 
   validates_presence_of :time, :puzzle_id, :user_id

@@ -22,7 +22,7 @@ Factory.define :kind do |k|
 end
 
 Factory.define :puzzle do |p|
-  p.name '3x3x3'
+  p.sequence(:name) { |n| "#{n}x#{n}x#{n}" }
   p.scramble_length 25
   p.attempt_count 5
   p.association :kind
@@ -34,7 +34,7 @@ Factory.define :single do |s|
   s.record false
   s.association :puzzle
   s.association :user
-  s.position 1
+  s.sequence(:position) { |n| n }
 end
 
 Factory.define :average do |a|
@@ -43,5 +43,11 @@ Factory.define :average do |a|
   a.record false
   a.association :puzzle
   a.association :user
-  a.singles { |average| (1..5).to_a.map{|i| average.association(:single)} }
+  a.singles { |average| (1..5).to_a.map{|i| average.association(:single, :user => average.user)} }
+end
+
+Factory.define :match do |m|
+  m.association :puzzle
+  m.association :user
+  m.association :opponent, :factory => :user
 end

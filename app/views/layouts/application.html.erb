@@ -16,7 +16,7 @@
     <div id="site">
       <%= partial 'layouts/header' %>
       <%= partial 'layouts/navigation' unless controller? :items %>
-      <%= partial 'layouts/subnavigation' if controller? :clocks, :competitions, :records %>
+      <%= partial 'layouts/subnavigation' if controller? :clocks, :competitions, :records, :matches %>
       <%= partial 'layouts/notice' unless flash[:notice].nil? %>
       <%= partial 'layouts/content' %>
       <%= partial 'layouts/footer' %>

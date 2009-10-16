@@ -40,9 +40,11 @@ describe User do
       user.should_not be_valid
     end
   end
+  
 end
 
 describe User, "to_json" do
+  
   before(:each) do
     @user = Factory.create(:user, :name => 'peter', :email => 'peter@doc.com', :wca => '2007JDAE01')
     @user_hash = ActiveSupport::JSON.decode(@user.to_json)
@@ -67,12 +69,15 @@ describe User, "to_json" do
     @user_hash['averages_count'].should == 0
     @user_hash['wca'].should == '2007JDAE01'
   end
+  
 end
 
 describe User, "password" do
+  
   before(:each) do
     @user = Factory.create(:user)
   end
+  
   it "should flash the password after save" do
     @user.password.should be_nil
     @user.password_confirmation.should be_nil
@@ -82,4 +87,5 @@ describe User, "password" do
     @user.reset_password!
     @user.password.should =~ /[a-z0-9A-Z]{12}/
   end
+  
 end

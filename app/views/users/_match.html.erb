@@ -6,5 +6,5 @@
   </th>
   <td><strong>vs. <%= User.all.collect{|u| u.name}.rand %></strong></td>
   <td><small><%= d(Time.now - rand(201010102))%></small></td>
-  <td class="result"><%= result_tag(rand(20)-10) %></td>
+  <td class="result"><strong><%= result_tag(rand(20)-10) %></strong></td>
 </tr>

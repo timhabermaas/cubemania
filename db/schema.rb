@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090918162947) do
+ActiveRecord::Schema.define(:version => 20091016220103) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                                                 :null => false
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(:version => 20090918162947) do
     t.string   "comment"
     t.integer  "position"
     t.integer  "competition_id"
+    t.integer  "match_id"
   end
 
   add_index "clocks", ["average_id", "type", "position"], :name => "index_clocks_on_average_id_and_type_and_position"
@@ -71,6 +72,14 @@ ActiveRecord::Schema.define(:version => 20090918162947) do
     t.string   "image_content_type"
     t.integer  "image_file_size"
     t.datetime "image_updated_at"
+  end
+
+  create_table "matches", :force => true do |t|
+    t.integer  "user_id",     :null => false
+    t.integer  "opponent_id", :null => false
+    t.integer  "puzzle_id",   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "posts", :force => true do |t|
@@ -128,6 +137,7 @@ ActiveRecord::Schema.define(:version => 20090918162947) do
     t.boolean  "sponsor",                           :default => false,  :null => false
     t.string   "time_zone",          :limit => 100, :default => "UTC"
     t.boolean  "ignored",                           :default => false,  :null => false
+    t.integer  "match_id"
   end
 
   add_index "users", ["averages_count"], :name => "index_users_on_averages_count"
