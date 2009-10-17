@@ -12,13 +12,6 @@ ActionController::Routing::Routes.draw do |map|
       competitions.resources :times, :controller => :clocks, :only => [:index, :create]
       competitions.resources :shouts, :only => [:create, :destroy]
     end
-    puzzles.resources :matches do |matches|
-      matches.resources :times, :controller => :clocks, :only => :create
-      matches.resources :shouts, :only => [:create, :destroy]
-    end
-    puzzles.resources :users do |users|
-      users.resources :matches, :only => [:new, :create]
-    end
     puzzles.resources :scrambles, :only => [:new, :index]
     puzzles.competition_date 'competitions/:id/:date', :controller => 'competitions', :action => 'show'
     puzzles.records 'records/:type', :controller => 'records', :defaults => { :type => 'average' }, :type => /(single)|(average)/

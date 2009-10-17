@@ -32,6 +32,7 @@ in <small><%= @puzzle.name %> <%= @puzzle.kind.name %></small>
   </tbody>
 </table>
 <div class="clear"></div>
-<% form_for [@puzzle, @user, Match.new], :html => { :id => 'match_form' } do |form| %>
+<% form_for [@puzzle, @match ||= @user.matches.build], :html => { :id => 'match_form' } do |form| %>
+  <%= form.hidden_field :opponent_id, :value => params[:opponent_id] %>
   <%= form.submit 'Submit' %>
 <% end %>

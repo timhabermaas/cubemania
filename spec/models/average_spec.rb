@@ -22,6 +22,8 @@ describe Average, "match validations" do
     @opponent = Factory.create(:user)
   end
   
+  it "should create a new instance given valid attributes"
+  
   it "should not allow submissions of users who already submitted their time" do
     match = Factory.create(:match, :opponent => @user)
     Factory.create(:average, :user => @user, :match => match)
