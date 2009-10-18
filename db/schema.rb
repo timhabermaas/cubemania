@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091016220103) do
+ActiveRecord::Schema.define(:version => 20091018143120) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                                                 :null => false
@@ -58,10 +58,11 @@ ActiveRecord::Schema.define(:version => 20091016220103) do
   add_index "competitions", ["puzzle_id", "sticky", "averages_count", "created_at"], :name => "index_competitions_on_p_id_and_sticky_and_a_count_and_c_at"
 
   create_table "items", :force => true do |t|
-    t.string  "name",        :limit => 64,                 :null => false
-    t.string  "description",                               :null => false
-    t.string  "url",         :limit => 32, :default => "", :null => false
-    t.integer "position",                  :default => 0,  :null => false
+    t.string  "name",        :limit => 64,                      :null => false
+    t.string  "description",                                    :null => false
+    t.integer "position",                  :default => 0,       :null => false
+    t.string  "controller",  :limit => 64, :default => "homes", :null => false
+    t.string  "action",      :limit => 32, :default => "index", :null => false
   end
 
   add_index "items", ["position"], :name => "index_items_on_position"

@@ -2,7 +2,7 @@
   <div class="center">
     <ul>
     <%- for item in navigation() -%>
-      <li class="<%= 'checked' if current_item? item %>"><%= link_to item.name, item.url, :title => item.description %></li>
+      <li class="<%= 'checked' if current_item? item %>"><%= link_to item.name, navigation_path(item), :title => item.description %></li>
     <%- end -%>
       <li id="login" class="<%= 'checked' if controller? :logins %>">
         <%= link_to 'Login', login_path unless logged_in? %>

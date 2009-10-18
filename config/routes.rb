@@ -3,10 +3,17 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resource :home, :only => :show
   map.resources :posts, :has_many => :comments
+  
+  map.resources :users do |users|
+    users.resources :puzzles, :has_many => :averages
+  end
 
   map.resources :puzzles, :except => :show do |puzzles|
     puzzles.resources :times, :controller => :clocks, :only => [:index, :create]
     puzzles.resources :averages
+    puzzles.resources :users, :as => 'opponents', :only => [] do |users|
+      users.resources :matches, :only => [:new, :create]
+    end
     puzzles.resources :matches
     puzzles.resources :competitions do |competitions|
       competitions.resources :times, :controller => :clocks, :only => [:index, :create]
@@ -15,10 +22,6 @@ ActionController::Routing::Routes.draw do |map|
     puzzles.resources :scrambles, :only => [:new, :index]
     puzzles.competition_date 'competitions/:id/:date', :controller => 'competitions', :action => 'show'
     puzzles.records 'records/:type', :controller => 'records', :defaults => { :type => 'average' }, :type => /(single)|(average)/
-  end
-
-  map.resources :users do |users|
-    users.resources :puzzles, :has_many => :averages
   end
 
   map.resources :kinds, :exclude => :show

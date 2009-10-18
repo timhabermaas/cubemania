@@ -1,5 +1,4 @@
 class MatchesController < ApplicationController
-  login :except => [:show, :index]
   
   def index
   end
@@ -9,17 +8,12 @@ class MatchesController < ApplicationController
   end
 
   def create
-    @match = current_user.matches.build(params[:match].merge(:puzzle_id => params[:puzzle_id]))
-    if @match.save
-      redirect_to puzzle_match_path(params[:puzzle_id], @match)
-    else
-      flash[:notice] = @match.errors.full_messages.join('<br />')
-      redirect_to new_puzzle_match_path(params[:puzzle_id], :opponent_id => params[:user_id])
-    end
+    @match = current_user.matches.build(:puzzle_id => params[:puzzle_id], :opponent_id => params[:user_id])
+    @match.save
   end
 
   def new
-    @user = User.find params[:opponent_id]
+    @user = User.find params[:user_id]
     @puzzle = Puzzle.find params[:puzzle_id]
   end
 end

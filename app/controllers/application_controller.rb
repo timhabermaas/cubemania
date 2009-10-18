@@ -34,6 +34,10 @@ class ApplicationController < ActionController::Base
       orig_permit role
     end
   end
+  
+  def default_url_options(options = {})
+    {:puzzle_id => DEFAULT_PUZZLE} if ['competitions', 'matches', 'records', 'clocks'].include? options[:controller]
+  end
 
   private
     def set_time_zone

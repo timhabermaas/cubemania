@@ -41,21 +41,8 @@ module ApplicationHelper
     end
   end
   
-  def times_path
-    navigation_path :times
-  end
-  
-  def competitions_path
-    navigation_path :competitions
-  end
-  
-  def records_path
-    navigation_path :records
-  end
-  
-  def navigation_path(controller)
-    item = navigation.find { |item| item.url.split('/').last.to_sym == controller unless item.url == '/' }
-    item.nil? ? root_path : item.url
+  def navigation_path(item)
+    url_for :controller => item.controller, :action => item.action
   end
   
   def controller?(*names)
@@ -71,8 +58,7 @@ module ApplicationHelper
   end
   
   def current_item?(item)
-    controller = item.url == '/' ? :homes : item.url.split('/').last.to_sym
-    controller? controller == :times ? :clocks : controller
+    controller? item.controller.to_sym
   end
   
   def current_puzzle?(puzzle)
