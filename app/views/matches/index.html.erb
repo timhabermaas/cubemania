@@ -7,3 +7,6 @@ if current_user? show his matches, otherwise show recent matches
   <%= render :partial => 'match', :collection => @matches %>
 </ul>
 <h2>Finished Matches</h2>
+<ul>
+  <%= render :partial => 'match', :collection => @finished_matches %>
+</ul>

@@ -1,8 +1,8 @@
 class MatchesController < ApplicationController
   
   def index
-    #@requests = current_user.guest_matches.unfinished
-    @matches = current_user.matches#current_user.home_matches.finished + current_user.guest_matches.finished
+    @finished_matches = current_user.home_matches.finished + current_user.guest_matches.finished
+    @matches = current_user.matches - @finished_matches
   end
 
   def show
