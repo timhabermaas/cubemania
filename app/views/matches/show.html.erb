@@ -1,1 +1,4 @@
 <h1>Match between <%= @match.user.name %> and <%= @match.opponent.name %></h1>
+
+<%= partial 'shared/timer' %>
+<%= partial 'shared/timer_js', :url => puzzle_match_times_path(params[:puzzle_id], @match) %>

@@ -13,8 +13,10 @@ class User < ActiveRecord::Base
   has_many :clocks
   has_many :competitions, :dependent => :nullify
   has_many :shouts, :dependent => :nullify
-  has_many :matches
-  has_many :participations, :select => 'competitions.*, clocks.created_at as date', :through => :clocks,
+  has_many :home_matches, :foreign_key => 'user_id', :class_name => 'Match'
+  has_many :guest_matches, :foreign_key => 'opponent_id', :class_name => 'Match'
+  #has_many :matches, :finder_sql => 'SELECT matches.* FROM matches WHERE matches.user_id = #{id} OR matches.opponent_id = #{id};', :include => :puzzle
+  has_many :participances, :select => 'competitions.*, clocks.created_at as date', :through => :clocks,
       :order => 'clocks.created_at desc', :source => 'competition', :group => 'competitions.id'
   has_many :singles, :order => 'created_at desc', :dependent => :delete_all do
     def for(puzzle_id); find_all_by_puzzle_id puzzle_id, :order => 'time'; end
@@ -27,6 +29,7 @@ class User < ActiveRecord::Base
     def record(puzzle_id); find_by_puzzle_id_and_record puzzle_id, true; end
     def records; find_all_by_record true, :include => { :puzzle => :kind }, :order => 'puzzles.name, kinds.name'; end
     def best(puzzle_id); find_by_puzzle_id puzzle_id, :conditions => {:dnf => false}, :order => 'time'; end
+    def match(match_id); find_by_match_id match_id; end
   end
   
   validates_uniqueness_of :name, :email, :case_sensitive => false, :message => 'is already in use by another user'
@@ -88,6 +91,10 @@ class User < ActiveRecord::Base
     else
       averages.size / max.to_f
     end
+  end
+  
+  def matches(options = {})
+    home_matches.all(options) + guest_matches.all(options)
   end
   
   alias_method :ar_to_json, :to_json

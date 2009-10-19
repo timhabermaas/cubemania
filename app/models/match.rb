@@ -1,28 +1,29 @@
 class Match < ActiveRecord::Base
   belongs_to :puzzle
-  belongs_to :user; attr_protected :user_id, :user
-  belongs_to :opponent, :class_name => 'User', :foreign_key => 'opponent_id'
+  belongs_to :user; attr_protected :user, :user_id
+  belongs_to :opponent, :class_name => 'User'
+  has_many :averages
   
-  validates_presence_of :user_id
-  validates_presence_of :opponent_id
+  named_scope :finished, :conditions => "EXISTS(SELECT clocks.* FROM clocks WHERE clocks.match_id = matches.id AND clocks.type = 'Average' AND matches.user_id = clocks.user_id) AND
+            EXISTS(SELECT clocks.* FROM clocks WHERE clocks.type = 'Average' AND clocks.match_id = matches.id AND matches.opponent_id = clocks.user_id)"
   
-  validate :self_challenge
+  validates_presence_of :user_id, :opponent_id, :puzzle_id
+  validate :self_challenges
   
+  def finished?
+    user.averages.match(id) != nil and opponent.averages.match(id) != nil
+  end
   
   def pending?
-    user.averages.find(:first, :conditions => { :match_id => id }).nil? and opponent.averages.find(:first, :conditions => { :match_id => id }).nil?
+    user.averages.match(id).nil? and opponent.averages.match(id).nil?
   end
   
   def challenged?
-    not user.averages.find(:first, :conditions => { :match_id => id }).nil? and opponent.averages.find(:first, :conditions => { :match_id => id }).nil?
-  end
-  
-  def finished?
-    not user.averages.find(:first, :conditions => { :match_id => id }).nil? and not opponent.averages.find(:first, :conditions => { :match_id => id }).nil?
+    user.averages.match(id) != nil and opponent.averages.match(id).nil?
   end
   
   private
-    def self_challenge
-      errors.add_to_base "You can't challenge yourself" unless user_id != opponent_id
+    def self_challenges
+      errors.add_to_base "You can't challenge yourself!" if user_id == opponent_id
     end
 end

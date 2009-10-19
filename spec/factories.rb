@@ -43,11 +43,18 @@ Factory.define :average do |a|
   a.record false
   a.association :puzzle
   a.association :user
+  a.comment "hey, this is a huuuuuuge comment, 'cause i'm awesome!"
   a.singles { |average| (1..5).to_a.map{|i| average.association(:single, :user => average.user)} }
 end
 
+Factory.define :average_with_match, :parent => :average do |a|
+  a.association :puzzle
+  a.association :user
+  a.match { |average| average.association(:match, :user => average.user, :puzzle => average.puzzle) }
+end
+
 Factory.define :match do |m|
-  m.association :puzzle
   m.association :user
   m.association :opponent, :factory => :user
+  m.association :puzzle
 end

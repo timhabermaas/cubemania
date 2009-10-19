@@ -42,7 +42,7 @@
 </p>
     <%- else -%>
 <%= partial 'shared/timer' %>
-<%= partial 'shared/timer_js', :competition_id => @competition.id %>
+<%= partial 'shared/timer_js', :competition_id => @competition.id, :url => puzzle_competition_times_path(params[:puzzle_id], @competition) %>
     <%- end -%>
   <%- else -%>
 <p class="suggestion">

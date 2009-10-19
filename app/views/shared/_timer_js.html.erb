@@ -140,7 +140,7 @@
       map["singles[" + index + "][dnf]"] = $(this).hasClass("dnf");
     });
     map["input_method"] = $("#dynamic").is(":visible") ? 'dynamic' : 'manual';
-    $.post("<%= competition_id.nil? ? puzzle_times_path(params[:puzzle_id]) : puzzle_competition_times_path(params[:puzzle_id], competition_id) %>", map, null, "script");
+    $.post("<%= url %>", map, null, "script");
   }
   function updateAverage() {
     if ($("#timer tr.done").length == <%= @puzzle.attempt_count %>) {

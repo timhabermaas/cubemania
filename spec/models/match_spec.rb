@@ -21,6 +21,12 @@ describe Match, "validation and security" do
     match.errors.on(:opponent_id).should =~ /blank/
   end
   
+  it "should not be valid missing a puzzle" do
+    match = Factory.build(:match, :puzzle => nil)
+    match.should_not be_valid
+    match.errors.on(:puzzle_id).should =~ /blank/
+  end
+  
   it "should not change the user through mass assignment" do
     match = Match.new({:user_id => 2})
     match.user_id.should be_nil

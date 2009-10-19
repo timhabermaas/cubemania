@@ -1,2 +1,9 @@
-<h1>Matches#index</h1>
-<p>Find me in app/views/matches/index.html.erb</p>
+<!--
+if current_user? show his matches, otherwise show recent matches
+-->
+
+<h2>Requested Matches</h2>
+<ul>
+  <%= render :partial => 'match', :collection => @matches %>
+</ul>
+<h2>Finished Matches</h2>

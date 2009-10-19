@@ -17,7 +17,7 @@ class UsersController < ResourceController::Base
       end
       { :single => single_records[i], :average => average_records[i] }
     end
-    @participations = @user.participations
+    @participances = @user.participances
   end
   show.wants.json { render :json => @user, :status => :ok }
   show.failure.wants.json { head :not_found }

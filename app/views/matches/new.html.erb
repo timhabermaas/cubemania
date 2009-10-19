@@ -32,6 +32,6 @@ in <small><%= @puzzle.name %> <%= @puzzle.kind.name %></small>
   </tbody>
 </table>
 <div class="clear"></div>
-<% form_for [@puzzle, @user, @match ||= @user.matches.build], :html => { :id => 'match_form' } do |form| %>
+<% form_for [@puzzle, @user, @match ||= Match.new], :html => { :id => 'match_form' } do |form| %>
   <%= form.submit 'Submit' %>
 <% end %>

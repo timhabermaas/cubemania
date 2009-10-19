@@ -1,5 +1,6 @@
 class Average < Clock
   belongs_to :competition, :counter_cache => true
+  belongs_to :match
   belongs_to :user, :counter_cache => true; attr_protected :user_id, :user
   has_many :singles, :order => 'position', :dependent => :destroy
   
@@ -8,6 +9,8 @@ class Average < Clock
   
   before_save :update_records_on_create
   after_destroy :update_records_on_destroy
+  
+  named_scope :matched, :conditions => 'match_id NOT NULL'
 
   def validate
     unless competition_id.nil?
@@ -54,7 +57,7 @@ class Average < Clock
     
     def first_average_for_match
       if not match_id.nil?
-        if Clock.find_by_match_id_and_user_id(match_id, user_id)
+        if Average.find_by_match_id_and_user_id(match_id, user_id)
           errors.add_to_base "Get out of here!"
         end
       end

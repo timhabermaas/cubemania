@@ -1,4 +1,4 @@
-if @average.competition.nil?
+if @average.competition.nil? and @average.match.nil?
   if @average.errors.empty?
     page << "document.getElementById(\"chart\").addItem(\"#{render :partial => 'averages/average.xml.erb', :object => @average}\");"
     page['timer'].replaceWith partial('shared/timer.html.erb')
@@ -13,7 +13,7 @@ if @average.competition.nil?
 else
   if @average.errors.empty?
     flash[:notice] = @average.notice
-    page.redirect_to [@puzzle, @average.competition]
+    @average.match.nil? ? page.redirect_to([@puzzle, @average.competition]) : page.redirect_to([@puzzle, @average.match])
   else
     flash[:notice] = @average.errors.full_messages.join ', '
   end

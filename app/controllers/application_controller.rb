@@ -36,7 +36,9 @@ class ApplicationController < ActionController::Base
   end
   
   def default_url_options(options = {})
-    {:puzzle_id => DEFAULT_PUZZLE} if ['competitions', 'matches', 'records', 'clocks'].include? options[:controller]
+    if ['competitions', 'records', 'clocks'].include?(options[:controller]) or (options[:controller] == 'matches' and options[:action] != 'index')
+      {:puzzle_id => DEFAULT_PUZZLE}
+    end
   end
 
   private

@@ -4,7 +4,6 @@ class CreateMatches < ActiveRecord::Migration
       t.integer :user_id, :null => false
       t.integer :opponent_id, :null => false
       t.integer :puzzle_id, :null => false
-
       t.timestamps
     end
   end

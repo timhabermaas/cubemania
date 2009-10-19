@@ -89,3 +89,16 @@ describe User, "password" do
   end
   
 end
+
+describe User, "matches association" do
+  
+  it "should find all matches for this user" do
+    user = Factory.create(:user)
+    match_1 = Factory.create(:match, :user => user)
+    match_2 = Factory.create(:match, :opponent => user)
+    user.matches.size.should == 2
+    user.matches.include?(match_1).should be_true
+    user.matches.include?(match_2).should be_true
+  end
+  
+end

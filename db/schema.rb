@@ -76,11 +76,11 @@ ActiveRecord::Schema.define(:version => 20091018143120) do
   end
 
   create_table "matches", :force => true do |t|
-    t.integer  "user_id",     :null => false
-    t.integer  "opponent_id", :null => false
-    t.integer  "puzzle_id",   :null => false
+    t.integer  "puzzle_id",                  :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "user_id",     :default => 0, :null => false
+    t.integer  "opponent_id", :default => 0, :null => false
   end
 
   create_table "posts", :force => true do |t|
@@ -138,7 +138,6 @@ ActiveRecord::Schema.define(:version => 20091018143120) do
     t.boolean  "sponsor",                           :default => false,  :null => false
     t.string   "time_zone",          :limit => 100, :default => "UTC"
     t.boolean  "ignored",                           :default => false,  :null => false
-    t.integer  "match_id"
   end
 
   add_index "users", ["averages_count"], :name => "index_users_on_averages_count"

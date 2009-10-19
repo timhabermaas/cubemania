@@ -7,14 +7,18 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :users do |users|
     users.resources :puzzles, :has_many => :averages
   end
+  
+  map.resources :matches, :only => :index
 
   map.resources :puzzles, :except => :show do |puzzles|
     puzzles.resources :times, :controller => :clocks, :only => [:index, :create]
     puzzles.resources :averages
+    puzzles.resources :matches, :only => :show do |matches|
+      matches.resources :times, :controller => :clocks, :only => [:index, :create]
+    end
     puzzles.resources :users, :as => 'opponents', :only => [] do |users|
       users.resources :matches, :only => [:new, :create]
     end
-    puzzles.resources :matches
     puzzles.resources :competitions do |competitions|
       competitions.resources :times, :controller => :clocks, :only => [:index, :create]
       competitions.resources :shouts, :only => [:create, :destroy]
