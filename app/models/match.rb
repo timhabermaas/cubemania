@@ -9,10 +9,8 @@ class Match < ActiveRecord::Base
   end
   has_many :scrambles, :as => :matchable, :order => 'position'
   
-  named_scope :finished, :include => [:user, :opponent], :conditions => "EXISTS(SELECT clocks.id FROM clocks WHERE clocks.match_id = matches.id AND clocks.type = 'Average' AND matches.user_id = clocks.user_id) AND
-            EXISTS(SELECT clocks.id FROM clocks WHERE clocks.type = 'Average' AND clocks.match_id = matches.id AND matches.opponent_id = clocks.user_id)"
-  named_scope :challenged, :include => [:user, :opponent], :conditions => "EXISTS(SELECT clocks.id FROM clocks WHERE clocks.match_id = matches.id AND clocks.type = 'Average' AND matches.user_id = clocks.user_id) AND
-            NOT EXISTS(SELECT clocks.id FROM clocks WHERE clocks.type = 'Average' AND clocks.match_id = matches.id AND matches.opponent_id = clocks.user_id)"
+  named_scope :finished, :conditions => "matches.status = 'finished'"
+  named_scope :challenged, :conditions => "matches.status = 'challenged'"
   named_scope :recent, :order => 'matches.created_at DESC', :limit => 5
   named_scope :for, lambda { |user| {:conditions => ['user_id = ? OR opponent_id = ?', user.id, user.id]} }
   
@@ -22,15 +20,25 @@ class Match < ActiveRecord::Base
   before_create :create_scrambles
   
   def finished?
-    user.averages.match(id) != nil and opponent.averages.match(id) != nil
+    status == 'finished'
   end
   
   def pending?
-    user.averages.match(id).nil? and opponent.averages.match(id).nil?
+    status == 'pending'
   end
   
   def challenged?
-    user.averages.match(id) != nil and opponent.averages.match(id).nil?
+    status == 'challenged'
+  end
+  
+  def update_status!
+    if user.averages.match(id) != nil and opponent.averages.match(id) != nil
+      update_attribute :status, 'finished'
+    elsif user.averages.match(id).nil? and opponent.averages.match(id).nil?
+      update_attribute :status, 'pending'
+    else
+      update_attribute :status, 'challenged'
+    end
   end
   
   def winner

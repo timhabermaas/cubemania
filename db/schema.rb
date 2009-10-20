@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091020102447) do
+ActiveRecord::Schema.define(:version => 20091020233752) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                                                 :null => false
@@ -76,11 +76,12 @@ ActiveRecord::Schema.define(:version => 20091020102447) do
   end
 
   create_table "matches", :force => true do |t|
-    t.integer  "user_id",     :null => false
-    t.integer  "opponent_id", :null => false
-    t.integer  "puzzle_id",   :null => false
+    t.integer  "user_id",                            :null => false
+    t.integer  "opponent_id",                        :null => false
+    t.integer  "puzzle_id",                          :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "status",      :default => "pending", :null => false
   end
 
   create_table "posts", :force => true do |t|

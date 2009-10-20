@@ -2,7 +2,7 @@ class MatchesController < ApplicationController
   
   def index
     if logged_in?
-      @finished_matches = current_user.home_matches.finished.recent + current_user.guest_matches.finished.recent
+      @finished_matches = Match.for(current_user).finished.recent
       @challenged_matches = current_user.guest_matches.challenged
       @awaiting_matches = current_user.home_matches.challenged
     else
