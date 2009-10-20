@@ -15,6 +15,19 @@ describe Average do
   
 end
 
+describe Average, "comparison" do
+  
+  it "should be properly comparable" do
+    Factory.build(:average, :dnf => true).should be == Factory.build(:average, :dnf => true)
+    Factory.build(:average, :dnf => false).should be < Factory.build(:average, :dnf => true)
+    Factory.build(:average, :dnf => true).should be > Factory.build(:average, :dnf => false)
+    Factory.build(:average, :time => 10).should be < Factory.build(:average, :time => 20)
+    Factory.build(:average, :time => 30).should be > Factory.build(:average, :time => 20)
+    Factory.build(:average, :time => 20).should be == Factory.build(:average, :time => 20)
+  end
+  
+end
+
 describe Average, "match validations" do
   
   before(:each) do
