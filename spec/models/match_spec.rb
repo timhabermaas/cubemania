@@ -73,27 +73,48 @@ describe Match, "named_scopes" do
   end
   
   it "should return all challenged matches" do
-    user1 = Factory.create(:user)
-    user2 = Factory.create(:user)
+    user_1 = Factory.create(:user)
+    user_2 = Factory.create(:user)
     unfinished_match = Factory.create(:match)
-    challenged_match = Factory.create(:match, :user => user1)
-    finished_match = Factory.create(:match, :user => user1, :opponent => user2)
-    Factory.create(:average, :match => finished_match, :user => user1)
-    Factory.create(:average, :match => finished_match, :user => user2)
-    Factory.create(:average, :match => challenged_match, :user => user1)
+    challenged_match = Factory.create(:match, :user => user_1)
+    finished_match = Factory.create(:match, :user => user_1, :opponent => user_2)
+    Factory.create(:average, :match => finished_match, :user => user_1)
+    Factory.create(:average, :match => finished_match, :user => user_2)
+    Factory.create(:average, :match => challenged_match, :user => user_1)
     Match.challenged.should include challenged_match
     Match.challenged.should_not include finished_match
     Match.challenged.should_not include unfinished_match
   end
 end
 
-describe Match do
+describe Match, "public methods" do
   it "should return the proper opponent name" do
     user = Factory.create(:user, :name => 'tim')
     opponent = Factory.create(:user, :name => 'simon')
     match = Factory.build(:match, :user => user, :opponent => opponent)
     match.opponent_name_for(user).should == 'simon'
     match.opponent_name_for(opponent).should == 'tim'
+  end
+end
+
+describe Match, "winner and loser" do
+  before(:each) do
+    @user_1 = Factory.create(:user)
+    @user_2 = Factory.create(:user)
+    @match = Factory.create(:match, :user => @user_1, :opponent => @user_2)
+  end
+  it "should provide a winner and a loser if match is finished" do
+    Factory.create(:average, :user => @user_1, :time => 1230, :match => @match)
+    Factory.create(:average, :user => @user_2, :time => 2320, :match => @match)
+    @match.winner.should == @user_1
+    @match.loser.should == @user_2
+  end
+  
+  it "should return no winner nor loser if the times are equal" do
+    Factory.create(:average, :user => @user_1, :time => 1230, :match => @match)
+    Factory.create(:average, :user => @user_2, :time => 1230, :match => @match)
+    @match.winner.should be_nil
+    @match.loser.should be_nil
   end
 end
 

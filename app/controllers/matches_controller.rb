@@ -1,9 +1,13 @@
 class MatchesController < ApplicationController
   
   def index
-    @finished_matches = current_user.home_matches.finished.recent + current_user.guest_matches.finished.recent
-    @challenged_matches = current_user.guest_matches.challenged
-    @awaiting_matches = current_user.home_matches.challenged
+    if logged_in?
+      @finished_matches = current_user.home_matches.finished.recent + current_user.guest_matches.finished.recent
+      @challenged_matches = current_user.guest_matches.challenged
+      @awaiting_matches = current_user.home_matches.challenged
+    else
+      @matches = Match.finished.recent
+    end
   end
 
   def show

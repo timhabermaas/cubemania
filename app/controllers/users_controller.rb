@@ -18,6 +18,7 @@ class UsersController < ResourceController::Base
       { :single => single_records[i], :average => average_records[i] }
     end
     @participances = @user.participances
+    @matches = Match.for(@user).finished.recent.all(:include => [{:puzzle => :kind}, :user, :opponent])
   end
   show.wants.json { render :json => @user, :status => :ok }
   show.failure.wants.json { head :not_found }

@@ -1,10 +1,11 @@
 <tr class="match <%= cycle('odd', 'even', :name => 'match') %>">
   <th>
-    <div class="puzzle" style="background-image: url(<%= Puzzle.find(4).image.url(:small) %>)">
-      <%= "<div class='kind' style='background-image: url(#{Kind.find(3).image.url(:small)})'></div>" %>
+    <div class="puzzle" style="background-image: url(<%= match.puzzle.image.url(:small) %>)">
+      <%= "<div class='kind' style='background-image: url(#{match.puzzle.kind.image.url(:small)})'></div>" unless
+match.puzzle.kind.image_file_name.nil? %>
     </div>
   </th>
-  <td><strong>vs. <%= User.all.collect{|u| u.name}.rand %></strong></td>
-  <td><small><%= d(Time.now - rand(201010102))%></small></td>
+  <td><strong>vs. <%= link_to match.opponent_name_for(@user), puzzle_match_path(match.puzzle, match) %></strong></td>
+  <td><small><%=d match.created_at %></small></td>
   <td class="result"><strong><%= result_tag(rand(20)-10) %></strong></td>
 </tr>

@@ -21,10 +21,8 @@
     </tr>
   </thead>
   <tbody>
-    <% 5.times do |i| %>
-      <%= partial 'match' %>
-    <% end %>
+    <%= partial 'match', :collection => @matches %>
   </tbody>
 </table>
-
+<div class="clear"></div>
 <%= link_to 'Challenge!', new_puzzle_user_match_path(:user_id => @user) %>
