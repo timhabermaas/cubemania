@@ -1,5 +1,5 @@
 class Scramble < ActiveRecord::Base
-  belongs_to :competition
+  belongs_to :matchable, :polymorphic => true
   
-  validates_presence_of :competition_id, :position, :scramble
+  validates_presence_of :position, :scramble, :matchable_id, :matchable_type
 end

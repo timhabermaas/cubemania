@@ -22,7 +22,7 @@ Factory.define :kind do |k|
 end
 
 Factory.define :puzzle do |p|
-  p.sequence(:name) { |n| "#{n}x#{n}x#{n}" }
+  p.name "3x3x3"
   p.scramble_length 25
   p.attempt_count 5
   p.association :kind

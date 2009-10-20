@@ -8,7 +8,7 @@ class MatchesController < ApplicationController
   def show
     @puzzle = Puzzle.find params[:puzzle_id]
     @match = @puzzle.matches.find params[:id]
-    @scrambles = @puzzle.scrambles
+    @scrambles = @match.scrambles.collect(&:scramble)
   end
 
   def create

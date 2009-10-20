@@ -41,6 +41,14 @@ describe Match, "validation and security" do
   end
 end
 
+describe Match, "scrambles" do
+  it "should save 5 scrambles for a 3x3x3 match" do
+    match = Factory.create(:match, :puzzle => Factory.create(:puzzle, :attempt_count => 5))
+    match = Match.find match.id
+    match.scrambles.size.should == 5
+  end
+end
+
 describe Match, "status" do
   before(:each) do
     @user = Factory.create(:user)

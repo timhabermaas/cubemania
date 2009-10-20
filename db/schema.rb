@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091018143120) do
+ActiveRecord::Schema.define(:version => 20091020102447) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                                                 :null => false
@@ -110,18 +110,15 @@ ActiveRecord::Schema.define(:version => 20091018143120) do
 
   add_index "puzzles", ["kind_id", "name"], :name => "index_puzzles_on_kind_id_and_name", :unique => true
 
-  create_table "schema_info", :id => false, :force => true do |t|
-    t.integer "version"
-  end
-
   create_table "scrambles", :force => true do |t|
-    t.string   "scramble",       :limit => 1024, :null => false
-    t.integer  "position",                       :null => false
-    t.integer  "competition_id",                 :null => false
+    t.string   "scramble",       :limit => 1024,                            :null => false
+    t.integer  "position",                                                  :null => false
     t.datetime "created_at"
+    t.integer  "matchable_id",                   :default => 0,             :null => false
+    t.string   "matchable_type",                 :default => "Competition", :null => false
   end
 
-  add_index "scrambles", ["competition_id", "created_at", "position"], :name => "index_scrambles_on_competition_id_and_created_at_and_position"
+  add_index "scrambles", ["created_at", "position"], :name => "index_scrambles_on_competition_id_and_created_at_and_position"
 
   create_table "shouts", :force => true do |t|
     t.string   "content",        :null => false
@@ -132,7 +129,7 @@ ActiveRecord::Schema.define(:version => 20091018143120) do
 
   create_table "users", :force => true do |t|
     t.string   "name",               :limit => 32,                      :null => false
-    t.string   "email",              :limit => 64
+    t.string   "email",              :limit => 64,                      :null => false
     t.string   "salt",               :limit => 8,                       :null => false
     t.string   "encrypted_password",                                    :null => false
     t.datetime "created_at"

@@ -14,7 +14,7 @@ class Competition < ActiveRecord::Base
     end
   end
   has_many :singles, :dependent => :nullify
-  has_many :scrambles, :order => 'created_at desc, position', :dependent => :delete_all do
+  has_many :scrambles, :as => :matchable, :order => 'created_at desc, position', :dependent => :delete_all do
     def for(competition, date)
       find :all, :conditions => { :created_at => competition.range(date) }
     end
