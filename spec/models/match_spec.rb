@@ -45,7 +45,55 @@ describe Match, "scrambles" do
   it "should save 5 scrambles for a 3x3x3 match" do
     match = Factory.create(:match, :puzzle => Factory.create(:puzzle, :attempt_count => 5))
     match = Match.find match.id
-    match.scrambles.size.should == 5
+    match.scrambles.should have(5).scrambles
+  end
+end
+
+describe Match, "named_scopes" do
+  it "should return all matches for user" do
+    user = Factory.create(:user, :name => 'tim')
+    match1 = Factory.create(:match, :user => user)
+    match2 = Factory.create(:match, :opponent => user)
+    match3 = Factory.create(:match)
+    Match.for(user).should have(2).matches
+    Match.for(user).should include(match1)
+    Match.for(user).should include(match2)
+    Match.for(user).should_not include(match3)
+  end
+  
+  it "should return all finished matches" do
+    user1 = Factory.create(:user)
+    user2 = Factory.create(:user)
+    unfinished_match = Factory.create(:match)
+    finished_match = Factory.create(:match, :user => user1, :opponent => user2)
+    Factory.create(:average, :match => finished_match, :user => user1)
+    Factory.create(:average, :match => finished_match, :user => user2)
+    Match.finished.should include finished_match
+    Match.finished.should_not include unfinished_match
+  end
+  
+  it "should return all challenged matches" do
+    user1 = Factory.create(:user)
+    user2 = Factory.create(:user)
+    unfinished_match = Factory.create(:match)
+    challenged_match = Factory.create(:match, :user => user1)
+    finished_match = Factory.create(:match, :user => user1, :opponent => user2)
+    Factory.create(:average, :match => finished_match, :user => user1)
+    Factory.create(:average, :match => finished_match, :user => user2)
+    Factory.create(:average, :match => challenged_match, :user => user1)
+    Match.challenged.should include challenged_match
+    Match.challenged.should_not include finished_match
+    Match.challenged.should_not include unfinished_match
+  end
+end
+
+describe Match do
+  it "should return the proper opponent name" do
+    user = Factory.create(:user, :name => 'tim')
+    opponent = Factory.create(:user, :name => 'simon')
+    match = Factory.build(:match, :user => user, :opponent => opponent)
+    match.opponent_name_for(user).should == 'simon'
+    match.opponent_name_for(opponent).should == 'tim'
   end
 end
 

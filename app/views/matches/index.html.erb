@@ -2,11 +2,15 @@
 if current_user? show his matches, otherwise show recent matches
 -->
 
-<h2>Requested Matches</h2>
+<h2>You've been challenged by</h2>
 <ul>
-  <%= render :partial => 'match', :collection => @matches %>
+  <%= render :partial => 'match', :collection => @challenged_matches %>
 </ul>
-<h2>Finished Matches</h2>
+<h2>You've challenged</h2>
+<ul>
+  <%= render :partial => 'match', :collection => @awaiting_matches %>
+</ul>
+<h2>Recent finished matches</h2>
 <ul>
   <%= render :partial => 'match', :collection => @finished_matches %>
 </ul>

@@ -1,4 +1,9 @@
-<h1>Match between <%= @match.user.name %> and <%= @match.opponent.name %></h1>
-
-<%= partial 'shared/timer' %>
-<%= partial 'shared/timer_js', :url => puzzle_match_times_path(params[:puzzle_id], @match) %>
+<% if @match.finished? %>
+  <h1>Results for <%= @match.puzzle.name %></h1>
+<%= @match.user.name %> had a <%=t @match.user.averages.match(@match.id).time %> average.<br />
+<%= @match.opponent.name %> had a <%=t @match.opponent.averages.match(@match.id).time %> average.
+<% else %>
+  <h1>Match between <%= @match.user.name %> and <%= @match.opponent.name %></h1>
+  <%= partial 'shared/timer' %>
+  <%= partial 'shared/timer_js', :url => puzzle_match_times_path(params[:puzzle_id], @match) %>
+<% end %>

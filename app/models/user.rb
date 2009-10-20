@@ -93,8 +93,8 @@ class User < ActiveRecord::Base
     end
   end
   
-  def matches(options = {})
-    home_matches.all(options) + guest_matches.all(options)
+  def matches
+    Match.for(self)
   end
   
   alias_method :ar_to_json, :to_json
