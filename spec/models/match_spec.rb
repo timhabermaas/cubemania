@@ -39,6 +39,11 @@ describe Match, "validation and security" do
     match = Factory.build(:match, :user => user, :opponent => user)
     match.should_not be_valid
   end
+  
+  it "should not allow other statuses than 'pending', 'challenged' and 'finished'" do
+    match = Factory.build(:match, :status => 'other')
+    match.should_not be_valid
+  end
 end
 
 describe Match, "scrambles" do

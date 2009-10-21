@@ -1,4 +1,6 @@
 class Match < ActiveRecord::Base
+  STATUSES = %w(pending challenged finished)
+  
   belongs_to :puzzle
   belongs_to :user; attr_protected :user, :user_id
   belongs_to :opponent, :class_name => 'User'
@@ -15,6 +17,7 @@ class Match < ActiveRecord::Base
   named_scope :for, lambda { |user| {:conditions => ['user_id = ? OR opponent_id = ?', user.id, user.id]} }
   
   validates_presence_of :user_id, :opponent_id, :puzzle_id
+  validates_inclusion_of :status, :in => STATUSES
   validate :self_challenges
   
   before_create :create_scrambles
