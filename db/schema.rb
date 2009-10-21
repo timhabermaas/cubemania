@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091020233752) do
+ActiveRecord::Schema.define(:version => 20091021001943) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                                                 :null => false
@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(:version => 20091020233752) do
 
   add_index "clocks", ["average_id", "type", "position"], :name => "index_clocks_on_average_id_and_type_and_position"
   add_index "clocks", ["competition_id", "created_at", "type", "time"], :name => "index_clocks_on_competition_id_and_created_at_and_type_and_time"
+  add_index "clocks", ["match_id", "user_id", "type"], :name => "index_clocks_on_match_id_and_user_id_and_type"
   add_index "clocks", ["puzzle_id", "record", "type", "time"], :name => "index_clocks_on_puzzle_id_and_record_and_type_and_time"
   add_index "clocks", ["user_id", "puzzle_id", "type", "created_at"], :name => "index_clocks_on_user_id_and_puzzle_id_and_type_and_created_at"
   add_index "clocks", ["user_id", "record", "type"], :name => "index_clocks_on_user_id_and_record_and_type"
@@ -119,7 +120,7 @@ ActiveRecord::Schema.define(:version => 20091020233752) do
     t.string   "matchable_type",                 :default => "Competition", :null => false
   end
 
-  add_index "scrambles", ["created_at", "position"], :name => "index_scrambles_on_competition_id_and_created_at_and_position"
+  add_index "scrambles", ["matchable_id", "matchable_type", "created_at", "position"], :name => "index_scrambles_on_matchable_and_created_at_and_position"
 
   create_table "shouts", :force => true do |t|
     t.string   "content",        :null => false
