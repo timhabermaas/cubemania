@@ -45,25 +45,11 @@ class Match < ActiveRecord::Base
   end
   
   def winner
-    case averages.for(user.id) <=> averages.for(opponent.id)
-    when -1
-      user
-    when 1
-      opponent
-    else
-      nil
-    end
+    [user, opponent].sort_by{ |u| u.averages.match(id) }.first if averages.for(user.id) != averages.for(opponent.id)
   end
   
   def loser
-    case averages.for(user.id) <=> averages.for(opponent.id)
-    when -1
-      opponent
-    when 1
-      user
-    else
-      nil
-    end
+    [user, opponent].sort_by{ |u| u.averages.match(id) }.last if averages.for(user.id) != averages.for(opponent.id)
   end
   
   def opponent_name_for(u)
