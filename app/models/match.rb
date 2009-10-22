@@ -45,11 +45,15 @@ class Match < ActiveRecord::Base
   end
   
   def winner
-    [user, opponent].sort_by{ |u| u.averages.match(id) }.first if averages.for(user.id) != averages.for(opponent.id)
+    if averages.for(user_id) and averages.for(opponent_id) and averages.for(user.id) != averages.for(opponent.id)
+      [user, opponent].sort_by{ |u| u.averages.match(id) }.first
+    end
   end
   
   def loser
-    [user, opponent].sort_by{ |u| u.averages.match(id) }.last if averages.for(user.id) != averages.for(opponent.id)
+    if averages.for(user_id) and averages.for(opponent_id) and averages.for(user.id) != averages.for(opponent.id)
+      [user, opponent].sort_by{ |u| u.averages.match(id) }.last
+    end
   end
   
   def opponent_name_for(u)

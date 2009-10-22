@@ -108,6 +108,7 @@ describe Match, "winner and loser" do
     @user_2 = Factory.create(:user)
     @match = Factory.create(:match, :user => @user_1, :opponent => @user_2)
   end
+  
   it "should provide a winner and a loser if match is finished" do
     Factory.create(:average, :user => @user_1, :time => 1230, :match => @match)
     Factory.create(:average, :user => @user_2, :time => 2320, :match => @match)
@@ -120,6 +121,12 @@ describe Match, "winner and loser" do
     Factory.create(:average, :user => @user_2, :time => 1230, :match => @match)
     @match.winner.should be_nil
     @match.loser.should be_nil
+  end
+  
+  it "should not crash if one user hasn't submitted his time yet" do
+    Factory.create(:average, :user => @user_1, :time => 20, :match => @match)
+    lambda { @match.winner }.should_not raise_error
+    lambda { @match.loser }.should_not raise_error
   end
 end
 
