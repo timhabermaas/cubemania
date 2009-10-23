@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091021001943) do
+ActiveRecord::Schema.define(:version => 20091022192505) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                                                 :null => false
@@ -112,10 +112,6 @@ ActiveRecord::Schema.define(:version => 20091021001943) do
 
   add_index "puzzles", ["kind_id", "name"], :name => "index_puzzles_on_kind_id_and_name", :unique => true
 
-  create_table "schema_info", :id => false, :force => true do |t|
-    t.integer "version"
-  end
-
   create_table "scrambles", :force => true do |t|
     t.string   "scramble",       :limit => 1024,                            :null => false
     t.integer  "position",                                                  :null => false
@@ -135,7 +131,7 @@ ActiveRecord::Schema.define(:version => 20091021001943) do
 
   create_table "users", :force => true do |t|
     t.string   "name",               :limit => 32,                      :null => false
-    t.string   "email",              :limit => 64
+    t.string   "email",              :limit => 64,                      :null => false
     t.string   "salt",               :limit => 8,                       :null => false
     t.string   "encrypted_password",                                    :null => false
     t.datetime "created_at"
@@ -145,6 +141,7 @@ ActiveRecord::Schema.define(:version => 20091021001943) do
     t.boolean  "sponsor",                           :default => false,  :null => false
     t.string   "time_zone",          :limit => 100, :default => "UTC"
     t.boolean  "ignored",                           :default => false,  :null => false
+    t.integer  "points",                            :default => 1000,   :null => false
   end
 
   add_index "users", ["averages_count"], :name => "index_users_on_averages_count"

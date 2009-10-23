@@ -1,5 +1,7 @@
 class Match < ActiveRecord::Base
   STATUSES = %w(pending challenged finished)
+  C1 = 30
+  C2 = 400
   
   belongs_to :puzzle
   belongs_to :user; attr_protected :user, :user_id
@@ -64,6 +66,31 @@ class Match < ActiveRecord::Base
     end
   end
   
+  def max_win(user)
+    user == self.user ? (C1 * (1 - expectation)).round : (C1 * expectation).round
+  end
+  
+  def max_loss(user)
+    user == self.user ? (-expectation * C1).round : ((expectation - 1) * C1).round
+  end
+  
+  def update_points
+    if finished?
+      # put this code into Average model
+      if averages.for(user).dnf? and averages.for(opponent).dnf?
+        user_win = 0.5
+      elsif averages.for(user).dnf?
+        user_win = 0
+      elsif averages.for(opponent).dnf?
+        user_win = 1
+      else
+        user_win = 1 - (averages.for(user).time.to_f / (averages.for(user).time + averages.for(opponent).time))
+      end
+      user.update_attribute :points, user.points + ((user_win - expectation) * C1).round
+      opponent.update_attribute :points, opponent.points + (((1 - user_win) - expectation) * C1).round
+    end
+  end
+  
   private
     def self_challenges
       errors.add_to_base "You can't challenge yourself!" if user_id == opponent_id
@@ -74,5 +101,9 @@ class Match < ActiveRecord::Base
       new_scrambles.each_with_index do |scramble, i|
         scrambles << Scramble.new(:scramble => scramble, :position => i)
       end
+    end
+    
+    def expectation
+      1.0/(1 + 10 ** ((opponent.points - user.points)/C2.to_f))
     end
 end

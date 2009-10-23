@@ -589,13 +589,13 @@
   text-transform: capitalize;
   white-space: nowrap;
 }
-#matches cite.positive {
+cite.positive, strong.positive {
   color: #0f0;
 }
-#matches cite.negative {
+cite.negative, strong.negative {
   color: #f00;
 }
-#matches cite.neutral {
+cite.neutral, strong.neutral {
   color: #df0;
 }
 #matches td.result, #user_records td.time, #user_records .tabs {
@@ -630,6 +630,24 @@
 #you tbody, #other tbody {
   background-color: #4a6480;
 }
+
+#result #opponent, #result #user {
+  width: 40%;
+  border: 1px solid #999;
+}
+#result .comment {
+  background-color: #517397;
+}
+#result #user, #result p {
+  float: left;
+}
+#result #opponent {
+  float: right;
+}
+#result .comment {
+  clear: both;
+}
+
 
 #records, #results, #averages table {
   margin: 0 auto;

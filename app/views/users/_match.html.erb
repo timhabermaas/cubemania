@@ -5,7 +5,7 @@
 match.puzzle.kind.image_file_name.nil? %>
     </div>
   </th>
-  <td><strong>vs. <%= link_to match.opponent_name_for(@user), puzzle_match_path(match.puzzle, match) %></strong></td>
+  <td><strong><%= link_to "vs. #{match.opponent_name_for(@user)}", puzzle_match_path(match.puzzle, match) %></strong></td>
   <td><small><%=d match.created_at %></small></td>
   <td class="result"><strong><%= result_tag(rand(20)-10) %></strong></td>
 </tr>

@@ -7,7 +7,7 @@ class Average < Clock
   validate :size_of_singles
   validate :first_average_for_match, :user_belongs_to_match
   
-  after_save :update_match_status
+  after_save :update_match_status, :update_user_points, :if => :match
   before_save :update_records_on_create
   after_destroy :update_records_on_destroy
   
@@ -53,9 +53,11 @@ class Average < Clock
     end
     
     def update_match_status
-      unless match_id.nil?
-        match.update_status!
-      end
+      match.update_status!
+    end
+    
+    def update_user_points
+      match.update_points
     end
     
     def size_of_singles

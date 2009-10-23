@@ -123,12 +123,16 @@ module ApplicationHelper
   def m(text)
     RedCloth::new(text).to_html
   end
+  
+  def s(number)
+    number > 0 ? "+#{number}" : number.to_s
+  end
 
   def result_tag(result)
     if result < 0
-      '<cite class="negative">' + result.to_s + '</cite>'
+      '<cite class="negative">' + s(result) + '</cite>'
     elsif result > 0
-      '<cite class="positive">+' + result.to_s + '</cite>'
+      '<cite class="positive">' + s(result) + '</cite>'
     else
       '<cite class="neutral">0</cite>'
     end

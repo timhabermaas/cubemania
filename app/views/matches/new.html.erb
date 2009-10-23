@@ -2,34 +2,20 @@
 in <small><%= @puzzle.name %> <%= @puzzle.kind.name %></small>
 <div class="clear"></div>
 <table id="you">
-  <thead>
-    <tr>
-      <th><strong>you</strong></th>
-    </tr>
-  </thead>
-  <tbody>
-    <%= render :partial => 'details', :locals => { :user => current_user } %>
-  </tbody>
+  <%= render :partial => 'details', :locals => { :user => current_user } %>
 </table>
 <div id="prediction">
   <div id="max_win">
     max win<br />
-    <strong>+11</strong><br />
+    <strong><%=s @match.max_win(current_user) %></strong><br />
   </div>
   <div id="max_loss">
-    <strong>-9</strong><br />
+    <strong><%=s @match.max_loss(current_user) %></strong><br />
     max loss
   </div>
 </div>
 <table id="other">
-  <thead>
-    <tr>
-      <th><strong><%= @user.name %></strong></th>
-    </tr>
-  </thead>
-  <tbody>
-    <%= render :partial => 'details', :locals => { :user => @user } %>
-  </tbody>
+  <%= render :partial => 'details', :locals => { :user => @user } %>
 </table>
 <div class="clear"></div>
 <% form_for [@puzzle, @user, @match ||= Match.new], :html => { :id => 'match_form' } do |form| %>

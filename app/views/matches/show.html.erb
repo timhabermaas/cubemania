@@ -1,7 +1,5 @@
 <% if @match.finished? %>
-  <h1>Results for <%= @match.puzzle.name %> <small>(<%= @match.puzzle.kind.name %>)</small></h1>
-  Winner: <%= link_to @match.winner.name, @match.winner %> <small><%=t @match.averages.for(@match.winner.id).time %></small><br />
-  Loser: <%= link_to @match.loser.name, @match.loser %> <small><%=t @match.averages.for(@match.loser.id).time %></small>
+  <%= render 'result' %>
 <% else %>
   <h1>Match between <%= @match.user.name %> and <%= @match.opponent.name %></h1>
   <%= partial 'shared/timer' %>

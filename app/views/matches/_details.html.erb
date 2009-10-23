@@ -1,20 +1,27 @@
-<tr>
-  <th>points:</th>
-  <td>1024</td>
-</tr>
-<tr>
-  <th>level:</th>
-  <td>17</td>
-</tr>
-<tr class="wins">
-  <th>wins:</th>
-  <td>13</td>
-</tr>
-<tr class="loss">
-  <th>loss:</th>
-  <td>8</td>
-</tr>
-<tr class="record">
-  <th>record:</th>
-  <td><%= user.averages.record(params[:puzzle_id]) ? t(user.averages.record(params[:puzzle_id]).time) : "-" %></td>
-</tr>
+<thead>
+  <tr>
+    <th><strong><%= user.name %></strong></th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <th>points:</th>
+    <td><%= user.points %></td>
+  </tr>
+  <tr>
+    <th>level:</th>
+    <td>17</td>
+  </tr>
+  <tr class="wins">
+    <th>wins:</th>
+    <td>13</td>
+  </tr>
+  <tr class="loss">
+    <th>loss:</th>
+    <td>8</td>
+  </tr>
+  <tr class="record">
+    <th>record:</th>
+    <td><%= user.averages.record(params[:puzzle_id]) ? t(user.averages.record(params[:puzzle_id]).time) : "-" %></td>
+  </tr>
+</tbody>

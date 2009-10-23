@@ -20,3 +20,5 @@ config.action_view.cache_template_loading            = true
 
 ExceptionNotifier.exception_recipients = %w(tim.habermaas+cubemania@gmail.com)
 ExceptionNotifier.sender_address = %("cubemania.org@gmail.com")
+
+DEFAULT_PUZZLE = 2

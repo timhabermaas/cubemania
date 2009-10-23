@@ -26,5 +26,6 @@ class MatchesController < ApplicationController
   def new
     @user = User.find params[:user_id]
     @puzzle = Puzzle.find params[:puzzle_id]
+    @match = current_user.home_matches.build(:opponent => @user)
   end
 end
