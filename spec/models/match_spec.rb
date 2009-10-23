@@ -160,53 +160,42 @@ end
 
 describe Match, "ELO rating system" do
   it "should share 30 points given two equally strong players" do
-    user = Factory.create(:user, :points => 1000)
-    opponent = Factory.create(:user, :points => 1000)
-    match = match(user, opponent)
-    match.max_win(user).should == 15
-    match.max_loss(user).should == -15
-    match.max_win(opponent).should == 15
-    match.max_loss(opponent).should == -15
+    match = Factory.create(:match)
+    match.max_win(match.user).should == 15
+    match.max_loss(match.user).should == -15
+    match.max_win(match.opponent).should == 15
+    match.max_loss(match.opponent).should == -15
   end
   
   it "should gain 27 points winning a match between 1400 and 1000 points" do
-    user = Factory.create(:user, :points => 1400)
-    opponent = Factory.create(:user, :points => 1000)
-    match = match(user, opponent)
-    match.max_win(user).should == 3
-    match.max_loss(user).should == -27
-    match.max_win(opponent).should == 27
-    match.max_loss(opponent).should == -3
+    match = Factory.create(:match, :user => Factory.create(:user, :points => 1400),
+            :opponent => Factory.create(:user, :points => 1000))
+    match.max_win(match.user).should == 3
+    match.max_loss(match.user).should == -27
+    match.max_win(match.opponent).should == 27
+    match.max_loss(match.opponent).should == -3
   end
   
   it "should give the user 15 points if he owns completely (other user gets a dnf)" do
-    user = Factory.create(:user)
-    opponent = Factory.create(:user)
-    match = match(user, opponent)
+    match = Factory.create(:match)
     lambda do
-      Factory.create(:average, :match => match, :user => user)
-      Factory.create(:average, :match => match, :user => opponent, :dnf => true)
-    end.should change(user, :points).by(15)
+      Factory.create(:average, :match => match, :user => match.user)
+      Factory.create(:average, :match => match, :user => match.opponent, :dnf => true)
+    end.should change(match.user, :points).by(15)
   end
   
   it "should not change points for a deuce and equally strong users" do
-    user = Factory.create(:user)
-    opponent = Factory.create(:user)
-    match = match(user, opponent)
+    match = Factory.create(:match)
     lambda do
-      Factory.create(:average, :match => match, :user => user, :time => 2000)
-      Factory.create(:average, :match => match, :user => opponent, :time => 2000)
-    end.should_not change(user, :points)
+      Factory.create(:average, :match => match, :user => match.user, :time => 2000)
+      Factory.create(:average, :match => match, :user => match.opponent, :time => 2000)
+    end.should_not change(match.user, :points)
     Average.destroy_all
     lambda do
-      Factory.create(:average, :match => match, :user => user, :time => 2000)
-      Factory.create(:average, :match => match, :user => opponent, :time => 2000)
-    end.should_not change(opponent, :points)
+      Factory.create(:average, :match => match, :user => match.user, :time => 2000)
+      Factory.create(:average, :match => match, :user => match.opponent, :time => 2000)
+    end.should_not change(match.opponent, :points)
   end
   
   it "should not change points once they've been evaluated"
-  
-  def match(user, opponent)
-    Factory.create(:match, :user => user, :opponent => opponent)
-  end
 end
