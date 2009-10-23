@@ -59,11 +59,7 @@ class Match < ActiveRecord::Base
   end
   
   def opponent_name_for(u)
-    if u.id == user_id
-      opponent.name
-    else
-      user.name
-    end
+    u.id == user_id ? opponent.name : user.name
   end
   
   def max_win(user)
