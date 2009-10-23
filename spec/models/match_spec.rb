@@ -52,6 +52,13 @@ describe Match, "scrambles" do
     match = Match.find match.id
     match.scrambles.should have(5).scrambles
   end
+  
+  it "should deliver the same scrambles for every call" do
+    match = Factory.create(:match, :puzzle => Factory.create(:puzzle, :attempt_count => 5))    
+    first_scrambles = match.scrambles.collect(&:scramble)
+    second_scrambles = match.scrambles.collect(&:scramble)
+    first_scrambles.should == second_scrambles
+  end
 end
 
 describe Match, "named_scopes" do
