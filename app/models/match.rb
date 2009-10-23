@@ -72,16 +72,7 @@ class Match < ActiveRecord::Base
   
   def update_points
     if finished?
-      # put this code into Average model
-      if averages.for(user).dnf? and averages.for(opponent).dnf?
-        user_win = 0.5
-      elsif averages.for(user).dnf?
-        user_win = 0
-      elsif averages.for(opponent).dnf?
-        user_win = 1
-      else
-        user_win = 1 - (averages.for(user).time.to_f / (averages.for(user).time + averages.for(opponent).time))
-      end
+      user_win = 1 - averages.for(user).ratio(averages.for(opponent))
       user.update_attribute :points, user.points + ((user_win - expectation) * C1).round
       opponent.update_attribute :points, opponent.points + (((1 - user_win) - expectation) * C1).round
     end

@@ -38,7 +38,7 @@ Factory.define :single do |s|
 end
 
 Factory.define :average do |a|
-  a.time 21012
+  a.time rand(16000) + 5000
   a.dnf false
   a.record false
   a.association :puzzle

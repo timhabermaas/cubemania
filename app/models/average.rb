@@ -29,6 +29,18 @@ class Average < Clock
       return 'You have a new personal single record!'
     end
   end
+  
+  def ratio(other)
+    if dnf? and other.dnf?
+      0.5
+    elsif dnf?
+      1.0
+    elsif other.dnf?
+      0.0
+    else
+      time.to_f / (time + other.time)
+    end
+  end
 
   private
     def update_records_on_create

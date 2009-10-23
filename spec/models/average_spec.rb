@@ -15,6 +15,34 @@ describe Average do
   
 end
 
+describe Average, "ratio" do
+  it "should return ratio 0.5 for two identical times" do
+    average = Factory.build(:average, :time => 1000)
+    average.ratio(Factory.build(:average, :time => 1000)).should be_close(0.5, 0.0005)
+  end
+  
+  it "should return ratio 0.3333 for 300 vs. 1000" do
+    average = Factory.build(:average, :time => 300)
+    average.ratio(Factory.build(:average, :time => 600)).should be_close(0.3333, 0.0005)
+  end
+  
+  it "should return ratio 0.5 if both averages are a dnf" do
+    average = Factory.build(:average, :dnf => true, :time => 100)
+    average.ratio(Factory.build(:average, :dnf => true, :time => 1000)).should be_close(0.5, 0.0005)
+  end
+  
+  it "should return ratio 0 if other average is a dnf" do
+    average = Factory.build(:average, :time => 100)
+    average.ratio(Factory.build(:average, :dnf => true, :time => 1000)).should be_close(0, 0.0005)
+  end
+  
+  it "should return ratio 1 if self average is a dnf" do
+    average = Factory.build(:average, :dnf => true, :time => 100)
+    average.ratio(Factory.build(:average, :time => 1000)).should be_close(1, 0.0005)
+  end
+  
+end
+
 describe Average, "comparison" do
   
   it "should be properly comparable" do
