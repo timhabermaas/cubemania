@@ -44,6 +44,8 @@ class Puzzle < ActiveRecord::Base
       	square1_scramble
       when 'clock'
       	clock_scramble
+    	else
+    	  ''
     end
   end
 
