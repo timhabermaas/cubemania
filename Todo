@@ -21,6 +21,7 @@ Enhancements:
   Records: Write a method which repairs record flags.
   Competitions: Disable updating of competitions#repeat after first iteration
   Timer: Add the countdown again + let the user disable the countdown (and save his decision)
+  Timer: Add rolling averages for last 100/12 solves and some more statistics below the chart.
 
 New Features:
 
