@@ -141,6 +141,14 @@ module ApplicationHelper
   def wca(id)
     'http://www.worldcubeassociation.org/results/p.php?i=' + id
   end
+  
+  def twitter(name)
+    'http://twitter.com/' + name
+  end
+  
+  def facebook(id)
+    'http://www.facebook.com/profile.php?id=' + id.to_s
+  end
 
   def singles_as_string(time)
     time.singles.map { |s| s.dnf? ? 'DNF' : t(s.time) }.join ', ' if time.respond_to? :singles

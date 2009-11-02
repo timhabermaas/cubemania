@@ -19,5 +19,7 @@ in <small><%= @puzzle.name %> <%= @puzzle.kind.name %></small>
 </table>
 <div class="clear"></div>
 <% form_for [@puzzle, @user, @match ||= Match.new], :html => { :id => 'match_form' } do |form| %>
-  <%= form.submit 'Challenge!' %>
+  <p>
+    <%= form.submit 'Challenge!' %>
+  </p>
 <% end %>

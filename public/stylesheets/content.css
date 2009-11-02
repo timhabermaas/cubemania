@@ -516,17 +516,48 @@
 #users input[type=submit] {
   margin-left: 1em;
 }
-#wca {
-  margin: 3em 0;
-  text-align: center;
-}
-#wca a.logo {
-  padding: 15px 25px;
+
+#user {
+  float: left;
   margin-right: 1em;
-  background: transparent url(/images/wca.gif) center no-repeat;
 }
-#wca a {
-  font-size: 1.25em;
+#batches .icon {
+  background-color: #4a6480;
+  float: left;
+  width: 32px;
+  margin-top: 0.25em;
+  margin-left: 0.4em;
+  height: 32px;
+}
+#batches .icon a {
+  display: block;
+  margin: 6px auto;
+  width: 20px;
+  height: 20px;
+  background: #4a6480 url(/images/twitter.gif) no-repeat;
+}
+#batches #wca a {
+  background-image: url(/images/wca_small.png);
+}
+#batches #facebook a {
+  background-image: url(/images/facebook.png);
+}
+#batches #twitter a {
+  background-image: url(/images/twitter.png);
+}
+#challenge {
+  float: left;
+  margin: 0.5em;
+}
+#challenge .icon {
+  display: block;
+  margin-top: 0.1em;
+  width: 19px;
+  height: 19px;
+  background: #5c7da0 url(/images/challenge.gif) no-repeat;
+}
+#challenge .text {
+  margin-left: 0.5em;
 }
 
 #prediction {

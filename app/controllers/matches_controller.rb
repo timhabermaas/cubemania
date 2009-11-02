@@ -19,8 +19,12 @@ class MatchesController < ApplicationController
   def create
     @user = User.find params[:user_id]
     @match = current_user.home_matches.build(:puzzle_id => params[:puzzle_id], :opponent_id => params[:user_id])
-    @match.save
-    redirect_to puzzle_match_path(params[:puzzle_id], @match)
+    if @match.save
+      redirect_to puzzle_match_path(params[:puzzle_id], @match)
+    else
+      flash[:notice] = "You can't challenge yourself!"
+      redirect_to matches_path
+    end
   end
 
   def new

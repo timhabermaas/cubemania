@@ -1,4 +1,5 @@
-<h2>you <strong class="positive">WON</strong> vs. <%= link_to @match.opponent_name_for(current_user) %> <small>(<%= @match.puzzle.name %> <%= @match.puzzle.kind.name %>)</small></h2>
+<h1><%= link_to @match.user.name, @match.user %> vs. <%= link_to @match.opponent.name, @match.opponent %></h1>
+<small>(<%= @match.puzzle.name %> <%= @match.puzzle.kind.name %>)</small>
 <div id="result">
   <div id="user">
     <p><%= link_to @match.user.name, @match.user %> <%=t @match.averages.for(@match.user_id).time %></p>
