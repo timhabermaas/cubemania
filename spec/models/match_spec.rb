@@ -204,5 +204,12 @@ describe Match, "ELO rating system" do
     end.should_not change(match.opponent, :points)
   end
   
-  it "should not change points once they've been evaluated"
+  it "should not change points once they've been evaluated" do
+    match = Factory.create(:match)
+    Factory.create(:average, :match => match, :user => match.user)
+    Factory.create(:average, :match => match, :user => match.opponent, :dnf => true)
+    lambda do
+      match.update_points
+    end.should_not change(match.user, :points)
+  end
 end

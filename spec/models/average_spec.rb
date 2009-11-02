@@ -88,4 +88,5 @@ describe Average, "match validations" do
     average = Factory.build(:average, :user => third_person, :match => match)
     average.should_not be_valid
   end
+  
 end

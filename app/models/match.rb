@@ -3,8 +3,11 @@ class Match < ActiveRecord::Base
   C1 = 30
   C2 = 400
   
+  #attr_protected :user, :user_id, :status
+  attr_accessible :opponent_id, :opponent, :puzzle_id, :puzzle
+  
   belongs_to :puzzle
-  belongs_to :user; attr_protected :user, :user_id
+  belongs_to :user
   belongs_to :opponent, :class_name => 'User'
   has_many :averages do
     def for(user_id)
