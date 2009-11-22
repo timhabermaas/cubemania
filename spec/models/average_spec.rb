@@ -56,7 +56,7 @@ describe Average, "comparison" do
   
 end
 
-describe Average, "match validations" do
+describe Average, "match" do
   
   before(:each) do
     @user = Factory.create(:user)
@@ -89,4 +89,11 @@ describe Average, "match validations" do
     average.should_not be_valid
   end
   
+  it "should not be destroyable" do
+    match = Factory.create(:match)
+    average = Factory.create(:average, :user => match.user, :match => match)
+    lambda do
+      average.destroy
+    end.should_not change(Average, :count)
+  end
 end

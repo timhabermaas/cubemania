@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091022192505) do
+ActiveRecord::Schema.define(:version => 20091120154548) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                                                 :null => false
@@ -77,12 +77,14 @@ ActiveRecord::Schema.define(:version => 20091022192505) do
   end
 
   create_table "matches", :force => true do |t|
-    t.integer  "user_id",                            :null => false
-    t.integer  "opponent_id",                        :null => false
-    t.integer  "puzzle_id",                          :null => false
+    t.integer  "user_id",                                :null => false
+    t.integer  "opponent_id",                            :null => false
+    t.integer  "puzzle_id",                              :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "status",      :default => "pending", :null => false
+    t.string   "status",          :default => "pending", :null => false
+    t.integer  "user_points"
+    t.integer  "opponent_points"
   end
 
   create_table "posts", :force => true do |t|
@@ -112,10 +114,6 @@ ActiveRecord::Schema.define(:version => 20091022192505) do
 
   add_index "puzzles", ["kind_id", "name"], :name => "index_puzzles_on_kind_id_and_name", :unique => true
 
-  create_table "schema_info", :id => false, :force => true do |t|
-    t.integer "version"
-  end
-
   create_table "scrambles", :force => true do |t|
     t.string   "scramble",       :limit => 1024,                            :null => false
     t.integer  "position",                                                  :null => false
@@ -135,7 +133,7 @@ ActiveRecord::Schema.define(:version => 20091022192505) do
 
   create_table "users", :force => true do |t|
     t.string   "name",               :limit => 32,                      :null => false
-    t.string   "email",              :limit => 64
+    t.string   "email",              :limit => 64,                      :null => false
     t.string   "salt",               :limit => 8,                       :null => false
     t.string   "encrypted_password",                                    :null => false
     t.datetime "created_at"

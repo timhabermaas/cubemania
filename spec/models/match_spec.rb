@@ -165,6 +165,22 @@ describe Match, "status" do
   end
 end
 
+describe Match, "destroying a match" do
+  it "should not change a user's points if the match isn't finished yet" do
+    match = Factory.create(:match, :status => 'challenged')
+    lambda do
+      match.destroy
+    end.should_not change(match.user, :points)
+  end
+  
+  it "should change user's points if the match was already finished" do
+    match = Factory.create(:match, :status => 'finished', :user_points => 10, :opponent_points => -10)
+    lambda do
+      match.destroy
+    end.should change(match.user, :points).by(-10)
+  end
+end
+
 describe Match, "ELO rating system" do
   it "should share 30 points given two equally strong players" do
     match = Factory.create(:match)
@@ -194,13 +210,10 @@ describe Match, "ELO rating system" do
   it "should not change points for a deuce and equally strong users" do
     match = Factory.create(:match)
     lambda do
-      Factory.create(:average, :match => match, :user => match.user, :time => 2000)
-      Factory.create(:average, :match => match, :user => match.opponent, :time => 2000)
-    end.should_not change(match.user, :points)
-    Average.destroy_all
-    lambda do
-      Factory.create(:average, :match => match, :user => match.user, :time => 2000)
-      Factory.create(:average, :match => match, :user => match.opponent, :time => 2000)
+      lambda do
+        Factory.create(:average, :match => match, :user => match.user, :time => 2000)
+        Factory.create(:average, :match => match, :user => match.opponent, :time => 2000)
+      end.should_not change(match.user, :points)
     end.should_not change(match.opponent, :points)
   end
   
@@ -211,5 +224,13 @@ describe Match, "ELO rating system" do
     lambda do
       match.update_points
     end.should_not change(match.user, :points)
+  end
+  
+  it "should set user_points and opponent_points properly" do
+    match = Factory.create(:match)
+    Factory.create(:average, :match => match, :user => match.user, :time => 10)
+    Factory.create(:average, :match => match, :user => match.opponent, :time => 10)
+    match.user_points.should == 0
+    match.opponent_points.should == 0
   end
 end

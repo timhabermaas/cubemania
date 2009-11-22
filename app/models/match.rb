@@ -9,7 +9,7 @@ class Match < ActiveRecord::Base
   belongs_to :puzzle
   belongs_to :user
   belongs_to :opponent, :class_name => 'User'
-  has_many :averages do
+  has_many :averages, :dependent => :nullify do
     def for(user_id)
       find_by_user_id(user_id)
     end
@@ -26,6 +26,7 @@ class Match < ActiveRecord::Base
   validate :self_challenges
   
   before_create :create_scrambles
+  before_destroy :undo_points, :if => lambda { |m| m.finished? }
   
   def finished?
     status == 'finished'
@@ -76,8 +77,11 @@ class Match < ActiveRecord::Base
   def update_points
     if finished?
       user_win = 1 - averages.for(user).ratio(averages.for(opponent))
-      user.update_attribute :points, user.points + ((user_win - expectation) * C1).round
-      opponent.update_attribute :points, opponent.points + (((1 - user_win) - expectation) * C1).round
+      self.user_points = ((user_win - expectation) * C1).round
+      self.opponent_points = (((1 - user_win) - expectation) * C1).round
+      save!
+      user.update_attribute :points, user.points + self.user_points
+      opponent.update_attribute :points, opponent.points + self.opponent_points
     end
   end
   
@@ -91,6 +95,11 @@ class Match < ActiveRecord::Base
       new_scrambles.each_with_index do |scramble, i|
         scrambles << Scramble.new(:scramble => scramble, :position => i)
       end
+    end
+    
+    def undo_points
+      user.update_attribute :points, user.points - user_points
+      opponent.update_attribute :points, opponent.points - opponent_points
     end
     
     def expectation

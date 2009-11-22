@@ -1,3 +1,8 @@
+Averages which belong to a match should not be destroyable.
+Matches should be destroyable, but only through a destroy request including a reason why the user wants to delete that match.
+Ask Patrick for a user's statistics table.
+User#index becomes the ranking page.
+
 Bugs:
 
 

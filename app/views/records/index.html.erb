@@ -7,7 +7,7 @@
 
 <%- if @records.empty? -%>
 <p class="challenge">
-  Be the first: <%= link_to 'Get the record!', puzzle_times_path %>
+  Be the first: <%= link_to 'Get the record!', puzzle_times_path(@puzzle) %>
 </p>
 <%- else -%>
 <table id="records">

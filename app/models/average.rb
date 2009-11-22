@@ -9,6 +9,7 @@ class Average < Clock
   
   after_save :update_match_status, :update_user_points, :if => :match
   before_save :update_records_on_create
+  before_destroy :return_false, :if => :match
   after_destroy :update_records_on_destroy
   
   named_scope :matched, :conditions => 'match_id NOT NULL'
@@ -88,5 +89,9 @@ class Average < Clock
       if not match_id.nil? and match.user_id != user_id and match.opponent_id != user_id
         errors.add_to_base "Get out of here!"
       end
+    end
+    
+    def return_false
+      false
     end
 end

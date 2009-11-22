@@ -5,6 +5,7 @@
   <% end %>
   <%= render :partial => 'batch', :locals => { :link => twitter('timhabermaas'), :id => 'twitter' } %>
   <%= render :partial => 'batch', :locals => { :link => facebook(123124), :id => 'facebook' } %>
+  <small><%= @user.points %></small>
   <% if not self? or admin? %>
   <div id="challenge">
     <%= link_to '&nbsp;', new_puzzle_user_match_path(:user_id => @user), :class => 'icon' %>
