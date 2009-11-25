@@ -2,7 +2,15 @@
 <h1><%=h @puzzle.name %></h1>
 
 <table id="averages">
-  <%=  partial 'average', :collection => @averages %>
+  <thead>
+    <th>Average</th>
+    <th colspan="<%=@puzzle.attempt_count%>">Singles</th>
+    <th>Date</th>
+    <th></th>
+  </thead>
+  <tbody>
+    <%=  partial 'average', :collection => @averages %>
+  </tbody>
 </table>
 
 <%= will_paginate @averages %>

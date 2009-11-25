@@ -1,4 +1,9 @@
 class MatchesController < ApplicationController
+  def new
+    @user = User.find params[:user_id]
+    @puzzle = Puzzle.find params[:puzzle_id]
+    @match = current_user.home_matches.build(:opponent => @user)
+  end
   
   def index
     if logged_in?
@@ -26,10 +31,20 @@ class MatchesController < ApplicationController
       redirect_to matches_path
     end
   end
-
-  def new
-    @user = User.find params[:user_id]
-    @puzzle = Puzzle.find params[:puzzle_id]
-    @match = current_user.home_matches.build(:opponent => @user)
+  
+  def destroy
+    if object.destroy
+      flash[:notice] = 'Successfully removed!'
+    end
+    redirect_to matches_path
+  end
+  
+private
+  def object
+    @match ||= parent.matches.find params[:id]
+  end
+  
+  def parent
+    @puzzle ||= Puzzle.find params[:puzzle_id]
   end
 end

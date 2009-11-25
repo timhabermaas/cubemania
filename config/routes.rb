@@ -13,7 +13,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :puzzles, :except => :show do |puzzles|
     puzzles.resources :times, :controller => :clocks, :only => [:index, :create]
     puzzles.resources :averages
-    puzzles.resources :matches, :only => :show do |matches|
+    puzzles.resources :matches, :only => [:show, :destroy] do |matches|
       matches.resources :times, :controller => :clocks, :only => [:index, :create]
     end
     puzzles.resources :users, :as => 'opponents', :only => [] do |users|

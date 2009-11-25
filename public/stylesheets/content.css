@@ -601,17 +601,17 @@
 #user_records .disabled {
   display: none;
 }
-#user_records th, #user_records td, #matches th, #matches td, #records th, #records td, #you th, #other th, #you td, #other td {
+#user_records th, #user_records td, #matches th, #matches td, #records th, #records td, #you th, #other th, #you td, #other td, #averages td, #averages th {
   padding: 0.1875em 0.5em;
 }
-#user_records thead, #matches thead, #records thead, #you thead, #other thead {
+#user_records thead, #matches thead, #records thead, #you thead, #other thead, #averages thead {
   border-bottom: 1px solid #fff;
 }
-#user_records thead th, #matches thead th, #records thead th, #you thead th, #other thead th {
+#user_records thead th, #matches thead th, #records thead th, #you thead th, #other thead th, #averages thead {
   color: #df0;  
   padding: 0.5em 0;
 }
-#user_records td, #matches td, #records td, #you td, #other td {
+#user_records td, #matches td, #records td, #you td, #other td, #averages td {
   padding-left: 0.5em;
 }
 #user_records strong, #user_records small, #matches strong, #matches small, #records strong, #records small {
@@ -636,7 +636,7 @@ cite.neutral, strong.neutral {
 #records strong {
   text-align: left;
 }
-#user_records .odd, #matches .odd, #records .odd, #you tbody, #other tbody {
+#user_records .odd, #matches .odd, #records .odd, #you tbody, #other tbody, #averages .odd {
   background-color: #517397;
 }
 #user_records .puzzle, #matches .puzzle {

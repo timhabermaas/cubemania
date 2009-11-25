@@ -1,4 +1,5 @@
 <li>
   <strong><%= link_to match.opponent_name_for(current_user), puzzle_match_path(match.puzzle, match) %></strong>
   <small><%= match.puzzle.name %> <%= match.puzzle.kind.name %></small>
+  <%= link_to 'Destroy', puzzle_match_path(match.puzzle, match), :confirm => 'Are you sure?', :method => :delete %>
 </li>
