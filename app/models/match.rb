@@ -26,7 +26,7 @@ class Match < ActiveRecord::Base
   validate :self_challenges
   
   before_create :create_scrambles
-  before_destroy :undo_points, :if => lambda { |m| m.finished? }
+  before_destroy :undo_points, :if => lambda { |m| m.user_points != nil and m.opponent_points != nil }
   
   def finished?
     status == 'finished'
@@ -75,14 +75,14 @@ class Match < ActiveRecord::Base
   end
   
   def update_points
-    if finished?
+    if finished? and self.user_points.nil? and self.opponent_points.nil?
       user_win = 1 - averages.for(user).ratio(averages.for(opponent))
       self.user_points = ((user_win - expectation) * C1).round
       self.opponent_points = (((1 - user_win) - expectation) * C1).round
       save!
       user.update_attribute :points, user.points + self.user_points
       opponent.update_attribute :points, opponent.points + self.opponent_points
-    end
+    end  
   end
   
   private
