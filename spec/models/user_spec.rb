@@ -102,3 +102,6 @@ describe User, "matches association" do
   end
   
 end
+
+describe User, "ranking" do
+end

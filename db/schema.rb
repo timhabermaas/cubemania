@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091120154548) do
+ActiveRecord::Schema.define(:version => 20091125224953) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                                                 :null => false
@@ -144,6 +144,7 @@ ActiveRecord::Schema.define(:version => 20091120154548) do
     t.string   "time_zone",          :limit => 100, :default => "UTC"
     t.boolean  "ignored",                           :default => false,  :null => false
     t.integer  "points",                            :default => 1000,   :null => false
+    t.integer  "rank",                              :default => 0,      :null => false
   end
 
   add_index "users", ["averages_count"], :name => "index_users_on_averages_count"

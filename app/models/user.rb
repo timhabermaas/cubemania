@@ -43,6 +43,7 @@ class User < ActiveRecord::Base
   validates_inclusion_of :role, :in => ROLES
 
   after_save :flush_passwords
+  before_save :update_rank
 
   def self.find_by_name_and_password(name, password)
     user = find_by_name name
@@ -51,6 +52,13 @@ class User < ActiveRecord::Base
 
   def self.max_averages_count
     find(:first, :select => 'averages_count', :order => 'averages_count desc').averages_count
+  end
+  
+  def self.all_with_ranking
+    User.all(:select => 'u1.id, u1.name, u1.points, u1.averages_count, COUNT(DISTINCT u2.points) AS rank',
+             :from => 'users u1 JOIN users u2 ON (u1.points <= u2.points)',
+             :group => 'u1.id',
+             :order => 'rank')
   end
 
   def password=(password)
@@ -91,6 +99,10 @@ class User < ActiveRecord::Base
     else
       averages.size / max.to_f
     end
+  end
+  
+  def update_rank
+    self.rank = User.count(:all, :conditions => ['points > ?', self.points]) + 1
   end
   
   def matches

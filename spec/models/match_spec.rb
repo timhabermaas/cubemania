@@ -233,4 +233,13 @@ describe Match, "ELO rating system" do
     match.user_points.should == 0
     match.opponent_points.should == 0
   end
+  
+  it "should 2000 points vs. 1000 points" do
+    match = Factory.create(:match, :user => Factory.create(:user, :points => 2000), 
+                           :opponent => Factory.create(:user, :points => 1000))
+    Factory.create(:average, :match => match, :user => match.user, :time => 10)
+    Factory.create(:average, :match => match, :user => match.opponent, :time => 10)
+    match.user_points.should == -15
+    match.opponent_points.should == 15
+  end
 end
