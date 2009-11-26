@@ -663,24 +663,6 @@ cite.neutral, strong.neutral {
   background-color: #4a6480;
 }
 
-#result #opponent, #result #user {
-  width: 40%;
-  border: 1px solid #999;
-}
-#result .comment {
-  background-color: #517397;
-}
-#result #user, #result p {
-  float: left;
-}
-#result #opponent {
-  float: right;
-}
-#result .comment {
-  clear: both;
-}
-
-
 #records, #results, #averages table {
   margin: 0 auto;
 }
