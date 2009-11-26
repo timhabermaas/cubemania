@@ -104,4 +104,36 @@ describe User, "matches association" do
 end
 
 describe User, "ranking" do
+  
+  def users(*points)
+    points.each do |p|
+      Factory.create(:user, :points => p)
+    end
+  end
+  
+  it "should rank a user with 1000 points between two other users with 500 and 1500 at rank 2" do
+    users(500, 1500)
+    user = Factory.create(:user, :points => 1000)
+    user.update_rank.should == 2
+  end
+  
+  it "should rank a user at rank 1 if he shares the same points as the best" do
+    users(100, 400, 400)
+    user = Factory.create(:user, :points => 400)
+    user.update_rank.should == 1
+  end
+  
+  it "should rank a user last if he's really last" do
+    users(1000, 1500, 400)
+    user = Factory.create(:user, :points => 323)
+    user.update_rank.should == 4
+  end
+  
+  it "should rank all users at place 1 if they're equally strong'" do
+    users(100, 100, 100, 100)
+    User.all.each do |u|
+      u.update_rank.should == 1
+    end
+  end
+  
 end

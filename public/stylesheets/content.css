@@ -139,13 +139,13 @@
   margin: 2em 0;
 }
 
-#content .challenge, #content .suggestion {
+/*#content .challenge, #content .suggestion {
   font-size: 2em;
   text-align: center;
 }
 #content .challenge {
   margin: 1em 0;
-}
+}*/
 
 #content .footnote {
   text-align: center;
@@ -576,6 +576,27 @@
   margin-left: 0;
 }
 
+#user_search {
+  text-align: center;
+}
+#user_search input[type=submit] {
+  
+}
+#ranking {
+  width: 90%;
+}
+#ranking .streak {
+  text-align: right;
+  width: 4em;
+}
+#ranking .challenge {
+  text-align: right;
+  width: 10em;
+}
+
+#ranking tbody tr {
+  height: 2.5em;
+}
 #user_records, #matches {
   width: 40%;
 }
@@ -591,17 +612,17 @@
 #user_records .disabled {
   display: none;
 }
-#user_records th, #user_records td, #matches th, #matches td, #records th, #records td, #you th, #other th, #you td, #other td, #averages td, #averages th {
+#user_records th, #user_records td, #matches th, #matches td, #records th, #records td, #you th, #other th, #you td, #other td, #averages td, #averages th, #ranking td, #ranking th {
   padding: 0.1875em 0.5em;
 }
-#user_records thead, #matches thead, #records thead, #you thead, #other thead, #averages thead {
+#user_records thead, #matches thead, #records thead, #you thead, #other thead, #averages thead, #ranking thead {
   border-bottom: 1px solid #fff;
 }
-#user_records thead th, #matches thead th, #records thead th, #you thead th, #other thead th, #averages thead {
+#user_records thead th, #matches thead th, #records thead th, #you thead th, #other thead th, #averages thead, #averages thead th {
   color: #df0;  
   padding: 0.5em 0;
 }
-#user_records td, #matches td, #records td, #you td, #other td, #averages td {
+#user_records td, #matches td, #records td, #you td, #other td, #averages td, #ranking td {
   padding-left: 0.5em;
 }
 #user_records strong, #user_records small, #matches strong, #matches small, #records strong, #records small {
@@ -626,7 +647,7 @@ cite.neutral, strong.neutral {
 #records strong {
   text-align: left;
 }
-#user_records .odd, #matches .odd, #records .odd, #you tbody, #other tbody, #averages .odd {
+#user_records .odd, #matches .odd, #records .odd, #you tbody, #other tbody, #averages .odd, #ranking .odd {
   background-color: #517397;
 }
 #user_records .puzzle, #matches .puzzle {
@@ -653,7 +674,7 @@ cite.neutral, strong.neutral {
   background-color: #4a6480;
 }
 
-#records, #results, #averages table {
+#records, #results, #averages table, #ranking {
   margin: 0 auto;
 }
 /*#records thead th, #results thead th, #averages th {

@@ -128,14 +128,15 @@ module ApplicationHelper
     number > 0 ? "+#{number}" : number.to_s
   end
 
-  def result_tag(result)
+  def result_tag(result, tag='cite')
+    "<#{tag} class=" + 
     if result < 0
-      '<cite class="negative">' + s(result) + '</cite>'
+      '"negative">' + s(result)
     elsif result > 0
-      '<cite class="positive">' + s(result) + '</cite>'
+      '"positive">' + s(result)
     else
-      '<cite class="neutral">0</cite>'
-    end
+      '"neutral">0'
+    end + "</#{tag}>"
   end
 
   def wca(id)

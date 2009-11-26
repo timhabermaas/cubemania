@@ -43,7 +43,6 @@ class User < ActiveRecord::Base
   validates_inclusion_of :role, :in => ROLES
 
   after_save :flush_passwords
-  before_save :update_rank
 
   def self.find_by_name_and_password(name, password)
     user = find_by_name name
@@ -103,6 +102,15 @@ class User < ActiveRecord::Base
   
   def update_rank
     self.rank = User.count(:all, :conditions => ['points > ?', self.points]) + 1
+  end
+  
+  def update_rank!
+    update_rank
+    save
+  end
+  
+  def streak
+    rand(20) - 10
   end
   
   def matches
