@@ -576,14 +576,8 @@
   margin-left: 0;
 }
 
-#user_search {
-  text-align: center;
-}
-#user_search input[type=submit] {
-  
-}
 #ranking {
-  width: 90%;
+  width: 80%;
 }
 #ranking .streak {
   text-align: right;
@@ -592,6 +586,12 @@
 #ranking .challenge {
   text-align: right;
   width: 10em;
+}
+#ranking .rank1 {
+  width: 0.5em;
+}
+#ranking thead th{
+  font-weight: bold;
 }
 
 #ranking tbody tr {

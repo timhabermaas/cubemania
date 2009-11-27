@@ -22,3 +22,5 @@
     </tr>
   </tbody>
 </table>
+
+<%= link_to 'Rematch!', new_puzzle_user_match_path(@puzzle, @match.other(current_user)) %>

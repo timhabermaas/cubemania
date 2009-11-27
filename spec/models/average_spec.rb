@@ -54,6 +54,10 @@ describe Average, "comparison" do
     Factory.build(:average, :time => 20).should be == Factory.build(:average, :time => 20)
   end
   
+  it "should look at the fastest single in case of equal averages" do
+    
+  end
+  
 end
 
 describe Average, "match" do

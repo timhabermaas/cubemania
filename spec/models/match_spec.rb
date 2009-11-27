@@ -99,16 +99,6 @@ describe Match, "named_scopes" do
   end
 end
 
-describe Match, "public methods" do
-  it "should return the proper opponent name" do
-    user = Factory.create(:user, :name => 'tim')
-    opponent = Factory.create(:user, :name => 'simon')
-    match = Factory.build(:match, :user => user, :opponent => opponent)
-    match.opponent_name_for(user).should == 'simon'
-    match.opponent_name_for(opponent).should == 'tim'
-  end
-end
-
 describe Match, "winner and loser" do
   before(:each) do
     @user_1 = Factory.create(:user)

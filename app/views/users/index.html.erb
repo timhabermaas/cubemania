@@ -21,7 +21,7 @@
   <tbody>
   <% for user in @users %>
     <tr class="<%= cycle('odd', 'even') %>">
-      <td class="rank<%= user.rank %>"><strong><%= user.rank %></strong></td>
+      <td class="rank<%= user.rank %>"><strong><%= user.rank %>.</strong></td>
       <td class="name"><strong><%= link_to user.name, user %></strong></td>
       <td class="points"><strong><%= user.points %></strong></td>
       <td class="stats">27 - 18</td>

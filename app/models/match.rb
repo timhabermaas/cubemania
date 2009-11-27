@@ -14,7 +14,7 @@ class Match < ActiveRecord::Base
       find_by_user_id(user_id)
     end
   end
-  has_many :scrambles, :as => :matchable, :order => 'position'
+  has_many :scrambles, :as => :matchable, :order => 'position', :dependent => :delete_all
   
   named_scope :finished, :conditions => "matches.status = 'finished'"
   named_scope :challenged, :conditions => "matches.status = 'challenged'"
@@ -62,8 +62,8 @@ class Match < ActiveRecord::Base
     end
   end
   
-  def opponent_name_for(u)
-    u.id == user_id ? opponent.name : user.name
+  def other(u)
+    u.id == user_id ? opponent : user
   end
   
   def max_win(user)
@@ -81,6 +81,8 @@ class Match < ActiveRecord::Base
       update_attribute :opponent_points, (((1 - user_win) - (1 - expectation)) * C1).round
       user.update_attribute :points, user.points + self.user_points
       opponent.update_attribute :points, opponent.points + self.opponent_points
+      user.update_rank!
+      opponent.update_rank!
     end
   end
   
