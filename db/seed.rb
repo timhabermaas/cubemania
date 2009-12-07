@@ -1,8 +1,8 @@
-Item.create!(:name => 'Home', :description => 'Home', :url => '/', :position => 0)
-Item.create!(:name => 'Timer', :description => 'Timer', :url => '/puzzles/1/times', :position => 1)
-Item.create!(:name => 'Competitions', :description => 'Competitions', :url => '/puzzles/1/competitions', :position => 2)
-Item.create!(:name => 'Users', :description => 'Users', :url => '/users', :position => 3)
-Item.create!(:name => 'Records', :description => 'Records', :url => '/puzzles/1/times', :position => 4)
+Item.create!(:name => 'Home', :description => 'Home', :controller => 'homes', :action => 'show', :position => 0)
+Item.create!(:name => 'Timer', :description => 'Timer', :controller => 'clocks', :action => 'index', :position => 1)
+Item.create!(:name => 'Competitions', :description => 'Competitions', :controller => 'competitions', :action => 'index', :position => 2)
+Item.create!(:name => 'Users', :description => 'Users', :controller => 'users', :action => 'index', :position => 3)
+Item.create!(:name => 'Records', :description => 'Records', :controller => 'records', :action => 'index', :position => 4)
 
 k = Kind.create!(:name => 'speed')
 Kind.create!(:name => 'blindfolded')

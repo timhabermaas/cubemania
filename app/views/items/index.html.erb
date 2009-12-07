@@ -6,6 +6,7 @@
     <th>Controller</th>
     <th>Action</th>
     <th>Description</th>
+    <th>Position</th>
   </tr>
 <%- for item in @items -%>
   <tr>
@@ -13,6 +14,7 @@
     <td><%=h item.controller %></td>
     <td><%=h item.action %></td>
     <td><%=h item.description %></td>
+    <td><%=h item.position %></td>
     <td><%= link_to 'Edit', edit_item_path(item) %></td>
     <td><%= link_to 'Destroy', item, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
