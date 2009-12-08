@@ -526,14 +526,14 @@
 #batches .icon, #batches .text {
   background-color: #4a6480;
   float: left;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   margin-top: 0.25em;
   margin-left: 0.4em;
   text-align: center;
 }
 #batches .text small {
-  line-height: 32px;
+  line-height: 34px;
 }
 #batches a.challenge {
   float: left;
@@ -542,7 +542,7 @@
 }
 #batches .icon a {
   display: block;
-  margin: 6px auto;
+  margin: 8px auto;
   width: 20px;
   height: 20px;
   background-color: #4a6480;
