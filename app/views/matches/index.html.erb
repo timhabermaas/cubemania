@@ -2,20 +2,20 @@
 if current_user? show his matches, otherwise show recent matches
 -->
 <% if logged_in? %>
-<h2>You've been challenged by</h2>
+<h1>You&#39;ve been challenged by</h1>
 <ul>
   <%= render :partial => 'match', :collection => @challenged_matches %>
 </ul>
-<h2>You've challenged</h2>
+<h1>You&#39;ve challenged</h1>
 <ul>
   <%= render :partial => 'match', :collection => @awaiting_matches %>
 </ul>
-<h2>Recent finished matches</h2>
+<h1>Recent finished matches</h1>
 <ul>
   <%= render :partial => 'match', :collection => @finished_matches %>
 </ul>
 <% else %>
-<h2>Recent matches</h2>
+<h1>Recent matches</h1>
 <ul>
 <% for match in @matches %>
   <li>

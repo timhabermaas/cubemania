@@ -43,6 +43,7 @@ class User < ActiveRecord::Base
   validates_inclusion_of :role, :in => ROLES
 
   after_save :flush_passwords
+  before_create :update_rank
 
   def self.find_by_name_and_password(name, password)
     user = find_by_name name

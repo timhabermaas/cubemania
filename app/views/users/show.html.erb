@@ -1,14 +1,11 @@
 <h1 id="user"><%= @user.name %></h1>
 <div id="batches">
   <%= render(:partial => 'batch', :locals => { :link => wca(@user.wca), :id => 'wca' }) unless @user.wca.blank? %>
-  <%= render :partial => 'batch', :locals => { :link => twitter('timhabermaas'), :id => 'twitter' } %>
-  <%= render :partial => 'batch', :locals => { :link => facebook(123124), :id => 'facebook' } %>
+  <%= render(:partial => 'batch', :locals => { :link => twitter('timhabermaas'), :id => 'twitter' }) if false %>
+  <%= render(:partial => 'batch', :locals => { :link => facebook(123124), :id => 'facebook' }) if false %>
   <div class="text"><small><%= @user.points %></small></div>
   <% if not self? or admin? %>
-  <a href="test" id="challenge">
-    <img src="/images/challenge.gif"></img>
-    <cite>Challenge <%= @user.name %></cite>
-  </a>
+  <strong><% link_to "Challenge #{@user.name}!", new_puzzle_user_match_path(:user_id => @user.id), :class => 'challenge' %></strong>
   <% end %>
 </div>
 <div class="clear"></div>

@@ -10,22 +10,24 @@
 #content h1 {
   font-size: 2em;
   margin-bottom: 1em;
-  color: #df0;
+  color: #fff; /* color: #df0 */
+  font-weight: bold;
 }
 #content h2 {
   font-size: 1.25em;
   margin-bottom: 0.25em;
   padding-bottom: 0.25em;
-  color: #df0;
+  color: #fff;
 }
 #content h3 {
   font-size: 1.25em;
   margin: 1em 0;
-  color: #df0;
+  color: #fff;
+  font-weight: bold;
 }
 #content h4 {
   font-size: 1.125em;
-  color: #df0;
+  color: #fff;
   margin-bottom: 1em;
 }
 #content a {
@@ -139,13 +141,13 @@
   margin: 2em 0;
 }
 
-/*#content .challenge, #content .suggestion {
+#content p.challenge, #content p.suggestion {
   font-size: 2em;
   text-align: center;
 }
-#content .challenge {
+#content p.challenge {
   margin: 1em 0;
-}*/
+}
 
 #content .footnote {
   text-align: center;
@@ -533,6 +535,11 @@
 #batches .text small {
   line-height: 32px;
 }
+#batches a.challenge {
+  float: left;
+  display: block;
+  margin: 0.5em 1em;
+}
 #batches .icon a {
   display: block;
   margin: 6px auto;
@@ -576,27 +583,32 @@
   margin-left: 0;
 }
 
+#user_search {
+  width: 30%;
+  margin: 0 auto;
+  margin-bottom: 1.5em;
+}
+#user_search input[type=submit] {
+  margin: 1em;
+}
+
 #ranking {
+  margin: 0 auto;
   width: 80%;
 }
 #ranking .streak {
   text-align: right;
-  width: 4em;
 }
 #ranking .challenge {
   text-align: right;
-  width: 10em;
-}
-#ranking .rank1 {
-  width: 0.5em;
 }
 #ranking thead th{
   font-weight: bold;
 }
-
 #ranking tbody tr {
   height: 2.5em;
 }
+
 #user_records, #matches {
   width: 40%;
 }
@@ -612,20 +624,21 @@
 #user_records .disabled {
   display: none;
 }
-#user_records th, #user_records td, #matches th, #matches td, #records th, #records td, #you th, #other th, #you td, #other td, #averages td, #averages th, #ranking td, #ranking th {
+#user_records th, #user_records td, #matches th, #matches td, #you th, #other th, #you td, #other td, #averages td, #averages th, #ranking td, #ranking th {
   padding: 0.1875em 0.5em;
 }
-#user_records thead, #matches thead, #records thead, #you thead, #other thead, #averages thead, #ranking thead {
+#user_records thead, #matches thead, #you thead, #other thead, #averages thead, #ranking thead {
   border-bottom: 1px solid #fff;
 }
-#user_records thead th, #matches thead th, #records thead th, #you thead th, #other thead th, #averages thead, #averages thead th {
-  color: #df0;  
+#user_records thead th, #matches thead th, #you thead th, #other thead th, #averages thead th {
+  color: #fff;  
   padding: 0.5em 0;
+  padding-right: 0.5em;
 }
-#user_records td, #matches td, #records td, #you td, #other td, #averages td, #ranking td {
+#user_records td, #matches td, #you td, #other td, #averages td, #ranking td {
   padding-left: 0.5em;
 }
-#user_records strong, #user_records small, #matches strong, #matches small, #records strong, #records small {
+#user_records strong, #user_records small, #matches strong, #matches small {
   white-space: nowrap;
 }
 #user_records cite {
@@ -644,10 +657,7 @@ cite.neutral, strong.neutral {
 #matches td.result, #user_records td.time, #user_records .tabs {
   text-align: right;
 }
-#records strong {
-  text-align: left;
-}
-#user_records .odd, #matches .odd, #records .odd, #you tbody, #other tbody, #averages .odd, #ranking .odd {
+#user_records .odd, #matches .odd, #you tbody, #other tbody, #averages .odd, #ranking .odd {
   background-color: #517397;
 }
 #user_records .puzzle, #matches .puzzle {
@@ -661,9 +671,6 @@ cite.neutral, strong.neutral {
   height: 25px;
   background-repeat: no-repeat;
 }
-#records blockquote {
-  font-style: italic;
-}
 #you tr.loss td, #other tr.loss td {
   color: #f00;
 }
@@ -674,27 +681,15 @@ cite.neutral, strong.neutral {
   background-color: #4a6480;
 }
 
-#records, #results, #averages table, #ranking {
+#records, #results table {
   margin: 0 auto;
 }
-/*#records thead th, #results thead th, #averages th {
+#records thead th, #results thead th {
   color: #df0;
-}
-#records thead th {
-  color: #df0;  
-  padding: 1em 0;
-}
-#records thead {
-  border-bottom: 1px solid #fff;
 }
 #records th, #records td, #results th, #results td {
   text-align: center;
   padding: 0.25em 1em;
-}
-#averages td, #averages th {
-  text-align: left;
-  white-space: nowrap;
-  padding: 0.1em 0.5em;
 }
 #records td, #results td {
   padding-left: 1em;
@@ -717,6 +712,22 @@ cite.neutral, strong.neutral {
 #records .odd {
   background-color: #517397;
 }
+#records .puzzle {
+  margin: 0.25em 0;
+  background-position: center right;
+}
+#records .kind {
+  background-position: bottom right;
+}
+#records .puzzle, #records .kind {
+  width: 50px;
+  height: 50px;
+  background-repeat: no-repeat;
+}
+#records .rank1 strong, #records .rank1 cite, #records .rank1 small, #records .rank1 blockquote {
+  font-size: 2em;
+  line-height: 2.25em;
+}
 #results .rank1 strong, #results .rank1 cite, #results .rank1 small, #results .rank1 blockquote {
   font-size: 1.5em;
   line-height: 2.25em;
@@ -724,12 +735,20 @@ cite.neutral, strong.neutral {
 #content .rank1 th {
   background-image: url(/images/rank1.gif);
 }
+#records .rank2 strong, #records .rank2 cite, #records .rank2 small, #records .rank2 blockquote {
+  font-size: 1.5em;
+  line-height: 2em;
+}
 #results .rank2 strong, #results .rank2 cite, #results .rank2 small, #results .rank2 blockquote {
   font-size: 1.125em;
   line-height: 2em;
 }
 #content .rank2 th {
   background-image: url(/images/rank2.gif);
+}
+#records .rank3 strong, #records .rank3 cite, #records .rank3 small, #records .rank3 blockquote {
+  font-size: 1.25em;
+  line-height: 1.75em;
 }
 #results .rank3 strong, #results .rank3 cite, #results .rank3 small, #results .rank3 blockquote {
   font-size: 1em;
@@ -749,7 +768,10 @@ cite.neutral, strong.neutral {
 }
 #content .rank1 span, #content .rank2 span, #content .rank3 span {
   display: none;
-}*/
+}
+#content .rank1 blockquote, #content .rank2 blockquote, #content .rank3 blockquote {
+  line-height: 1em;
+}
 #content .dnf th {
   background-image: none;
 }

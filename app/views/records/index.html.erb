@@ -11,13 +11,6 @@
 </p>
 <%- else -%>
 <table id="records">
-  <thead>
-    <th>#</th>
-    <th>cuber</th>
-    <th>time</th>
-    <th>date</th>
-    <th>comment</th>
-  </thead>
   <tbody>
     <%= partial 'record', :collection => @records, :offset => @records.offset %>
   </tbody>

@@ -66,6 +66,10 @@ class Match < ActiveRecord::Base
     u.id == user_id ? opponent : user
   end
   
+  def points_for(u)
+    u.id == user_id ? user_points : opponent_points
+  end
+  
   def max_win(user)
     user == self.user ? (C1 * (1 - expectation)).round : (C1 * expectation).round
   end

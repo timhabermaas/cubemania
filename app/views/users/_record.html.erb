@@ -6,7 +6,7 @@
   </th>
   <td>
     <cite>
-      <strong><%= link_to_if self?, record[:single].puzzle.name, user_puzzle_averages_path(record[:single].user_id, record[:single].puzzle) %></strong>
+      <strong><%= link_to_if logged_in?, record[:single].puzzle.name, user_puzzle_averages_path(record[:single].user_id, record[:single].puzzle) %></strong>
     </cite>
   </td>
   <td class="single disabled"><small><%=d record[:single].created_at %></small></td>
