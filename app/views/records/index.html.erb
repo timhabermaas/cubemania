@@ -1,7 +1,7 @@
 <%- unless @puzzle.average_format == 'best_of' -%>
 <p class="tabs">
-  <%= link_to 'Single', puzzle_records_path(:type => 'single'), :class => ('checked' if type? :single) %>
-  <%= link_to @puzzle.average_format.titleize, puzzle_records_path(:type => 'average'), :class => ('checked' if type? :average) %>
+  <%= link_to 'Single', puzzle_records_path(:type => 'single', :puzzle_id => params[:puzzle_id]), :class => ('checked' if type? :single) %>
+  <%= link_to @puzzle.average_format.titleize, puzzle_records_path(:type => 'average', :puzzle_id => params[:puzzle_id]), :class => ('checked' if type? :average) %>
 </p>
 <%- end -%>
 
