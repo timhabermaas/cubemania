@@ -533,12 +533,12 @@
   text-align: center;
 }
 #batches .text small {
-  line-height: 34px;
+  line-height: 35px;
 }
 #batches a.challenge {
   float: left;
   display: block;
-  margin: 0.5em 1em;
+  margin: 0.7em 1em;
 }
 #batches .icon a {
   display: block;

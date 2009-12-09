@@ -2,6 +2,12 @@
 if current_user? show his matches, otherwise show recent matches
 -->
 <% if logged_in? %>
+<% if @challenged_matches.empty? and @awaiting_matches.empty? %>
+<p class="challenge">
+  You don&#39;t have any open matches:<br/>
+  <%= link_to 'Go and challenge another cuber!', users_path %>
+</p>
+<% else %>
 <h1>You&#39;ve been challenged by</h1>
 <ul>
   <%= render :partial => 'match', :collection => @challenged_matches %>
@@ -10,10 +16,13 @@ if current_user? show his matches, otherwise show recent matches
 <ul>
   <%= render :partial => 'match', :collection => @awaiting_matches %>
 </ul>
+<% end %>
+<% unless @finished_matches.empty? %>
 <h1>Recent finished matches</h1>
 <ul>
   <%= render :partial => 'match', :collection => @finished_matches %>
 </ul>
+<% end %>
 <% else %>
 <h1>Recent matches</h1>
 <ul>

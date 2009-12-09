@@ -5,12 +5,10 @@
 <%- end -%>
   <td><small><%=dt average.created_at %></small></td>
   <td>
-  <% if current_user.id == average.user_id or admin? %>
-    <% if average.match_id.nil? %>
-      <%= link_to 'Destroy', user_puzzle_average_path(@user, @puzzle, average), :confirm => 'Are you sure?', :method => :delete %>
-    <% else %>
-      &#42; (<%= link_to 'match', puzzle_match_path(average.puzzle_id, average.match_id) %>)
-    <% end %>
+  <% if (current_user.id == average.user_id or admin?) and average.match_id.nil? %>
+    <%= link_to 'Destroy', user_puzzle_average_path(@user, @puzzle, average), :confirm => 'Are you sure?', :method => :delete %>
+  <% elsif not average.match_id.nil? %>
+    <%= link_to 'match', puzzle_match_path(average.puzzle_id, average.match_id) %>
   <% end %>
   </td>
 </tr>

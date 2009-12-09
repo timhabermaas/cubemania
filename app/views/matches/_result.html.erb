@@ -1,6 +1,4 @@
 <% user_average = @match.averages.for(@match.user); opponent_average = @match.averages.for(@match.opponent) %>
-<small>(<%= @match.puzzle.name %> <%= @match.puzzle.kind.name %>)</small>
-<h1><%= link_to @match.user.name, @match.user %> vs. <%= link_to @match.opponent.name, @match.opponent %></h1>
 <table id="result">
   <thead>
     <th><small><%= @match.user.name %></small><%= result_tag @match.user_points %></th>
@@ -22,5 +20,3 @@
     </tr>
   </tbody>
 </table>
-
-<%= link_to 'Rematch!', new_puzzle_user_match_path(@puzzle, @match.other(current_user)) %>

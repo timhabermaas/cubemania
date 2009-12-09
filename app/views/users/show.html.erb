@@ -4,8 +4,8 @@
   <%= render(:partial => 'batch', :locals => { :link => twitter('timhabermaas'), :id => 'twitter' }) if false %>
   <%= render(:partial => 'batch', :locals => { :link => facebook(123124), :id => 'facebook' }) if false %>
   <div class="text"><small><%= @user.points %></small></div>
-  <% if not self? or admin? %>
-  <strong><% link_to "Challenge #{@user.name}!", new_puzzle_user_match_path(:user_id => @user.id), :class => 'challenge' %></strong>
+  <% if (not self?) or admin? %>
+  <strong><%= link_to "Challenge #{@user.name}!", new_puzzle_user_match_path(:user_id => @user.id), :class => 'challenge' %></strong>
   <% end %>
 </div>
 <div class="clear"></div>
