@@ -4,7 +4,7 @@
 <% if @match.challenged? and @match.user == current_user %>
 <p class="information">
 Get yourself a cup of coffee and wait for <%= link_to @match.opponent.name, @match.opponent %>!<br />
-Oh, and don&#39;t worry, <strong<%='class="dnf"' if @match.averages.first.dnf? %>><%=t @match.averages.first.time %></strong> will be fast enough to win :).
+Oh, and don&#39;t worry, <strong<%=' class="dnf"' if @match.averages.first.dnf? %>><%=t @match.averages.first.time %></strong> will be fast enough to win :).
 </p>
 <% else %>
 

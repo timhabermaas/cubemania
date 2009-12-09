@@ -145,6 +145,9 @@
   font-size: 2em;
   text-align: center;
 }
+#content p.information .dnf {
+  text-decoration: line-through;
+}
 #content p.challenge {
   margin: 1em 0;
 }
