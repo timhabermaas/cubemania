@@ -19,16 +19,16 @@
   </thead>
   <tbody>
   <% for user in @users %>
-  <% cache user do %>
     <tr class="<%= cycle('odd', 'even') %>">
+    <% cache user do %>
       <td class="rank"><strong><%= user.rank %>.</strong></td>
       <td class="name"><strong><%= link_to user.name, user %></strong></td>
       <td class="points"><strong><%= user.points %></strong></td>
       <td class="stats"><small><%= user.wins %> - <%= user.losses %></small></td>
       <td class="streak"><%= result_tag user.streak, 'strong' %></td>
       <td class="challenge"><%= link_to 'Challenge!', new_puzzle_user_match_path(:user_id => user.id) %></td>
+    <% end %>
     </tr>
-  <% end %>
   <% end %>
   </tbody>
 </table>
