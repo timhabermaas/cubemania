@@ -15,7 +15,6 @@ class User < ActiveRecord::Base
   has_many :shouts, :dependent => :nullify
   has_many :home_matches, :foreign_key => 'user_id', :class_name => 'Match'
   has_many :guest_matches, :foreign_key => 'opponent_id', :class_name => 'Match'
-  #has_many :matches, :finder_sql => 'SELECT matches.* FROM matches WHERE matches.user_id = #{id} OR matches.opponent_id = #{id};', :include => :puzzle
   has_many :participances, :select => 'competitions.*, clocks.created_at as date', :through => :clocks,
       :order => 'clocks.created_at desc', :source => 'competition', :group => 'competitions.id'
   has_many :singles, :order => 'created_at desc', :dependent => :delete_all do
@@ -43,7 +42,6 @@ class User < ActiveRecord::Base
   validates_inclusion_of :role, :in => ROLES
 
   after_save :flush_passwords
-  before_create :update_rank
 
   def self.find_by_name_and_password(name, password)
     user = find_by_name name
@@ -101,21 +99,36 @@ class User < ActiveRecord::Base
     end
   end
   
-  def update_rank
-    self.rank = User.count(:all, :conditions => ['points > ?', self.points]) + 1
-  end
-  
-  def update_rank!
-    update_rank
-    save
+  def rank
+    User.count(:all, :conditions => ['points > ?', self.points]) + 1
   end
   
   def streak
-    rand(20) - 10
+    _matches = matches.finished
+    return 0 if _matches.empty? or _matches.first.winner.nil?
+    result = (self == _matches.first.winner) ? 1 : -1
+    for match in _matches.from 1
+      break if match.winner.nil? or (result > 0 and match.winner != self) or (result < 0 and match.loser != self)
+      result += 1 if result > 0 and match.winner == self
+      result -= 1 if result < 0 and match.loser == self
+    end
+    result
+  end
+  
+  def wins
+    matches.finished.select do |match|
+      match.winner == self
+    end.size
+  end
+  
+  def losses
+    matches.finished.select do |match|
+      match.loser == self
+    end.size
   end
   
   def matches
-    Match.for(self)
+    Match.for(self).ordered
   end
   
   alias_method :ar_to_json, :to_json

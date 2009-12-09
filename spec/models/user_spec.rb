@@ -114,26 +114,81 @@ describe User, "ranking" do
   it "should rank a user with 1000 points between two other users with 500 and 1500 at rank 2" do
     users(500, 1500)
     user = Factory.create(:user, :points => 1000)
-    user.update_rank.should == 2
+    user.rank.should == 2
   end
   
   it "should rank a user at rank 1 if he shares the same points as the best" do
     users(100, 400, 400)
     user = Factory.create(:user, :points => 400)
-    user.update_rank.should == 1
+    user.rank.should == 1
   end
   
   it "should rank a user last if he's really last" do
     users(1000, 1500, 400)
     user = Factory.create(:user, :points => 323)
-    user.update_rank.should == 4
+    user.rank.should == 4
   end
   
   it "should rank all users at place 1 if they're equally strong'" do
     users(100, 100, 100, 100)
     User.all.each do |u|
-      u.update_rank.should == 1
+      u.rank.should == 1
     end
   end
   
 end
+
+describe User, "streak" do
+  it "should return a +2 for two consecutive wins" do
+    Factory.create(:match, :user => user, :user_points => 10, :opponent_points => 2, :status => 'finished')
+    Factory.create(:match, :user => user, :user_points => 10, :opponent_points => 2, :status => 'finished')
+    user.streak.should == 2
+  end
+  
+  it "should return 0 for a user without any matches" do
+    user.streak.should == 0
+  end
+  
+  it "should return 10 for a user with 10 consecutive wins and a deuce then" do
+    Match.delete_all
+    user = Factory.create(:user)
+    10.times do
+      Factory.create(:match, :user => user, :user_points => 20, :opponent_points => 3, :status => 'finished')
+    end
+    Factory.create(:match, :user => user, :user_points => 3, :opponent_points => 3, :status => 'finished')
+    user.streak.should == 10
+  end
+  
+  it "should return 1 for a user who's opponent in a match and has a streak of 1" do
+    Factory.create(:match, :opponent => user, :user_points => 4, :opponent_points => 5, :status => 'finished')
+    user.streak.should == 1
+  end
+  
+  it "should ignore challenged or pending matches" do
+    Factory.create(:match, :opponent => user, :user_points => 3, :opponent_points => 5, :status => 'finished')
+    Factory.create(:match, :opponent => user, :status => 'pending')
+    Factory.create(:match, :opponent => user, :user_points => 3, :opponent_points => 5, :status => 'finished')
+    Factory.create(:match, :opponent => user, :status => 'challenged')
+    user.streak.should == 2
+  end
+  
+  it "should return -2 for two consecutive loss" do
+    Factory.create(:match, :user => user, :user_points => 2, :opponent_points => 3, :status => 'finished')
+    Factory.create(:match, :user => user, :user_points => 2, :opponent_points => 6, :status => 'finished')
+    user.streak.should == -2
+  end
+  
+  def user
+    @user ||= Factory.create(:user)
+  end
+end
+
+describe User, "wins and losses" do
+  it "should return 1 win and 0 losses" do
+    user = Factory.create(:user)
+    Factory.create(:match, :user => user, :user_points => 4, :opponent_points => 3, :status => 'finished')
+    user.wins.should == 1
+    user.losses.should == 0
+  end
+end
+

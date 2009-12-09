@@ -35,9 +35,9 @@ class UsersController < ResourceController::Base
     def collection
       @collection ||=
         if params[:search]
-          User.paginate :page => params[:page], :per_page => 100, :order => 'rank', :conditions => ['name LIKE ?', "%#{params[:search]}%"]
+          User.paginate :page => params[:page], :per_page => 100, :order => 'points DESC', :conditions => ['name LIKE ?', "%#{params[:search]}%"]
         else
-          User.paginate :page => params[:page], :per_page => 100, :order => 'rank'
+          User.paginate :page => params[:page], :per_page => 100, :order => 'points DESC'
         end
     end
 end

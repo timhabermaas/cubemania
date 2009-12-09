@@ -1,4 +1,6 @@
 class Match < ActiveRecord::Base
+  extend ActiveSupport::Memoizable
+  
   STATUSES = %w(pending challenged finished)
   C1 = 30
   C2 = 400
@@ -20,6 +22,7 @@ class Match < ActiveRecord::Base
   named_scope :challenged, :conditions => "matches.status = 'challenged'"
   named_scope :recent, :order => 'matches.created_at DESC', :limit => 5
   named_scope :for, lambda { |user| {:conditions => ['user_id = ? OR opponent_id = ?', user.id, user.id]} }
+  named_scope :ordered, :order => 'matches.created_at DESC'
   
   validates_presence_of :user_id, :opponent_id, :puzzle_id
   validates_inclusion_of :status, :in => STATUSES
@@ -51,16 +54,21 @@ class Match < ActiveRecord::Base
   end
   
   def winner
-    if averages.for(user_id) and averages.for(opponent_id) and averages.for(user.id) != averages.for(opponent.id)
-      [user, opponent].sort_by{ |u| u.averages.match(id) }.first
+    if finished? and not user_points == opponent_points
+      user_points > opponent_points ? user : opponent
+    else
+      nil
     end
   end
   
   def loser
-    if averages.for(user_id) and averages.for(opponent_id) and averages.for(user.id) != averages.for(opponent.id)
-      [user, opponent].sort_by{ |u| u.averages.match(id) }.last
+    if finished? and not user_points == opponent_points
+      user_points < opponent_points ? user : opponent
+    else
+      nil
     end
   end
+  memoize :winner, :loser
   
   def other(u)
     u.id == user_id ? opponent : user
@@ -85,8 +93,6 @@ class Match < ActiveRecord::Base
       update_attribute :opponent_points, (((1 - user_win) - (1 - expectation)) * C1).round
       user.update_attribute :points, user.points + self.user_points
       opponent.update_attribute :points, opponent.points + self.opponent_points
-      user.update_rank!
-      opponent.update_rank!
     end
   end
   
