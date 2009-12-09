@@ -5,6 +5,7 @@
 	</p>
 <% end %>
 
+<% unless @users.empty? %>
 <table id="ranking">
   <thead>
     <tr>
@@ -29,5 +30,12 @@
   <% end %>
   </tbody>
 </table>
+<% end %>
+
+<% if @users.empty? and not params[:search].nil? %>
+<p class="information">
+  No results found!
+</p>
+<% end %>
 
 <%= will_paginate @users %>

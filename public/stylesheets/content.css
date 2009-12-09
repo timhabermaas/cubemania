@@ -141,7 +141,7 @@
   margin: 2em 0;
 }
 
-#content p.challenge, #content p.suggestion {
+#content p.challenge, #content p.suggestion, #content p.information {
   font-size: 2em;
   text-align: center;
 }

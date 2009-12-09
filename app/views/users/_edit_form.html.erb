@@ -1,0 +1,58 @@
+<% form_for @user do |form| %>
+  <p>
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+    <%= form.error_message_on :name %>
+  </p>
+  <p>
+    <%= form.label :email %>
+    <%= form.text_field :email %>
+    <%= form.error_message_on :email %>
+  </p>
+  <p class="bot">
+    <%= form.label :bot_email %>
+    <%= form.text_field :bot_email %>
+    <%= form.error_message_on :bot_email %>
+  </p>
+  <p>
+    <%= form.label :wca, 'WCA ID' %>
+    <%= form.text_field :wca %>
+    <%= form.error_message_on :wca %>
+  </p>
+  <p>
+    <%= form.label :time_zone, 'Time Zone' %>
+    <%= @user.time_zone = Time.zone.name if @user.new_record?; form.time_zone_select :time_zone, ActiveSupport::TimeZone.all %>
+    <%= form.error_message_on :time_zone %>
+  </p>
+<%- if admin? -%>
+  <p>
+    <%= form.label :sponsor %>
+    <%= form.check_box :sponsor %>
+    <%= form.error_message_on :sponsor %>
+  </p>
+  <p>
+    <%= form.label :ignored %>
+    <%= form.check_box :ignored %>
+    <%= form.error_message_on :ignored %>
+  </p>
+  <p>
+    <%= form.label :role %>
+    <%= form.select :role, User::ROLES.collect { |r| [r.titleize, r] } %>
+    <%= form.error_message_on :role %>
+  </p>
+<%- end -%>
+  <p>
+    <%= form.label :password %>
+    <%= form.password_field :password %>
+    <%= form.error_message_on :password %>
+  </p>
+  <p>
+    <%= form.label :password_confirmation, 'Confirmation' %>
+    <%= form.password_field :password_confirmation %>
+    <%= form.error_message_on :password_confirmation %>
+  </p>
+  <p>
+    <%= form.submit action_label('Register') %>
+    <%= link_to 'Destroy', @user, :confirm => 'Are you sure?', :method => :delete %>
+  </p>
+<% end %>
