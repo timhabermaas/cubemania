@@ -84,7 +84,7 @@
   margin-bottom: 2em;
 }
 
-#content .announcement, #content .sticky {
+#content .announcement, #content .sticky, #content .help {
   padding: 0.5em;
   margin-bottom: 2em;
   background-color: #517397;
@@ -92,7 +92,7 @@
 #content .announcement a, #content .sticky a {
   white-space: nowrap;
 }
-#content .announcement cite, #content .announcement em, #content .sticky cite, #content .sticky em {
+#content .announcement cite, #content .announcement em, #content .sticky cite, #content .sticky em, #content .help em, #content .help cite {
   font-style: italic;
 }
 
@@ -682,6 +682,9 @@ cite.neutral, strong.neutral {
 }
 #you tbody, #other tbody {
   background-color: #4a6480;
+}
+#you tbody th, #other tbody th {
+  width: 50%;
 }
 
 #records, #results table {
