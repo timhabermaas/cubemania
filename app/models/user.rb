@@ -42,6 +42,7 @@ class User < ActiveRecord::Base
   validates_inclusion_of :role, :in => ROLES
 
   after_save :flush_passwords
+  after_create lambda { User.all.each { |u| u.touch } }
 
   def self.find_by_name_and_password(name, password)
     user = find_by_name name
