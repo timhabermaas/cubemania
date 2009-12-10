@@ -84,7 +84,7 @@
   margin-bottom: 2em;
 }
 
-#content .announcement, #content .sticky, #content .help {
+#content .announcement, #content .sticky {
   padding: 0.5em;
   margin-bottom: 2em;
   background-color: #517397;
@@ -92,7 +92,7 @@
 #content .announcement a, #content .sticky a {
   white-space: nowrap;
 }
-#content .announcement cite, #content .announcement em, #content .sticky cite, #content .sticky em, #content .help em, #content .help cite {
+#content .announcement cite, #content .announcement em, #content .sticky cite, #content .sticky em {
   font-style: italic;
 }
 

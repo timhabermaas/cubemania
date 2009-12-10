@@ -129,7 +129,7 @@ class User < ActiveRecord::Base
   end
   
   def matches
-    Match.for(self).ordered
+    Match.for(self)
   end
   
   alias_method :ar_to_json, :to_json
