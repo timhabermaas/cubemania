@@ -17,6 +17,11 @@
     <%= form.error_message_on :bot_email %>
   </p>
   <p>
+    <%= form.label :time_zone, 'Time Zone' %>
+    <%= @user.time_zone = Time.zone.name if @user.new_record?; form.time_zone_select :time_zone, ActiveSupport::TimeZone.all %>
+    <%= form.error_message_on :time_zone %>
+  </p>
+  <p>
     <%= form.label :password %>
     <%= form.password_field :password %>
     <%= form.error_message_on :password %>
