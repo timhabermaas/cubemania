@@ -3,6 +3,6 @@
   <small><%= competition.repeat.titleize %></small>
   <h2><%= link_to competition.name.titleize, puzzle_competition_path(params[:puzzle_id], competition) %></h2>
   <div class="text">
-    <%= competition.description %>
+    <%=m competition.description %>
   </div>
 <% end %>
