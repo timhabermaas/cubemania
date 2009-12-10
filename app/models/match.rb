@@ -93,6 +93,7 @@ class Match < ActiveRecord::Base
       update_attribute :opponent_points, (((1 - user_win) - (1 - expectation)) * C1).round
       user.update_attribute :points, user.points + self.user_points
       opponent.update_attribute :points, opponent.points + self.opponent_points
+      User.all.each { |u| u.touch } # bad hack to keep ranks updated on users#index
     end
   end
   
