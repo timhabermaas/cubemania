@@ -1,6 +1,6 @@
 <li>
   <strong><%= link_to match.other(current_user).name, puzzle_match_path(match.puzzle, match) %></strong>
   <small><%= match.puzzle.name %> <%= match.puzzle.kind.name %></small>
-  <small><%=dt match.created_at %></small>
+  <small><%=dt match.updated_at %></small>
   <%= link_to 'Destroy', puzzle_match_path(match.puzzle, match), :confirm => 'Are you sure?', :method => :delete %>
 </li>

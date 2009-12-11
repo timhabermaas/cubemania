@@ -11,7 +11,6 @@ Oh, and don&#39;t worry, <strong<%=' class="dnf"' if @match.averages.first.dnf? 
 <% if @match.finished? %>
   <%= render 'result' %>
 <% else %>
-  
   <%= partial 'shared/timer' %>
   <%= partial 'shared/timer_js', :url => puzzle_match_times_path(params[:puzzle_id], @match) %>
 <% end %>
