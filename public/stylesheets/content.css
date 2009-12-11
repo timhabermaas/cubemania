@@ -564,7 +564,7 @@
 #prediction {
   float: left;
   width: 20%;
-  padding-top: 3em;
+  padding-top: 2em;
   text-align: center;
 }
 #prediction #max_loss {
@@ -579,7 +579,7 @@
   color: #f00;
 }
 #match_form {
-  margin-top: 3em;
+  margin-top: 2.5em;
   text-align: center;
 }
 #match_form input[type=submit] {
@@ -674,7 +674,7 @@ cite.neutral, strong.neutral {
   height: 25px;
   background-repeat: no-repeat;
 }
-#you tr.loss td, #other tr.loss td {
+#you tr.losses td, #other tr.losses td {
   color: #f00;
 }
 #you tr.wins td, #other tr.wins td {
