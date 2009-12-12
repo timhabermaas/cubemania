@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091209171413) do
+ActiveRecord::Schema.define(:version => 20091212124117) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                                                 :null => false
@@ -145,6 +145,7 @@ ActiveRecord::Schema.define(:version => 20091209171413) do
     t.boolean  "ignored",                           :default => false,  :null => false
     t.integer  "points",                            :default => 1000,   :null => false
     t.datetime "updated_at"
+    t.boolean  "wants_emails",                      :default => false,  :null => false
   end
 
   add_index "users", ["averages_count"], :name => "index_users_on_averages_count"

@@ -24,6 +24,11 @@
     <%= @user.time_zone = Time.zone.name if @user.new_record?; form.time_zone_select :time_zone, ActiveSupport::TimeZone.all %>
     <%= form.error_message_on :time_zone %>
   </p>
+  <p>
+    <%= form.label :wants_emails, 'Receive Emails' %>
+    <%= form.check_box :wants_emails %>
+    <%= form.error_message_on :wants_emails %>
+  </p>
 <%- if admin? -%>
   <p>
     <%= form.label :sponsor %>
