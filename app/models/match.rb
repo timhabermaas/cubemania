@@ -89,11 +89,11 @@ class Match < ActiveRecord::Base
   def update_points
     if finished? and self.user_points.nil? and self.opponent_points.nil?
       user_win = 1 - averages.for(user).ratio(averages.for(opponent))
-      update_attribute :user_points, ((user_win - expectation) * C1).round
-      update_attribute :opponent_points, (((1 - user_win) - (1 - expectation)) * C1).round
+      self.user_points = ((user_win - expectation) * C1).round
+      self.opponent_points = (((1 - user_win) - (1 - expectation)) * C1).round
+      save
       user.update_attribute :points, user.points + self.user_points
       opponent.update_attribute :points, opponent.points + self.opponent_points
-      User.all.each { |u| u.touch } # bad hack to keep ranks updated on users#index
     end
   end
   

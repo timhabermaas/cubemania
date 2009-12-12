@@ -41,7 +41,7 @@ class User < ActiveRecord::Base
   validates_confirmation_of :password, :message => 'should match confirmation'
   validates_inclusion_of :role, :in => ROLES
 
-  after_save :flush_passwords
+  after_save :flush_passwords, :touch_users
   after_create lambda { User.all.each { |u| u.touch } }
 
   def self.find_by_name_and_password(name, password)
@@ -146,5 +146,14 @@ class User < ActiveRecord::Base
 
     def password_is_being_updated?
       id.nil? or not password.blank?
+    end
+    
+    def touch_users
+      if points_changed?
+        low_points, high_points = [self.points_was, self.points].sort
+        for user in User.find(:all, :conditions => { :points => low_points..high_points })
+          user.touch
+        end
+      end
     end
 end

@@ -73,5 +73,5 @@ Rails::Initializer.run do |config|
   config.active_record.observers = :user_observer, :match_observer
 end
 
-ExceptionNotifier.exception_recipients = %w(tim@cubemania.org tim.habermaas@gmail.com)
+ExceptionNotifier.exception_recipients = %w(tim.habermaas@gmail.com)
 ExceptionNotifier.sender_address = %(info@cubemania.org)
