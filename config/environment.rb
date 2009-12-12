@@ -70,7 +70,7 @@ Rails::Initializer.run do |config|
   
   config.action_controller.cache_store = :file_store, "tmp/cache"
   
-  config.active_record.observers = :user_observer
+  config.active_record.observers = :user_observer, :match_observer
 end
 
 ExceptionNotifier.exception_recipients = %w(tim@cubemania.org tim.habermaas@gmail.com)

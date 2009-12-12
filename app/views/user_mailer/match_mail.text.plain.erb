@@ -1,0 +1,7 @@
+Hi <%= @user.name.capitalize %>,
+
+<%= @match.user.name.capitalize %> challenged you in <%= @match.puzzle.name.capitalize %> <%= @match.puzzle.kind.name.capitalize %>!
+Follow this link and beat him: <%= puzzle_match_url(@match.puzzle, @match, :host => 'beta.cubemania.org') %>
+
+Happy cubing,
+Cubemania
