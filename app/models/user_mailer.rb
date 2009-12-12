@@ -1,7 +1,7 @@
 class UserMailer < ActionMailer::Base
   def welcome_mail(user)
     recipients  user.email
-    from        'cubemania <cubemania.org@gmail.com>'
+    from        'Cubemania <info@cubemania.org>'
     subject "Welcome to Cubemania"
     sent_on Time.now
     body :user => user
@@ -9,7 +9,7 @@ class UserMailer < ActionMailer::Base
   
   def password_reset_mail(user, password)
     recipients user.email
-    from 'cubemania <cubemania.org@gmail.com>'
+    from 'Cubemania <password@cubemania.org>'
     subject "New Password for Cubemania"
     sent_on Time.now
     body :password => password, :user => user

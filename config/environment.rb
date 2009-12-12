@@ -51,8 +51,8 @@ Rails::Initializer.run do |config|
     :port => 587,
     :domain => "cubemania.org",
     :authentication => :plain,
-    :user_name => "cubemania.org",
-    :password => "QvzQkL0JkyHXv7gsA"
+    :user_name => "info@cubemania.org",
+    :password => "rLJQp5Les7V"
   }
 
   # Use the database for sessions instead of the cookie-based default,
@@ -72,3 +72,6 @@ Rails::Initializer.run do |config|
   
   config.active_record.observers = :user_observer
 end
+
+ExceptionNotifier.exception_recipients = %w(tim@cubemania.org tim.habermaas@gmail.com)
+ExceptionNotifier.sender_address = %(info@cubemania.org)
