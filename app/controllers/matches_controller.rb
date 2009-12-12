@@ -1,4 +1,6 @@
 class MatchesController < ApplicationController
+  before_filter :show_permit, :only => :show
+  
   def new
     @user = User.find params[:user_id]
     @puzzle = Puzzle.find params[:puzzle_id]
@@ -46,5 +48,16 @@ private
   
   def parent
     @puzzle ||= Puzzle.find params[:puzzle_id]
+  end
+  
+  def show_permit
+    if not object.finished? and not logged_in?
+      flash[:notice] = 'Please login or <a href="/register">register</a> to continue'
+      store_location
+      redirect_to login_path
+    elsif not object.finished? and (object.opponent != current_user and object.user != current_user)
+      flash[:notice] = 'You do not have the necessary permissions'
+      redirect_to root_url
+    end
   end
 end
