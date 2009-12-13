@@ -4,7 +4,7 @@
 # no regular words or you'll be exposed to dictionary attacks.
 
 ActionController::Base.session = {
-  :session_key => '_cubemania_session_id',
-  :secret      => 'some s3cr3t phrase of at least 42 characters',
+  :session_key => 'beta_cubemania_session_id',
+  :secret      => 'fjalfaoe11ngdf20sd9454q9fs9a2450123sdf01233129fssnlösaa',
   :expire_after => 30.days
 }
