@@ -13,8 +13,8 @@ class User < ActiveRecord::Base
   has_many :clocks
   has_many :competitions, :dependent => :nullify
   has_many :shouts, :dependent => :nullify
-  has_many :home_matches, :foreign_key => 'user_id', :class_name => 'Match'
-  has_many :guest_matches, :foreign_key => 'opponent_id', :class_name => 'Match'
+  has_many :home_matches, :foreign_key => 'user_id', :class_name => 'Match', :dependent => :delete_all
+  has_many :guest_matches, :foreign_key => 'opponent_id', :class_name => 'Match', :dependent => :delete_all
   has_many :participances, :select => 'competitions.*, clocks.created_at as date', :through => :clocks,
       :order => 'clocks.created_at desc', :source => 'competition', :group => 'competitions.id'
   has_many :singles, :order => 'created_at desc', :dependent => :delete_all do
