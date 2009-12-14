@@ -21,6 +21,7 @@ class CompetitionsController < ResourceController::Base
       end
     end
     @shouts = @competition.shouts.for @competition, @date
+    @parent = @competition
   end
 
   [create, update].each do |action|

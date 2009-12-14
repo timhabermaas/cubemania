@@ -19,7 +19,7 @@ class Competition < ActiveRecord::Base
       find :all, :conditions => { :created_at => competition.range(date) }
     end
   end
-  has_many :shouts, :order => 'created_at', :dependent => :delete_all do
+  has_many :shouts, :as => :matchable, :order => 'created_at', :dependent => :delete_all do
     def for(competition, date)
       find :all, :conditions => { :created_at => competition.range(date) }, :include => :user
     end

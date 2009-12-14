@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091212124117) do
+ActiveRecord::Schema.define(:version => 20091214002134) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                                                 :null => false
@@ -125,10 +125,11 @@ ActiveRecord::Schema.define(:version => 20091212124117) do
   add_index "scrambles", ["matchable_id", "matchable_type", "created_at", "position"], :name => "index_scrambles_on_matchable_and_created_at_and_position"
 
   create_table "shouts", :force => true do |t|
-    t.string   "content",        :null => false
-    t.integer  "competition_id", :null => false
+    t.string   "content",                                   :null => false
     t.integer  "user_id"
     t.datetime "created_at"
+    t.integer  "matchable_id",   :default => 0,             :null => false
+    t.string   "matchable_type", :default => "Competition", :null => false
   end
 
   create_table "users", :force => true do |t|
