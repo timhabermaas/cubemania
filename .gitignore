@@ -1,2 +1,5 @@
 .DS_STORE
 log
+tmp
+public/stylesheets/all.css
+public/javascripts/all.js
