@@ -1,10 +1,10 @@
-# Your secret key for verifying cookie session data integrity.
-# If you change this key, all old sessions will become invalid!
-# Make sure the secret is at least 30 characters and all random, 
-# no regular words or you'll be exposed to dictionary attacks.
+# Be sure to restart your server when you modify this file.
 
-ActionController::Base.session = {
-  :session_key => 'beta_cubemania_session_id',
-  :secret      => 'fjalfaoe11ngdf20sd9454q9fs9a2450123sdf01233129fssnlösaa',
-  :expire_after => 30.days
+Rails.application.config.session_store :cookie_store, {
+  :key => '_Cubemania_git_session',
 }
+
+# Use the database for sessions instead of the cookie-based default,
+# which shouldn't be used to store highly confidential information
+# (create the session table with "rake db:sessions:create")
+# Rails.application.config.session_store :active_record_store
