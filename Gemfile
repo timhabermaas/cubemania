@@ -9,7 +9,7 @@ gem 'sqlite3-ruby', :require => 'sqlite3'
 
 gem 'paperclip', :git => "git://github.com/JasonKing/paperclip.git", :branch => "rails3"
 gem 'RedCloth'
-gem 'will_paginate', :git => "git://github.com/mislav/will_paginate.git", :branch => "rails3"
+gem 'will_paginate', :git => "git://github.com/timhabermaas/will_paginate.git", :branch => "rails3"
 
 # Use unicorn as the web server
 # gem 'unicorn'
