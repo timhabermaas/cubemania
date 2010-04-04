@@ -32,11 +32,11 @@ class ApplicationController < ActionController::Base
     end
   end
   
-  def default_url_options(options = {})
-    if ['competitions', 'records', 'clocks'].include?(options[:controller]) or (options[:controller] == 'matches' and options[:action] != 'index')
-      {:puzzle_id => DEFAULT_PUZZLE}
-    end
-  end
+  #def default_url_options(options = {})
+  #  if ['competitions', 'records', 'clocks'].include?(options[:controller]) or (options[:controller] == 'matches' and options[:action] != 'index')
+  #    {:puzzle_id => DEFAULT_PUZZLE}
+  #  end
+  #end
 
   private
     def set_time_zone

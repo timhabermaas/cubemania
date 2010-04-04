@@ -16,6 +16,7 @@ Cubemania::Application.configure do
 
   # Don't care if the mailer can't send
   config.action_mailer.raise_delivery_errors = false
+  config.cookie_secret = "dasjga23n1jk"
 end
 
 DEFAULT_PUZZLE = 4

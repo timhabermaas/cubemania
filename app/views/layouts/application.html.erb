@@ -14,14 +14,14 @@
   </head>
   <body>
     <div id="site">
-      <%= partial 'layouts/header' %>
-      <%= partial 'layouts/navigation' unless controller? :items %>
-      <%= partial 'layouts/subnavigation' if controller?(:clocks, :competitions, :records) or (controller?(:matches) and action?(:new)) %>
-      <%= partial 'layouts/notice' unless flash[:notice].nil? %>
-      <%= partial 'layouts/content' %>
-      <%= partial 'layouts/footer' %>
-      <%= partial 'layouts/tooltip' %>
-      <%= partial 'layouts/feedback' unless controller? :averages %>
+      <%= render 'layouts/header' %>
+      <%= render 'layouts/navigation' unless controller? :items %>
+      <%= render 'layouts/subnavigation' if controller?(:clocks, :competitions, :records) or (controller?(:matches) and action?(:new)) %>
+      <%= render 'layouts/notice' unless flash[:notice].nil? %>
+      <%= render 'layouts/content' %>
+      <%= render 'layouts/footer' %>
+      <%= render 'layouts/tooltip' %>
+      <%= render 'layouts/feedback' unless controller? :averages %>
     </div>
     <script type="text/javascript">
       var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
