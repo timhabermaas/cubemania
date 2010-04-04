@@ -7,8 +7,6 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery
 
-  filter_parameter_logging 'password'
-
   #def rescue_action_in_public(exception)
   #  render :template => "errors/#{response_code_for_rescue(exception)}"
   #end
