@@ -3,3 +3,4 @@ log
 tmp
 public/stylesheets/all.css
 public/javascripts/all.js
+config/database.yml
