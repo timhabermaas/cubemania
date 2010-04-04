@@ -1,41 +1,42 @@
-ActionController::Routing::Routes.draw do |map|
-  map.root :controller => 'homes', :action => 'show'
+Cubemania::Application.routes.draw do
+  root :to => 'homes#show'
 
-  map.resource :home, :only => :show
-  map.resources :posts, :has_many => :comments
+  resource :home, :only => :show
+  resources :posts, :has_many => :comments
   
-  map.resources :users do |users|
-    users.resources :puzzles, :has_many => :averages
+  resources :users do
+    resources :puzzles, :has_many => :averages
   end
   
-  map.resources :matches, :only => :index
+  resources :matches, :only => :index
 
-  map.resources :puzzles, :except => :show do |puzzles|
-    puzzles.resources :times, :controller => :clocks, :only => [:index, :create]
-    puzzles.resources :averages
-    puzzles.resources :matches, :only => [:show, :destroy] do |matches|
-      matches.resources :times, :controller => :clocks, :only => [:index, :create]
+  resources :puzzles do
+    resources :times, :controller => :clocks
+    resources :averages
+    resources :matches do
+      resources :times, :controller => :clocks
     end
-    puzzles.resources :users, :as => 'opponents', :only => [] do |users|
-      users.resources :matches, :only => [:new, :create]
+    resources :users, :as => 'opponents' do
+      resources :matches
     end
-    puzzles.resources :competitions do |competitions|
-      competitions.resources :times, :controller => :clocks, :only => [:index, :create]
-      competitions.resources :shouts, :only => [:create, :destroy]
+    resources :competitions do
+      resources :times, :controller => :clocks
+      resources :shouts
     end
-    puzzles.resources :scrambles, :only => [:new, :index]
-    puzzles.competition_date 'competitions/:id/:date', :controller => 'competitions', :action => 'show'
-    puzzles.records 'records/:type', :controller => 'records', :defaults => { :type => 'average' }, :type => /(single)|(average)/
+    resources :scrambles
+    #match 'competitions/:id/:date' => 'competitions#show', :as => 'competition_date'
+    #match 'records/:type' => 'records#index', :as => 'records', :defaults => { :type => 'average' }, :type => /(single)|(average)/
   end
+  match 'puzzles/:puzzle_id/records/:type' => 'records#index', :as => 'records', :defaults => { :type => 'average' }, :type => /(single)|(average)/
 
-  map.resources :kinds, :exclude => :show
-  map.resources :items # delete?
+  resources :kinds
+  resources :items # delete?
   
-  map.resource :password_recovery
+  resource :password_recovery
   
-  map.resource :login, :only => [:show, :create, :destroy]
-  map.logout 'logout', :controller => 'logins', :action => 'destroy'
-  map.register 'register', :controller => 'users', :action => 'new'
+  resource :login
+  match 'logout' => 'logins#destroy', :as => 'logout'
+  match 'register' => 'users#new', :as => 'register'
 
-  map.connect '*path', :controller => 'errors', :action => 'not_found'
+  #map.connect '*path', :controller => 'errors', :action => 'not_found'
 end
