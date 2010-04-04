@@ -26,28 +26,11 @@ class Array
   end
 end
 
+
+
 module ActiveRecord
   module ConnectionAdapters
     class MysqlAdapter < AbstractAdapter
-      private
-        alias_method :select_without_analyzer, :select
-        
-        def select(sql, name = nil)
-          query_results = select_without_analyzer(sql, name)
-          
-          if @logger and @logger.level <= Logger::INFO
-            @logger.debug(
-              @logger.silence do
-                format_log_entry("Analyzing #{name}\n",
-                  "#{select_without_analyzer("explain #{sql}", name).qa_columnized}\n"
-                )
-              end
-            ) if sql =~ /^select/i
-          end          
-          query_results
-        end
-    end
-    class SQLiteAdapter < AbstractAdapter
       private
         alias_method :select_without_analyzer, :select
         
