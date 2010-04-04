@@ -8,14 +8,37 @@ class NewRelic::ControlTest < Test::Unit::TestCase
     NewRelic::Agent.manual_start
     @c =  NewRelic::Control.instance
   end
+  def shutdown
+    NewRelic::Agent.shutdown
+  end
+
+  def test_monitor_mode
+    assert ! @c.monitor_mode?
+    @c.settings.delete 'enabled'
+    @c.settings.delete 'monitor_mode'
+    assert !@c.monitor_mode?
+    @c['enabled'] = false
+    assert ! @c.monitor_mode?
+    @c['enabled'] = true
+    assert @c.monitor_mode?
+    @c['monitor_mode'] = nil
+    assert !@c.monitor_mode?
+    @c['monitor_mode'] = false
+    assert !@c.monitor_mode?
+    @c['monitor_mode'] = true
+    assert @c.monitor_mode?
+  ensure
+    @c['enabled'] = false
+    @c['monitor_mode'] = false
+  end
   
   def test_test_config
     assert_equal :rails, c.app
     assert_equal :test, c.framework
     assert_match /test/i, c.dispatcher_instance_id
     assert_equal nil, c.dispatcher
-    
-    assert_equal false, c['enabled']
+    assert !c['enabled']
+    assert_equal false, c['monitor_mode']
     c.local_env
   end
   
@@ -26,8 +49,6 @@ class NewRelic::ControlTest < Test::Unit::TestCase
   
   def test_info
     props = NewRelic::Control.instance.local_env.snapshot
-    list = props.assoc('Plugin List').last.sort
-    assert_not_nil list # can't really guess what might be in here.  
     assert_match /jdbc|postgres|mysql|sqlite/, props.assoc('Database adapter').last
   end
   
@@ -51,7 +72,7 @@ class NewRelic::ControlTest < Test::Unit::TestCase
     assert_equal c['sval'], 'sure'
   end
   def test_config_apdex
-    assert_equal 1.1, c['apdex_t']
+    assert_equal 1.1, c.apdex_t
   end
   def test_transaction_threshold
     assert_equal 'Apdex_f', c['transaction_tracer']['transaction_threshold']
@@ -59,14 +80,6 @@ class NewRelic::ControlTest < Test::Unit::TestCase
   end
   def test_log_file_name
     assert_match /newrelic_agent.log$/, c.instance_variable_get('@log_file')
-  end
-  def test_environment_info
-    NewRelic::Control.instance.send :append_environment_info
-    snapshot = NewRelic::Control.instance.local_env.snapshot
-    assert snapshot.assoc('Plugin List').last.include?('newrelic_rpm'), snapshot.inspect
-  end
-  def test_config_apdex
-    assert_equal 1.1, c['apdex_t']
   end
    
   def test_transaction_threshold__apdex
@@ -77,15 +90,22 @@ class NewRelic::ControlTest < Test::Unit::TestCase
   
   def test_transaction_threshold__default
     
-    forced_start :transaction_tracer => {}
+    forced_start :transaction_tracer => { :transaction_threshold => nil}
     assert_nil c['transaction_tracer']['transaction_threshold']
     assert_equal 2.0, NewRelic::Agent::Agent.instance.instance_variable_get('@slowest_transaction_threshold')
   end
   
   def test_transaction_threshold__override
-    forced_start :transaction_tracer => { 'transaction_threshold' => 1}
+    forced_start :transaction_tracer => { :transaction_threshold => 1}
     assert_equal 1, c['transaction_tracer']['transaction_threshold']
     assert_equal 1, NewRelic::Agent::Agent.instance.instance_variable_get('@slowest_transaction_threshold')
+  end
+  def test_merging_options
+    NewRelic::Control.send :public, :merge_options
+    @c.merge_options :api_port => 66, :transaction_tracer => { :explain_threshold => 2.0 }
+    assert_equal 66, NewRelic::Control.instance['api_port']
+    assert_equal 2.0, NewRelic::Control.instance['transaction_tracer']['explain_threshold']
+    assert_equal 'raw', NewRelic::Control.instance['transaction_tracer']['record_sql']
   end
   private
   def forced_start overrides = {}

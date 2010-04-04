@@ -8,11 +8,11 @@ test:
   <<: *default_settings
   host: localhost
   port: 3000
-  log_level: debug
+  log_level: info
   capture_params: true
-  enabled: false
-  developer: true
-  monitor_daemons: false
+  agent_enabled: false
+  monitor_mode: false
+  developer_mode: true
   disable_samplers: true
   api_host: 127.0.0.1
   api_port: 443
@@ -29,9 +29,6 @@ test:
   yval: yes
   sval: sure
     
-  # checks for loading classes on the background thread
-  check_bg_loading: true
-
   transaction_tracer:
     record_sql: raw
     transaction_threshold: Apdex_f # case insensitive

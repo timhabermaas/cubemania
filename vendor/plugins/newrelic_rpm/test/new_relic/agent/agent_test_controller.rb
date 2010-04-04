@@ -8,14 +8,16 @@ end
 # This is a controller class used in testing controller instrumentation
 class NewRelic::Agent::AgentTestController < NewRelic::Agent::SuperclassController
   filter_parameter_logging :social_security_number
-
-  def rescue_action(e) raise e end
-
+  
+  @@headers_to_add = nil
+  
+#  def rescue_action(e) raise e end
+  
   ActionController::Routing::Routes.draw do | map |
     map.connect ':controller/:action.:format'
   end
-  
   def index
+    sleep params['wait'].to_i if params['wait']
     render :text => params.inspect
   end
   def _filter_parameters(params)
@@ -30,13 +32,47 @@ class NewRelic::Agent::AgentTestController < NewRelic::Agent::SuperclassControll
   def action_to_ignore_apdex
     render :text => 'unmeasured'
   end
+  before_filter :oops, :only => :action_with_before_filter_error
+  def action_with_before_filter_error
+    render :text => 'nothing'
+  end
+  def oops
+    raise "error in before filter"
+  end
+  class TestException < RuntimeError
+  end
+  
+  def rescue_action_locally(exception)
+    if exception.is_a? TestException
+      raise "error in the handler"
+    end
+  end
+  def action_with_error
+    raise "error in action"
+  end
   def entry_action
     perform_action_with_newrelic_trace('internal_action') do
       internal_action
     end    
   end
+  
+  def self.set_some_headers(hash_of_headers)
+    @@headers_to_add ||= {}
+    @@headers_to_add.merge!(hash_of_headers)
+  end
+  
+  def self.clear_headers
+    @@headers_to_add = nil
+  end
+  
+  def newrelic_request_headers
+    @@headers_to_add ||= {}
+  end
+  
   private
   def internal_action
-    render :text => 'internal action'
+    perform_action_with_newrelic_trace(:name => 'internal_traced_action', :force => true) do
+      render :text => 'internal action'
+    end
   end
 end

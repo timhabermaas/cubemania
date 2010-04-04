@@ -15,7 +15,7 @@ make_notify_task = lambda do
     # on all deployments, notify RPM 
     desc "Record a deployment in New Relic RPM (rpm.newrelic.com)"
     task :notice_deployment, :roles => :app, :except => {:no_release => true } do
-      rails_env = fetch(:rails_env, "production")
+      rails_env = fetch(:newrelic_rails_env, fetch(:rails_env, "production"))
       require File.join(File.dirname(__FILE__), 'commands', 'deployments.rb')
       begin
         # Try getting the changelog from the server.  Then fall back to local changelog
@@ -70,7 +70,7 @@ make_notify_task = lambda do
   end
 end
 require 'capistrano/version'
-if Capistrano::Version::MAJOR < 2
+if defined?(Capistrano::Version::MAJOR) && Capistrano::Version::MAJOR < 2
   STDERR.puts "Unable to load #{__FILE__}\nNew Relic Capistrano hooks require at least version 2.0.0"
 else
   instance = Capistrano::Configuration.instance

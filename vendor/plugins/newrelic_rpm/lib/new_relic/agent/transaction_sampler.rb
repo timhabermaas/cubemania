@@ -1,27 +1,30 @@
-
-module NewRelic::Agent
+module NewRelic
+module Agent
   
   class TransactionSampler
     
+    # Module defining methods stubbed out when the agent is disabled
+    module Shim #:nodoc:
+      def notice_first_scope_push(*args); end
+      def notice_push_scope(*args); end
+      def notice_pop_scope(*args); end
+      def notice_scope_empty(*args); end
+    end
+    
     BUILDER_KEY = :transaction_sample_builder
 
-    attr_accessor :stack_trace_threshold, :random_sampling, :sampling_rate, :last_sample, :samples
+    attr_accessor :stack_trace_threshold, :random_sampling, :sampling_rate
+    attr_reader :samples, :last_sample, :disabled
     
-    def initialize(agent)
+    def initialize
       @samples = []
-      
       @harvest_count = 0
       @max_samples = 100
       @random_sample = nil
       config = NewRelic::Control.instance
       sampler_config = config.fetch('transaction_tracer', {})
+      @segment_limit = sampler_config.fetch('limit_segments', 4000)
       @stack_trace_threshold = sampler_config.fetch('stack_trace_threshold', 0.500).to_f
-      
-      agent.stats_engine.add_scope_stack_listener self
-
-      agent.set_sql_obfuscator(:replace) do |sql| 
-        default_sql_obfuscator(sql)
-      end
       @samples_lock = Mutex.new
     end
     
@@ -31,7 +34,8 @@ module NewRelic::Agent
     end
 
     def disable
-      NewRelic::Agent.instance.stats_engine.remove_scope_stack_listener self
+      @disabled = true
+      NewRelic::Agent.instance.stats_engine.remove_transaction_sampler self
     end
     
     def sampling_rate=(val)
@@ -39,25 +43,8 @@ module NewRelic::Agent
       @harvest_count = rand(val)
     end
     
-    def default_sql_obfuscator(sql)
-      sql = sql.dup
-      # This is hardly readable.  Use the unit tests.
-      # remove single quoted strings:
-      sql.gsub!(/'(.*?[^\\'])??'(?!')/, '?')
-      # remove double quoted strings:
-      sql.gsub!(/"(.*?[^\\"])??"(?!")/, '?')
-      # replace all number literals
-      sql.gsub!(/\d+/, "?")
-      sql
-    end
-    
-    
     def notice_first_scope_push(time)
-      if Thread::current[:record_tt] == false
-        Thread::current[BUILDER_KEY] = nil
-      else
-        Thread::current[BUILDER_KEY] = TransactionSampleBuilder.new(time)
-      end
+      start_builder(time) unless disabled
     end
     
     def notice_push_scope(scope, time=Time.now.to_f)
@@ -92,6 +79,7 @@ module NewRelic::Agent
   
     def notice_pop_scope(scope, time = Time.now.to_f)
       return unless builder
+      raise "frozen already???" if builder.sample.frozen?
       builder.trace_exit(scope, time)
     end
     
@@ -103,36 +91,37 @@ module NewRelic::Agent
       return unless last_builder
 
       last_builder.finish_trace(time)
-      reset_builder
+      clear_builder
+      return if last_builder.ignored?
     
       @samples_lock.synchronize do
         @last_sample = last_builder.sample
         
-        # We sometimes see "unanchored" transaction traces
-        if @last_sample.params[:path]
-          @random_sample = @last_sample if @random_sampling
-                  
-          # ensure we don't collect more than a specified number of samples in memory
-          @samples << @last_sample if NewRelic::Control.instance.developer_mode?
-          @samples.shift while @samples.length > @max_samples
-          
-          if @slowest_sample.nil? || @slowest_sample.duration < @last_sample.duration
-            @slowest_sample = @last_sample
-          end
+        @random_sample = @last_sample if @random_sampling
+        
+        # ensure we don't collect more than a specified number of samples in memory
+        @samples << @last_sample if NewRelic::Control.instance.developer_mode?
+        @samples.shift while @samples.length > @max_samples
+        
+        if @slowest_sample.nil? || @slowest_sample.duration < @last_sample.duration
+          @slowest_sample = @last_sample
         end
       end
     end
     
-    def notice_transaction(path, request, params)
-      return unless builder
-
-      builder.set_transaction_info(path, request, params)
+    def notice_transaction(path, uri=nil, params={})
+      builder.set_transaction_info(path, uri, params) if !disabled && builder
+    end
+    
+    def ignore_transaction
+      builder.ignore_transaction if builder
+    end
+    def notice_profile(profile)
+      builder.set_profile(profile) if builder
     end
     
     def notice_transaction_cpu_time(cpu_time)
-      return unless builder
-
-      builder.set_transaction_cpu_time(cpu_time)
+      builder.set_transaction_cpu_time(cpu_time) if builder
     end
     
         
@@ -142,7 +131,7 @@ module NewRelic::Agent
     MAX_SQL_LENGTH = 16384
     def notice_sql(sql, config, duration)
       return unless builder
-      if Thread::current[:record_sql].nil? || Thread::current[:record_sql]
+      if Thread::current[:record_sql] != false
         segment = builder.current_segment
         if segment
           current_sql = segment[:sql]
@@ -164,6 +153,7 @@ module NewRelic::Agent
     # and clear the collected sample list. 
     
     def harvest(previous = nil, slow_threshold = 2.0)
+      return [] if disabled
       result = []
       previous ||= []
       
@@ -178,6 +168,8 @@ module NewRelic::Agent
           
           if (@harvest_count % @sampling_rate) == 0
             result << @random_sample if @random_sample
+          else
+            @random_sample = nil   # if we don't nil this out, then we won't send the slowest if slowest == @random_sample
           end
         end
         
@@ -193,21 +185,33 @@ module NewRelic::Agent
         end
 
         @random_sample = nil
+        @last_sample = nil
       end
+      # Truncate the samples at 2100 segments. The UI will clamp them at 2000 segments anyway.
+      # This will save us memory and bandwidth.
+      result.each { |sample| sample.truncate(@segment_limit) }
       result
     end
 
     # reset samples without rebooting the web server
     def reset!
       @samples = []
+      @last_sample = nil
     end
 
     private 
-      
+    
+      def start_builder(time=nil)
+        if disabled || Thread::current[:record_tt] == false || !NewRelic::Agent.is_execution_traced?
+          clear_builder
+        else
+          Thread::current[BUILDER_KEY] ||= TransactionSampleBuilder.new(time) 
+        end
+      end
       def builder
         Thread::current[BUILDER_KEY]
       end
-      def reset_builder
+      def clear_builder
         Thread::current[BUILDER_KEY] = nil
       end
       
@@ -217,11 +221,12 @@ module NewRelic::Agent
   # generate the sampled data.  It is a thread-local object, and is not
   # accessed by any other thread so no need for synchronization.
   class TransactionSampleBuilder
-    attr_reader :current_segment
+    attr_reader :current_segment, :sample
     
-    include CollectionHelper
+    include NewRelic::CollectionHelper
     
-    def initialize(time=Time.now.to_f)
+    def initialize(time=nil)
+      time ||= Time.now.to_f
       @sample = NewRelic::TransactionSample.new(time)
       @sample_start = time
       @current_segment = @sample.root_segment
@@ -230,7 +235,12 @@ module NewRelic::Agent
     def sample_id
       @sample.sample_id
     end
-
+    def ignored?
+      @ignore || @sample.params[:path].nil? 
+    end
+    def ignore_transaction
+      @ignore = true
+    end
     def trace_entry(metric_name, time)
       segment = @sample.create_segment(time - @sample_start, metric_name)
       @current_segment.add_called_segment(segment)
@@ -241,7 +251,6 @@ module NewRelic::Agent
       if metric_name != @current_segment.metric_name
         fail "unbalanced entry/exit: #{metric_name} != #{@current_segment.metric_name}"
       end
-      
       @current_segment.end_trace(time - @sample_start)
       @current_segment = @current_segment.parent_segment
     end
@@ -251,15 +260,11 @@ module NewRelic::Agent
       # log forensics and return gracefully
       if @sample.frozen?
         log = NewRelic::Control.instance.log
-        
-        log.warn "Unexpected double-freeze of Transaction Trace Object."
-        log.info "Please send this diagnostic data to New Relic"
-        log.info @sample.to_s
+        log.error "Unexpected double-freeze of Transaction Trace Object: \n#{@sample.to_s}"
         return
       end
-      
       @sample.root_segment.end_trace(time - @sample_start)
-      @sample.params[:custom_params] = normalize_params(NewRelic::Agent.instance.custom_params) 
+      @sample.params[:custom_params] = normalize_params(NewRelic::Agent::Instrumentation::MetricFrame.custom_parameters)
       @sample.freeze
       @current_segment = nil
     end
@@ -280,8 +285,11 @@ module NewRelic::Agent
       @sample.freeze unless sample.frozen?
     end
     
+    def set_profile(profile)
+      @sample.profile = profile
+    end
     
-    def set_transaction_info(path, request, params)
+    def set_transaction_info(path, uri, params)
       @sample.params[:path] = path
       
       if NewRelic::Control.instance.capture_params
@@ -291,19 +299,17 @@ module NewRelic::Agent
         @sample.params[:request_params].delete :controller
         @sample.params[:request_params].delete :action
       end
-      
-      @sample.params[:uri] = request.path if request
+      @sample.params[:uri] ||= uri || params[:uri] 
     end
     
     def set_transaction_cpu_time(cpu_time)
       @sample.params[:cpu_time] = cpu_time
     end
     
-    
     def sample
-      fail "Not finished building" unless @sample.frozen?
       @sample
     end
     
   end
+end
 end

@@ -1,11 +1,14 @@
 class NewRelic::MetricParser::Controller < NewRelic::MetricParser
-  
+
   def is_controller?
     true
   end
   
+  # If the controller name segments look like a file path, convert it to the controller
+  # class name.  If it begins with a capital letter, assume it's already a class name
   def controller_name
-    segments[1..-2].join('/').camelize+"Controller"
+    path = segments[1..-2].join('/')
+    path < 'a' ? path : path.camelize+"Controller" 
   end
 
   def action_name

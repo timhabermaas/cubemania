@@ -21,9 +21,11 @@ class NewRelic::Control::Rails < NewRelic::Control
   def init_config(options={})
     rails_config=options[:config]
     if !agent_enabled?
-      RAILS_DEFAULT_LOGGER.info "New Relic Agent not running"
+      # Might not be running if it does not think mongrel, thin, passenger, etc
+      # is running, if it things it's a rake task, or if the agent_enabled is false.
+      ::RAILS_DEFAULT_LOGGER.info "New Relic Agent not running."
     else
-      RAILS_DEFAULT_LOGGER.info "Starting the New Relic Agent"
+      ::RAILS_DEFAULT_LOGGER.info "Starting the New Relic Agent."
       install_developer_mode rails_config if developer_mode?
     end
   end
@@ -41,7 +43,7 @@ class NewRelic::Control::Rails < NewRelic::Control
       Dependencies.load_paths << controller_path
       Dependencies.load_paths << helper_path
     else
-      to_stdout "ERROR: Rails version #{Rails::VERSION::STRING} too old for developer mode to work."
+      to_stdout "ERROR: Rails version #{::Rails::VERSION::STRING} too old for developer mode to work."
       return
     end
     install_devmode_route
@@ -60,6 +62,12 @@ class NewRelic::Control::Rails < NewRelic::Control
       current_paths << controller_path
     end
     
+    def to_stdout(message)
+      ::RAILS_DEFAULT_LOGGER.info(message)
+    rescue Exception => e
+      STDOUT.puts(message)
+    end
+        
     #ActionController::Routing::Routes.reload! unless NewRelic::Control.instance['skip_developer_route']
     
     # inform user that the dev edition is available if we are running inside
@@ -86,7 +94,10 @@ class NewRelic::Control::Rails < NewRelic::Control
       next if self.instance_methods.include? 'draw_with_newrelic_map'
       def draw_with_newrelic_map
         draw_without_newrelic_map do | map |
-          map.named_route 'newrelic_developer', '/newrelic/:action/:id', :controller => 'newrelic' unless NewRelic::Control.instance['skip_developer_route']
+          unless NewRelic::Control.instance['skip_developer_route']
+            map.named_route 'newrelic_developer', '/newrelic/:action/:id', :controller => 'newrelic' 
+            map.named_route 'newrelic_file', '/newrelic/file/*file', :controller => 'newrelic', :action=>'file'
+          end
           yield map        
         end
       end
@@ -106,6 +117,7 @@ class NewRelic::Control::Rails < NewRelic::Control
         ::Rails.configuration.action_controller.allow_concurrency == true
       end
     end
+    local_env.append_environment_value('Rails Env') { ENV['RAILS_ENV'] }
     if rails_version >= NewRelic::VersionNumber.new('2.1.0')
       local_env.append_gem_list do
         ::Rails.configuration.gems.map do | gem |
@@ -133,9 +145,7 @@ class NewRelic::Control::Rails < NewRelic::Control
   def install_shim
     super
     require 'new_relic/agent/instrumentation/controller_instrumentation'
-    require 'new_relic/agent/instrumentation/error_instrumentation'
     ActionController::Base.send :include, NewRelic::Agent::Instrumentation::ControllerInstrumentation::Shim
-    Object.send :include, NewRelic::Agent::Instrumentation::ErrorInstrumentation::Shim
   end
   
 end

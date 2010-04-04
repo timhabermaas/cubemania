@@ -1,41 +1,52 @@
-module NewRelic::Agent::Samplers
+module NewRelic
+  module Agent
+module Samplers
   
   class MemorySampler < NewRelic::Agent::Sampler
     attr_accessor :sampler
     
     def initialize
       super :memory
-      
       # macos, linux, solaris
-      if defined? Java
+      if defined? JRuby
         @sampler = JavaHeapSampler.new
       elsif platform =~ /linux/
         @sampler = ProcStatus.new
         if !@sampler.can_run?
-          NewRelic::Agent.instance.log.warn "Error attempting to use /proc/$$/status file for reading memory. Using ps command instead."
+          NewRelic::Agent.instance.warn.debug "Error attempting to use /proc/#{$$}/status file for reading memory. Using ps command instead."
           @sampler = ShellPS.new("ps -o rsz")
         else
-          NewRelic::Agent.instance.log.info "Using /proc/$$/status for reading process memory."
+          NewRelic::Agent.instance.log.debug "Using /proc/#{$$}/status for reading process memory."
         end
-      elsif platform =~ /darwin/
+      elsif platform =~ /darwin9/ # 10.5
         @sampler = ShellPS.new("ps -o rsz")
+      elsif platform =~ /darwin10/ # 10.6
+        @sampler = ShellPS.new("ps -o rss")
       elsif platform =~ /freebsd/
         @sampler = ShellPS.new("ps -o rss")
       elsif platform =~ /solaris/
         @sampler = ShellPS.new("/usr/bin/ps -o rss -p")
       end
       
-      raise "Unsupported platform for getting memory: #{platform}" if @sampler.nil?
-      raise "Unable to run #{@sampler}" unless @sampler.can_run?
+      raise Unsupported, "Unsupported platform for getting memory: #{platform}" if @sampler.nil?
+      raise Unsupported, "Unable to run #{@sampler}" unless @sampler.can_run?
     end
-    def platform
+    
+    def self.supported_on_this_platform?
+      defined?(JRuby) or platform =~ /linux|darwin9|darwin10|freebsd|solaris/
+    end
+
+    def self.platform
       if RUBY_PLATFORM =~ /java/
         %x[uname -s].downcase
       else
         RUBY_PLATFORM.downcase
       end
     end
-    
+    def platform
+      NewRelic::Agent::Samplers::MemorySampler.platform
+    end
+
     def stats
       stats_engine.get_stats("Memory/Physical", false) 
     end
@@ -64,6 +75,7 @@ module NewRelic::Agent::Samplers
           NewRelic::Agent.instance.log.debug e.backtrace.join("\n  ")
           NewRelic::Agent.instance.log.error "Disabling memory sampler."
           @broken = true
+          return nil
         end
       end
     end
@@ -71,7 +83,7 @@ module NewRelic::Agent::Samplers
     class JavaHeapSampler < Base
 
       def get_memory
-        raise "Can't sample Java heap unless running in JRuby" unless defined? Java
+        raise "Can't sample Java heap unless running in JRuby" unless defined? JRuby
         java.lang.Runtime.getRuntime.totalMemory / (1024 * 1024).to_f rescue nil
       end
       def to_s
@@ -126,3 +138,5 @@ module NewRelic::Agent::Samplers
     end
   end    
 end  
+end
+end

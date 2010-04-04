@@ -93,14 +93,6 @@ class NewRelic::StatsTest < Test::Unit::TestCase
     assert_equal(s1.calls_per_minute, 2)
   end
 
-  def test_calls_per_second
-    s1 = NewRelic::TestObjectForStats.new
-    s1.call_count = 90
-    s1.begin_time = Time.at(0)
-    s1.end_time = Time.at(30)
-    assert_equal(s1.calls_per_second, 3)
-  end
-
   def test_total_call_time_per_minute
     s1 = NewRelic::TestObjectForStats.new
     s1.begin_time = Time.at(0)
@@ -137,7 +129,35 @@ class NewRelic::StatsTest < Test::Unit::TestCase
     s1.total_exclusive_time = 20
     assert_equal((2.0 / 3.0), s1.exclusive_time_percentage)
   end
-  
+
+  def test_sum_merge
+    s1 = NewRelic::MethodTraceStats.new
+    s2 = NewRelic::MethodTraceStats.new
+    s1.trace_call 10
+    s2.trace_call 20
+    s2.freeze
+    
+    validate s1, 1, 10, 10, 10
+    validate s2, 1, 20, 20, 20
+    s1.sum_merge! s2
+    validate s1, 1, (10+20), 10 + 20, 20 + 10
+    validate s2, 1, 20, 20, 20
+  end
+
+  def test_sum_merge_with_exclusive
+    s1 = NewRelic::MethodTraceStats.new
+    s2 = NewRelic::MethodTraceStats.new
+
+    s1.trace_call 10, 5
+    s2.trace_call 20, 10
+    s2.freeze
+
+    validate s1, 1, 10, 10, 10, 5
+    validate s2, 1, 20, 20, 20, 10
+    s1.sum_merge! s2
+    validate s1, 1, (10+20), 10 + 20, 20 + 10, (10+5)
+  end
+
   def test_merge
     s1 = NewRelic::MethodTraceStats.new
     s2 = NewRelic::MethodTraceStats.new

@@ -16,17 +16,17 @@ module NewRelic
       ].freeze
   
   class TransactionSample
+    EMPTY_ARRAY = [].freeze
     
     @@start_time = Time.now
 
     include TransactionAnalysis
     class Segment
       
-      class << self
-        @@empty_array = []
-      end
       
       attr_reader :entry_timestamp
+      # The exit timestamp will be relative except for the outermost sample which will 
+      # have a timestamp.
       attr_reader :exit_timestamp
       attr_reader :parent_segment
       attr_reader :metric_name
@@ -34,7 +34,7 @@ module NewRelic
       
       def initialize(timestamp, metric_name, segment_id)
         @entry_timestamp = timestamp
-        @metric_name = metric_name
+        @metric_name = metric_name || '<unknown>'
         @segment_id = segment_id || object_id
       end
       
@@ -66,18 +66,30 @@ module NewRelic
         map.to_json
       end
       
-      def self.from_json(json)
+      def self.from_json(json, id_generator)
         json = ActiveSupport::JSON.decode(json) if json.is_a?(String)
-        segment = Segment.new(json["entry_timestamp"].to_f, json["metric_name"], json["segment_id"])
-        segment.end_trace json["exit_timestamp"].to_f
-        params = json["params"]
+        if json.is_a?(Array)
+          entry_timestamp = json[0].to_f / 1000
+          exit_timestamp = json[1].to_f / 1000
+          metric_name = json[2]
+          params = json[3]
+          called_segments = json[4]
+        else
+          entry_timestamp = json["entry_timestamp"].to_f
+          exit_timestamp = json["exit_timestamp"].to_f
+          metric_name =  json["metric_name"]       
+          params = json["params"]
+          
+          called_segments = json["called_segments"]
+        end
+        segment = Segment.new(entry_timestamp, metric_name, id_generator.next_id)
+        segment.end_trace exit_timestamp
         if params
           segment.send :params=, HashWithIndifferentAccess.new(params)
         end
-        called_segments = json["called_segments"]
         if called_segments
           called_segments.each do |child|
-            segment.add_called_segment(self.from_json(child))
+            segment.add_called_segment(self.from_json(child, id_generator))
           end
         end
         segment
@@ -86,45 +98,42 @@ module NewRelic
       def path_string
         "#{metric_name}[#{called_segments.collect {|segment| segment.path_string }.join('')}]"
       end
-      
+      def to_s_compact
+        str = ""
+        str << metric_name
+        if called_segments.any?
+          str << "{#{called_segments.map { | cs | cs.to_s_compact }.join(",")}}"
+        end
+        str
+      end
       def to_debug_str(depth)
-        tab = "" 
-        depth.times {tab << "  "}
-        
+        tab = "  " * depth 
         s = tab.clone
-        s << ">> #{metric_name}: #{(@entry_timestamp*1000).round}\n"
+        s << ">> #{'%3i ms' % (@entry_timestamp*1000)} [#{self.class.name.split("::").last}] #{metric_name} \n"
         unless params.empty?
-          s << "#{tab}#{tab}{\n"
           params.each do |k,v|
-            s << "#{tab}#{tab}#{k}: #{v}\n"
+            s << "#{tab}    -#{'%-16s' % k}: #{v.to_s[0..80]}\n"
           end
-          s << "#{tab}#{tab}}\n"
         end
         called_segments.each do |cs|
           s << cs.to_debug_str(depth + 1)
         end
-        s << tab
-        s << "<< #{metric_name}: #{@exit_timestamp ? (@exit_timestamp*1000).round : 'n/a'}\n"
-        s
+        s << tab + "<< "
+        s << case @exit_timestamp
+          when nil then ' n/a'
+          when Numeric then '%3i ms' % (@exit_timestamp*1000)
+          else @exit_timestamp.to_s
+        end
+        s << " #{metric_name}\n"
       end
       
       def called_segments
-        @called_segments || @@empty_array
-      end
-      
-      def freeze
-        params.freeze
-        if @called_segments
-          @called_segments.each do |s|
-            s.freeze
-          end
-        end
-        super
+        @called_segments || EMPTY_ARRAY
       end
       
       # return the total duration of this segment
       def duration
-        @exit_timestamp - @entry_timestamp
+        (@exit_timestamp - @entry_timestamp).to_f
       end
       
       # return the duration of this segment without 
@@ -139,7 +148,28 @@ module NewRelic
         end
         d
       end
-      
+      def count_segments
+        count = 1
+        @called_segments.each { | seg | count  += seg.count_segments } if @called_segments
+        count
+      end
+      # Walk through the tree and truncate the segments
+      def truncate(max)
+        return max unless @called_segments
+        i = 0
+        @called_segments.each do | segment |
+          max = segment.truncate(max)
+          max -= 1
+          if max <= 0
+            @called_segments = @called_segments[0..i]
+            break
+          else
+            i += 1
+          end
+        end
+        max
+      end
+
       def []=(key, value)
         # only create a parameters field if a parameter is set; this will save
         # bandwidth etc as most segments have no parameters
@@ -242,7 +272,11 @@ module NewRelic
           @params = p
         end
     end
-    
+
+    class FakeSegment < Segment
+      public :parent_segment=
+    end
+
     class SummarySegment < Segment
       
       
@@ -319,8 +353,8 @@ module NewRelic
       end
       
     end
-        
 
+    attr_accessor :profile
     attr_reader :root_segment
     attr_reader :params
     attr_reader :sample_id
@@ -333,12 +367,29 @@ module NewRelic
       @params[:request_params] = {}
     end
 
+    def count_segments
+      @root_segment.count_segments - 1    # don't count the root segment
+    end
+    
+    def truncate(max)
+      original_count = count_segments
+      
+      return if original_count <= max
+      
+      @root_segment.truncate(max-1)
+      
+      if params[:segment_count].nil?
+        params[:segment_count] = original_count
+      end
+    end
+    
     # offset from start of app
     def timestamp
       @start_time - @@start_time.to_f
     end
     
-    def to_json(options = {})
+    # Used in the server only
+    def to_json(options = {}) #:nodoc:
       map = {:sample_id => @sample_id,
         :start_time => @start_time,
         :root_segment => @root_segment}
@@ -348,16 +399,33 @@ module NewRelic
       map.to_json
     end
     
-    def self.from_json(json)
+    # Used in the Server only
+    def self.from_json(json) #:nodoc:
       json = ActiveSupport::JSON.decode(json) if json.is_a?(String)
-      sample = TransactionSample.new(json["start_time"].to_f, json["sample_id"].to_i)
-      params = json["params"]
+      
+      if json.is_a?(Array)
+        start_time = json[0].to_f / 1000
+        custom_params = HashWithIndifferentAccess.new(json[2])
+        params = {:request_params => HashWithIndifferentAccess.new(json[1]), 
+              :custom_params => custom_params}
+        cpu_time = custom_params.delete(:cpu_time)
+        sample_id = nil
+        params[:cpu_time] = cpu_time.to_f / 1000 if cpu_time
+        root = json[3]
+      else
+        start_time = json["start_time"].to_f 
+        sample_id = json["sample_id"].to_i
+        params = json["params"] 
+        root = json["root_segment"]
+      end
+      
+      sample = TransactionSample.new(start_time, sample_id)
+      
       if params
         sample.send :params=, HashWithIndifferentAccess.new(params)
       end
-      root = json["root_segment"]
       if root
-        sample.send :root_segment=, Segment.from_json(root)
+        sample.send :root_segment=, Segment.from_json(root, IDGenerator.new)
       end
       sample
     end
@@ -370,15 +438,9 @@ module NewRelic
       @root_segment.path_string
     end
     
-    def create_segment (relative_timestamp, metric_name, segment_id = nil)
+    def create_segment(relative_timestamp, metric_name, segment_id = nil)
       raise TypeError.new("Frozen Transaction Sample") if frozen?
       NewRelic::TransactionSample::Segment.new(relative_timestamp, metric_name, segment_id)    
-    end
-    
-    def freeze
-      @root_segment.freeze
-      params.freeze
-      super
     end
     
     def duration
@@ -387,6 +449,10 @@ module NewRelic
     
     def each_segment(&block)
       @root_segment.each_segment(&block)
+    end
+    
+    def to_s_compact
+      @root_segment.to_s_compact
     end
     
     def find_segment(id)
@@ -402,9 +468,12 @@ module NewRelic
         next if k == :path
         s << "  #{k}: " <<
         case v
-          when Enumerable; v.map(&:to_s).sort.join("; ")
+          when Enumerable then v.map(&:to_s).sort.join("; ")
+          when String then v
+          when Float then '%6.3s' % v
+          when nil then ''
         else
-          v
+          raise "unexpected value type for #{k}: '#{v}' (#{v.class})"
         end << "\n"
       end
       s << "  }\n\n"
@@ -424,8 +493,9 @@ module NewRelic
       params.each {|k,v| sample.params[k] = v}
         
       delta = build_segment_with_omissions(sample, 0.0, @root_segment, sample.root_segment, regex)
-      sample.root_segment.end_trace(@root_segment.exit_timestamp - delta) 
-      sample.freeze
+      sample.root_segment.end_trace(@root_segment.exit_timestamp - delta)
+      sample.profile = self.profile
+      sample
     end
     
     # return a new transaction sample that can be sent to the RPM service.
@@ -446,7 +516,7 @@ module NewRelic
       end
       
       sample.root_segment.end_trace(@root_segment.exit_timestamp) 
-      sample.freeze
+      sample
     end
     
     def analyze
@@ -501,7 +571,6 @@ module NewRelic
     
     def summarize_segments(like_segments)
       if like_segments.length > COLLAPSE_SEGMENTS_THRESHOLD
-        puts "#{like_segments.first.path_string} #{like_segments.length}"
         [CompositeSegment.new(like_segments)]
       else
         like_segments
@@ -569,6 +638,16 @@ module NewRelic
 
         build_segment_for_transfer(new_sample, source_called_segment, target_called_segment, options)
         target_called_segment.end_trace(source_called_segment.exit_timestamp)
+      end
+    end
+    
+    # Generates segment ids for json transaction segments
+    class IDGenerator
+      def initialize
+        @next_id = 0        
+      end
+      def next_id
+        @next_id += 1
       end
     end
   end

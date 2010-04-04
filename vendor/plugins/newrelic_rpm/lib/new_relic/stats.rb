@@ -26,7 +26,24 @@ module NewRelic
       return 0 if call_count == 0
       total_exclusive_time / call_count
     end
-    
+
+    # merge by adding to average response time
+    # - used to compose multiple metrics e.g. dispatcher time + mongrel queue time
+    def sum_merge! (other_stats)
+      Array(other_stats).each do |s|
+        self.total_call_time += s.total_call_time
+        self.total_exclusive_time += s.total_exclusive_time
+        self.min_call_time += s.min_call_time
+        self.max_call_time += s.max_call_time
+        #self.call_count += s.call_count - do not add call count because we are stacking these times on top of each other
+        self.sum_of_squares += s.sum_of_squares if s.sum_of_squares
+        self.begin_time = s.begin_time if s.begin_time.to_f < begin_time.to_f || begin_time.to_f == 0.0
+        self.end_time = s.end_time if s.end_time.to_f > end_time.to_f
+      end
+
+      self
+    end
+
     def merge! (other_stats)
       Array(other_stats).each do |s|
         self.total_call_time += s.total_call_time
@@ -47,7 +64,7 @@ module NewRelic
       stats.merge! other_stats
     end
     
-    # split into an array of timesclices whose
+    # split into an array of timeslices whose
     # time boundaries start on (begin_time + (n * duration)) and whose
     # end time ends on (begin_time * (n + 1) * duration), except for the
     # first and last elements, whose begin time and end time are the begin
@@ -102,13 +119,16 @@ module NewRelic
     
     def as_percentage_of(other_stats)
       return 0 if other_stats.total_call_time == 0
-      return to_percentage(total_call_time / other_stats.total_call_time)
+      return (total_call_time / other_stats.total_call_time) * 100.0
     end
     
     # the stat total_call_time is a percent
     def as_percentage
-      return 0 if call_count == 0
-      to_percentage(total_call_time / call_count)
+      if call_count.zero?
+        0
+      else
+        (total_call_time / call_count) * 100.0
+      end
     end
     
     def duration
@@ -116,16 +136,17 @@ module NewRelic
     end
 
     def calls_per_minute
-      return 0 if duration.zero?
-      ((call_count / duration.to_f * 6000).round).to_f / 100
-    end
+      if duration.zero?
+        0
+      else
+        (call_count / duration.to_f) * 60.0
+      end
+    end    
     
-    def calls_per_second
-      round_to_2 calls_per_minute / 60
-    end
     def total_call_time_per_minute
       60.0 * time_percentage
     end
+    
     def standard_deviation
       return 0 if call_count < 2 || self.sum_of_squares.nil?
       
@@ -168,7 +189,7 @@ module NewRelic
     # Summary string to facilitate testing
     def summary
       format = "%m/%d %I:%M%p"
-      "[#{Time.at(begin_time).strftime(format)}, #{duration}s. #{call_count} calls; #{to_ms(average_call_time)}ms]"
+      "[#{Time.at(begin_time).strftime(format)}, #{'%2.3fs' % duration}; #{'%4i' % call_count} calls #{'%4i' % to_ms(average_call_time)} ms]"
     end
     
     # round all of the values to n decimal points
@@ -189,7 +210,8 @@ module NewRelic
       min_end = (end_time < s.end_time ? end_time : s.end_time)
       max_begin = (begin_time > s.begin_time ? begin_time : s.begin_time)
       percentage = (min_end - max_begin) / s.duration
-      
+
+      self.total_exclusive_time = s.total_exclusive_time * percentage
       self.total_call_time = s.total_call_time * percentage
       self.min_call_time = s.min_call_time
       self.max_call_time = s.max_call_time
@@ -212,23 +234,17 @@ module NewRelic
       [@call_count, @total_call_time.to_i, @total_exclusive_time.to_i]
     end
 
-		def apdex_score
-			s, t, f = get_apdex
-			(s.to_f + (t.to_f / 2)) / (s+t+f).to_f
-		end
+    def apdex_score
+      s, t, f = get_apdex
+      (s.to_f + (t.to_f / 2)) / (s+t+f).to_f
+    end
+
     private
+    
     def to_ms(number)
       (number*1000).round
     end
-    # utility method that converts floating point percentage values
-    # to integers as a percentage, to improve readability in ui
-    def to_percentage(value)
-      round_to_2(value * 100)
-    end
-    
-    def round_to_2(val)
-      (val * 100).round / 100.0
-    end
+        
     def round_to_3(val)
       (val * 1000).round / 1000.0
     end
@@ -321,6 +337,18 @@ module NewRelic
     
     alias trace_call record_data_point
     
+    def record_multiple_data_points(total_value, count=1)
+      return record_data_point(total_value) if count == 1
+      @call_count += count
+      @total_call_time += total_value
+      avg_val = total_value / count
+      @min_call_time = avg_val if avg_val < @min_call_time || @call_count == count
+      @max_call_time = avg_val if avg_val > @max_call_time
+      @total_exclusive_time += total_value
+      @sum_of_squares += (avg_val * avg_val) * count
+      self
+    end
+    
     def increment_count(value = 1)
       @call_count += value
     end
@@ -329,13 +357,16 @@ module NewRelic
   
   class ScopedMethodTraceStats < MethodTraceStats
     def initialize(unscoped_stats)
-        super()
+      super()
       @unscoped_stats = unscoped_stats
     end
-    
     def trace_call(call_time, exclusive_time = call_time)
       @unscoped_stats.trace_call call_time, exclusive_time
       super call_time, exclusive_time
+    end
+    def record_multiple_data_points(total_value, count=1)
+      @unscoped_stats.record_multiple_data_points(total_value, count)
+      super total_value, count
     end
     def unscoped_stats
       @unscoped_stats
