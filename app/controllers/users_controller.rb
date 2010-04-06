@@ -1,14 +1,19 @@
-class UsersController < ResourceController::Base
+class UsersController < ApplicationController
   skip_login :only => [:new, :create]
   logout :only => [:new, :create]
   permit :self, :only => [:edit, :update, :destroy]
   #protect [:role, :sponsor, :ignored], :but => :admin, :only => [:create, :update]
   
-  index do
-    wants.json { render :json => @users.to_json }
+  def index
+    if params[:search]
+      @users = User.paginate :page => params[:page], :per_page => 50, :order => 'points DESC', :conditions => ['name LIKE ?', "%#{params[:search]}%"]
+    else
+      @users = User.paginate :page => params[:page], :per_page => 50, :order => 'points DESC'
+    end
   end
-
-  show.before do
+  
+  def show
+    @user = object
     single_records, average_records = @user.singles.records, @user.averages.records
     @records = (0...single_records.size).map do |i|
       unless average_records[i].nil? or single_records[i].puzzle_id == average_records[i].puzzle_id
@@ -19,24 +24,40 @@ class UsersController < ResourceController::Base
     @participances = @user.participances
     @matches = Match.for(@user).finished.recent.all(:include => [{:puzzle => :kind}, :user, :opponent])
   end
-  show.wants.json { render :json => @user, :status => :ok }
-  show.failure.wants.json { head :not_found }
-
-  create do
-    flash { "Hello #{@user.name}, you are now registered" }
-    after { self.current_user = @user }
-    wants.html { redirect_back user_path(@user) }
-  end
-
-  destroy.after { if self.current_user == @user; self.current_user = nil; end }
   
-  private
-    def collection
-      @collection ||=
-        if params[:search]
-          User.paginate :page => params[:page], :per_page => 50, :order => 'points DESC', :conditions => ['name LIKE ?', "%#{params[:search]}%"]
-        else
-          User.paginate :page => params[:page], :per_page => 50, :order => 'points DESC'
-        end
+  def object
+    User.find params[:id]
+  end
+  
+  def create
+    @user = User.new params[:user]
+    if @user.save
+      flash[:notice] = "Hello #{@user.name}, you are now registered"
+      self.current_user = @user
+      redirect_back @user
+    else
+      render :new
     end
+  end
+  
+  def update
+    @user = User.find params[:id]
+    if @user.update_attributes params[:user]
+      flash[:notice] = "Successfully updated"
+      redirect_to user_path
+    else
+      render :_form
+    end
+  end
+  
+  def destroy
+    @user = User.find params[:id]
+    @user.destroy
+    
+    if self.current_user == @user
+      self.current_user = nil
+    end
+    
+    redirect_to root_path
+  end
 end

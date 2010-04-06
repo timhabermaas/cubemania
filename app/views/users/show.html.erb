@@ -5,7 +5,7 @@
   <%= render(:partial => 'batch', :locals => { :link => facebook(123124), :id => 'facebook' }) if false %>
   <div class="text"><small><%= @user.points %></small></div>
   <% if (not self?) or admin? %>
-  <strong><%= link_to "Challenge #{@user.name}!", new_puzzle_user_match_path(:user_id => @user.id), :class => 'challenge' %></strong>
+  <strong><%= link_to "Challenge #{@user.name}!", "new_puzzle_user_match_path(:user_id => @user.id)", :class => 'challenge' %></strong>
   <% end %>
 </div>
 <div class="clear"></div>
@@ -18,7 +18,7 @@
     </tr>
   </thead>
   <tbody>
-    <%= partial 'record', :collection => @records %>
+    <%= render :partial => 'record', :collection => @records %>
   </tbody>
 </table>
 
@@ -29,7 +29,7 @@
     </tr>
   </thead>
   <tbody>
-    <%= partial 'match', :collection => @matches %>
+    <%= render :partial => 'match', :collection => @matches %>
   </tbody>
 </table>
 <div class="clear"></div>

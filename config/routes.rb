@@ -1,10 +1,14 @@
 Cubemania::Application.routes.draw do |map|
   root :to => 'homes#show'
 
-  resources :posts, :has_many => :comments
+  resources :posts do
+    resources :comments
+  end
   
   resources :users do
-    resources :puzzles, :has_many => :averages
+    resources :puzzles do
+      resources :averages
+    end
   end
   
   resources :matches, :only => :index

@@ -1,6 +1,6 @@
 <div id="content">
   <div class="center">
-    <%= partial 'layouts/admin' if permit? %>
+    <%= render 'layouts/admin' if permit? %>
     <%= yield %>
     <div class="clear"></div>
   </div>
