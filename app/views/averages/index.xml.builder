@@ -1,3 +1,3 @@
 xml.times :title => @user.name do
-  xml << partial(@averages).to_s
+  xml << render(@averages)
 end
