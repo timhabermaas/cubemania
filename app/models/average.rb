@@ -4,8 +4,8 @@ class Average < Clock
   belongs_to :user, :counter_cache => true; attr_protected :user_id, :user
   has_many :singles, :order => 'position', :dependent => :destroy
   
-  validate :size_of_singles
-  validate :first_average_for_match, :user_belongs_to_match
+  validate :size_of_singles, :user_submits_to_competition_only_once,
+           :first_average_for_match, :user_belongs_to_match
   
   after_save :update_match_status, :update_user_points, :if => :match
   before_save :update_records_on_create
@@ -14,7 +14,7 @@ class Average < Clock
   
   named_scope :matched, :conditions => 'match_id NOT NULL'
 
-  def validate
+  def user_submits_to_competition_only_once
     unless competition_id.nil?
       unless Clock.find_by_user_id_and_puzzle_id_and_competition_id_and_type(user_id, puzzle_id, competition_id, 'Average', :conditions => ['created_at between ? and ?', competition.started_at, competition.ended_at]).nil?
         errors.add_to_base 'Get out of here!'
