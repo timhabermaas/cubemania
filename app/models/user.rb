@@ -117,13 +117,13 @@ class User < ActiveRecord::Base
   end
   
   def wins
-    matches.finished.select do |match|
+    matches.finished.all.select do |match|
       match.winner == self
     end.size
   end
   
   def losses
-    matches.finished.select do |match|
+    matches.finished.all.select do |match|
       match.loser == self
     end.size
   end

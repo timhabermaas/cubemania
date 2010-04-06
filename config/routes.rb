@@ -13,14 +13,14 @@ Cubemania::Application.routes.draw do |map|
   
   resources :matches, :only => :index
 
-  resources :puzzles do
+  resources :puzzles, :defaults => {:id => DEFAULT_PUZZLE} do
     resources :times, :controller => :clocks
     resources :averages
     resources :matches do
       resources :times, :controller => :clocks
     end
-    resources :users, :as => 'opponents' do
-      resources :matches
+    resources :users do
+      resources :matches, :defaults => { :puzzle_id => DEFAULT_PUZZLE }
     end
     resources :competitions do
       resources :times, :controller => :clocks
