@@ -121,7 +121,7 @@ module ApplicationHelper
   end
 
   def m(text)
-    RedCloth::new(text).to_html
+    RedCloth::new(text).to_html.html_safe
   end
   
   def s(number)

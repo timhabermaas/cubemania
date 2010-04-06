@@ -1,4 +1,4 @@
-<% div_for post do %>
+<%= div_for post do %>
   <h1><%= link_to_unless_current post.title.titleize, post %></h1>
   <div class="text">
     <%=m post.content %>

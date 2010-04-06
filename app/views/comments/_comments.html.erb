@@ -1,6 +1,6 @@
 <div id="comments">
   <ol>
-    <%= partial @post.comments %>
+    <%= render @post.comments %>
   </ol>
-  <%= partial 'comments/form' if logged_in? %>
+  <%= render 'comments/form' if logged_in? %>
 </div>
