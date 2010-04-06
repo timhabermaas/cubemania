@@ -12,7 +12,7 @@
 <%- else -%>
 <table id="records">
   <tbody>
-    <%= partial 'record', :collection => @records, :offset => @records.offset %>
+    <%= render :partial => 'record', :collection => @records, :locals => { :offset => @records.offset } %>
   </tbody>
 </table>
 <%- end -%>

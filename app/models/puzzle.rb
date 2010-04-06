@@ -5,8 +5,8 @@ class Puzzle < ActiveRecord::Base
   has_many :competitions, :dependent => :destroy
   has_many :matches, :dependent => :destroy
   has_many :records, :conditions => ['record = ? and users.ignored = ?', true, false], :include => :user, :order => 'time', :class_name => 'Clock' do
-    def single(page); @single ||= paginate_by_type 'Single', :page => page, :per_page => 50; end
-    def average(page); @average ||= paginate_by_type 'Average', :page => page, :per_page => 50; end
+    def single(page); @single ||= where(:type => 'Single').paginate :page => page, :per_page => 50; end
+    def average(page); @average ||= where(:type => 'Average').paginate :page => page, :per_page => 50; end
   end
   has_many :clocks, :dependent => :delete_all
 
