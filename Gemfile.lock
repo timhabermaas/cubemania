@@ -1,0 +1,115 @@
+--- 
+hash: 309f33e70504a71a7b35abcaff6f4b444d65b91a
+sources: 
+- Git: 
+    git: git://github.com/timhabermaas/will_paginate.git
+    branch: rails3
+    uri: git://github.com/timhabermaas/will_paginate.git
+    ref: ff3b4fd5f61658c2665bce9149391482ffa689f6
+- Git: 
+    git: git://github.com/JasonKing/paperclip.git
+    branch: rails3
+    uri: git://github.com/JasonKing/paperclip.git
+    ref: 3af618395f8aeb15243ab9872a2340a8dbb0b0c4
+- Git: 
+    git: git://github.com/rails/rails.git
+    uri: git://github.com/rails/rails.git
+    ref: eb063538bd58c915c953e4b8a295d3a1b1a321d5
+- Rubygems: 
+    uri: http://rubygems.org
+specs: 
+- rake: 
+    version: 0.8.7
+- RedCloth: 
+    version: 4.2.3
+- abstract: 
+    version: 1.0.0
+- builder: 
+    version: 2.1.2
+- i18n: 
+    version: 0.3.6
+- memcache-client: 
+    version: 1.8.2
+- tzinfo: 
+    version: 0.3.19
+- activesupport: 
+    version: 3.0.0.beta3
+    source: 2
+- activemodel: 
+    version: 3.0.0.beta3
+    source: 2
+- erubis: 
+    version: 2.6.5
+- rack: 
+    version: 1.1.0
+- rack-mount: 
+    version: 0.6.1
+- rack-test: 
+    version: 0.5.3
+- actionpack: 
+    version: 3.0.0.beta3
+    source: 2
+- mime-types: 
+    version: "1.16"
+- polyglot: 
+    version: 0.3.1
+- treetop: 
+    version: 1.4.5
+- mail: 
+    version: 2.1.5.3
+- text-hyphen: 
+    version: 1.0.0
+- text-format: 
+    version: 1.0.0
+- actionmailer: 
+    version: 3.0.0.beta3
+    source: 2
+- arel: 
+    version: 0.3.3
+- activerecord: 
+    version: 3.0.0.beta3
+    source: 2
+- activeresource: 
+    version: 3.0.0.beta3
+    source: 2
+- bundler: 
+    version: 0.9.16
+- paperclip: 
+    version: 2.3.1.1
+    source: 1
+- thor: 
+    version: 0.13.4
+- railties: 
+    version: 3.0.0.beta3
+    source: 2
+- rails: 
+    version: 3.0.0.beta3
+    source: 2
+- sqlite3-ruby: 
+    version: 1.2.5
+- will_paginate: 
+    version: 3.0.pre
+    source: 0
+dependencies: 
+  rails: 
+    version: ">= 0"
+    group: 
+    - :default
+  sqlite3-ruby: 
+    version: ">= 0"
+    group: 
+    - :default
+    require: 
+    - sqlite3
+  paperclip: 
+    version: ">= 0"
+    group: 
+    - :default
+  RedCloth: 
+    version: ">= 0"
+    group: 
+    - :default
+  will_paginate: 
+    version: ">= 0"
+    group: 
+    - :default
