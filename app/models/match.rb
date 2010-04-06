@@ -88,7 +88,7 @@ class Match < ActiveRecord::Base
   
   def update_points
     if finished? and self.user_points.nil? and self.opponent_points.nil?
-      user_win = 1 - averages.for(user).ratio(averages.for(opponent))
+      user_win = 1 - averages.for(user.id).ratio(averages.for(opponent.id))
       self.user_points = ((user_win - expectation) * C1).round
       self.opponent_points = (((1 - user_win) - (1 - expectation)) * C1).round
       save

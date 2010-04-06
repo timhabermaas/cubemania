@@ -8,7 +8,7 @@
 <% if @match.finished? %>
   <%= render 'result' %>
 <% else %>
-  <%= partial 'shared/timer' %>
-  <%= partial 'shared/timer_js', :url => puzzle_match_times_path(params[:puzzle_id], @match) %>
+  <%= render 'shared/timer' %>
+  <%= render 'shared/timer_js', :url => puzzle_match_times_path(params[:puzzle_id], @match) %>
 <% end %>
 <% end %>

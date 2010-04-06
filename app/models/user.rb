@@ -108,7 +108,7 @@ class User < ActiveRecord::Base
     _matches = matches.finished
     return 0 if _matches.empty? or _matches.first.winner.nil?
     result = (self == _matches.first.winner) ? 1 : -1
-    for match in _matches.from 1
+    for match in _matches.all.from 1
       break if match.winner.nil? or (result > 0 and match.winner != self) or (result < 0 and match.loser != self)
       result += 1 if result > 0 and match.winner == self
       result -= 1 if result < 0 and match.loser == self

@@ -1,7 +1,7 @@
 if @average.competition.nil? and @average.match.nil?
   if @average.errors.empty?
     page << "document.getElementById(\"chart\").addItem(\"#{render :partial => 'averages/average.xml.erb', :object => @average}\");"
-    page['timer'].replaceWith partial('shared/timer.html.erb')
+    page['timer'].replaceWith render('shared/timer.html.erb')
     page << "updateScramble()"
     page['type'].focus if params[:input_method] == 'manual'
     flash[:notice] = @average.notice
@@ -20,6 +20,6 @@ else
 end
 
 unless flash[:notice].nil?
-  page['subnavigation'].after partial('layouts/notice.html.erb')
+  page['subnavigation'].after render('layouts/notice.html.erb')
   flash.discard
 end
