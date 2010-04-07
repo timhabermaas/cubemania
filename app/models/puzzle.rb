@@ -21,8 +21,8 @@ class Puzzle < ActiveRecord::Base
   validates_numericality_of :countdown, :greater_than_or_equal_to => 0, :only_integer => true
   validates_numericality_of :attempt_count, :greater_than => 0, :only_integer => true
   validates_inclusion_of :average_format, :in => FORMATS
-  validates_attachment_size :image, :less_than => 20.kilobytes
-  validates_attachment_content_type :image, :content_type => ['image/png', 'image/gif']
+  validates_attachment_size :image, :less_than => 20.kilobytes, :unless => Proc.new { |puzzle| puzzle.image_file_name.blank? }
+  validates_attachment_content_type :image, :content_type => ['image/png', 'image/gif'], :unless => Proc.new { |puzzle| puzzle.image_file_name.blank? }
   
   def scrambles
     (1..attempt_count).map {|i| scramble}
