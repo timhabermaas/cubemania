@@ -1,4 +1,4 @@
-<% remote_form_for [@puzzle, @competition ||= @puzzle.competitions.build] do |form| %>
+<%= form_for [@puzzle, @competition ||= @puzzle.competitions.build], :remote => true do |form| %>
   <p>
     <%= form.label :puzzle %>
     <%= "#{@puzzle.name.titleize} (#{@puzzle.kind.name.titleize})" %>

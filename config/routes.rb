@@ -34,6 +34,7 @@ Cubemania::Application.routes.draw do |map|
           :type => /(single)|(average)/
   match 'puzzles/:puzzle_id/times' => 'clocks#index', :as => 'puzzle_times', :defaults => { :puzzle_id => DEFAULT_PUZZLE }
   match 'puzzles/:puzzle_id/competitions' => 'competitions#index', :as => 'puzzle_competitions', :defaults => { :puzzle_id => DEFAULT_PUZZLE }
+  match 'puzzles/:puzzle_id/competitions/:id/:date' => 'competitions#show', :as => 'puzzle_competition_date'
 
   resources :kinds
   resources :items

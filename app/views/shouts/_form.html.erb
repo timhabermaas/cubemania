@@ -1,4 +1,4 @@
-<% remote_form_for [@puzzle, @parent, @shout ||= Shout.new], :before => "$('#shout_submit').attr('disabled', 'disabled')" do |form| %>
+<%= form_for [@puzzle, @parent, @shout ||= Shout.new], :remote => true, :before => "$('#shout_submit').attr('disabled', 'disabled')" do |form| %>
   <div class="top_left"><div class="top_right"><div class="bottom_left"><div class="bottom_right">
     <%= form.text_area :content, :rows => 4, :onfocus => 'keyEnabled = false', :onblur => 'keyEnabled = true' %>
     <%= form.error_message_on :content %>

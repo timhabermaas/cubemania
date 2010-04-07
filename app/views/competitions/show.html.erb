@@ -16,7 +16,7 @@
   <%- else -%>
   <div id="results">
     <table>
-      <%= render results %>
+      <%= render :partial => 'result', :collection => results %>
     </table>
   </div>
   <%- end -%>
@@ -42,7 +42,7 @@
 </p>
     <%- else -%>
 <%= render 'shared/timer' %>
-<%= render 'shared/timer_js', :locals => { :competition_id => @competition.id, :url => puzzle_competition_times_path(params[:puzzle_id], @competition) } %>
+<%= render :partial => 'shared/timer_js', :locals => { :competition_id => @competition.id, :url => puzzle_competition_times_path(params[:puzzle_id], @competition) } %>
     <%- end -%>
   <%- else -%>
 <p class="suggestion">

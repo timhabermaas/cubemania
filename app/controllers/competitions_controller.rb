@@ -1,10 +1,37 @@
-class CompetitionsController < ResourceController::Base
+class CompetitionsController < ApplicationController
   permit :owner, :only => [:update, :destroy]
   #protect :sticky, :but => :admin, :only => [:create, :update]
 
-  belongs_to :puzzle
-
-  show.before do
+  def index
+    @puzzle = Puzzle.find params[:puzzle_id]
+    params[:repeat] ||= 'all'
+    if params[:repeat] == 'all'
+      @competitions = @puzzle.competitions.includes(:user).
+                      order('sticky desc, averages_count desc, created_at desc').
+                      paginate(:page => params[:page], :per_page => 10)
+    else
+      @competitions = @puzzle.competitions.includes(:user).where(:repeat => params[:repeat]).
+                      order('sticky desc, averages_count desc, created_at desc').
+                      paginate(:page => params[:page], :per_page => 10)
+    end
+  end
+  
+  def create
+    @puzzle = Puzzle.find params[:puzzle_id]
+    @competition = current_user.competitions.build params[:competition]
+    @competition.puzzle_id = params[:puzzle_id]
+    @competition.save
+  end
+  
+  def update
+    @puzzle = Puzzle.find params[:puzzle_id]
+    @competition = object
+    @competition.update_attributes params[:competition]
+  end
+  
+  def show
+    @puzzle = Puzzle.find params[:puzzle_id]
+    @competition = Competition.find params[:id]
     if params[:date].nil?
       time = Time.now.utc
     else
@@ -23,28 +50,8 @@ class CompetitionsController < ResourceController::Base
     @shouts = @competition.shouts.for @competition, @date
     @parent = @competition
   end
-
-  [create, update].each do |action|
-    action.wants.js; action.failure.wants.js
+  
+  def object
+    Competition.find params[:id]
   end
-
-  private
-    def collection
-      params[:repeat] ||= 'all'
-      options = { :include => :user, :order => 'sticky desc, averages_count desc, created_at desc', :page => params[:page], :per_page => 10 }
-      if params[:repeat] == 'all'
-        @collection ||= end_of_association_chain.paginate options
-      else
-        @collection ||= end_of_association_chain.paginate_by_repeat params[:repeat], options
-      end
-    end
-    
-    def object
-      @object ||= end_of_association_chain.find params[:id]
-    end
-    
-    def build_object
-      @object ||= current_user.competitions.build object_params
-      @object.puzzle_id = params[:puzzle_id]
-    end
 end

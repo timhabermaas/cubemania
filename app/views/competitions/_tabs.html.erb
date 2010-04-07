@@ -1,5 +1,5 @@
 <p class="tabs">
-<%- for repeat in %w{all} + Competition::REPEATS -%>
+<% for repeat in %w{all} + Competition::REPEATS %>
   <%= link_to repeat.titleize, puzzle_competitions_path(:repeat => (repeat), :puzzle_id => params[:puzzle_id]), :class => ('checked' if repeat? repeat.to_sym) %>
-<%- end -%>
+<% end %>
 </p>

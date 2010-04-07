@@ -1,5 +1,5 @@
 unless @shout.new_record?
-  page['shouts ol'].append render(@shout)
+  page['#shouts ol'].append render(@shout)
   page[@shout].hide.slideDown 'normal'
   @shout = Shout.new
 end
