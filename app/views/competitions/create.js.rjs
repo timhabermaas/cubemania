@@ -1,5 +1,5 @@
 if @competition.errors.empty?
   page.redirect_to [@puzzle, @competition]
 else
-  page['form form'].replaceWith partial('form.html.erb')
+  page['form form'].replaceWith render('form.html.erb')
 end

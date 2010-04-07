@@ -1,4 +1,4 @@
-<%= partial 'tabs' %>
+<%= render 'tabs' %>
 
 <div id="competition">
   <div class="<%= @competition.repeat %>">
@@ -16,13 +16,13 @@
   <%- else -%>
   <div id="results">
     <table>
-      <%= partial 'result', :collection => results %>
+      <%= render results %>
     </table>
   </div>
   <%- end -%>
   <div id="shouts">
-    <%= render :partial => 'shouts/shouts' %>
-    <%= partial 'shouts/form' if logged_in? and not @competition.old?(@date) %>
+    <%= render 'shouts/shouts' %>
+    <%= render 'shouts/form' if logged_in? and not @competition.old?(@date) %>
   </div>
 </div>
 
@@ -41,8 +41,8 @@
     <%- end -%>
 </p>
     <%- else -%>
-<%= partial 'shared/timer' %>
-<%= partial 'shared/timer_js', :competition_id => @competition.id, :url => puzzle_competition_times_path(params[:puzzle_id], @competition) %>
+<%= render 'shared/timer' %>
+<%= render 'shared/timer_js', :locals => { :competition_id => @competition.id, :url => puzzle_competition_times_path(params[:puzzle_id], @competition) } %>
     <%- end -%>
   <%- else -%>
 <p class="suggestion">

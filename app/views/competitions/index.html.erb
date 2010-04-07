@@ -1,4 +1,4 @@
-<%= partial 'tabs' %>
+<%= render 'tabs' %>
 
 <%- if @competitions.empty? -%>
 <p class="challenge">
@@ -8,7 +8,7 @@
 </p>
 <%- else -%>
 <div id="competitions">
-  <%= partial @competitions %>
+  <%= render @competitions %>
 </div>
 <div id="info">
   <p>
