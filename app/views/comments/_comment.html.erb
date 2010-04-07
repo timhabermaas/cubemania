@@ -1,4 +1,4 @@
-<% li_for comment do %>
+<%= li_for comment do %>
   <cite><%= comment.user.nil? ? 'Unknown' : link_to(comment.user.name, comment.user) %></cite>
   <small>
     <%=dt comment.created_at %>

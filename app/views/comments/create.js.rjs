@@ -1,6 +1,3 @@
-unless @comment.new_record?
-  page['comments ol'].append partial 'comment.html.erb'
-  page[@comment].hide.slideDown 'normal'
-  @comment = @post.comments.build
-end
-page['new_comment'].replaceWith partial 'form.html.erb'
+#page << "alert('test#{@comment.id}');"
+page['#comments ol'].append render(@comment)# << "$('#comments ol').append('#{render @comment}');"
+#$('#comments ol').append('<li>muh</li>');

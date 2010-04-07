@@ -4,6 +4,9 @@ class CommentsController < ApplicationController
   def create
     @comment = current_user.comments.build(params[:comment].merge :post_id => parent.id)
     @comment.save
+    respond_to do |format|
+      format.js
+    end
   end
 
   def destroy

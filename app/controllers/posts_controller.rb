@@ -14,7 +14,7 @@ class PostsController < ApplicationController
   end
   
   def show
-    @post = Post.find params[:id], :include => :user
+    @post = object
   end
   
   def create
@@ -33,5 +33,9 @@ class PostsController < ApplicationController
     else
       render :edit
     end
+  end
+  
+  def object
+    Post.find params[:id], :include => :user
   end
 end
