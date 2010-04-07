@@ -18,10 +18,10 @@ class Match < ActiveRecord::Base
   end
   has_many :scrambles, :as => :matchable, :order => 'position', :dependent => :delete_all
   
-  named_scope :finished, :conditions => "matches.status = 'finished'", :order => 'matches.updated_at DESC'
-  named_scope :challenged, :conditions => "matches.status = 'challenged'", :order => 'matches.updated_at DESC'
-  named_scope :recent, :order => 'matches.updated_at DESC', :limit => 5
-  named_scope :for, lambda { |user| {:conditions => ['user_id = ? OR opponent_id = ?', user.id, user.id], :order => 'matches.updated_at DESC'} }
+  scope :finished, :conditions => "matches.status = 'finished'", :order => 'matches.updated_at DESC'
+  scope :challenged, :conditions => "matches.status = 'challenged'", :order => 'matches.updated_at DESC'
+  scope :recent, :order => 'matches.updated_at DESC', :limit => 5
+  scope :for, lambda { |user| {:conditions => ['user_id = ? OR opponent_id = ?', user.id, user.id], :order => 'matches.updated_at DESC'} }
   
   validates_presence_of :user_id, :opponent_id, :puzzle_id
   validates_inclusion_of :status, :in => STATUSES

@@ -12,7 +12,7 @@ class Average < Clock
   before_destroy :return_false, :if => :match
   after_destroy :update_records_on_destroy
   
-  named_scope :matched, :conditions => 'match_id NOT NULL'
+  scope :matched, :conditions => 'match_id NOT NULL'
 
   def user_submits_to_competition_only_once
     unless competition_id.nil?
