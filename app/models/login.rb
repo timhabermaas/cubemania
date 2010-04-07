@@ -1,5 +1,3 @@
-#require 'active_record/validations'
-
 class Login
   include ActiveModel::Naming
   include ActiveModel::Validations
