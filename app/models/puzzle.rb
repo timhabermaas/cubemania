@@ -11,9 +11,9 @@ class Puzzle < ActiveRecord::Base
   has_many :clocks, :dependent => :delete_all
 
   has_attached_file :image, :path => ":rails_root/public/images/:class/:id/:style/:basename.:extension",
-                            :url => "/images/:class/:id/:style/:basename.:extension",
-                            :styles => { :small => "50x25" }
-  attr_protected :image_file_name, :image_content_type, :image_size
+                            :url => "/images/:class/:id/:style/:basename.:extension"#,
+                            #:styles => { :small => ["50x25", :png] }
+  #attr_protected :image_file_name, :image_content_type, :image_size
   
   validates_presence_of :name, :image, :attempt_count, :countdown, :kind_id
   validates_length_of :name, :maximum => 64
