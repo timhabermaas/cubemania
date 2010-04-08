@@ -2,7 +2,9 @@
 <p class="announcement">
   <strong><%= @announcement.title %></strong>
   <span><%= m(@announcement.content)[3..-5] %></span>
-  <%= link_to "#{pluralize @announcement.comments.size, 'Comment'} &raquo;", post_path(@announcement, :anchor => 'comments') %>
+  <%= link_to post_path(@announcement, :anchor => 'comments') do %>
+    <%= pluralize @announcement.comments.size, 'Comment' %> &raquo;
+  <% end %>
 </p>
 <%- end -%>
 <p class="introduction">

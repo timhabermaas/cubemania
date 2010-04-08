@@ -129,14 +129,14 @@ module ApplicationHelper
   end
 
   def result_tag(result, tag='cite')
-    "<#{tag} class=" + 
+    ("<#{tag} class=" + 
     if result < 0
       '"negative">' + s(result)
     elsif result > 0
       '"positive">' + s(result)
     else
       '"neutral">0'
-    end + "</#{tag}>"
+    end + "</#{tag}>").html_safe
   end
 
   def wca(id)

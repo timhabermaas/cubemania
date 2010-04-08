@@ -1,6 +1,10 @@
 <div id="header">
   <div class="center">
-    <h3><%= link_to '<span>Cubemania</span>', root_path, :title => 'Save The World - Solve The Puzzle' %></h3>
+    <h3>
+      <%= link_to root_path, :title => 'Save The World - Solve The Puzzle' do %>
+        <span>Cubemania</span>
+      <% end %>
+    </h3>
     <blockquote>
       <p>Save The World - Solve The Puzzle</p>
     </blockquote>
