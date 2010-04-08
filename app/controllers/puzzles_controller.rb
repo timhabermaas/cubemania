@@ -1,16 +1,40 @@
-class PuzzlesController < ResourceController::Base
+class PuzzlesController < ApplicationController
   permit :admin
   
-  [new_action, edit].each do |action|
-    action.before { @kinds = Kind.all }
+  def new
+    @kinds = Kind.all
+    @puzzle = Puzzle.new
   end
   
-  [update, create].each do |action|
-    action.wants.html { redirect_to puzzles_path }
+  def edit
+    @kinds = Kind.all
+    @puzzle = Puzzle.find params[:id]
   end
   
-private
-  def collection
-    @collection ||= Puzzle.find :all, :order => 'kind_id, name', :include => :kind
+  def update
+    @kinds = Kind.all
+    @puzzle = Puzzle.find params[:id]
+    if @puzzle.update_attributes params[:puzzle]
+      redirect_to puzzles_path
+    else
+      render :edit
+    end
+  end
+  
+  def create
+    @puzzle = Puzzle.new params[:puzzle]
+    if @puzzle.save
+      redirect_to puzzles_path
+    else
+      render :new
+    end
+  end
+  
+  def index
+    @puzzles = Puzzle.order('kind_id, name').includes(:kind)
+  end
+  
+  def object
+    @puzzle = Puzzle.find params[:id]
   end
 end
