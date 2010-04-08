@@ -5,6 +5,7 @@
 </p>
 <%- end -%>
 
+<% cache ['records', @puzzle.id, params[:page] || 1].join("-") do %>
 <%- if @records.empty? -%>
 <p class="challenge">
   Be the first: <%= link_to 'Get the record!', puzzle_times_path(@puzzle) %>
@@ -18,3 +19,4 @@
 <%- end -%>
 
 <%= will_paginate @records, { :params => { :user_id => nil } } %>
+<% end %>
