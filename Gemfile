@@ -11,6 +11,8 @@ gem 'paperclip', :git => "git://github.com/JasonKing/paperclip.git", :branch => 
 gem 'RedCloth'
 #gem 'will_paginate', :git => "git://github.com/timhabermaas/will_paginate.git", :branch => "rails3"
 
+gem 'aws-s3'
+
 group :test do
   gem "rspec-rails", ">= 2.0.0.beta.1"
   gem "factory_girl", :git => "git://github.com/szimek/factory_girl.git", :branch => "rails3"

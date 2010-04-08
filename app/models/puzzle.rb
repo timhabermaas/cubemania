@@ -10,8 +10,9 @@ class Puzzle < ActiveRecord::Base
   end
   has_many :clocks, :dependent => :delete_all
 
-  has_attached_file :image, :path => ":rails_root/public/images/:class/:id/:style/:basename.:extension",
-                            :url => "/images/:class/:id/:style/:basename.:extension"#,
+  has_attached_file :image, :storage => :s3,
+                            :s3_credentials => "#{Rails.root}/config/s3.yml",
+                            :path => ":class/:id/:style/:basename.:extension"
                             #:styles => { :small => ["50x25", :png] }
   #attr_protected :image_file_name, :image_content_type, :image_size
   
