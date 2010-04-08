@@ -4,3 +4,4 @@ log/*.log
 tmp/**/*
 .DS_Store
 config/database.yml
+config/s3.yml
