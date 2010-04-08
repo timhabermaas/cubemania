@@ -1,3 +1,4 @@
+<% cache ['subnavigation', params[:controller], params[:puzzle_id]].join('-') do %>
 <div id="subnavigation">
   <div id="puzzles">
     <ul style="width: <%= kinds.size * 100 %>%">
@@ -30,3 +31,4 @@
     </ul>
   </div>
 </div>
+<% end %>
