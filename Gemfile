@@ -12,6 +12,7 @@ gem 'RedCloth'
 #gem 'will_paginate', :git => "git://github.com/timhabermaas/will_paginate.git", :branch => "rails3"
 
 gem 'aws-s3'
+gem 'memcached'
 
 group :test do
   gem "rspec-rails", ">= 2.0.0.beta.1"
