@@ -13,6 +13,8 @@ gem 'RedCloth'
 
 gem 'aws-s3'
 gem 'memcached'
+gem 'oauth'
+gem 'twitter'
 
 group :test do
   gem "rspec-rails", ">= 2.0.0.beta.1"

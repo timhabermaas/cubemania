@@ -11,6 +11,7 @@ class ApplicationController < ActionController::Base
   #  render :template => "errors/#{response_code_for_rescue(exception)}"
   #end
   
+  
   alias_method :orig_login, :login
   def login
     if request.format.json?
@@ -32,22 +33,28 @@ class ApplicationController < ActionController::Base
     end
   end
   
-  #def default_url_options(options = {})
-  #  if ['competitions', 'records', 'clocks'].include?(options[:controller]) or (options[:controller] == 'matches' and options[:action] != 'index')
-  #    {:puzzle_id => DEFAULT_PUZZLE}
-  #  end
-  #end
+protected
+  def oauth
+    @oauth ||= Twitter::OAuth.new("ARtgvDlsPSj6nNfX68obg",
+                                   "OeGx587uzo658jHtz8JGdpBJmyKWPMpEbIANrYqUQo",
+                                   :sign_in => true)
+  end
+  
+  def client
+    oauth.authorize_from_access(current_user.twitter_token, current_user.twitter_secret)
+    Twitter::Base.new(oauth)
+  end
 
-  private
-    def set_time_zone
-      if logged_in?
-        Time.zone = current_user.time_zone
-      elsif not cookies[:tz_offset].blank?
-        Time.zone = ActiveSupport::TimeZone[-cookies[:tz_offset].to_i.minutes]
-      end
+private
+  def set_time_zone
+    if logged_in?
+      Time.zone = current_user.time_zone
+    elsif not cookies[:tz_offset].blank?
+      Time.zone = ActiveSupport::TimeZone[-cookies[:tz_offset].to_i.minutes]
     end
+  end
 
-    def store_return_to
-      store_location params[:return_to] unless params[:return_to].nil?
-    end
+  def store_return_to
+    store_location params[:return_to] unless params[:return_to].nil?
+  end
 end

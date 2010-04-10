@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20091214002134) do
+ActiveRecord::Schema.define(:version => 20100410114221) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                                                 :null => false
@@ -114,10 +114,6 @@ ActiveRecord::Schema.define(:version => 20091214002134) do
 
   add_index "puzzles", ["kind_id", "name"], :name => "index_puzzles_on_kind_id_and_name", :unique => true
 
-  create_table "schema_info", :id => false, :force => true do |t|
-    t.integer "version"
-  end
-
   create_table "scrambles", :force => true do |t|
     t.string   "scramble",       :limit => 1024,                            :null => false
     t.integer  "position",                                                  :null => false
@@ -151,6 +147,8 @@ ActiveRecord::Schema.define(:version => 20091214002134) do
     t.integer  "points",                            :default => 1000,   :null => false
     t.datetime "updated_at"
     t.boolean  "wants_emails",                      :default => false,  :null => false
+    t.string   "twitter_token"
+    t.string   "twitter_secret"
   end
 
   add_index "users", ["averages_count"], :name => "index_users_on_averages_count"

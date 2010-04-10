@@ -1,5 +1,11 @@
 Cubemania::Application.routes.draw do |map|
   root :to => 'homes#show'
+  
+  resource :twitter_auth do
+    get :confirmed
+  end
+  
+  resource :tweet
 
   resources :posts do
     resources :comments
