@@ -119,6 +119,10 @@ module ApplicationHelper
   def dt(datetime)
     datetime.strftime '%B %d, %Y at %H:%M'
   end
+  
+  def flot_time(time)
+    time.to_i * 1000
+  end
 
   def m(text)
     RedCloth::new(text).to_html.html_safe
