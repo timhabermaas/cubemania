@@ -10,21 +10,3 @@
     <%= link_to 'Get your times in CSV format!', puzzle_averages_path(@puzzle, :format => :csv) %>
   </div>
 </div>
-<!--
-<%- javascript_tag do -%>
-  function addSeries(select) {
-    var index = select.selectedIndex;
-    if (index > 0) {
-      document.getElementById("chart").addSeries(select.options[index].value);
-      select.selectedIndex = 0;
-    }
-  }
-  function setSliderMax(max) {
-    if (max < 2) document.getElementById("chart").setItemCount(1);
-    else $('#slider').slider('updateMax', max);
-  }
-  $('#slider').slider({min: 1, max: 1, startValue: 1, stepping: 1, change: function(e, ui) {
-    try { setTimeout("document.getElementById('chart').setItemCount(" + ui.value + ")", 1) } catch (e) {}
-  }});
-<%- end -%>
--->
