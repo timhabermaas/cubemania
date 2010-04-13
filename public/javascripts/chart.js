@@ -57,10 +57,12 @@ $("#times #chart").live("plothover", function(event, pos, item) {
   }
 });
 
-$(document).ready(function() {
+$("#times #chart").ready(function() {
 
   var startColor = 7;
   var url = $("#times #chart").attr("data-url");
+  
+  $("#times #chart").css("background", "url(/images/ajax-loader.gif) center center no-repeat");
 
   $.getJSON(url, function(data) {
     var raw_data = data.averages;
@@ -77,6 +79,7 @@ $(document).ready(function() {
       tooltips: tooltips,
       data: result
     }];
+    $("#times #chart").css("background", "none");
     plot = $.plot($('#chart'), averages, options);
   });
 });
