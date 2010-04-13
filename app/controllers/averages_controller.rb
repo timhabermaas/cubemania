@@ -5,7 +5,7 @@ class AveragesController < ApplicationController
   def index
     @user = User.find params[:user_id]
     @puzzle = Puzzle.find params[:puzzle_id]
-    @averages = @user.averages.for params[:puzzle_id], params[:page]
+    @averages = @user.averages.where(:puzzle_id => params[:puzzle_id]).order('created_at desc').includes(:singles)
     
     respond_to do |format|
       format.html

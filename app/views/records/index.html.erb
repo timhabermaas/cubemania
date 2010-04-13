@@ -5,8 +5,8 @@
 </p>
 <%- end -%>
 
-<% cache ['records', @puzzle.id, @puzzle.version, params[:page] || 1, params[:type]].join("/") do %>
-<% @records = @records.paginate :per_page => 50, :page => params[:page] %>
+<% cache cache_key(@puzzle.version) do %>
+<% @records = paginate @records, 10 %>
 <%- if @records.empty? -%>
 <p class="challenge">
   Be the first: <%= link_to 'Get the record!', puzzle_times_path(@puzzle) %>

@@ -1,4 +1,6 @@
+<% cache cache_key(@user.cache_key) do %>
 {
   "name": "<%= @user.name %>",
   "averages": [ <%= if averages = render(@averages); averages[0..-2]; else; nil; end %> ]
 }
+<% end %>

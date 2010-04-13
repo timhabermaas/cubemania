@@ -162,6 +162,17 @@ module ApplicationHelper
   def li_for(record, *args, &block)
     content_tag_for :li, record, *args, &block
   end
+  
+  def cache_key(attribute = nil)
+    key = params.map{ |k, v| k.to_s + '/' + v.to_s}.sort
+    key << attribute.to_s if attribute
+    logger.info key.join('/')
+    key.join('/')
+  end
+  
+  def paginate(object, per_page = 100)
+    object = object.paginate :page => params[:page], :per_page => per_page
+  end
 
   def options_for_user_select
     users = User.find_by_sql ['SELECT u.id, u.name FROM clocks r LEFT OUTER JOIN users u ON r.user_id = u.id WHERE r.puzzle_id = ? AND r.record = ? AND r.type = ? AND u.id <> ? ORDER BY u.name', params[:puzzle_id], true, 'Average', current_user.id]
