@@ -19,4 +19,7 @@ Cubemania::Application.configure do
   config.action_mailer.raise_delivery_errors = false
 end
 
+# set timeout for database queries to 20s
+ActiveRecord::Base.connection.select_all('set statement_timeout to 20000')
+
 DEFAULT_PUZZLE = 4
