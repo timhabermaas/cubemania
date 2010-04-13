@@ -7,9 +7,11 @@ Chart:
   Compare with...
   Loading icon
   Timeline should depend on user's timzone
+  Save plot as hidden data to #chart ($("#times #chart").data('plot', plot))
 
 General:
   make a general cache_key(args*) helper method which joins with "/"
+  Remove Timer JS Code to external JS file. Use the data-attributes for urls and stuff
 
 Matches should be destroyable, but only through a destroy request including a reason why the user wants to delete that match.
 Ask Patrick for a user's statistics table.
