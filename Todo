@@ -1,10 +1,10 @@
 Chart: 
-  Averages.size == 0 ==> fail
   Adding new item seems to break some stuff
   Link to switch between "Display by date" and "Display by number"
   Small chart for scrolling and zooming
   Compare with...
   Loading icon
+  Timeline should depend on user's timzone
 
 General:
   Error: Missing template homes/show with :json.

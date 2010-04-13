@@ -1,4 +1,4 @@
 {
   "name": "<%= @user.name %>",
-  "averages": [ <%= render(@averages)[0..-2] %> ]
+  "averages": [ <%= if averages = render(@averages); averages[0..-2]; else; nil; end %> ]
 }
