@@ -57,7 +57,10 @@ $("#times #chart").live("plothover", function(event, pos, item) {
   }
 });
 
-$("#times #chart").ready(function() {
+$(document).ready(function() {
+
+  if ($("#times #chart").length == 0)
+    return;
 
   var startColor = 7;
   var url = $("#times #chart").attr("data-url");
