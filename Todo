@@ -1,5 +1,7 @@
-Chart: 
+Chart:
   Adding new item seems to break some stuff
+  Disable Tooltip if mouse leaves chart
+  Format y-axis labels
   Link to switch between "Display by date" and "Display by number"
   Small chart for scrolling and zooming
   Compare with...
