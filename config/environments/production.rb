@@ -42,7 +42,4 @@ Cubemania::Application.configure do
   # config.threadsafe!
 end
 
-# set timeout for database queries to 20s
-ActiveRecord::Base.connection.select_all('set statement_timeout to 20000')
-
 DEFAULT_PUZZLE = 2
