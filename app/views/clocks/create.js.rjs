@@ -4,7 +4,7 @@ if @average.competition.nil? and @average.match.nil?
     page['timer'].replaceWith render('shared/timer.html.erb')
     page << "updateScramble()"
     page['type'].focus if params[:input_method] == 'manual'
-    flash[:notice] = "#{@average.notice} #{link_to 'Tweet it!', tweet_path, :method => :post}".html_safe if @average.notice
+    flash[:notice] = @average.notice if @average.notice
   else
     page['timer input'].removeAttr 'disabled'
     flash[:notice] = @average.errors.full_messages.join ', '
