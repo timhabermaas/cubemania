@@ -1,4 +1,14 @@
-Averages which belong to a match should not be destroyable.
+Chart: 
+  Averages.size == 0 ==> fail
+  Adding new item seems to break some stuff
+  Link to switch between "Display by date" and "Display by number"
+  Small chart for scrolling and zooming
+  Compare with...
+  Loading icon
+
+General:
+  Error: Missing template homes/show with :json.
+
 Matches should be destroyable, but only through a destroy request including a reason why the user wants to delete that match.
 Ask Patrick for a user's statistics table.
 User#index becomes the ranking page.
@@ -37,5 +47,4 @@ Enhancements:
 New Features:
 
   Admin Buttons
-  Add tags to competitions
   Multiple Blindfolded!
