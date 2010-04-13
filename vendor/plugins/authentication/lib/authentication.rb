@@ -78,7 +78,7 @@ module Authentication
     end
     
     def current_user
-      params[:user_id] ||= session[:user_id]
+      params[:user_id] ||= session[:user_id].to_s
       @current_user ||= User.find session[:user_id] unless session[:user_id].nil?
     rescue ActiveRecord::RecordNotFound
       session[:user_id] = nil
