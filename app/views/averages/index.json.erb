@@ -1,3 +1,4 @@
-[
-<%= render(@averages)[0..-2] %>
-]
+{
+  "name": "<%= @user.name %>",
+  "averages": [ <%= render(@averages)[0..-2] %> ]
+}

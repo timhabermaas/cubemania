@@ -1,5 +1,5 @@
 {
   "time": <%= average.time / 1000.0 %>,
-  "tooltip": "<strong><%=t average.time %></strong> (<%= average.singles.map{|s| t(s.time)}.join(' ') %>)<br/><em><%=dt average.created_at %></em><%= average.comment %>",
+  "tooltip": "<strong><%=t average.time %></strong> (<%= average.singles.map{|s| t(s.time)}.join(', ') %>)<br/><em><%=dt average.created_at %></em><%= "<br/>#{average.comment}".html_safe unless average.comment.blank? %>",
   "created_at": <%= flot_time average.created_at %>
 },

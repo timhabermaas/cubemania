@@ -1,17 +1,16 @@
 <div id="times">
-  <div id="chart">
-    <a href="http://www.adobe.com/go/getflashplayer">
-      <img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" />
-    </a>
+  <div id="chart" data-url="<%= puzzle_averages_path(@puzzle, :format => :json) %>">
   </div>
-  <div id="slider"><div class="ui-slider-handle"></div></div>
+  <div id="mini_chart">
+  </div>
+  <div id="tooltip">
+  </div>
   <%= select_tag 'user', options_for_user_select, :onchange => 'addSeries(this)' %>
   <div id="formats">
     <%= link_to 'Get your times in CSV format!', puzzle_averages_path(@puzzle, :format => :csv) %>
   </div>
 </div>
-
-<%- content_for :head, javascript_tag("swfobject.embedSWF('/movies/chart.swf?#{Time.now.to_i}', 'chart', '750', '400', '9.0.28.0', '/movies/expressInstall.swf', {dataUrl: '#{puzzle_averages_path params[:puzzle_id], :format => :xml}'}, {bgcolor: '5c7da0'});") -%>
+<!--
 <%- javascript_tag do -%>
   function addSeries(select) {
     var index = select.selectedIndex;
@@ -28,3 +27,4 @@
     try { setTimeout("document.getElementById('chart').setItemCount(" + ui.value + ")", 1) } catch (e) {}
   }});
 <%- end -%>
+-->

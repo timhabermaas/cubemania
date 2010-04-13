@@ -12,6 +12,7 @@ class ApplicationController < ActionController::Base
   #end
   
   
+=begin
   alias_method :orig_login, :login
   def login
     if request.format.json?
@@ -32,6 +33,7 @@ class ApplicationController < ActionController::Base
       orig_permit role
     end
   end
+=end
   
 protected
   def oauth

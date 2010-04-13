@@ -359,37 +359,11 @@
 }
 #times #chart {
   height: 400px;
-  text-align: center;
+  width: 700px;
+  margin: 0 auto;
 }
-#times #chart a {
-  display: block;
-  padding: 168px 0;
-}
-#times #chart a:hover {
-  background-color: transparent;
-}
-#times #chart img {
-  border: 16px solid #fff;
-}
-#times .ui-slider {
-  float: left;
-  width: 511px;
-  height: 23px;
-  margin-left: 89px;
-  position: relative;
-  background: url(/images/slider.gif) center left repeat-x;
-}
-#times .ui-slider-handle {
-  position: absolute;
-  z-index: 1;
-  height: 21px;
-  width: 15px;
-  top: 0px;
-  left: 0px;
-  background-image: url(/images/handle.gif);
-}
-#times .ui-slider-handle-active {
-  border: 1px dotted black;
+#times #chart .legend td {
+  padding-right: 10px;
 }
 #times select {
   float: right;
@@ -789,8 +763,15 @@ cite.neutral, strong.neutral {
 
 #tooltip {
   position: absolute;
+  display: none;
   border: 2px solid #df0;
   background: #fff;
   padding: 2px 5px;
   color: #000;
+  -moz-border-radius: 5px; -webkit-border-radius: 5px;
+  font-size: 80%;
+}
+#tooltip em {
+  font-style: italic;
+  background-color: transparent;
 }
