@@ -9,7 +9,7 @@ Chart:
   Timeline should depend on user's timzone
 
 General:
-  Error: Missing template homes/show with :json.
+  make a general cache_key(args*) helper method which joins with "/"
 
 Matches should be destroyable, but only through a destroy request including a reason why the user wants to delete that match.
 Ask Patrick for a user's statistics table.
