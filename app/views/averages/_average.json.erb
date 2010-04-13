@@ -1,5 +1,6 @@
+<% singles = average.singles.map{ |s| t s.time }.join(', ') %>
 {
   "time": <%= average.time / 1000.0 %>,
-  "tooltip": <%= raw("<strong>#{t(average.time)}</strong><br />#{average.comment.blank? ? '' : m(h(average.comment.respond_to?(:force_encoding) ? average.comment.force_encoding('UTF-8') : average.comment))}".to_json) %>,
-  "created_at": <%= flot_time average.created_at %>
+  "tooltip": <%= raw("<strong>#{t(average.time)}</strong> (#{singles})<br /><em>#{dt average.created_at}</em><br />#{average.comment.blank? ? '' : m(h(average.comment.respond_to?(:force_encoding) ? average.comment.force_encoding('UTF-8') : average.comment))}".to_json) %>,
+  "created_at": <%= flot_dt average.created_at %>
 },

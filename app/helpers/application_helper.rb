@@ -120,7 +120,7 @@ module ApplicationHelper
     datetime.strftime '%B %d, %Y at %H:%M'
   end
   
-  def flot_time(time)
+  def flot_dt(time)
     time.to_i * 1000
   end
 
