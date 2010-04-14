@@ -8766,6 +8766,18 @@ var options = {
     mode: "time",
     timeFormat: "%B %d, %Y at %H:%M",
   },
+  yaxis: {
+    tickFormatter: function(t) {
+      if (t >= 60) {
+        min = Math.floor(t / 60);
+        sec = t - min * 60;
+        sec = sec < 10 ? "0" + sec : sec;  
+        return min + ":" + sec + " min";//'%d:%05.2f' % [min, sec] + ' min' # 12.555 => "12.55"
+      } else {
+        return t.toFixed(2) + " s";//'%.2f' % (hs.to_f / 100) + ' s'
+      }
+    }
+  },
   legend: {
     labelFormatter: function(label, series) {
       return '<a href="#' + label + '">' + label + '</a>';
