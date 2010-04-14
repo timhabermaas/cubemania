@@ -18,7 +18,7 @@ var options = {
   },
   xaxis: {
     mode: "time",
-    timeFormat: "%B %d, %Y at %H:%M",
+    timeFormat: "%B %d, %Y at %H:%M"
   },
   yaxis: {
     tickFormatter: function(t) {
@@ -30,7 +30,8 @@ var options = {
       } else {
         return t.toFixed(2) + " s";//'%.2f' % (hs.to_f / 100) + ' s'
       }
-    }
+    },
+    labelWidth: 70
   },
   legend: {
     labelFormatter: function(label, series) {
@@ -45,7 +46,7 @@ var options = {
 function addItem(data) {
   averages[0].data.push([data.created_at, data.time]);
   averages[0].tooltips.push(data.tooltip);
-  $.plot($('#chart'), averages, options);
+  $("#times #chart").data("plot", $.plot($('#chart'), averages, options));
 }
 
 function showTooltip(x, y, content) {
@@ -95,6 +96,6 @@ $(document).ready(function() {
       data: result
     }];
     $("#times #chart").css("background", "none");
-    plot = $.plot($('#chart'), averages, options);
+    $("#times #chart").data("plot", $.plot($('#chart'), averages, options));
   });
 });
