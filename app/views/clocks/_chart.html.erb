@@ -6,9 +6,9 @@
   </div>
   <div id="tooltip">
   </div>
-  <%= select_tag 'user', options_for_user_select, :onchange => 'addSeries(this)' %>
+  <%= select_tag 'user', options_for_user_select %>
   <div id="formats">
-    <%= link_to 'Get your times in CSV format!', puzzle_averages_path(@puzzle, :format => :csv) %>
+    <%= link_to 'Display by Date', '#' %> &middot; <%= link_to 'Get your times in CSV format!', puzzle_averages_path(@puzzle, :format => :csv) %>
   </div>
 </div>
 <% end %>

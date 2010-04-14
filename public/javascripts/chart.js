@@ -2,11 +2,11 @@ var options = {
   series: {
     lines: { 
       show: true,
-      lineWidth: 3
+      lineWidth: 4
     },
     points: {
       show: true,
-      radius: 4
+      radius: 5
     }
   },
   grid: {
@@ -14,22 +14,28 @@ var options = {
     color: "#fff",
     tickColor: "#6c89a9"
   },
-  xaxis: {
+  xaxisIndex: {
+    mode: null,
+    ticks: 5,
+    tickDecimals: 0
+  },
+  xaxisDate: {
     mode: "time",
-    timeFormat: "%B %d, %Y at %H:%M"
+    ticks: 5,
+    timeformat: "%b, %d %y"
   },
   yaxis: {
-    tickFormatter: function(t) {
+    tickFormatter: function(t, axis) {
       if (t >= 60) {
         min = Math.floor(t / 60);
         sec = t - min * 60;
-        sec = sec < 10 ? "0" + sec : sec;  
-        return min + ":" + sec + " min";//'%d:%05.2f' % [min, sec] + ' min' # 12.555 => "12.55"
+        sec = sec < 10 ? "0" + sec.toFixed(0) : sec.toFixed(0);  
+        return min + ":" + sec + " min";
       } else {
-        return t.toFixed(2) + " s";//'%.2f' % (hs.to_f / 100) + ' s'
+        return t.toFixed(2) + " s";
       }
     },
-    labelWidth: 70
+    labelWidth: 70,
   },
   legend: {
     labelFormatter: function(label, series) {
@@ -41,12 +47,42 @@ var options = {
   }
 };
 
+function switchToDateView() {
+  options.xaxis = options.xaxisDate;
+  averages = $("#times #chart").data("averages");
+  for (i = 0; i < averages.length; i++) {
+    for (j = 0; j < averages[i].data.length; j++) {
+      averages[i].data[j][0] = averages[i].dates[j];
+    }
+  }
+  $.plot($("#chart"), averages, options);
+}
+
+function switchToIndexView() {
+  options.xaxis = options.xaxisIndex;
+  averages = $("#times #chart").data("averages");
+  for (i = 0; i < averages.length; i++) {
+    for (j = 0; j < averages[i].data.length; j++) {
+      averages[i].data[j][0] = j;
+    }
+  }
+  $.plot($("#chart"), averages, options);
+}
+
 function addItem(data) {
+  addItemWithoutPlot(data);
+  $.plot($('#chart'), $("#times #chart").data("averages"), options);
+}
+
+function addItemWithoutPlot(data) {
   var averages = $("#times #chart").data("averages");
-  averages[0].data.push([data.created_at, data.time]);
+  if (options.xaxis.mode == null) {
+    averages[0].data.push([averages[0].data.length, data.time]);
+  } else {
+    averages[0].data.push([data.created_at, data.time]);
+  }
   averages[0].tooltips.push(data.tooltip);
-  $.plot($('#chart'), averages, options);
-  $("#times #chart").data("averages", averages);
+  averages[0].dates.push(data.created_at);
 }
 
 function showTooltip(x, y, content) {
@@ -81,22 +117,29 @@ $(document).ready(function() {
   $("#times #chart").css("background", "url(/images/ajax-loader.gif) center center no-repeat");
 
   $.getJSON(url, function(data) {
-    var raw_data = data.averages.reverse();
-    var result = [];
-    var tooltips = [];
-    $.each(raw_data, function(i, item) {
-      result.push([item.created_at, item.time]);
-      tooltips.push(item.tooltip);
-    });
     var averages = [
     {
       color: startColor,
       label: data.name,
-      tooltips: tooltips,
-      data: result
+      tooltips: [],
+      data: [],
+      dates: []
     }];
+    $("#times #chart").data("averages", averages);
+    options.xaxis = options.xaxisIndex;
+    $.each(data.averages.reverse(), function(i, item) {
+      addItemWithoutPlot(item);
+    });
     $("#times #chart").css("background", "none");
     $("#times #chart").data("plot", $.plot($('#chart'), averages, options));
-    $("#times #chart").data("averages", averages);
+  });
+
+  $('#times #formats a').toggle(function() {
+    $(this).html('<a href="#">Display by Index</a>');
+    switchToDateView();
+  }, function() {
+    $(this).html('<a href="#">Display by Date</a>');
+    switchToIndexView();
   });
 });
+

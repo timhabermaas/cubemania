@@ -1,12 +1,11 @@
 Chart:
   Adding new item seems to break some stuff
   Disable Tooltip if mouse leaves chart
-  Link to switch between "Display by date" and "Display by number"
+  Clicking on a bubble leads to Average Details load from server (averages#show). You also can click "Destroy" there!
   Small chart for scrolling and zooming
   Compare with...
-  Loading icon
   Timeline should depend on user's timzone
-  Save plot as hidden data to #chart ($("#times #chart").data('plot', plot))
+  Threshold at where your best x averages lie below
 
 General:
   make a general cache_key(args*) helper method which joins with "/"
