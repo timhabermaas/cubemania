@@ -8744,6 +8744,8 @@ $(document).ready(function() {
 })(jQuery);
 
 
+var startColor = 7;
+
 var options = {
   series: {
     lines: { 
@@ -8770,6 +8772,11 @@ var options = {
     ticks: 5,
     timeformat: "%b, %d %y"
   },
+  xaxis: {
+    mode: null,
+    ticks: 5,
+    tickDecimals: 0
+  },
   yaxis: {
     tickFormatter: function(t, axis) {
       if (t >= 60) {
@@ -8792,6 +8799,7 @@ var options = {
     margin: [5, 10]
   }
 };
+
 
 function switchToDateView() {
   options.xaxis = options.xaxisDate;
@@ -8820,15 +8828,17 @@ function addItem(data) {
   $.plot($('#chart'), $("#times #chart").data("averages"), options);
 }
 
-function addItemWithoutPlot(data) {
+function addItemWithoutPlot(data, index) {
+  if (index == null)
+    index = 0;
   var averages = $("#times #chart").data("averages");
   if (options.xaxis.mode == null) {
-    averages[0].data.push([averages[0].data.length, data.time]);
+    averages[index].data.push([averages[index].data.length, data.time]);
   } else {
-    averages[0].data.push([data.created_at, data.time]);
+    averages[index].data.push([data.created_at, data.time]);
   }
-  averages[0].tooltips.push(data.tooltip);
-  averages[0].dates.push(data.created_at);
+  averages[index].tooltips.push(data.tooltip);
+  averages[index].dates.push(data.created_at);
 }
 
 function showTooltip(x, y, content) {
@@ -8844,41 +8854,51 @@ function hideTooltip() {
   $("#tooltip").hide();
 }
 
+function addSeries(url) {
+  $("#times #chart").css("background", "url(/images/ajax-loader.gif) center center no-repeat");
+  $.getJSON(url, function(data) {
+    var averages = $("#times #chart").data("averages");
+    var new_averages = {
+      color: startColor + averages.length,
+      label: data.name,
+      tooltips: [],
+      data: [],
+      dates: []
+    };
+    var index = averages.push(new_averages);
+    $.each(data.averages.reverse(), function(i, item) {
+      addItemWithoutPlot(item, index - 1);
+    });
+    $.plot($('#chart'), averages, options);
+    $("#times #chart").css("background", "none");
+  });
+  
+}
+
 $("#times #chart").live("plothover", function(event, pos, item) {
   if (item) {
-      showTooltip(item.pageX, item.pageY, item.series.tooltips[item.dataIndex]);
+    showTooltip(item.pageX, item.pageY, item.series.tooltips[item.dataIndex]);
   } else {
     hideTooltip();
   }
 });
+
 
 $(document).ready(function() {
 
   if ($("#times #chart").length == 0)
     return;
 
-  var startColor = 7;
-  var url = $("#times #chart").attr("data-url");
-  
-  $("#times #chart").css("background", "url(/images/ajax-loader.gif) center center no-repeat");
-
-  $.getJSON(url, function(data) {
-    var averages = [
-    {
-      color: startColor,
-      label: data.name,
-      tooltips: [],
-      data: [],
-      dates: []
-    }];
-    $("#times #chart").data("averages", averages);
-    options.xaxis = options.xaxisIndex;
-    $.each(data.averages.reverse(), function(i, item) {
-      addItemWithoutPlot(item);
-    });
-    $("#times #chart").css("background", "none");
-    $("#times #chart").data("plot", $.plot($('#chart'), averages, options));
+  $("#times #user").change(function() {
+    url = $("#times #user option:selected:first").val();
+    addSeries(url)
   });
+
+  $("#times #chart").data("averages", []);
+
+  var url = $("#times #chart").attr("data-url");
+
+  addSeries(url);
 
   $('#times #formats a').toggle(function() {
     $(this).html('<a href="#">Display by Index</a>');
@@ -8888,4 +8908,3 @@ $(document).ready(function() {
     switchToIndexView();
   });
 });
-
