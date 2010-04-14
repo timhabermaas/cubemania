@@ -8912,7 +8912,7 @@ $(document).ready(function() {
 
   addSeries(url);
 
-  $("#times #formats a").toggle(function() {
+  $("#times #formats a.mode").toggle(function() {
     $(this).html('<a href="#">Display by Index</a>');
     switchToDateView();
   }, function() {
