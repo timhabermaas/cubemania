@@ -2,6 +2,6 @@
 <% @averages = paginate(@averages) %>
 {
   "name": "<%= @user.name %>",
-  "averages": [ <%= if averages = render(@averages); averages[0..-2]; else; nil; end %> ]
+  "averages": [ <%= render(@averages).try(:[],0..-2) %> ]
 }
 <% end %>
