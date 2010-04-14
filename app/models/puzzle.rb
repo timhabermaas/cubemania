@@ -47,7 +47,7 @@ class Puzzle < ActiveRecord::Base
       	clock_scramble
     	else
     	  ''
-    end
+    end.html_safe
   end
 
   private
