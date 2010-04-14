@@ -1,5 +1,6 @@
 Chart:
   Adding new item seems to break some stuff
+  DNF
   Disable Tooltip if mouse leaves chart
   Clicking on a bubble leads to Average Details load from server (averages#show). You also can click "Destroy" there!
   Small chart for scrolling and zooming
