@@ -6,7 +6,7 @@
 <%- end -%>
 
 <% cache cache_key(@puzzle.version) do %>
-<% @records = paginate @records, 10 %>
+<% @records = paginate @records, 50 %>
 <%- if @records.empty? -%>
 <p class="challenge">
   Be the first: <%= link_to 'Get the record!', puzzle_times_path(@puzzle) %>
