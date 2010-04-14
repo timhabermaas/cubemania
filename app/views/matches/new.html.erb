@@ -18,7 +18,7 @@ in <small><%= @puzzle.name %> <%= @puzzle.kind.name %></small>
   <%= render :partial => 'details', :locals => { :user => @user } %>
 </table>
 <div class="clear"></div>
-<% form_for [@puzzle, @user, @match ||= Match.new], :html => { :id => 'match_form' } do |form| %>
+<%= form_for [@puzzle, @user, @match ||= Match.new], :html => { :id => 'match_form' } do |form| %>
   <p>
     <%= form.submit 'Challenge!' %>
   </p>

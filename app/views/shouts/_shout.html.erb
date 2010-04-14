@@ -1,4 +1,4 @@
-<% li_for shout do %>
+<%= li_for shout do %>
   <cite><%= shout.user.nil? ? 'Deleted Cuber' : link_to(shout.user.name, shout.user) %></cite>
   <div class="flag"><div class="top_left"><div class="top_right"><div class="bottom_left"><div class="bottom_right">
     <div class="text"><%=m shout.content %></div>
