@@ -1,5 +1,3 @@
-var averages = [];
-
 var options = {
   series: {
     lines: { 
@@ -44,9 +42,11 @@ var options = {
 };
 
 function addItem(data) {
+  var averages = $("#times #chart").data("averages");
   averages[0].data.push([data.created_at, data.time]);
   averages[0].tooltips.push(data.tooltip);
-  $("#times #chart").data("plot", $.plot($('#chart'), averages, options));
+  $.plot($('#chart'), averages, options);
+  $("#times #chart").data("averages", averages);
 }
 
 function showTooltip(x, y, content) {
@@ -81,14 +81,14 @@ $(document).ready(function() {
   $("#times #chart").css("background", "url(/images/ajax-loader.gif) center center no-repeat");
 
   $.getJSON(url, function(data) {
-    var raw_data = data.averages;
+    var raw_data = data.averages.reverse();
     var result = [];
     var tooltips = [];
     $.each(raw_data, function(i, item) {
       result.push([item.created_at, item.time]);
       tooltips.push(item.tooltip);
     });
-    averages = [
+    var averages = [
     {
       color: startColor,
       label: data.name,
@@ -97,5 +97,6 @@ $(document).ready(function() {
     }];
     $("#times #chart").css("background", "none");
     $("#times #chart").data("plot", $.plot($('#chart'), averages, options));
+    $("#times #chart").data("averages", averages);
   });
 });
