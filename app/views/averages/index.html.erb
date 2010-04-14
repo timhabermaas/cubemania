@@ -5,10 +5,12 @@
 
 <table id="averages">
   <thead>
-    <th>Average</th>
-    <th colspan="<%=@puzzle.attempt_count%>">Singles</th>
-    <th>Date</th>
-    <th></th>
+    <tr>
+      <th>Average</th>
+      <th colspan="<%= @puzzle.attempt_count %>">Singles</th>
+      <th>Date</th>
+      <th></th>
+    </tr>
   </thead>
   <tbody>
     <%= render @averages %>
