@@ -13,7 +13,7 @@
 
 <h1>Login</h1>
 
-<% form_for :login, @login, :url => login_path do |form| %>
+<%= form_for @login, :as => :login, :url => login_path do |form| %>
   <p>
     <%= form.label :name %>
     <%= form.text_field :name %>

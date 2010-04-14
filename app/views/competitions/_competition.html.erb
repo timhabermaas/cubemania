@@ -1,4 +1,4 @@
-<% div_for competition, :class => "#{'sticky' if competition.sticky?} #{competition.repeat}" do %>
+<%= div_for competition, :class => "#{'sticky' if competition.sticky?} #{competition.repeat}" do %>
   <div class="skill <%= competition.skill %>" title="<%= competition.skill.titleize %>"><span><%= competition.skill.titleize %></span></div>
   <small><%= competition.repeat.titleize %></small>
   <h2><%= link_to competition.name.titleize, puzzle_competition_path(params[:puzzle_id], competition) %></h2>

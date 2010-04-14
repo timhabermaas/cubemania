@@ -197,7 +197,7 @@ module ActionView
   module Helpers
     module FormHelper
       def error_message_on(object, method, prepend_text = '', append_text = '', css_class = 'error')
-        if (obj = (object.respond_to?(:errors) ? object : instance_variable_get("@#{object}"))) && (errors = obj.errors.on(method))
+        if (obj = (object.respond_to?(:errors) ? object : instance_variable_get("@#{object}"))) && (errors = obj.errors[method])
           content_tag('span', "#{prepend_text}#{errors.is_a?(Array) ? errors.first : errors}#{append_text}", :class => 'error')
         else 
           ''

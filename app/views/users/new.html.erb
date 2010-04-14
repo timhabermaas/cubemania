@@ -1,6 +1,6 @@
 <h1>Register</h1>
 
-<% form_for @user ||= User.new do |form| %>
+<%= form_for @user ||= User.new do |form| %>
   <p>
     <%= form.label :name %>
     <%= form.text_field :name %>
