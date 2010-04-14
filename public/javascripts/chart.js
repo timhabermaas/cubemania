@@ -1,5 +1,7 @@
 var startColor = 7;
 
+var plot;
+
 var options = {
   series: {
     lines: { 
@@ -13,6 +15,7 @@ var options = {
   },
   grid: {
     hoverable: true,
+    clickable: true,
     color: "#fff",
     tickColor: "#6c89a9"
   },
@@ -91,6 +94,7 @@ function addItemWithoutPlot(data, index) {
   } else {
     averages[index].data.push([data.created_at, data.time]);
   }
+  averages[index].urls.push(data.url);
   averages[index].tooltips.push(data.tooltip);
   averages[index].dates.push(data.created_at);
 }
@@ -117,13 +121,14 @@ function addSeries(url) {
       label: data.name,
       tooltips: [],
       data: [],
-      dates: []
+      dates: [],
+      urls: []
     };
     var index = averages.push(new_averages);
     $.each(data.averages.reverse(), function(i, item) {
       addItemWithoutPlot(item, index - 1);
     });
-    $.plot($('#chart'), averages, options);
+    plot = $.plot($('#chart'), averages, options);
     $("#times #chart").css("background", "none");
   });
   
@@ -137,11 +142,18 @@ $("#times #chart").live("plothover", function(event, pos, item) {
   }
 });
 
-
 $(document).ready(function() {
 
   if ($("#times #chart").length == 0)
     return;
+
+  $("#times #chart").bind("plotclick", function(event, pos, item) {
+    if (item) {
+      plot.unhighlight();
+      plot.highlight(item.series, item.datapoint);
+      $.getScript(item.series.urls[item.dataIndex]);
+    }
+  });
 
   $("#times #user").change(function() {
     url = $("#times #user option:selected:first").val();
@@ -154,11 +166,12 @@ $(document).ready(function() {
 
   addSeries(url);
 
-  $('#times #formats a').toggle(function() {
+  $("#times #formats a").toggle(function() {
     $(this).html('<a href="#">Display by Index</a>');
     switchToDateView();
   }, function() {
     $(this).html('<a href="#">Display by Date</a>');
     switchToIndexView();
   });
+
 });

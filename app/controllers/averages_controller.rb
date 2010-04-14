@@ -19,6 +19,8 @@ class AveragesController < ApplicationController
   end
   
   def show
+    @user = current_user
+    @puzzle = Puzzle.find params[:puzzle_id]
     object :include => :singles
   end
   
