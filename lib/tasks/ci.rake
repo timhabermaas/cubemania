@@ -8,6 +8,6 @@ namespace :ci do
   end
   
   desc "Prepare for CI and run entire test suite"
-  task :build => ["ci:copy_db_yml", "spec"] do
+  task :build => ["ci:copy_db_yml", "db:test:load", "spec"] do
   end
 end
