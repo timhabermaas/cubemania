@@ -3,7 +3,7 @@ development:
   database: db/development.sqlite3
   timeout: 5000
 
-text:
+test:
   adapter: sqlite3
   database: db/text.sqlite3
   timeout: 5000

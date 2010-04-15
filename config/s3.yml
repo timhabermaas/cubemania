@@ -6,3 +6,7 @@ production:
   bucket: <%= ENV['S3_BUCKET'] || "bucket" %>
   access_key_id: <%= ENV['S3_KEY'] || "asdfag" %>
   secret_access_key: <%= ENV['S3_SECRET'] || "adsfasf" %>
+test:
+  bucket: <%= ENV['S3_BUCKET'] || "bucket" %>
+  access_key_id: <%= ENV['S3_KEY'] || "asdfag" %>
+  secret_access_key: <%= ENV['S3_SECRET'] || "adsfasf" %>
