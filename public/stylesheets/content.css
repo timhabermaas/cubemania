@@ -768,10 +768,11 @@ cite.neutral, strong.neutral {
   background: #fff;
   padding: 2px 5px;
   color: #000;
-  -moz-border-radius: 5px; -webkit-border-radius: 5px;
+  -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px;
+  -webkit-box-shadow: 3px 3px 6px #231; -moz-box-shadow: 3px 3px 6px #231; box-shadow: 3px 3px 6px #231;
   font-size: 80%;
 }
 #tooltip em {
   font-style: italic;
-  background-color: transparent;
+  background: #fff;
 }
