@@ -10,7 +10,7 @@ class PasswordRecoveriesController < ApplicationController
     @recovery = Recovery.new params[:recovery]
     if user = @recovery.validate
       user.reset_password!
-      UserMailer.deliver_password_reset_mail(user, user.password)
+      UserMailer.password_reset(user, user.password).deliver
       if user.save
         flash[:notice] = "Your new password has been sent to #{@recovery.email}."
         redirect_to root_path
