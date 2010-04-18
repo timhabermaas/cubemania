@@ -1,12 +1,11 @@
 class PasswordRecoveriesController < ApplicationController
-  
   logout :except => []
   skip_login
-  
+
   def show
     @recovery = Recovery.new
   end
-  
+
   def create
     @recovery = Recovery.new params[:recovery]
     if user = @recovery.validate
