@@ -20,6 +20,7 @@ gem 'smurf'
 
 group :test do
   gem "rspec-rails", ">= 2.0.0.beta.1"
+  gem 'metric_fu'
   gem "factory_girl", :git => "git://github.com/szimek/factory_girl.git", :branch => "rails3"
 end
 
