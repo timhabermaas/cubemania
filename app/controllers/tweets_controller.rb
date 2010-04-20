@@ -6,10 +6,9 @@ class TweetsController < ApplicationController
   def create
     @average = last_average
     if Rails.env.production?
-      twitter_client.update("New PB in #{last_average.puzzle.name}")
+      twitter_client.update(render_to_string(:partial => 'tweet.text'))
     else
-      logger.info "Tweeted:"
-      logger.info render_to_string(:partial => 'tweet.text')
+      logger.info "[Tweeted]" + render_to_string(:partial => 'tweet.text')
     end
     flash[:notice] = "Tweeted your new record. <a href='http://twitter.com/#{twitter_client.info['screen_name']}'>Check it out!</a>".html_safe
     redirect_back(root_path)
