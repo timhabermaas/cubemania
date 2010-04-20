@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100413173345) do
+ActiveRecord::Schema.define(:version => 20100420211605) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                                                 :null => false
@@ -51,7 +51,7 @@ ActiveRecord::Schema.define(:version => 20100413173345) do
     t.datetime "updated_at"
     t.integer  "puzzle_id",                    :default => 0,      :null => false
     t.string   "repeat",         :limit => 32, :default => "once", :null => false
-    t.boolean  "sticky"
+    t.boolean  "sticky",                       :default => false,  :null => false
     t.integer  "averages_count",               :default => 0,      :null => false
     t.string   "skill",          :limit => 32, :default => "all",  :null => false
   end
