@@ -101,12 +101,27 @@ module ApplicationHelper
     end
   end
 
+  def ft(time)
+    hs = (time / 10.0).round
+    if hs >= 6000
+      min = hs / 6000
+      sec = (hs - min * 6000) / 100.0
+      '%d:%05.2f' % [min, sec] + ' min' # 12.555 => "12.55"
+    else
+      '%.2f' % (hs.to_f / 100) + ' s'
+    end
+  end
+
   def d(date)
     date.strftime '%B %d, %Y'
   end
 
   def dt(datetime)
     datetime.strftime '%B %d, %Y at %H:%M'
+  end
+
+  def singles_as_string(time)
+    time.singles.map { |s| s.dnf? ? 'DNF' : ft(s.time) }.join ', ' if time.respond_to? :singles
   end
 
   def flot_dt(time)

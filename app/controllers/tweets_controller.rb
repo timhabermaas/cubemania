@@ -4,15 +4,12 @@ class TweetsController < ApplicationController
   before_filter :twitter_auth_required
 
   def create
-    if last_average.nil?
-      redirect_back(root_path)
-    end
-
+    @average = last_average
     if Rails.env.production?
       twitter_client.update("New PB in #{last_average.puzzle.name}")
     else
       logger.info "Tweeted:"
-      logger.info "New PB in #{last_average.puzzle.name} (#{last_average.puzzle.kind.name}): #{ft last_average.time} (#{singles_as_string(last_average)})"
+      logger.info render_to_string(:partial => 'tweet.text')
     end
     flash[:notice] = "Tweeted your new record. <a href='http://twitter.com/#{twitter_client.info['screen_name']}'>Check it out!</a>".html_safe
     redirect_back(root_path)
