@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   include Authentication
 
-  helper_method :ft
+  helper_method :ft, :singles_as_string
 
   before_filter :set_time_zone, :store_return_to
 
@@ -66,6 +66,10 @@ protected
     else
       '%.2f' % (hs.to_f / 100) + ' s'
     end
+  end
+
+  def singles_as_string(time)
+    time.singles.map { |s| s.dnf? ? 'DNF' : ft(s.time) }.join ', ' if time.respond_to? :singles
   end
 
 private
