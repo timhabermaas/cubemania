@@ -17,7 +17,7 @@ class TweetsController < ApplicationController
 private
   def twitter_auth_required
     unless twitter_client.authorized? # will raise exception, catch it
-      flash[:notice] = "You need to be connected to twitter"
+      flash[:notice] = "You are not yet connected to twitter"
       redirect_to new_twitter_auth_path
     end
   end

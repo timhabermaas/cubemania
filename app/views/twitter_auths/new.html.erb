@@ -1,4 +1,6 @@
-<h1>Connecting to Twitter</h1>
-<p class="information">Do you want to connect your Cubemania account to Twitter?</p>
+<h1>Twitter</h1>
+<p class="announcement">Connecting your Cubemania account to <strong><%= link_to "twitter", "http://twitter.com" %></strong> allows you to tweet all your new <strong>records</strong>. Click on the link at the bottom and we'll redirect you to the twitter homepage where you can allow Cubemania to post your records.</p>
 
-<%= button_to "Yes", twitter_auth_path, :method => :post %>
+<p class="information">
+  <%= link_to "Yes, connect me!", twitter_auth_path, :method => :post, :id => "activate_twitter" %>
+</p>
