@@ -10,8 +10,8 @@ class ApplicationController < ActionController::Base
   #def rescue_action_in_public(exception)
   #  render :template => "errors/#{response_code_for_rescue(exception)}"
   #end
-  
-  
+
+
 =begin
   alias_method :orig_login, :login
   def login
@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
       orig_login
     end
   end
-  
+
   alias_method :orig_permit, :permit
   def permit(role)
     if request.format.json?
@@ -34,17 +34,17 @@ class ApplicationController < ActionController::Base
     end
   end
 =end
-  
 protected
-  def oauth
-    @oauth ||= Twitter::OAuth.new("ARtgvDlsPSj6nNfX68obg",
-                                   "OeGx587uzo658jHtz8JGdpBJmyKWPMpEbIANrYqUQo",
-                                   :sign_in => true)
+  def twitter_client
+    @twitter_client ||= TwitterOAuth::Client.new :consumer_key => ENV['TWITTER_KEY'],
+                                                 :consumer_secret => ENV['TWITTER_SECRET'],
+                                                 :token => current_user.twitter_token,
+                                                 :secret => current_user.twitter_secret
   end
-  
-  def client
-    oauth.authorize_from_access(current_user.twitter_token, current_user.twitter_secret)
-    Twitter::Base.new(oauth)
+
+  def twitter_consumer
+    @twitter_consumer ||= TwitterOAuth::Client.new :consumer_key => ENV['TWITTER_KEY'],
+                                                   :consumer_secret => ENV['TWITTER_SECRET']
   end
 
 private

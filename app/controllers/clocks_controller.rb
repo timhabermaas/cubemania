@@ -4,6 +4,7 @@ class ClocksController < ApplicationController
   def index
     @puzzle = Puzzle.find params[:puzzle_id]
     @scrambles = @puzzle.scrambles
+    store_location
   end
 
   def create
