@@ -2,7 +2,7 @@ module ApplicationHelper
   def page_title
     current_item.nil? ? params[:controller].titleize : current_item.name
   end
-  
+
   def action_label(new = 'Create', edit = 'Update')
     case params[:action].to_sym
       when :new, :create, :index
@@ -11,7 +11,7 @@ module ApplicationHelper
         edit
     end
   end
-  
+
   def admin_label(new = 'New', edit = 'Edit')
     case params[:action].to_sym
       when :index, :create
@@ -20,19 +20,19 @@ module ApplicationHelper
         edit
     end.+ " #{params[:controller].singularize.titleize}"
   end
-  
+
   def navigation
     @navigation ||= Item.all
   end
-  
+
   def current_item
     navigation.find { |item| current_item? item }
   end
-  
+
   def kinds
     Kind.all
   end
-  
+
   def subnavigation_path(puzzle)
     if controller? :matches
       url_for :puzzle_id => puzzle.id, :type => params[:type], :controller => params[:controller], :user_id => params[:user_id], :action => params[:action]
@@ -40,27 +40,27 @@ module ApplicationHelper
       url_for :puzzle_id => puzzle.id, :type => params[:type], :controller => params[:controller]
     end
   end
-  
+
   def navigation_path(item)
     url_for :controller => item.controller, :action => item.action
   end
-  
+
   def controller?(*names)
     names.include? params[:controller].to_sym
   end
-  
+
   def action?(*names)
     names.include? params[:action].to_sym
   end
-  
+
   def edit?
     action? :edit, :update, :show
   end
-  
+
   def current_item?(item)
     controller? item.controller.to_sym
   end
-  
+
   def current_puzzle?(puzzle)
     if params[:puzzle_id] == puzzle.id.to_s
       params[:kind_id] = puzzle.kind_id.to_s
@@ -69,27 +69,27 @@ module ApplicationHelper
       false
     end
   end
-  
+
   def current_kind?(kind)
     params[:kind_id] == kind.id.to_s
   end
-  
+
   def type?(type)
     params[:type] == type.to_s
   end
-  
+
   def repeat?(*repeats)
     repeats.include? self.repeat.to_sym
   end
-  
+
   def repeat
     params[:repeat] || (@competition.repeat unless @competition.nil?)
   end
-  
+
   def nominalize_repeat
     repeat == 'daily' ? 'day' : repeat[0..-3]
   end
-  
+
   def permit?
     case params[:controller].to_sym
       when :competitions
@@ -100,11 +100,11 @@ module ApplicationHelper
         false
     end
   end
-  
+
   def d(date)
     date.strftime '%B %d, %Y'
   end
-  
+
   def t(time)
     hs = (time / 10.0).round
     if hs >= 6000
@@ -119,7 +119,7 @@ module ApplicationHelper
   def dt(datetime)
     datetime.strftime '%B %d, %Y at %H:%M'
   end
-  
+
   def flot_dt(time)
     time.to_i * 1000
   end
@@ -127,13 +127,13 @@ module ApplicationHelper
   def m(text)
     RedCloth::new(text).to_html.html_safe
   end
-  
+
   def s(number)
     number > 0 ? "+#{number}" : number.to_s
   end
 
   def result_tag(result, tag='cite')
-    ("<#{tag} class=" + 
+    ("<#{tag} class=" +
     if result < 0
       '"negative">' + s(result)
     elsif result > 0
@@ -146,11 +146,11 @@ module ApplicationHelper
   def wca(id)
     'http://www.worldcubeassociation.org/results/p.php?i=' + id
   end
-  
+
   def twitter(name)
     'http://twitter.com/' + name
   end
-  
+
   def facebook(id)
     'http://www.facebook.com/profile.php?id=' + id.to_s
   end
@@ -162,14 +162,14 @@ module ApplicationHelper
   def li_for(record, *args, &block)
     content_tag_for :li, record, *args, &block
   end
-  
+
   def cache_key(attribute = nil)
     key = params.map{ |k, v| k.to_s + '/' + v.to_s}.sort
     key << attribute.to_s if attribute
     logger.info key.join('/')
     key.join('/')
   end
-  
+
   def paginate(object, per_page = 100)
     object = object.paginate :page => params[:page], :per_page => per_page
   end
@@ -199,7 +199,7 @@ module ActionView
       def error_message_on(object, method, prepend_text = '', append_text = '', css_class = 'error')
         if (obj = (object.respond_to?(:errors) ? object : instance_variable_get("@#{object}"))) && (errors = obj.errors[method])
           content_tag('span', "#{prepend_text}#{errors.is_a?(Array) ? errors.first : errors}#{append_text}", :class => 'error')
-        else 
+        else
           ''
         end
       end
