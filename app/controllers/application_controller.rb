@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base
   include Authentication
 
+  helper_method :ft
+
   before_filter :set_time_zone, :store_return_to
 
   login :except => [:index, :show]
@@ -45,6 +47,25 @@ protected
   def twitter_consumer
     @twitter_consumer ||= TwitterOAuth::Client.new :consumer_key => ENV['TWITTER_KEY'],
                                                    :consumer_secret => ENV['TWITTER_SECRET']
+  end
+
+  def last_average
+    @last_average ||= Average.find_by_id(session[:last_average_id], :include => {:puzzle => :kind})
+  end
+
+  def last_average=(average)
+    session[:last_average_id] = average.id
+  end
+
+  def ft(time)
+    hs = (time / 10.0).round
+    if hs >= 6000
+      min = hs / 6000
+      sec = (hs - min * 6000) / 100.0
+      '%d:%05.2f' % [min, sec] + ' min' # 12.555 => "12.55"
+    else
+      '%.2f' % (hs.to_f / 100) + ' s'
+    end
   end
 
 private

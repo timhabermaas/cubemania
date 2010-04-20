@@ -1,7 +1,7 @@
 <tr class="<%= cycle('odd', 'even') %>">
-  <th<%=' style="text-decoration: line-through;"' if average.dnf %>><%= t average.time %></th>
+  <th<%=' style="text-decoration: line-through;"' if average.dnf %>><%=ft average.time %></th>
 <%- for single in average.singles -%>
-  <td><small<%= ' style="text-decoration: line-through;"' if single.dnf %>><%=t single.time %></small></td>
+  <td><small<%= ' style="text-decoration: line-through;"' if single.dnf %>><%=ft single.time %></small></td>
 <%- end -%>
   <td><small><%=dt average.created_at %></small></td>
   <td>

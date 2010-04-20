@@ -8,15 +8,15 @@
   <tbody>
   <% @match.scrambles.each_with_index do |scramble, i| %>
     <tr>
-      <td><%=t user_average.singles[i].time %></td>
+      <td><%=ft user_average.singles[i].time %></td>
       <td class="scramble"><small><%= scramble.scramble %></small></td>
-      <td><%=t opponent_average.singles[i].time %></td>
+      <td><%=ft opponent_average.singles[i].time %></td>
     </tr>
   <% end %>
     <tr>
-      <td><strong><%=t user_average.time %></strong></td>
+      <td><strong><%=ft user_average.time %></strong></td>
       <td></td>
-      <td><strong><%=t opponent_average.time %></strong></td>
+      <td><strong><%=ft opponent_average.time %></strong></td>
     </tr>
   </tbody>
 </table>

@@ -18,6 +18,6 @@
   </tr>
   <tr class="record">
     <th>record:</th>
-    <td><%= user.averages.record(params[:puzzle_id]) ? t(user.averages.record(params[:puzzle_id]).time) : "-" %></td>
+    <td><%= user.averages.record(params[:puzzle_id]) ? ft(user.averages.record(params[:puzzle_id]).time) : "-" %></td>
   </tr>
 </tbody>

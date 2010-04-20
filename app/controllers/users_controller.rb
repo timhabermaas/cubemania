@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   logout :only => [:new, :create]
   permit :self, :only => [:edit, :update, :destroy]
   #protect [:role, :sponsor, :ignored], :but => :admin, :only => [:create, :update]
-  
+
   def index
     if params[:search]
       @users = User.paginate :page => params[:page], :per_page => 50, :order => 'points DESC', :conditions => ['name LIKE ?', "%#{params[:search]}%"]
@@ -11,7 +11,7 @@ class UsersController < ApplicationController
       @users = User.paginate :page => params[:page], :per_page => 50, :order => 'points DESC'
     end
   end
-  
+
   def show
     @user = object
     single_records, average_records = @user.singles.records, @user.averages.records
@@ -24,11 +24,11 @@ class UsersController < ApplicationController
     @participances = @user.participances
     @matches = Match.for(@user).finished.recent.all(:include => [{:puzzle => :kind}, :user, :opponent])
   end
-  
+
   def object
     User.find params[:id]
   end
-  
+
   def create
     @user = User.new params[:user]
     if @user.save
@@ -39,7 +39,7 @@ class UsersController < ApplicationController
       render :new
     end
   end
-  
+
   def update
     @user = User.find params[:id]
     if @user.update_attributes params[:user]
@@ -49,15 +49,15 @@ class UsersController < ApplicationController
       render :_form
     end
   end
-  
+
   def destroy
     @user = User.find params[:id]
     @user.destroy
-    
+
     if self.current_user == @user
       self.current_user = nil
     end
-    
+
     redirect_to root_path
   end
 end

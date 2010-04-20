@@ -10,7 +10,7 @@
     </cite>
   </td>
   <td class="single disabled"><small><%=d record[:single].created_at %></small></td>
-  <td class="single disabled time"><strong><%=t record[:single].time %></strong></td>
+  <td class="single disabled time"><strong><%=ft record[:single].time %></strong></td>
   <td class="average"><small><%=d record[:average].created_at unless record[:average].nil? %></small></td>
-  <td class="average time"><strong><%= record[:average].nil? ? 'none' : t(record[:average].time) %></strong></td>
+  <td class="average time"><strong><%= record[:average].nil? ? 'none' : ft(record[:average].time) %></strong></td>
 </tr>

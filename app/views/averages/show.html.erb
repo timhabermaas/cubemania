@@ -1,9 +1,9 @@
-<h2><%=t @average.time %></h2>
+<h2><%=ft @average.time %></h2>
 <p><%=h @average.comment %></p>
 <ul>
 <%- for single in @average.singles -%>
   <li>
-    <strong<%= ' style="text-decoration: line-through"' if single.dnf %>><%=t single.time %></strong>
+    <strong<%= ' style="text-decoration: line-through"' if single.dnf %>><%=ft single.time %></strong>
     <small><%= single.scramble %></small>
   </li>
 <%- end -%>
