@@ -13,8 +13,7 @@ gem 'RedCloth'
 
 gem 'aws-s3'
 gem 'memcached'
-gem 'oauth'
-gem 'twitter'
+gem 'twitter_oauth'
 
 gem 'smurf'
 
