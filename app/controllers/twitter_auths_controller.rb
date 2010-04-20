@@ -19,8 +19,6 @@ class TwitterAuthsController < ApplicationController
 
   def confirmed
     access_token = twitter_client.authorize(session[:request_token], session[:request_secret], :oauth_verifier => params[:oauth_verifier])
-    logger.info("twitter token: #{access_token.token}")
-    logger.info("twitter secret: #{access_token.secret}")
     current_user.twitter_token = access_token.token
     current_user.twitter_secret = access_token.secret
     if current_user.save
@@ -28,6 +26,6 @@ class TwitterAuthsController < ApplicationController
     else
       flash[:notice] = "There was an error connecting your Twitter account to Cubemania"
     end
-    redirect_to current_user
+    redirect_back(current_user)
   end
 end
