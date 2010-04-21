@@ -2,6 +2,7 @@
 
 Rails.application.config.session_store :cookie_store, {
   :key => '_Cubemania_git_session',
+  :expire_after => 14.days
 }
 
 # Use the database for sessions instead of the cookie-based default,
