@@ -22,6 +22,7 @@ else
 end
 
 unless flash[:notice].nil?
-  page['subnavigation'].after render('layouts/notice.html.erb')
+  page << "$('#subnavigation').after('#{escape_javascript(render('layouts/notice.html.erb'))}')";
+  page << "$('#notice').hide().slideDown('slow').delay(30000).slideUp('slow');"
   flash.discard
 end
