@@ -1,43 +1,14 @@
-<%= form_tag users_path, :method => 'get', :id => 'user_search' do %>
-	<p>
-		<%= text_field_tag :search, params[:search] %>
-		<%= submit_tag 'Search', :name => nil, :class => 'search_button' %>
-	</p>
+<ul id="users">
+<%= form_tag users_path, :method => 'get' do %>
+  <p>
+    <%= text_field_tag :search, params[:search] %>
+    <%= submit_tag 'Search', :name => nil, :class => 'search_button' %>
+  </p>
 <% end %>
-
-<% unless @users.empty? %>
-<table id="ranking">
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>cuber</th>
-      <th>points</th>
-      <th>stats</th>
-      <th class="streak">streak</th>
-      <th class="challenge">challenge</th>
-    </tr>
-  </thead>
-  <tbody>
-  <% for user in @users %>
-    <tr class="<%= cycle('odd', 'even') %>">
-    <%# cache user do %>
-      <td class="rank"><strong><%= user.rank %>.</strong></td>
-      <td class="name"><strong><%= link_to user.name, user %></strong></td>
-      <td class="points"><strong><%= user.points %></strong></td>
-      <td class="stats"><small><%= user.wins %> - <%= user.losses %></small></td>
-      <td class="streak"><%= result_tag user.streak, 'strong' %></td>
-      <td class="challenge"><%= link_to 'Challenge!', new_puzzle_user_match_path(:user_id => user.id) %></td>
-    <%# end %>
-    </tr>
-  <% end %>
-  </tbody>
-</table>
+<% for user in @users %>
+  <li style="font-size: <%= user.activity(@max_averages_count) * 1 + 1 %>em">
+    <%= link_to user.name, user %>
+  </li>
 <% end %>
-
-<% if @users.empty? and not params[:search].nil? %>
-<p class="information">
-  No users found!
-</p>
-<% end %>
-
+</ul>
 <%= will_paginate @users %>

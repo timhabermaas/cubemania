@@ -5,6 +5,7 @@ class UsersController < ApplicationController
   #protect [:role, :sponsor, :ignored], :but => :admin, :only => [:create, :update]
 
   def index
+    @max_averages_count = User.max_averages_count
     if params[:search]
       @users = User.paginate :page => params[:page], :per_page => 50, :order => 'points DESC', :conditions => ['name LIKE ?', "%#{params[:search]}%"]
     else
