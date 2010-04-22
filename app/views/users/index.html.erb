@@ -1,7 +1,6 @@
 <%= form_tag users_path, :method => 'get', :id => "users_search" do %>
   <p>
     <%= text_field_tag :search, params[:search] %>
-    <%= submit_tag 'Search', :name => nil, :class => 'search_button' %>
   </p>
 <% end %>
 <ul id="users">
@@ -11,4 +10,3 @@
   </li>
 <% end %>
 </ul>
-<%= will_paginate @users %>

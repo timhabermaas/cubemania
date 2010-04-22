@@ -6,11 +6,7 @@ class UsersController < ApplicationController
 
   def index
     @max_averages_count = User.max_averages_count
-    if params[:search]
-      @users = User.paginate :page => params[:page], :per_page => 100, :order => 'name', :conditions => ['name LIKE ?', "%#{params[:search]}%"]
-    else
-      @users = User.paginate :page => params[:page], :per_page => 100, :order => 'name'
-    end
+    @users = User.order('name')
   end
 
   def show

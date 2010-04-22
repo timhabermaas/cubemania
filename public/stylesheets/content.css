@@ -502,7 +502,7 @@
 }
 #users_search {
   margin: 0 auto;
-  width: 250px;
+  width: 10em;
   margin-bottom: 1.5em;
 }
 #users_search input[type=submit] {
