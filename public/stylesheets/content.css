@@ -522,20 +522,30 @@
   font-size: 1.25em;
 }
 
-#records, #results, #averages table {
+#averages table {
   margin: 0 auto;
 }
-#records thead th, #results thead th, #averages th {
+#averages td, #averages th {
+  padding: 0.1875em 0.5em;
+}
+#averages thead th {
+  color: #fff;
+  padding: 0.5em 0;
+  padding-right: 0.5em;
+}
+#averages thead {
+  border-bottom: 1px solid #fff;
+}
+
+#records, #results {
+  margin: 0 auto;
+}
+#records thead th, #results thead th {
   color: #df0;
 }
 #records th, #records td, #results th, #results td {
   text-align: center;
   padding: 0.25em 1em;
-}
-#averages td, #averages th {
-  text-align: left;
-  white-space: nowrap;
-  padding: 0.1em 0.5em;
 }
 #records td, #results td {
   padding-left: 1em;
@@ -555,7 +565,7 @@
   text-transform: capitalize;
   white-space: nowrap;
 }
-#records .odd {
+#records .odd, #averages .odd {
   background-color: #517397;
 }
 #records .puzzle {
