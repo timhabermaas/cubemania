@@ -4,6 +4,8 @@ class UsersController < ApplicationController
   permit :self, :only => [:edit, :update, :destroy]
   #protect [:role, :sponsor, :ignored], :but => :admin, :only => [:create, :update]
 
+  #cache_sweeper :user_sweeper, :only => [:create, :update, :destroy]
+
   def index
     @max_averages_count = User.max_averages_count
     @users = User.order('name')
