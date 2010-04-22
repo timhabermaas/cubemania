@@ -23,7 +23,7 @@ class AveragesController < ApplicationController
     @puzzle = Puzzle.find params[:puzzle_id]
     @average = current_user.averages.find params[:id]
     logger.info "[Facebook] #{render_to_string('tweet.text.erb')}"
-    logger.info "response: #{facebook_client.post("/me/feed", :message => render_to_string('tweet.text.erb'))}"
+    facebook_client.post("/me/feed", :message => render_to_string('tweet.text.erb'))
     redirect_back root_path
   end
 
