@@ -1,10 +1,12 @@
 var startColor = 7;
 
+var maxDots = 0;
+
 var plot;
 
 var options = {
   series: {
-    lines: { 
+    lines: {
       show: true,
       lineWidth: 4
     },
@@ -39,7 +41,7 @@ var options = {
       if (t >= 60) {
         min = Math.floor(t / 60);
         sec = t - min * 60;
-        sec = sec < 10 ? "0" + sec.toFixed(0) : sec.toFixed(0);  
+        sec = sec < 10 ? "0" + sec.toFixed(0) : sec.toFixed(0);
         return min + ":" + sec + " min";
       } else {
         return t.toFixed(2) + " s";
@@ -99,11 +101,16 @@ function addItemWithoutPlot(data, index) {
   averages[index].dates.push(data.created_at);
 }
 
-function showTooltip(x, y, content) {
+function showTooltip(x, y, content, right) {
   $("#tooltip").html(content);
+  if (right) {
+    offset = 10;
+  } else {
+    offset = -$("#tooltip").width() - 10;
+  }
   $("#tooltip").css({
-    top: y + 5,
-    left: x + 5
+    top: y + 10,
+    left: x + offset
   });
   $("#tooltip").fadeIn(100);
 }
@@ -130,13 +137,18 @@ function addSeries(url) {
     });
     plot = $.plot($('#chart'), averages, options);
     $("#times #chart").css("background", "none");
+    maxDots = Math.max(data.averages.length, maxDots);
   });
-  
+
 }
 
 $("#times #chart").live("plothover", function(event, pos, item) {
   if (item) {
-    showTooltip(item.pageX, item.pageY, item.series.tooltips[item.dataIndex]);
+    if (item.dataIndex >= maxDots / 2) {
+      showTooltip(item.pageX, item.pageY, item.series.tooltips[item.dataIndex], false);
+    } else {
+      showTooltip(item.pageX, item.pageY, item.series.tooltips[item.dataIndex], true);
+    }
   } else {
     hideTooltip();
   }
