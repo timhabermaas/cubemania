@@ -9,6 +9,9 @@
       <%= stylesheet_link_tag 'ie' %>
     <![endif]-->
     <%= javascript_include_tag 'jquery', 'rails', 'application', 'jquery.flot', 'chart', :cache => true %>
+    <!--[if IE]>
+      <%= javascript_include_tag 'excanvas' %>
+    <![endif]-->
     <%= yield :head %>
     <link rel="shortcut icon" href="/favicon.ico" type="image/ico" />
     <%= csrf_meta_tag %>
