@@ -5,7 +5,7 @@
 </p>
 <%- end -%>
 
-<% cache ["records", params[:type], params[:puzzle_id], params[:page] || 0, @puzzle.version].join("/") do %>
+<% cache ["records", params[:type], params[:puzzle_id], params[:page] || 1, @puzzle.version].join("/") do %>
 <% @records = paginate @records, 50 %>
 <%- if @records.empty? -%>
 <p class="challenge">
