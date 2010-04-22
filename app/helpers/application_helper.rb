@@ -108,8 +108,8 @@ module ApplicationHelper
     datetime.strftime '%B %d, %Y at %H:%M'
   end
 
-  def singles_as_string(time, spacer = ' ')
-    time.singles.map { |s| s.dnf? ? 'DNF' : ft(s.time, spacer) }.join ', ' if time.respond_to? :singles
+  def singles_as_string(average, spacer = ' ')
+    average.singles.map { |s| s.dnf? ? 'DNF' : ft(s.time, spacer) }.join ', ' if average.respond_to? :singles
   end
 
   def flot_dt(time)
