@@ -15,7 +15,7 @@ gem 'aws-s3'
 gem 'memcached'
 
 gem 'httparty'
-gem "facebook_graph", :git => "git@github.com:timhabermaas/facebook_graph.git"
+gem "facebook_graph", :git => "git://github.com/timhabermaas/facebook_graph.git"
 
 gem 'smurf'
 
