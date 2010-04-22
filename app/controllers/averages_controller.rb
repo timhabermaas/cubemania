@@ -22,11 +22,10 @@ class AveragesController < ApplicationController
   def tweet
     @puzzle = Puzzle.find params[:puzzle_id]
     @average = current_user.averages.find params[:id]
-    logger.info "[Facebook] #{render_to_string('tweet.text')}"
+    logger.info "[Facebook] #{render_to_string('tweet.text', :layout => false)}"
     if Rails.env.production?
-      facebook_client.post("/me/feed", :message => render_to_string('tweet.text'))
+      facebook_client.post("/me/feed", :message => render_to_string('tweet.text', :layout => :none))
     end
-    response.content_type = nil
     redirect_back root_path
   end
 
