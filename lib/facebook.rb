@@ -20,7 +20,7 @@ module Facebook
   class Consumer
     include HTTParty
     base_uri "https://graph.facebook.com"
-    format :plain
+    format :json
 
     def initialize(api_key, api_secret, options = {})
       @api_key, @api_secret = api_key, api_secret
@@ -37,7 +37,7 @@ module Facebook
                  :redirect_uri => @redirect_uri,
                  :code => code
                }
-      self.class.get('oauth/access_token', :query => params)[13..-1] # yes, that's a hack.
+      self.class.get('/oauth/access_token', :query => params)[13..-1] # yes, that's a hack.
     end
 
     def authorize_url
