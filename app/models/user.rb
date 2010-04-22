@@ -18,7 +18,8 @@ class User < ActiveRecord::Base
   #has_many :participances, :select => 'competitions.*, clocks.created_at as date', :through => :clocks,
   #    :order => 'clocks.created_at desc', :source => 'competition', :group => 'competitions.id'
   def participances
-    Competition.joins(:averages).select('competitions.*, clocks.created_at as date').where(:user_id => self.id).group('competitions.id').all
+    cols = %w(id name puzzle_id created_at repeat).map { |c| "competitions.#{c}"}.join(', ')
+    Competition.joins(:averages).select("#{cols}, clocks.created_at as date").where(:user_id => self.id).group(cols).all
   end
   has_many :singles, :order => 'created_at desc', :dependent => :delete_all do
     def for(puzzle_id); find_all_by_puzzle_id puzzle_id, :order => 'time'; end
