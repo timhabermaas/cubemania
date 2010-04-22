@@ -5,6 +5,7 @@ class UsersController < ApplicationController
   #protect [:role, :sponsor, :ignored], :but => :admin, :only => [:create, :update]
 
   def index
+    @max_averages_count = User.max_averages_count
     if params[:search]
       @users = User.paginate :page => params[:page], :per_page => 50, :order => 'points DESC', :conditions => ['name LIKE ?', "%#{params[:search]}%"]
     else
@@ -22,11 +23,10 @@ class UsersController < ApplicationController
       { :single => single_records[i], :average => average_records[i] }
     end
     @participances = @user.participances
-    @matches = Match.for(@user).finished.recent.all(:include => [{:puzzle => :kind}, :user, :opponent])
   end
 
-  def object
-    User.find params[:id]
+  def object(options = nil)
+    User.find params[:id], options
   end
 
   def create

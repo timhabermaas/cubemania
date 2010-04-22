@@ -1,16 +1,17 @@
-<tr class="record <%= cycle 'odd', 'even', :name => 'record' %>">
+<tr class="record <%= cycle 'even', 'odd' %>">
   <th>
-    <div class="puzzle" style="background-image: url(<%= record[:single].puzzle.image.url(:small) %>)">
-      <%= "<div class='kind' style='background-image: url(#{record[:single].puzzle.kind.image.url(:small)})'></div>".html_safe unless record[:single].puzzle.kind.image_file_name.nil? %>
+    <div class="puzzle" style="background-image: url(<%= record[:single].puzzle.image.url %>)">
+      <%= raw "<div class='kind' style='background-image: url(#{record[:single].puzzle.kind.image.url})'></div>" unless record[:single].puzzle.kind.image_file_name.nil? %>
     </div>
   </th>
   <td>
     <cite>
-      <strong><%= link_to_if logged_in?, record[:single].puzzle.name, user_puzzle_averages_path(record[:single].user_id, record[:single].puzzle) %></strong>
+      <%= link_to_if self?, record[:single].puzzle.name, user_puzzle_averages_path(record[:single].user, record[:single].puzzle) %>
+      <small>(<%=h record[:single].puzzle.kind.name %>)</small>
     </cite>
   </td>
-  <td class="single disabled"><small><%=d record[:single].created_at %></small></td>
-  <td class="single disabled time"><strong><%=ft record[:single].time %></strong></td>
-  <td class="average"><small><%=d record[:average].created_at unless record[:average].nil? %></small></td>
-  <td class="average time"><strong><%= record[:average].nil? ? 'none' : ft(record[:average].time) %></strong></td>
+  <td><strong><%=ft record[:single].time %></strong></td>
+  <td><small><%=d record[:single].created_at %></small></td>
+  <td><strong><%= record[:average].nil? ? 'none' : ft(record[:average].time) %></strong></td>
+  <td><small><%=d record[:average].created_at unless record[:average].nil? %></small></td>
 </tr>

@@ -15,8 +15,11 @@ class User < ActiveRecord::Base
   has_many :shouts, :dependent => :nullify
   has_many :home_matches, :foreign_key => 'user_id', :class_name => 'Match', :dependent => :delete_all
   has_many :guest_matches, :foreign_key => 'opponent_id', :class_name => 'Match', :dependent => :delete_all
-  has_many :participances, :select => 'competitions.*, clocks.created_at as date', :through => :clocks,
-      :order => 'clocks.created_at desc', :source => 'competition', :group => 'competitions.id'
+  #has_many :participances, :select => 'competitions.*, clocks.created_at as date', :through => :clocks,
+  #    :order => 'clocks.created_at desc', :source => 'competition', :group => 'competitions.id'
+  def participances
+    Competition.joins(:averages).select('competitions.*, clocks.created_at as date').where(:user_id => self.id).group('competitions.id').all
+  end
   has_many :singles, :order => 'created_at desc', :dependent => :delete_all do
     def for(puzzle_id); find_all_by_puzzle_id puzzle_id, :order => 'time'; end
     def record(puzzle_id); find_by_puzzle_id_and_record puzzle_id, true; end
@@ -30,7 +33,7 @@ class User < ActiveRecord::Base
     def best(puzzle_id); find_by_puzzle_id puzzle_id, :conditions => {:dnf => false}, :order => 'time'; end
     def match(match_id); find_by_match_id match_id; end
   end
-  
+
   validates_uniqueness_of :name, :email, :case_sensitive => false, :message => 'is already in use by another user'
   validates_format_of :name, :with => /^([a-z0-9_]{2,16})$/i, :message => 'must be 2 to 16 letters, numbers or underscores and have no spaces'
   validates_exclusion_of :name, :in => %w(admin moderator), :message => "you don't belong here"
@@ -52,7 +55,7 @@ class User < ActiveRecord::Base
   def self.max_averages_count
     find(:first, :select => 'averages_count', :order => 'averages_count desc').averages_count
   end
-  
+
   def self.all_with_ranking
     User.all(:select => 'u1.id, u1.name, u1.points, u1.averages_count, COUNT(DISTINCT u2.points) AS rank',
              :from => 'users u1 JOIN users u2 ON (u1.points <= u2.points)',
@@ -67,7 +70,7 @@ class User < ActiveRecord::Base
       self.encrypted_password = ENCRYPT.hexdigest password + salt
     end
   end
-  
+
   def reset_password!
     available_characters = ('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a
     self.password = Array.new(12) { available_characters.rand }.join
@@ -99,11 +102,11 @@ class User < ActiveRecord::Base
       averages.size / max.to_f
     end
   end
-  
+
   def rank
     User.count(:all, :conditions => ['points > ?', self.points]) + 1
   end
-  
+
   def streak
     _matches = matches.finished
     return 0 if _matches.empty? or _matches.first.winner.nil?
@@ -115,23 +118,23 @@ class User < ActiveRecord::Base
     end
     result
   end
-  
+
   def wins
     matches.finished.all.select do |match|
       match.winner == self
     end.size
   end
-  
+
   def losses
     matches.finished.all.select do |match|
       match.loser == self
     end.size
   end
-  
+
   def matches
     Match.for(self)
   end
-  
+
   alias_method :ar_to_json, :to_json
   def to_json(options = {})
     default_except = [:encrypted_password, :salt, :ignored, :email, :created_at, :role, :sponsor]
@@ -147,7 +150,7 @@ class User < ActiveRecord::Base
     def password_is_being_updated?
       id.nil? or not password.blank?
     end
-    
+
     def touch_users
       if points_changed?
         low_points, high_points = [self.points_was, self.points].sort
