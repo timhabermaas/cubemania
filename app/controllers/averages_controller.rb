@@ -26,6 +26,7 @@ class AveragesController < ApplicationController
     if Rails.env.production?
       facebook_client.post("/me/feed", :message => render_to_string('tweet.text'))
     end
+    response.content_type = nil
     redirect_back root_path
   end
 
