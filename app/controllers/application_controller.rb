@@ -35,16 +35,14 @@ class ApplicationController < ActionController::Base
   end
 =end
 protected
-  def twitter_client
-    @twitter_client ||= TwitterOAuth::Client.new :consumer_key => ENV['TWITTER_KEY'],
-                                                 :consumer_secret => ENV['TWITTER_SECRET'],
-                                                 :token => current_user.twitter_token,
-                                                 :secret => current_user.twitter_secret
+  def facebook_client
+    @facebook_client ||= Facebook::Client.new(current_user.fb_access_token)
   end
 
-  def twitter_consumer
-    @twitter_consumer ||= TwitterOAuth::Client.new :consumer_key => ENV['TWITTER_KEY'],
-                                                   :consumer_secret => ENV['TWITTER_SECRET']
+  def facebook_consumer
+    @facebook_consumer ||= Facebook::Consumer.new(ENV['FACEBOOK_KEY'], ENV['FACEBOOK_SECRET'],
+                                                  :redirect_uri => callback_facebook_url,
+                                                  :scope => "publish_stream")
   end
 
   def last_average

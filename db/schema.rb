@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100420211605) do
+ActiveRecord::Schema.define(:version => 20100421234423) do
 
   create_table "clocks", :force => true do |t|
     t.integer  "time",                                                 :null => false
@@ -148,8 +148,7 @@ ActiveRecord::Schema.define(:version => 20100420211605) do
     t.integer  "points",                            :default => 1000,   :null => false
     t.datetime "updated_at"
     t.boolean  "wants_emails",                      :default => false,  :null => false
-    t.string   "twitter_token"
-    t.string   "twitter_secret"
+    t.string   "fb_access_token"
   end
 
   add_index "users", ["averages_count"], :name => "index_users_on_averages_count"

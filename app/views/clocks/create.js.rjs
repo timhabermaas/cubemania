@@ -5,7 +5,7 @@ if @average.competition.nil? and @average.match.nil?
     page << "updateScramble()"
     page['type'].focus if params[:input_method] == 'manual'
     if @average.notice
-      flash[:notice] = (@average.notice + " #{link_to 'Tweet it!', tweet_path, :method => :post}").html_safe
+      flash[:notice] = (@average.notice + " #{link_to 'Share it!', tweet_puzzle_average_path(@average.puzzle, @average), :method => :post, :class => 'facebook'}").html_safe
     end
   else
     page['timer input'].removeAttr 'disabled'
@@ -23,6 +23,6 @@ end
 
 unless flash[:notice].nil?
   page << "$('#subnavigation').after('#{escape_javascript(render('layouts/notice.html.erb'))}')";
-  page << "$('#notice').hide().slideDown('slow').delay(30000).slideUp('slow');"
+  page << "$('#notice').delay(30000).slideUp('slow');"
   flash.discard
 end

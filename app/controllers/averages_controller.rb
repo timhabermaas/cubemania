@@ -6,7 +6,7 @@ class AveragesController < ApplicationController
     @user = User.find params[:user_id]
     @puzzle = Puzzle.find params[:puzzle_id]
     @averages = @user.averages.where(:puzzle_id => params[:puzzle_id]).order('created_at desc').includes(:singles)
-    
+
     respond_to do |format|
       format.html
       format.xml
@@ -17,13 +17,22 @@ class AveragesController < ApplicationController
       end
     end
   end
-  
+
+  # should be js request from clocks (belongs to ClocksController?)
+  def tweet
+    @puzzle = Puzzle.find params[:puzzle_id]
+    @average = current_user.averages.find params[:id]
+    logger.info "[Facebook] #{render_to_string('tweet.text.erb')}"
+    logger.info "response: #{facebook_client.post("/me/feed", :message => render_to_string('tweet.text.erb'))}"
+    redirect_back root_path
+  end
+
   def show
     @user = current_user
     @puzzle = Puzzle.find params[:puzzle_id]
     object :include => :singles
   end
-  
+
   def destroy
     if object.destroy
       flash[:notice] = 'Successfully removed!'
@@ -32,7 +41,7 @@ class AveragesController < ApplicationController
     end
     redirect_to user_puzzle_averages_path
   end
-  
+
   private
     def object(options = nil)
       @average ||= Average.find params[:id], options

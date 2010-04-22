@@ -1,27 +1,27 @@
 Cubemania::Application.routes.draw do |map|
   root :to => 'homes#show'
-  
-  resource :twitter_auth do
-    get :confirmed
+
+  resource :facebook do
+    get :callback
   end
-  
-  resource :tweet
 
   resources :posts do
     resources :comments
   end
-  
+
   resources :users do
     resources :puzzles do
       resources :averages
     end
   end
-  
+
   resources :matches, :only => :index
 
   resources :puzzles, :defaults => {:id => DEFAULT_PUZZLE} do
     resources :times, :controller => :clocks
-    resources :averages
+    resources :averages do
+      post :tweet, :on => :member
+    end
     resources :matches do
       resources :times, :controller => :clocks
     end
@@ -44,9 +44,9 @@ Cubemania::Application.routes.draw do |map|
 
   resources :kinds
   resources :items
-  
+
   resource :password_recovery
-  
+
   resource :login
   match 'logout' => 'logins#destroy', :as => 'logout'
   match 'register' => 'users#new', :as => 'register'
