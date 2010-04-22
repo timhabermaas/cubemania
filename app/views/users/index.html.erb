@@ -1,10 +1,10 @@
-<ul id="users">
-<%= form_tag users_path, :method => 'get' do %>
+<%= form_tag users_path, :method => 'get', :id => "users_search" do %>
   <p>
     <%= text_field_tag :search, params[:search] %>
     <%= submit_tag 'Search', :name => nil, :class => 'search_button' %>
   </p>
 <% end %>
+<ul id="users">
 <% for user in @users %>
   <li style="font-size: <%= user.activity(@max_averages_count) * 1 + 1 %>em">
     <%= link_to user.name, user %>
