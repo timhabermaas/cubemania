@@ -23,11 +23,10 @@ class UsersController < ApplicationController
       { :single => single_records[i], :average => average_records[i] }
     end
     @participances = @user.participances
-    @matches = Match.for(@user).finished.recent.all(:include => [{:puzzle => :kind}, :user, :opponent])
   end
 
-  def object
-    User.find params[:id]
+  def object(options = nil)
+    User.find params[:id], options
   end
 
   def create

@@ -1,35 +1,55 @@
-<h1 id="user"><%= @user.name %></h1>
-<div id="batches">
-  <%= render(:partial => 'batch', :locals => { :link => wca(@user.wca), :id => 'wca' }) unless @user.wca.blank? %>
-  <%= render(:partial => 'batch', :locals => { :link => twitter('timhabermaas'), :id => 'twitter' }) if false %>
-  <%= render(:partial => 'batch', :locals => { :link => facebook(123124), :id => 'facebook' }) if false %>
-  <div class="text"><small><%= @user.points %></small></div>
-  <% if (not self?) or admin? %>
-  <strong><%= link_to "Challenge #{@user.name}!", "new_puzzle_user_match_path(:user_id => @user.id)", :class => 'challenge' %></strong>
-  <% end %>
-</div>
-<div class="clear"></div>
+<%= link_to '<span>Sponsor</span>', 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=donate%40cubemania%2eorg&item_name=Cubemania&no_shipping=1&return=http%3a%2f%2fwww%2ecubemania%2eorg&cancel_return=http%3a%2f%2fwww%2ecubemania%2eorg&cn=Comment&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8', :class => 'sponsor' if @user.sponsor? %>
+<h1><%= @user.name %></h1>
 
-<table id="user_records">
+<% if @user.wca.blank? and self? %>
+<div id="wca">
+  <%= link_to '&nbsp;'.html_safe, 'http://www.worldcubeassociation.org', :class => 'logo' %>
+  <%= link_to_function 'Link your World Cube Association profile!', "$('.admin a.toggle').click(); $('#user_wca').focus()" if self? %>
+</div>
+<% elsif not @user.wca.blank? %>
+<div id="wca">
+  <%= link_to '&nbsp;'.html_safe, 'http://www.worldcubeassociation.org', :class => 'logo' %>
+  <%= link_to "#{@user.name}'s World Cube Association Profile", wca(@user.wca) %>
+</div>
+<% end %>
+
+<% if @records.empty? %>
+<p class="challenge">
+<% if self? %>
+  How fast do you solve the cube?<br/>
+  <%= link_to 'Stop your times and get the record!', puzzle_times_path %>
+<% else %>
+  <%= @user.name %> has no personal records yet. <%= link_to 'Do you?', puzzle_times_path if logged_in? %>
+<% end %>
+</p>
+<% else %>
+<table id="records">
   <thead>
     <tr>
-      <th colspan="2"><strong>records</strong></th>
-      <th colspan="2" class="tabs"><%= link_to_function 'Single', "$('a.single').addClass('checked');$('a.average').removeClass('checked');$('td.single').removeClass('disabled');$('td.average').addClass('disabled')", :class => 'single' %> <%= link_to_function 'Average', "$('a.average').addClass('checked'); $('a.single').removeClass('checked');$('td.average').removeClass('disabled');$('td.single').addClass('disabled')", :class => 'checked average'%></th>
+      <th></th>
+      <th>Puzzle</th>
+      <th colspan="2">Single</th>
+      <th colspan="2">Average</th>
     </tr>
   </thead>
   <tbody>
     <%= render :partial => 'record', :collection => @records %>
   </tbody>
 </table>
+<% end %>
 
-<table id="matches">
-  <thead>
-    <tr>
-      <th colspan="4"><strong>matches</strong></th>
-    </tr>
-  </thead>
-  <tbody>
-    <%= render :partial => 'match', :collection => @matches %>
-  </tbody>
-</table>
-<div class="clear"></div>
+<% if @participances.empty? %>
+<p class="challenge">
+<% if self? %>
+  Are you faster than your fellow cubers?<br/>
+  <%= link_to 'Compete with others and get the record!', puzzle_competitions_path %>
+<% else %>
+  <%= @user.name %> has not competed with fellow cubers yet. <%= link_to 'Have you?', puzzle_competitions_path if logged_in? %>
+<% end %>
+</p>
+<% else %>
+<p id="participances">
+  <%= self? ? 'You' : @user.name %> competed in
+  <%= render :partial => 'participance', :collection => @participances, :spacer_template => 'spacer' %>.
+</p>
+<% end %>
