@@ -484,6 +484,13 @@
   text-align: left;
 }
 
+#facebook h1 {
+  background-image: url(/images/facebook-logo.png);
+  background-repeat: no-repeat;
+  padding-top: 10px;
+  text-indent: 80px;
+  min-height: 64px;
+}
 #users {
   font-size: 1.5em;
   text-align: center;
