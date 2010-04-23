@@ -8,6 +8,8 @@ General:
   make a general cache_key(args*) helper method which joins with "/"
   Remove Timer JS Code to external JS file. Use the data-attributes for urls and stuff. Also remove all link_to_functions
   Puzzle#destroy is missing
+  Reduce the size of averages.json to fit more averages into memcache (create tooltip at client side and only send raw data)
+  Better cache expiration for averages. At the moment all averages of one user get expired if he creates a new average.
 
 Random ideas:
   Gray out comments from users, which are stupid. (http://www.joystiq.com/2010/03/17/steam-on-mac-os-x-interview/#comments)
