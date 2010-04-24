@@ -1,6 +1,7 @@
 class AveragesController < ApplicationController
   login :except => []
   permit :owner, :only => :destroy
+  before_filter :facebook_required, :only => :tweet
 
   def index
     @user = User.find params[:user_id]

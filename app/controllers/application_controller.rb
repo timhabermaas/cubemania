@@ -45,6 +45,13 @@ protected
                                                   :scope => "publish_stream")
   end
 
+  def facebook_required
+    unless current_user.connected_to_facebook?
+      flash[:notice] = "You need to connect your Cubemania profile with Facebook!"
+      redirect_to new_facebook_path
+    end
+  end
+
 private
   def set_time_zone
     if logged_in?
