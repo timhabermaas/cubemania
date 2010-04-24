@@ -8,7 +8,7 @@ class UsersController < ApplicationController
 
   def index
     @max_averages_count = User.max_averages_count
-    @users = User.order('name')
+    @users = User.order('averages_count desc')
   end
 
   def show
