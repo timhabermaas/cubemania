@@ -96,6 +96,10 @@ class User < ActiveRecord::Base
     role.to_sym == :admin
   end
 
+  def connected_to_facebook?
+    not self.fb_access_token.blank?
+  end
+
   def activity(max)
     if max.zero?
       1
