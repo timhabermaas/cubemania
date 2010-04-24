@@ -95,7 +95,6 @@ module Authentication
     end
 
     def store_location(return_to = request.fullpath)
-      puts "return to: " + return_to
       session[:return_to] = return_to
     end
 
