@@ -47,5 +47,6 @@ document.cookie = 'tz_offset=' + ((new Date()).getTimezoneOffset() + calculateDs
 
 $(document).ready(function() {
   tooltip();
-  $("#users_search input[type=text]").liveUpdate("#users").focus();
+  $("#users_search input[type=text]").liveUpdate("#users");
+  $("#users_search input[type=text]").Watermark("Type a name");
 });
