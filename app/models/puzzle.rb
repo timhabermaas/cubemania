@@ -12,10 +12,10 @@ class Puzzle < ActiveRecord::Base
 
   has_attached_file :image, :storage => :s3,
                             :s3_credentials => "#{Rails.root}/config/s3.yml",
-                            :path => ":class/:id/:style/:basename.:extension"
-                            #:styles => { :small => ["50x25", :png] }
+                            :path => ":class/:id/:style/:basename.:extension",
+                            :styles => { :facebook => "50x50+50+0" }
   #attr_protected :image_file_name, :image_content_type, :image_size
-  
+
   validates_presence_of :name, :image, :attempt_count, :countdown, :kind_id
   validates_length_of :name, :maximum => 64
   validates_numericality_of :scramble_length, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 255, :only_integer => true
@@ -24,11 +24,11 @@ class Puzzle < ActiveRecord::Base
   validates_inclusion_of :average_format, :in => FORMATS
   validates_attachment_size :image, :less_than => 20.kilobytes, :unless => Proc.new { |puzzle| puzzle.image_file_name.blank? }
   validates_attachment_content_type :image, :content_type => ['image/png', 'image/gif'], :unless => Proc.new { |puzzle| puzzle.image_file_name.blank? }
-  
+
   def scrambles
     (1..attempt_count).map {|i| scramble}
   end
-  
+
   def scramble
     case name.downcase
       when '2x2x2', '3x3x3'
@@ -59,7 +59,7 @@ class Puzzle < ActiveRecord::Base
         turns[axis].rand + variants.rand
       end.join(' ')
     end
-    
+
     def megaminx_scramble
       scramble = ''
       turns = %w(R D)
@@ -71,7 +71,7 @@ class Puzzle < ActiveRecord::Base
       end
       scramble
     end
-    
+
     def pyraminx_scramble
       turns = %w(U L R B)
       variants = ['', "'"]
@@ -87,7 +87,7 @@ class Puzzle < ActiveRecord::Base
       end
       scramble.join(' ')
     end
-    
+
     def square1_scramble
       scramble = []
     	up_layer = (0..7).map{|i| i%2 == 0 ? 30 : 60}
@@ -109,12 +109,12 @@ class Puzzle < ActiveRecord::Base
       end while length <= scramble_length + 1
       scramble.map {|s| "(#{s.join(',')})"}.join(' ')
     end
-    
+
     def humanize_sq_one_move(layer, move)
       move = layer[0..move - 1].inject(0){|sum, x| x == 30 ? sum + 1 : sum + 2} unless move == 0
       move > 6 ? move - 12 : move
     end
-    
+
     def possible_moves(layer)
       layer_moves = []
       layer.length.times do |start|
@@ -128,7 +128,7 @@ class Puzzle < ActiveRecord::Base
       end
       layer_moves
     end
-    
+
     def do_move(layer, l)
       l %= layer.length
       l.times do
@@ -144,7 +144,7 @@ class Puzzle < ActiveRecord::Base
       up.replace(small_down.reverse + big_up)
       down.replace(small_up.reverse + big_down)
     end
-    
+
     def clock_scramble
     	pins = %w(U d)
     	states = %w(UUdd dUdU ddUU UdUd dUUU UdUU UUUd UUdU UUUU dddd)
