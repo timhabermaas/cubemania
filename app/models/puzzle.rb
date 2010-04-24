@@ -13,7 +13,7 @@ class Puzzle < ActiveRecord::Base
   has_attached_file :image, :storage => :s3,
                             :s3_credentials => "#{Rails.root}/config/s3.yml",
                             :path => ":class/:id/:style/:basename.:extension",
-                            :styles => { :facebook => "50x50!+50+0" }
+                            :styles => { :facebook => "50x50!+50+0" }, :processors => [:cropper]
   #attr_protected :image_file_name, :image_content_type, :image_size
 
   validates_presence_of :name, :image, :attempt_count, :countdown, :kind_id
@@ -24,6 +24,8 @@ class Puzzle < ActiveRecord::Base
   validates_inclusion_of :average_format, :in => FORMATS
   validates_attachment_size :image, :less_than => 20.kilobytes, :unless => Proc.new { |puzzle| puzzle.image_file_name.blank? }
   validates_attachment_content_type :image, :content_type => ['image/png', 'image/gif'], :unless => Proc.new { |puzzle| puzzle.image_file_name.blank? }
+
+  after_update :reprocess_image
 
   def scrambles
     (1..attempt_count).map {|i| scramble}
@@ -158,5 +160,9 @@ class Puzzle < ActiveRecord::Base
     		pins.rand
     	end.join
     	scramble.join(' / ')
+    end
+
+    def reprocess_image
+      image.reprocess!
     end
 end
