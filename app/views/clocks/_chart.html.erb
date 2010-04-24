@@ -11,9 +11,7 @@
     <%= link_to 'Display by Date', '#', :class => 'mode' %> &middot; <%= link_to 'Get your times in CSV format!', puzzle_averages_path(@puzzle, :format => :csv) %>
   </div>
   <div id="average">
-    <p class="challenge">
-      Click on any datapoint in the chart to get further information!
-    </p>
+    <%= render 'click_challenge' %>
   </div>
 </div>
 <% end %>

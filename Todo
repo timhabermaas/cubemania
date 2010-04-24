@@ -3,6 +3,7 @@ Chart:
   Small chart for scrolling and zooming
   Compare with...
   Threshold at where your best x averages lie below
+  Remove data point from Chart after destroying it
 
 General:
   make a general cache_key(args*) helper method which joins with "/"

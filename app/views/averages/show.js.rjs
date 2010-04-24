@@ -1,1 +1,1 @@
-page["#times #average"].replace_html(render @average)
+page["#times #average"].replace_html(render :partial => 'detailed_average', :locals => { :average => @average })

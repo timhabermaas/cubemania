@@ -18,17 +18,22 @@ class AveragesController < ApplicationController
     end
   end
 
-  def show
-    @user = current_user
-    @puzzle = Puzzle.find params[:puzzle_id]
-    object :include => :singles
-  end
-
   def destroy
     if object.destroy
-      flash[:notice] = 'Successfully removed!'
+      respond_to do |format|
+        format.html { flash[:notice] = 'Successfully removed!'; redirect_to user_puzzle_averages_path }
+        format.js
+      end
     end
-    redirect_to user_puzzle_averages_path
+  end
+
+  def show
+    @user = User.find params[:user_id]
+    @puzzle = Puzzle.find params[:puzzle_id]
+    object :include => :singles
+    respond_to do |format|
+      format.js
+    end
   end
 
   private

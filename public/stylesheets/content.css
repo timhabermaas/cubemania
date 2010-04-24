@@ -394,7 +394,7 @@
 #timer tr.dnf {
   color: #83a1bf;
 }
-#timer tr.dnf .time, #average .dnf {
+#timer tr.dnf .time, #timer #average .dnf, #times #average .dnf {
   text-decoration: line-through;
 }
 #timer tr.best {
