@@ -169,7 +169,9 @@ function removeSeries(name) {
 
 $("#times #chart").live("plothover", function(event, pos, item) {
   if (item) {
-    if (item.dataIndex >= maxDots / 2) {
+    var min = item.series.xaxis.min;
+    var max = item.series.xaxis.max;
+    if ((pos.x - min)/(max - min) >= 0.5) {
       showTooltip(item.pageX, item.pageY, item.series.tooltips[item.dataIndex], false);
     } else {
       showTooltip(item.pageX, item.pageY, item.series.tooltips[item.dataIndex], true);
