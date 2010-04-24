@@ -45,14 +45,6 @@ protected
                                                   :scope => "publish_stream")
   end
 
-  def last_average
-    @last_average ||= Average.find_by_id(session[:last_average_id], :include => {:puzzle => :kind})
-  end
-
-  def last_average=(average)
-    session[:last_average_id] = average.id
-  end
-
 private
   def set_time_zone
     if logged_in?

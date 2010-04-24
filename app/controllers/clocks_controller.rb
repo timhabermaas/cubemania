@@ -15,7 +15,6 @@ class ClocksController < ApplicationController
     if @average.save
       @puzzle = @average.puzzle
       @scrambles = @puzzle.scrambles
-      self.last_average = @average
     end
   end
 end
