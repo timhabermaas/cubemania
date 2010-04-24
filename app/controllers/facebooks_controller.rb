@@ -9,6 +9,6 @@ class FacebooksController < ApplicationController
     access_token = facebook_consumer.authorize!(params[:code])
     current_user.update_attribute :fb_access_token, access_token
     flash[:notice] = "You are now connected to Facebook."
-    redirect_back root_path
+    redirect_to root_path
   end
 end
