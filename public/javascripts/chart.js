@@ -196,6 +196,7 @@ $(document).ready(function() {
 
   $("#times #user").change(function() {
     url = $("#times #user option:selected:first").val();
+    // keep list of added names to compare and don't add the same user twice
     addSeries(url)
   });
 
