@@ -8,6 +8,7 @@
 <% for user in @users %>
   <li style="font-size: <%= user.activity(@max_averages_count) * 1 + 1 %>em">
     <%= link_to user.name, user %>
+    <small><%= user.averages_count %></small>
   </li>
 <% end %>
 </ul>

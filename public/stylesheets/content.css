@@ -500,6 +500,9 @@
   display: inline;
   margin-right: 16px;
 }
+#users li small {
+  font-size: 0.4em;
+}
 #users_search {
   margin: 0 auto;
   width: 10em;
