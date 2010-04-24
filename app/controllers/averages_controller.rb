@@ -27,8 +27,6 @@ class AveragesController < ApplicationController
   def destroy
     if object.destroy
       flash[:notice] = 'Successfully removed!'
-    else
-      flash[:notice] = "You can't remove this average, because it's part of a match"
     end
     redirect_to user_puzzle_averages_path
   end
