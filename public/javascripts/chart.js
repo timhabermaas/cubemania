@@ -51,7 +51,7 @@ var options = {
   },
   legend: {
     labelFormatter: function(label, series) {
-      return '<a href="#' + label + '">' + label + '</a>';
+      return '<a href="#" class="legend">' + label + '</a>';
     },
     backgroundColor: null,
     backgroundOpacity: 0,
@@ -101,6 +101,13 @@ function addItemWithoutPlot(data, index) {
   averages[index].dates.push(data.created_at);
 }
 
+function showAjaxLoader() {
+  $("#times #chart").css("background", "url(/images/ajax-loader.gif) 362px 50% no-repeat");
+}
+function hideAjaxLoader() {
+  $("#times #chart").css("background", "none");
+}
+
 function showTooltip(x, y, content, right) {
   $("#tooltip").html(content);
   if (right) {
@@ -114,13 +121,21 @@ function showTooltip(x, y, content, right) {
   });
   $("#tooltip").fadeIn(100);
 }
-
 function hideTooltip() {
   $("#tooltip").hide();
 }
 
+function updateMaxDots() {
+  maxDots = 0;
+  $.each($("#times #chart").data("averages"), function(i, item) {
+    if (item.data.length > maxDots) {
+      maxDots = item.data.length;
+    }
+  });
+}
+
 function addSeries(url) {
-  $("#times #chart").css("background", "url(/images/ajax-loader.gif) center center no-repeat");
+  showAjaxLoader();
   $.getJSON(url, function(data) {
     var averages = $("#times #chart").data("averages");
     var new_averages = {
@@ -136,10 +151,20 @@ function addSeries(url) {
       addItemWithoutPlot(item, index - 1);
     });
     plot = $.plot($('#chart'), averages, options);
-    $("#times #chart").css("background", "none");
-    maxDots = Math.max(data.averages.length, maxDots);
+    hideAjaxLoader();
+    updateMaxDots();
   });
+}
 
+function removeSeries(name) {
+  var averages = $("#times #chart").data("averages")
+  $.each(averages, function(i, item) {
+    if (item.label == name && i != 0) {
+      averages.splice(i, 1);
+      updateMaxDots();
+      plot = $.plot($('#chart'), averages, options);
+    }
+  });
 }
 
 $("#times #chart").live("plothover", function(event, pos, item) {
@@ -184,6 +209,11 @@ $(document).ready(function() {
   }, function() {
     $(this).html('<a href="#">Display by Date</a>');
     switchToIndexView();
+  });
+
+  $("a.legend").live("click", function() {
+    removeSeries($(this).html());
+    return false;
   });
 
 });
