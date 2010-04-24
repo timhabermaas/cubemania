@@ -18,10 +18,10 @@ Cubemania::Application.routes.draw do |map|
   resources :matches, :only => :index
 
   resources :puzzles, :defaults => {:id => DEFAULT_PUZZLE} do
-    resources :times, :controller => :clocks
-    resources :averages do
+    resources :times, :controller => :clocks do
       post :tweet, :on => :member
     end
+    resources :averages
     resources :matches do
       resources :times, :controller => :clocks
     end
