@@ -101,5 +101,7 @@ module Authentication
   private
     def object_if_available
       object if [:show, :edit, :update, :destroy].include? params[:action].to_sym
+    rescue ActiveRecord::RecordNotFound
+      nil
     end
 end

@@ -1,6 +1,10 @@
 class ApplicationController < ActionController::Base
   include Authentication
 
+  rescue_from ActiveRecord::RecordNotFound do |exception|
+    render 'errors/not_found'
+  end
+
   before_filter :set_time_zone, :store_return_to
 
   login :except => [:index, :show]
