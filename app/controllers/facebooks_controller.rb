@@ -1,8 +1,8 @@
 class FacebooksController < ApplicationController
   login :except => []
 
-  def new
-    @facebook_url = facebook_consumer.authorize_url
+  def create
+    redirect_to facebook_consumer.authorize_url
   end
 
   def callback
