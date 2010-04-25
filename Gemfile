@@ -14,9 +14,9 @@ gem 'RedCloth'
 gem 'aws-s3'
 gem 'memcached'
 
+gem 'oauth2'
 gem 'httparty'
 gem "facebook_graph", :git => "git://github.com/timhabermaas/facebook_graph.git"
-
 gem 'smurf'
 
 group :test do
