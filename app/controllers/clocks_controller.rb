@@ -32,6 +32,9 @@ class ClocksController < ApplicationController
                                        :link => user_url(@average.user_id, :host => "cubemania.org"),
                                        :message => render_to_string('tweet.text', :layout => false))
     end
+    respond_to do |format|
+      format.js
+    end
     # rescue not authorized ==> render tweet.failure.js
   end
 end
