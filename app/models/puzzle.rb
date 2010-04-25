@@ -13,8 +13,8 @@ class Puzzle < ActiveRecord::Base
   has_attached_file :image, :storage => :s3,
                             :s3_credentials => "#{Rails.root}/config/s3.yml",
                             :path => ":class/:id/:style/:basename.:extension",
-                            :styles => { :facebook => "50x50!+50+0" },
-                            :processors => [:cropper],
+                            :styles => { :facebook => "" },
+                            :processors => [:facebook],
                             :default_url => "/images/once.png"
   #attr_protected :image_file_name, :image_content_type, :image_size
 
