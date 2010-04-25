@@ -1,57 +1,66 @@
-<%= (link_to 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=donate%40cubemania%2eorg&item_name=Cubemania&no_shipping=1&return=http%3a%2f%2fwww%2ecubemania%2eorg&cancel_return=http%3a%2f%2fwww%2ecubemania%2eorg&cn=Comment&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8', :class => 'sponsor' do %>
-  <span>Sponsor</span>
-<% end) if @user.sponsor? %>
-<h1><%= @user.name %></h1>
+<div id="user">
+  <%= (link_to 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=donate%40cubemania%2eorg&item_name=Cubemania&no_shipping=1&return=http%3a%2f%2fwww%2ecubemania%2eorg&cancel_return=http%3a%2f%2fwww%2ecubemania%2eorg&cn=Comment&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8', :class => 'sponsor' do %>
+    <span>Sponsor</span>
+  <% end) if @user.sponsor? %>
+  <h1><%= @user.name %></h1>
 
-<% if @user.wca.blank? and self? %>
-<div id="wca">
-  <%= link_to '&nbsp;'.html_safe, 'http://www.worldcubeassociation.org', :class => 'logo' %>
-  <%= link_to_function 'Link your World Cube Association profile!', "$('.admin a.toggle').click(); $('#user_wca').focus()" if self? %>
+  <% if not @user.connected_to_facebook? and self? %>
+  <div id="facebook">
+    <%= link_to "&nbsp".html_safe, "http://www.facebook.com", :class => 'logo' %>
+    <%= link_to 'Connect to Facebook!', new_facebook_url %>
+  </div>
+  <% end %>
+
+  <% if @user.wca.blank? and self? %>
+  <div id="wca">
+    <%= link_to '&nbsp;'.html_safe, 'http://www.worldcubeassociation.org', :class => 'logo' %>
+    <%= link_to_function 'Link your World Cube Association profile!', "$('.admin a.toggle').click(); $('#user_wca').focus()" %>
+  </div>
+  <% elsif not @user.wca.blank? %>
+  <div id="wca">
+    <%= link_to '&nbsp;'.html_safe, 'http://www.worldcubeassociation.org', :class => 'logo' %>
+    <%= link_to "#{@user.name}'s World Cube Association Profile", wca(@user.wca) %>
+  </div>
+  <% end %>
+
+  <% if @records.empty? %>
+  <p class="challenge">
+  <% if self? %>
+    How fast do you solve the cube?<br/>
+    <%= link_to 'Stop your times and get the record!', puzzle_times_path %>
+  <% else %>
+    <%= @user.name %> has no personal records yet. <%= link_to 'Do you?', puzzle_times_path if logged_in? %>
+  <% end %>
+  </p>
+  <% else %>
+  <table id="records">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Puzzle</th>
+        <th colspan="2">Single</th>
+        <th colspan="2">Average</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= render :partial => 'record', :collection => @records %>
+    </tbody>
+  </table>
+  <% end %>
+
+  <% if @participances.empty? %>
+  <p class="challenge">
+  <% if self? %>
+    Are you faster than your fellow cubers?<br/>
+    <%= link_to 'Compete with others and get the record!', puzzle_competitions_path %>
+  <% else %>
+    <%= @user.name %> has not competed with fellow cubers yet. <%= link_to 'Have you?', puzzle_competitions_path if logged_in? %>
+  <% end %>
+  </p>
+  <% else %>
+  <p id="participances">
+    <%= self? ? 'You' : @user.name %> competed in
+    <%= render :partial => 'participance', :collection => @participances, :spacer_template => 'spacer' %>.
+  </p>
+  <% end %>
 </div>
-<% elsif not @user.wca.blank? %>
-<div id="wca">
-  <%= link_to '&nbsp;'.html_safe, 'http://www.worldcubeassociation.org', :class => 'logo' %>
-  <%= link_to "#{@user.name}'s World Cube Association Profile", wca(@user.wca) %>
-</div>
-<% end %>
-
-<% if @records.empty? %>
-<p class="challenge">
-<% if self? %>
-  How fast do you solve the cube?<br/>
-  <%= link_to 'Stop your times and get the record!', puzzle_times_path %>
-<% else %>
-  <%= @user.name %> has no personal records yet. <%= link_to 'Do you?', puzzle_times_path if logged_in? %>
-<% end %>
-</p>
-<% else %>
-<table id="records">
-  <thead>
-    <tr>
-      <th></th>
-      <th>Puzzle</th>
-      <th colspan="2">Single</th>
-      <th colspan="2">Average</th>
-    </tr>
-  </thead>
-  <tbody>
-    <%= render :partial => 'record', :collection => @records %>
-  </tbody>
-</table>
-<% end %>
-
-<% if @participances.empty? %>
-<p class="challenge">
-<% if self? %>
-  Are you faster than your fellow cubers?<br/>
-  <%= link_to 'Compete with others and get the record!', puzzle_competitions_path %>
-<% else %>
-  <%= @user.name %> has not competed with fellow cubers yet. <%= link_to 'Have you?', puzzle_competitions_path if logged_in? %>
-<% end %>
-</p>
-<% else %>
-<p id="participances">
-  <%= self? ? 'You' : @user.name %> competed in
-  <%= render :partial => 'participance', :collection => @participances, :spacer_template => 'spacer' %>.
-</p>
-<% end %>

@@ -485,7 +485,7 @@
 }
 
 #facebook h1 {
-  background-image: url(/images/facebook-logo.png);
+  background-image: url(/images/facebook.png);
   background-repeat: no-repeat;
   padding-top: 10px;
   text-indent: 80px;
@@ -510,6 +510,19 @@
 }
 #users_search input[type=submit] {
   margin-left: 1em;
+}
+
+#user #facebook {
+  margin: 3em 0;
+  text-align: center;
+}
+#user #facebook a.logo {
+  background: transparent url(/images/facebook-small.png) left no-repeat;
+  padding: 12px 20px;
+  margin-right: 1em;
+}
+#user #facebook a {
+  font-size: 1.25em;
 }
 
 #wca {
