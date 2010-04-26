@@ -5,12 +5,6 @@ class ApplicationController < ActionController::Base
     render 'errors/not_found'
   end
 
-  rescue_from OAuth2::AccessDenied do |exception|
-    flash[:notice] = "Your access token doesn't seem to be valid"
-    current_user.try(:update_attribute, :fb_access_token, nil)
-    redirect_to new_facebook_path
-  end
-
   before_filter :set_time_zone, :store_return_to
 
   login :except => [:index, :show]
@@ -46,7 +40,7 @@ class ApplicationController < ActionController::Base
 =end
 protected
   def facebook_client
-    @facebook_client ||= OAuth2::Client.new(ENV['FACEBOOK_KEY'], ENV['FACEBOOK_SECRET'], :site => "https://graph.facebook.com")
+    @facebook_client ||= OAuth2::Client.new(ENV['FACEBOOK_ID'], ENV['FACEBOOK_SECRET'], :site => "https://graph.facebook.com")
   end
 
   def facebook_access_token

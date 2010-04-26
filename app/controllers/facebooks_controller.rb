@@ -2,7 +2,7 @@ class FacebooksController < ApplicationController
   login :except => []
 
   def create
-    redirect_to facebook_client.web_server.authorize_url(:redirect_uri => callback_facebook_url, :scope => "stream_publish")
+    redirect_to facebook_client.web_server.authorize_url(:redirect_uri => callback_facebook_url, :scope => "publish_stream")
   end
 
   def callback
