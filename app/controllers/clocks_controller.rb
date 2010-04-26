@@ -25,16 +25,20 @@ class ClocksController < ApplicationController
   def tweet
     @puzzle = Puzzle.find params[:puzzle_id]
     @average = current_user.averages.find params[:id]
-    if Rails.env.production?
-      facebook_client.post("/me/feed", :picture => @puzzle.image.url(:facebook),
-                                       :name => @puzzle.name + ' ' + @puzzle.kind.name,
-                                       :description => 'Keep track of your times and join Cubemania',
-                                       :link => user_url(@average.user_id, :host => "cubemania.org"),
-                                       :message => render_to_string('tweet.text', :layout => false))
+    logger.info "[Facebook] #{render_to_string('tweet.text', :layout => false)}"
+    begin
+      facebook_access_token.post("/me/feed", :picture => @puzzle.image.url(:facebook),
+                                             :name => @puzzle.name + ' ' + @puzzle.kind.name,
+                                             :description => 'Keep track of your times and join Cubemania',
+                                             :link => user_url(@average.user_id, :host => "cubemania.org"),
+                                             :message => render_to_string('tweet.text', :layout => false))# if Rails.env.production?
+      respond_to do |format|
+        format.js
+      end
+    rescue OAuth2::AccessDenied
+      respond_to do |format|
+        format.js { render 'tweet.failure.js' }
+      end
     end
-    respond_to do |format|
-      format.js
-    end
-    # rescue not authorized ==> render tweet.failure.js
   end
 end

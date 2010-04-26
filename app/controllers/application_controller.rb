@@ -40,13 +40,11 @@ class ApplicationController < ActionController::Base
 =end
 protected
   def facebook_client
-    @facebook_client ||= FacebookGraph::Client.new(current_user.fb_access_token)
+    @facebook_client ||= OAuth2::Client.new(ENV['FACEBOOK_ID'], ENV['FACEBOOK_SECRET'], :site => "https://graph.facebook.com")
   end
 
-  def facebook_consumer
-    @facebook_consumer ||= FacebookGraph::Consumer.new(ENV['FACEBOOK_KEY'], ENV['FACEBOOK_SECRET'],
-                                                  :redirect_uri => callback_facebook_url,
-                                                  :scope => "publish_stream")
+  def facebook_access_token
+    @facebook_access_token ||= OAuth2::AccessToken.new(facebook_client, current_user.fb_access_token)
   end
 
   def facebook_required
