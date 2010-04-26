@@ -15,3 +15,8 @@
   background-color: #2f2f2f;
   text-decoration: none;
 }
+#notice .facebook {
+  background: transparent url(/images/facebook-small.png) left no-repeat;
+  padding: 10px 0px 10px 38px;
+  margin-left: 15px;
+}
