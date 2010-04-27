@@ -1,7 +1,5 @@
 Chart:
-  Clicking on a bubble leads to Average Details load from server (averages#show). You also can click "Destroy" there!
   Small chart for scrolling and zooming
-  Compare with...
   Threshold at where your best x averages lie below
   Remove data point from Chart after destroying it
 
@@ -18,7 +16,6 @@ Random ideas:
 Matches should be destroyable, but only through a destroy request including a reason why the user wants to delete that match.
 Ask Patrick for a user's statistics table.
 User#index becomes the ranking page.
-Reintroduce Suggestions like "Get the Record!"
 
 Matches:
   Every Match has shouts
