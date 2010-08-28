@@ -1,13 +1,13 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.0.beta3'
+gem 'rails', '3.0.0.rc2'
 
 # Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
+#gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'sqlite3-ruby', :require => 'sqlite3'
 
-gem 'paperclip', :git => "git://github.com/JasonKing/paperclip.git", :branch => "rails3"
+gem 'paperclip', :git => "git://github.com/thoughtbot/paperclip.git"
 gem 'RedCloth'
 #gem 'will_paginate', :git => "git://github.com/timhabermaas/will_paginate.git", :branch => "rails3"
 
