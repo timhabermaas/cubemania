@@ -58,7 +58,7 @@ class Puzzle < ActiveRecord::Base
       axis = rand turns.size
       (1..scramble_length).map do
         axis = (axis + rand(turns.size - 1) + 1) % turns.size
-        turns[axis].rand + variants.rand
+        turns[axis].sample + variants.sample
       end.join(' ')
     end
 
@@ -68,8 +68,8 @@ class Puzzle < ActiveRecord::Base
       variants = %w(-- ++)
       variants_for_u = ['\'', '']
       scramble_length.times do |index|
-        scramble += (scramble.empty? ? '' : ' ') + turns[index % 2] + variants.rand
-        scramble += ' U' + variants_for_u.rand + "<br/>" if index % 10 == 9
+        scramble += (scramble.empty? ? '' : ' ') + turns[index % 2] + variants.sample
+        scramble += ' U' + variants_for_u.sample + "<br/>" if index % 10 == 9
       end
       scramble
     end
@@ -80,12 +80,12 @@ class Puzzle < ActiveRecord::Base
       tip_turns = turns.map &:downcase
       tip_length = rand(3) + 1
       scramble = (0..tip_length).map do
-        tip_turns.delete(tip_turns.rand) + variants.rand
+        tip_turns.delete(tip_turns.sample) + variants.sample
       end
       axis = rand turns.size
       scramble += (tip_length..scramble_length).map do
         axis = (axis + rand(turns.size - 1) + 1) % turns.size
-        turns[axis] + variants.rand
+        turns[axis] + variants.sample
       end
       scramble.join(' ')
     end
@@ -98,9 +98,9 @@ class Puzzle < ActiveRecord::Base
       begin
         up_moves = possible_moves up_layer
         down_moves = possible_moves down_layer
-        up_move = up_moves.rand
+        up_move = up_moves.sample
         down_moves.delete 0 if up_move == 0
-        down_move = down_moves.rand
+        down_move = down_moves.sample
         scramble << [humanize_sq_one_move(up_layer, up_move), humanize_sq_one_move(down_layer, down_move) * -1]
         do_move up_layer, up_move
         do_move down_layer, down_move
@@ -157,7 +157,7 @@ class Puzzle < ActiveRecord::Base
     		state + ' ' + moves.join("; ")
     	end
     	scramble << Array.new(4).map do
-    		pins.rand
+    		pins.sample
     	end.join
     	scramble.join(' / ')
     end
