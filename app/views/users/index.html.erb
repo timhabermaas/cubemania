@@ -3,7 +3,6 @@
     <%= text_field_tag :search, params[:search] %>
   </p>
 <% end %>
-<% cache "users" do %>
 <ul id="users">
 <% for user in @users %>
   <li style="font-size: <%= user.activity(@max_averages_count) * 1 + 1 %>em">
@@ -12,4 +11,3 @@
   </li>
 <% end %>
 </ul>
-<% end %>

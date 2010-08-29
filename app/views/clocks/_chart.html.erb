@@ -1,4 +1,3 @@
-<% cache ['chart', @puzzle.id, @puzzle.version].join('/') do %>
 <div id="times">
   <div id="chart" data-url="<%= puzzle_averages_path(@puzzle, :format => :json) %>">
   </div>
@@ -14,4 +13,3 @@
     <%= render 'click_challenge' %>
   </div>
 </div>
-<% end %>

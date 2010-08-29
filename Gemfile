@@ -12,7 +12,7 @@ gem 'RedCloth'
 #gem 'will_paginate', :git => "git://github.com/timhabermaas/will_paginate.git", :branch => "rails3"
 
 gem 'aws-s3'
-gem 'memcached'
+# gem 'memcached'
 
 gem 'oauth2'
 gem 'smurf'

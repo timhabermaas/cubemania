@@ -89,7 +89,6 @@ GEM
     main (4.2.0)
       arrayfields (>= 4.7.4)
       fattr (>= 2.1.0)
-    memcached (0.20.1)
     metric_fu (1.5.1)
       Saikuro (>= 1.1.0)
       activesupport (>= 2.0.0)
@@ -169,7 +168,6 @@ DEPENDENCIES
   RedCloth
   aws-s3
   factory_girl!
-  memcached
   metric_fu
   oauth2
   paperclip!

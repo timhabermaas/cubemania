@@ -1,7 +1,5 @@
-<% cache cache_key(@user.cache_key) do %>
 <% @averages = paginate(@averages) %>
 {
   "name": "<%= @user.name %>",
   "averages": [ <%= render(@averages).try(:[],0..-2) %> ]
 }
-<% end %>

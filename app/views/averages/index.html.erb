@@ -1,4 +1,3 @@
-<% cache ["averages", params[:puzzle_id], @user.cache_key, params[:page] || 1] do %>
 <% @averages = paginate @averages %>
 <small><%=h @puzzle.kind.name %> <%= link_to @user.name, @user %></small>
 <h1><%=h @puzzle.name %></h1>
@@ -18,4 +17,3 @@
 </table>
 
 <%= will_paginate @averages %>
-<% end %>
