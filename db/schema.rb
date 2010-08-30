@@ -1,38 +1,24 @@
-# This file is auto-generated from the current state of the database. Instead of editing this file, 
-# please use the migrations feature of Active Record to incrementally modify your database, and
-# then regenerate this schema definition.
+# This file is auto-generated from the current state of the database. Instead
+# of editing this file, please use the migrations feature of Active Record to
+# incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your database schema. If you need
-# to create the application database on another system, you should be using db:schema:load, not running
-# all the migrations from scratch. The latter is a flawed and unsustainable approach (the more migrations
+# Note that this schema.rb definition is the authoritative source for your
+# database schema. If you need to create the application database on another
+# system, you should be using db:schema:load, not running all the migrations
+# from scratch. The latter is a flawed and unsustainable approach (the more migrations
 # you'll amass, the slower it'll run and the greater likelihood for issues).
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100421234423) do
+ActiveRecord::Schema.define(:version => 20100830113737) do
 
-  create_table "clocks", :force => true do |t|
-    t.integer  "time",                                                 :null => false
-    t.integer  "puzzle_id",                                            :null => false
+  create_table "average_records", :force => true do |t|
+    t.integer  "time",       :null => false
+    t.integer  "puzzle_id",  :null => false
+    t.integer  "user_id",    :null => false
     t.datetime "created_at"
-    t.integer  "user_id",                        :default => 0,        :null => false
-    t.string   "scramble",       :limit => 1024
-    t.string   "type",                           :default => "Single", :null => false
-    t.integer  "average_id"
-    t.boolean  "record",                         :default => false,    :null => false
-    t.boolean  "dnf",                            :default => false,    :null => false
-    t.string   "comment"
-    t.integer  "position"
-    t.integer  "competition_id"
-    t.integer  "match_id"
+    t.datetime "updated_at"
   end
-
-  add_index "clocks", ["average_id", "type", "position"], :name => "index_clocks_on_average_id_and_type_and_position"
-  add_index "clocks", ["competition_id", "created_at", "type", "time"], :name => "index_clocks_on_competition_id_and_created_at_and_type_and_time"
-  add_index "clocks", ["match_id", "user_id"], :name => "index_clocks_on_match_id_and_user_id"
-  add_index "clocks", ["puzzle_id", "record", "type", "time"], :name => "index_clocks_on_puzzle_id_and_record_and_type_and_time"
-  add_index "clocks", ["user_id", "puzzle_id", "type", "created_at"], :name => "index_clocks_on_user_id_and_puzzle_id_and_type_and_created_at"
-  add_index "clocks", ["user_id", "record", "type"], :name => "index_clocks_on_user_id_and_record_and_type"
 
   create_table "comments", :force => true do |t|
     t.text     "content",    :null => false
@@ -115,10 +101,6 @@ ActiveRecord::Schema.define(:version => 20100421234423) do
 
   add_index "puzzles", ["kind_id", "name"], :name => "index_puzzles_on_kind_id_and_name", :unique => true
 
-  create_table "schema_info", :id => false, :force => true do |t|
-    t.integer "version"
-  end
-
   create_table "scrambles", :force => true do |t|
     t.string   "scramble",       :limit => 1024,                            :null => false
     t.integer  "position",                                                  :null => false
@@ -137,9 +119,18 @@ ActiveRecord::Schema.define(:version => 20100421234423) do
     t.string   "matchable_type", :default => "Competition", :null => false
   end
 
+  create_table "singles", :force => true do |t|
+    t.integer  "time",                                          :null => false
+    t.integer  "puzzle_id",                                     :null => false
+    t.datetime "created_at"
+    t.integer  "user_id",                    :default => 0,     :null => false
+    t.string   "scramble",   :limit => 1024
+    t.boolean  "dnf",                        :default => false, :null => false
+  end
+
   create_table "users", :force => true do |t|
     t.string   "name",               :limit => 32,                      :null => false
-    t.string   "email",              :limit => 64
+    t.string   "email",              :limit => 64,                      :null => false
     t.string   "salt",               :limit => 8,                       :null => false
     t.string   "encrypted_password",                                    :null => false
     t.datetime "created_at"

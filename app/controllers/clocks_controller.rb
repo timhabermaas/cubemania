@@ -5,6 +5,7 @@ class ClocksController < ApplicationController
   def index
     @puzzle = Puzzle.find params[:puzzle_id]
     @scrambles = @puzzle.scrambles
+    @singles = current_user.singles.for(params[:puzzle_id])
   end
 
   def create

@@ -163,8 +163,9 @@ module ApplicationHelper
   end
 
   def options_for_user_select
-    users = User.find_by_sql ['SELECT u.id, u.name FROM clocks r LEFT OUTER JOIN users u ON r.user_id = u.id WHERE r.puzzle_id = ? AND r.record = ? AND r.type = ? AND u.id <> ? ORDER BY u.name', params[:puzzle_id], true, 'Average', current_user.id]
-    options_for_select users.collect { |u| [u.name, "/users/#{u.id}/puzzles/#{params[:puzzle_id]}/averages.json"]}.unshift(['Compare with ...']) # was user_puzzle_averages_path(u.id, params[:puzzle_id], :format => :xml)
+    users = User.joins(:singles).where("singles.puzzle_id" => params[:puzzle_id]).group("users.id").select("users.id, users.name")
+    #users = User.find_by_sql ['SELECT u.id, u.name FROM singles r LEFT OUTER JOIN users u ON r.user_id = u.id WHERE r.puzzle_id = ? AND r.record = ? AND u.id <> ? ORDER BY u.name', params[:puzzle_id], true, current_user.id]
+    options_for_select users.collect { |u| [u.name, "/users/#{u.id}/puzzles/#{params[:puzzle_id]}/singles.json"]}.unshift(['Compare with ...']) # was user_puzzle_averages_path(u.id, params[:puzzle_id], :format => :xml)
   end
 end
 

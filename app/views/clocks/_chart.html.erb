@@ -1,15 +1,19 @@
 <div id="times">
-  <div id="chart" data-url="<%= puzzle_averages_path(@puzzle, :format => :json) %>">
+  <div id="chart" data-url="<%= puzzle_singles_path(@puzzle, :format => :json) %>">
   </div>
   <div id="mini_chart">
   </div>
   <div id="tooltip">
   </div>
+  <ul>
+    <% for single in @singles %>
+    <li<%= ' class="dnf"' if single.dnf? %>>
+      <%= single.time %>
+    </li>
+    <% end %>
+  </ul>
   <%= select_tag 'user', options_for_user_select %>
   <div id="formats">
-    <%= link_to 'Display by Date', '#', :class => 'mode' %> &middot; <%= link_to 'Get your times in CSV format!', puzzle_averages_path(@puzzle, :format => :csv) %>
-  </div>
-  <div id="average">
-    <%= render 'click_challenge' %>
+    <%= link_to 'Display by Date', '#', :class => 'mode' %> &middot; <%= link_to 'Get your times in CSV format!', puzzle_singles_path(@puzzle, :format => :csv) %>
   </div>
 </div>

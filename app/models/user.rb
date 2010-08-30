@@ -22,7 +22,7 @@ class User < ActiveRecord::Base
     Competition.joins(:averages).select("#{cols}, clocks.created_at as date").where(:user_id => self.id).group("#{cols}, clocks.created_at").all
   end
   has_many :singles, :order => 'created_at desc', :dependent => :delete_all do
-    def for(puzzle_id); find_all_by_puzzle_id puzzle_id, :order => 'time'; end
+    def for(puzzle_id); find_all_by_puzzle_id puzzle_id; end
     def record(puzzle_id); find_by_puzzle_id_and_record puzzle_id, true; end
     def records; find_all_by_record true, :include => { :puzzle => :kind }, :order => 'puzzles.name, kinds.name'; end
     def best(puzzle_id); find_by_puzzle_id puzzle_id, :conditions => {:dnf => false}, :order => 'time'; end

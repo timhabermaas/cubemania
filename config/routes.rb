@@ -11,7 +11,7 @@ Cubemania::Application.routes.draw do |map|
 
   resources :users do
     resources :puzzles do
-      resources :averages
+      resources :singles
     end
   end
 
@@ -21,7 +21,7 @@ Cubemania::Application.routes.draw do |map|
     resources :times, :controller => :clocks do
       post :tweet, :on => :member
     end
-    resources :averages
+    resources :singles
     # resources :matches do
     #   resources :times, :controller => :clocks
     # end
