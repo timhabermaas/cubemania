@@ -109,6 +109,7 @@ GEM
       roodi (>= 2.1.0)
     mime-types (1.16)
     multi_json (0.0.4)
+    mysql (2.8.1)
     oauth2 (0.0.13)
       faraday (~> 0.4.1)
       multi_json (>= 0.0.4)
@@ -176,6 +177,7 @@ DEPENDENCIES
   aws-s3
   factory_girl!
   metric_fu
+  mysql
   oauth2
   paperclip!
   rails (= 3.0.0.rc2)

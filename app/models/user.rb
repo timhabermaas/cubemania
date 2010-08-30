@@ -102,6 +102,10 @@ class User < ActiveRecord::Base
       averages.size / max.to_f
     end
   end
+  
+  def wasted_time
+    singles.sum(time) / 1000
+  end
 
   def rank
     User.count(:all, :conditions => ['points > ?', self.points]) + 1

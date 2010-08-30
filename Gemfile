@@ -5,6 +5,8 @@ gem 'rails', '3.0.0.rc2'
 # Bundle edge Rails instead:
 #gem 'rails', :git => 'git://github.com/rails/rails.git'
 
+gem 'mysql'
+
 gem 'sqlite3-ruby', :require => 'sqlite3'
 
 gem 'paperclip', :git => "git://github.com/thoughtbot/paperclip.git"
