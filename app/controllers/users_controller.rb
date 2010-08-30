@@ -13,14 +13,13 @@ class UsersController < ApplicationController
 
   def show
     @user = object
-    single_records, average_records = @user.singles.records, @user.averages.records
+    single_records, average_records = @user.single_records, @user.average_records
     @records = (0...single_records.size).map do |i|
       unless average_records[i].nil? or single_records[i].puzzle_id == average_records[i].puzzle_id
         average_records.insert i, nil
       end
       { :single => single_records[i], :average => average_records[i] }
-    end
-    @participances = @user.participances
+    end.sort_by { |s| "#{s[:single].puzzle.name}, #{s[:single].puzzle.kind.name}" }
   end
 
   def object(options = nil)

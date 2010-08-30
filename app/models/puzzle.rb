@@ -4,11 +4,13 @@ class Puzzle < ActiveRecord::Base
   belongs_to :kind
   has_many :competitions, :dependent => :destroy
   has_many :matches, :dependent => :destroy
-  has_many :records, :conditions => ['record = ? and users.ignored = ?', true, false], :include => :user, :order => 'time', :class_name => 'Clock' do
-    def single(page); @single ||= where(:type => 'Single').paginate :page => page, :per_page => 50; end
-    def average(page); @average ||= where(:type => 'Average').paginate :page => page, :per_page => 50; end
+  
+  has_many :average_records, :order => :time, :include => :user, :conditions => { 'users.ignored' => false }
+  
+  has_many :singles
+  def single_records
+    singles.includes(:user).where('users.ignored' => false).order(:time).group("users.id")
   end
-  has_many :clocks, :dependent => :delete_all
 
   has_attached_file :image, :storage => :s3,
                             :s3_credentials => "#{Rails.root}/config/s3.yml",

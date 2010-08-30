@@ -48,19 +48,4 @@
   </table>
   <% end %>
 
-  <% if @participances.empty? %>
-  <p class="challenge">
-  <% if self? %>
-    Are you faster than your fellow cubers?<br/>
-    <%= link_to 'Compete with others and get the record!', puzzle_competitions_path %>
-  <% else %>
-    <%= @user.name %> has not competed with fellow cubers yet. <%= link_to 'Have you?', puzzle_competitions_path if logged_in? %>
-  <% end %>
-  </p>
-  <% else %>
-  <p id="participances">
-    <%= self? ? 'You' : @user.name %> competed in
-    <%= render :partial => 'participance', :collection => @participances, :spacer_template => 'spacer' %>.
-  </p>
-  <% end %>
 </div>

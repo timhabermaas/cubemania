@@ -10,13 +10,10 @@ class User < ActiveRecord::Base
 
   has_many :posts, :dependent => :nullify
   has_many :comments, :dependent => :nullify
-  has_many :clocks
   has_many :competitions, :dependent => :nullify
   has_many :shouts, :dependent => :nullify
   has_many :home_matches, :foreign_key => 'user_id', :class_name => 'Match', :dependent => :delete_all
   has_many :guest_matches, :foreign_key => 'opponent_id', :class_name => 'Match', :dependent => :delete_all
-  #has_many :participances, :select => 'competitions.*, clocks.created_at as date', :through => :clocks,
-  #    :order => 'clocks.created_at desc', :source => 'competition', :group => 'competitions.id'
   def participances
     cols = %w(id name puzzle_id created_at repeat).map { |c| "competitions.#{c}"}.join(', ')
     Competition.joins(:averages).select("#{cols}, clocks.created_at as date").where(:user_id => self.id).group("#{cols}, clocks.created_at").all
@@ -27,13 +24,12 @@ class User < ActiveRecord::Base
     def records; find_all_by_record true, :include => { :puzzle => :kind }, :order => 'puzzles.name, kinds.name'; end
     def best(puzzle_id); find_by_puzzle_id puzzle_id, :conditions => {:dnf => false}, :order => 'time'; end
   end
-  has_many :averages, :order => 'created_at desc', :dependent => :delete_all do
-    def for(puzzle_id, page = nil); where(:puzzle_id => puzzle_id).order('created_at desc').paginate :per_page => 100, :page => page, :include => :singles; end
-    def record(puzzle_id); find_by_puzzle_id_and_record puzzle_id, true; end
-    def records; find_all_by_record true, :include => { :puzzle => :kind }, :order => 'puzzles.name, kinds.name'; end
-    def best(puzzle_id); find_by_puzzle_id puzzle_id, :conditions => {:dnf => false}, :order => 'time'; end
-    def match(match_id); find_by_match_id match_id; end
+  
+  def single_records
+    singles.order(:time).where(:dnf => false).group(:puzzle_id).includes(:puzzle => :kind).all
   end
+  
+  has_many :average_records, :include => { :puzzle => :kind }, :order => 'puzzles.name, kinds.name'
 
   validates_uniqueness_of :name, :email, :case_sensitive => false, :message => 'is already in use by another user'
   validates_format_of :name, :with => /^([a-z0-9_]{2,16})$/i, :message => 'must be 2 to 16 letters, numbers or underscores and have no spaces'

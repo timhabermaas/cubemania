@@ -1,9 +1,8 @@
 class CreateSingles < ActiveRecord::Migration
   class Clock < ActiveRecord::Base
-  end 
-  class AverageRecord < ActiveRecord::Base
-    validates_presence_of :puzzle_id, :user_id
-    validates_uniqueness_of :user_id, :scope => :puzzle_id
+    Clock.inheritance_column = "Blub"
+    belongs_to :user
+    belongs_to :puzzle
   end
 
   def self.up
@@ -11,17 +10,28 @@ class CreateSingles < ActiveRecord::Migration
       t.integer :time, :null => false
       t.integer :puzzle_id, :null => false
       t.integer :user_id, :null => false
+      t.string :singles_string, :null => false, :limit => 256
 
       t.timestamps
     end
     AverageRecord.reset_column_information
-
-    say_with_time "Coping old average records over to new table" do
+    
+    ActiveRecord::Base.record_timestamps = false
+    say_with_time "Copying old average records over to new table" do
       Clock.where(:record => true).where(:type => "Average").each do |average|
-        record = AverageRecord.new :time => average.time, :puzzle_id => average.puzzle_id, :user_id => average.user_id
-        record.save!
+        singles = Clock.where(:average_id => average.id).where(:type => "Single").order(:position).all
+        record = AverageRecord.new :time => average.time,
+                                   :puzzle_id => average.puzzle_id,
+                                   :user_id => average.user_id,
+                                   :created_at => average.created_at,
+                                   :updated_at => average.created_at,
+                                   :singles => singles
+        unless singles.empty?
+          record.save!
+        end
       end
     end
+    ActiveRecord::Base.record_timestamps = true
 
     execute "DELETE FROM clocks WHERE type='Average'"
     remove_index :clocks, :name => "index_clocks_on_match_id_and_user_id"
