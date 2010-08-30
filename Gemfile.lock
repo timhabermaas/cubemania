@@ -1,4 +1,11 @@
 GIT
+  remote: git://github.com/mislav/will_paginate.git
+  revision: 3615938
+  branch: rails3
+  specs:
+    will_paginate (3.0.pre2)
+
+GIT
   remote: git://github.com/szimek/factory_girl.git
   revision: b4b7d25
   branch: rails3
@@ -46,8 +53,8 @@ GEM
       activesupport (= 3.0.0.rc2)
     activesupport (3.0.0.rc2)
     addressable (2.2.0)
-    arel (1.0.0.rc1)
-      activesupport (>= 3.0.0.beta)
+    arel (1.0.1)
+      activesupport (~> 3.0.0)
     arrayfields (4.7.4)
     aws-s3 (0.6.2)
       builder
@@ -175,3 +182,4 @@ DEPENDENCIES
   rspec-rails (>= 2.0.0.beta.1)
   smurf
   sqlite3-ruby
+  will_paginate!
