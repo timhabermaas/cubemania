@@ -18,7 +18,7 @@ class CreateSingles < ActiveRecord::Migration
     
     ActiveRecord::Base.record_timestamps = false
     say_with_time "Copying old average records over to new table" do
-      Clock.where(:record => true).where(:type => "Average").each do |average|
+      Clock.where(:record => true).where(:type => "Average").find_each do |average|
         singles = Clock.where(:average_id => average.id).where(:type => "Single").order(:position).all
         record = AverageRecord.new :time => average.time,
                                    :puzzle_id => average.puzzle_id,

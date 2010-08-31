@@ -10,16 +10,25 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100830113737) do
+ActiveRecord::Schema.define(:version => 20090918162947) do
 
-  create_table "average_records", :force => true do |t|
-    t.integer  "time",                          :null => false
-    t.integer  "puzzle_id",                     :null => false
-    t.integer  "user_id",                       :null => false
-    t.string   "singles_string", :limit => 256, :null => false
+  create_table "clocks", :force => true do |t|
+    t.integer  "time",                                                 :null => false
+    t.integer  "puzzle_id",                                            :null => false
     t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer  "user_id",                        :default => 0,        :null => false
+    t.string   "scramble",       :limit => 1024
+    t.string   "type",                           :default => "Single", :null => false
+    t.integer  "average_id"
+    t.boolean  "record",                         :default => false,    :null => false
+    t.boolean  "dnf",                            :default => false,    :null => false
+    t.string   "comment"
+    t.integer  "position"
+    t.integer  "competition_id"
   end
+
+  add_index "clocks", ["average_id", "type", "position"], :name => "index_clocks_on_average_id_and_type_and_position"
+  add_index "clocks", ["user_id", "record", "type"], :name => "index_clocks_on_user_id_and_record_and_type"
 
   create_table "comments", :force => true do |t|
     t.text     "content",    :null => false
@@ -38,19 +47,16 @@ ActiveRecord::Schema.define(:version => 20100830113737) do
     t.datetime "updated_at"
     t.integer  "puzzle_id",                    :default => 0,      :null => false
     t.string   "repeat",         :limit => 32, :default => "once", :null => false
-    t.boolean  "sticky",                       :default => false,  :null => false
+    t.boolean  "sticky",                       :default => false
     t.integer  "averages_count",               :default => 0,      :null => false
     t.string   "skill",          :limit => 32, :default => "all",  :null => false
   end
 
-  add_index "competitions", ["puzzle_id", "sticky", "averages_count", "created_at"], :name => "index_competitions_on_p_id_and_sticky_and_a_count_and_c_at"
-
   create_table "items", :force => true do |t|
-    t.string  "name",        :limit => 64,                      :null => false
-    t.string  "description",                                    :null => false
-    t.integer "position",                  :default => 0,       :null => false
-    t.string  "controller",  :limit => 64, :default => "homes", :null => false
-    t.string  "action",      :limit => 32, :default => "index", :null => false
+    t.string  "name",        :limit => 64,                  :null => false
+    t.string  "description",                                :null => false
+    t.integer "position",                  :default => 0,   :null => false
+    t.string  "url",                       :default => "/", :null => false
   end
 
   add_index "items", ["position"], :name => "index_items_on_position"
@@ -61,17 +67,6 @@ ActiveRecord::Schema.define(:version => 20100830113737) do
     t.string   "image_content_type"
     t.integer  "image_file_size"
     t.datetime "image_updated_at"
-  end
-
-  create_table "matches", :force => true do |t|
-    t.integer  "user_id",                                :null => false
-    t.integer  "opponent_id",                            :null => false
-    t.integer  "puzzle_id",                              :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "status",          :default => "pending", :null => false
-    t.integer  "user_points"
-    t.integer  "opponent_points"
   end
 
   create_table "posts", :force => true do |t|
@@ -97,36 +92,22 @@ ActiveRecord::Schema.define(:version => 20100830113737) do
     t.string   "image_content_type"
     t.integer  "image_file_size"
     t.datetime "image_updated_at"
-    t.integer  "version",                          :default => 0
   end
 
   add_index "puzzles", ["kind_id", "name"], :name => "index_puzzles_on_kind_id_and_name", :unique => true
 
   create_table "scrambles", :force => true do |t|
-    t.string   "scramble",       :limit => 1024,                            :null => false
-    t.integer  "position",                                                  :null => false
+    t.string   "scramble",       :limit => 1024, :null => false
+    t.integer  "position",                       :null => false
     t.datetime "created_at"
-    t.integer  "matchable_id",                   :default => 0,             :null => false
-    t.string   "matchable_type",                 :default => "Competition", :null => false
+    t.integer  "competition_id"
   end
-
-  add_index "scrambles", ["matchable_id", "matchable_type", "created_at", "position"], :name => "index_scrambles_on_matchable_and_created_at_and_position"
 
   create_table "shouts", :force => true do |t|
-    t.string   "content",                                   :null => false
+    t.string   "content",        :null => false
     t.integer  "user_id"
     t.datetime "created_at"
-    t.integer  "matchable_id",   :default => 0,             :null => false
-    t.string   "matchable_type", :default => "Competition", :null => false
-  end
-
-  create_table "singles", :force => true do |t|
-    t.integer  "time",                                          :null => false
-    t.integer  "puzzle_id",                                     :null => false
-    t.datetime "created_at"
-    t.integer  "user_id",                    :default => 0,     :null => false
-    t.string   "scramble",   :limit => 1024
-    t.boolean  "dnf",                        :default => false, :null => false
+    t.integer  "competition_id"
   end
 
   create_table "users", :force => true do |t|
@@ -141,10 +122,6 @@ ActiveRecord::Schema.define(:version => 20100830113737) do
     t.boolean  "sponsor",                           :default => false,  :null => false
     t.string   "time_zone",          :limit => 100, :default => "UTC"
     t.boolean  "ignored",                           :default => false,  :null => false
-    t.integer  "points",                            :default => 1000,   :null => false
-    t.datetime "updated_at"
-    t.boolean  "wants_emails",                      :default => false,  :null => false
-    t.string   "fb_access_token"
   end
 
   add_index "users", ["averages_count"], :name => "index_users_on_averages_count"
