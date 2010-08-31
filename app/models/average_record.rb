@@ -6,7 +6,6 @@ class AverageRecord < ActiveRecord::Base
   validates_uniqueness_of :user_id, :scope => :puzzle_id
   
   def singles=(s)
-    p "singles method"
     self.singles_string = s.map(&:id).join(";")
   end
   
