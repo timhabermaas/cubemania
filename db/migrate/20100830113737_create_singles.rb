@@ -27,7 +27,7 @@ class CreateSingles < ActiveRecord::Migration
                                    :updated_at => average.created_at,
                                    :singles => singles
         unless singles.empty?
-          record.save!
+          record.save
         end
       end
     end
