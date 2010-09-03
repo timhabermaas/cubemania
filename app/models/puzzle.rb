@@ -4,9 +4,9 @@ class Puzzle < ActiveRecord::Base
   belongs_to :kind
   has_many :competitions, :dependent => :destroy
   has_many :matches, :dependent => :destroy
-  
+
   has_many :average_records, :order => :time, :include => :user, :conditions => { 'users.ignored' => false }
-  
+
   has_many :singles
   def single_records
     singles.includes(:user).where('users.ignored' => false).order(:time).group("users.id")
@@ -40,7 +40,7 @@ class Puzzle < ActiveRecord::Base
       when '4x4x4', '5x5x5'
         cube_scramble [%w{R L Rw Lw}, %w{F B Fw Bw}, %w{D U Dw Uw}]
       when '6x6x6', '7x7x7'
-        cube_scramble [['R', 'L', 'R&sup2;', 'L&sup2;', 'R&sup3;', 'L&sup3;'], ['F', 'B', 'F&sup2;', 'B&sup2;', 'F&sup3;', 'B&sup3;'], ['D', 'U', 'D&sup2;', 'U&sup2;', 'D&sup3;', 'U&sup3;']]
+        cube_scramble [['R', 'L', '2R', '2L', '3R', '3L'], ['F', 'B', '2F', '2B', '3F', '3B'], ['D', 'U', '2D', '2U', '3D', '3U']]
       when 'megaminx'
         megaminx_scramble
       when 'pyraminx'
