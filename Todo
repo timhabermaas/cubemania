@@ -3,7 +3,7 @@ Redesign:
   puzzle - points - user table erst user eintragen, wenn er min. ein match gemacht hat. (find_or_create)
   Display the time each player has wasted solving cubes.
   List of singles should have some kind of time stamp for client-side statistics (data-time)
-
+  List of singles should contain the scramble (title attribute vs. data-scramble attribute)
 Chart:
   Small chart for scrolling and zooming
   Threshold at where your best x averages lie below
@@ -16,7 +16,6 @@ General:
   Reduce the size of averages.json to fit more averages into memcache (create tooltip at client side and only send raw data)
   Better cache expiration for averages. At the moment all averages of one user get expired if he creates a new average.
   Make facebook connection more fluent. If "Share it!" fails, user shouldn't do anything to share it anyway.
-  6x6 and 7x7 scramble shouldn't contain html tags.
 
 Random ideas:
   Gray out comments from users, which are stupid. (http://www.joystiq.com/2010/03/17/steam-on-mac-os-x-interview/#comments)
