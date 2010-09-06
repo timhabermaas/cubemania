@@ -2,6 +2,7 @@ Redesign:
   inaktive user anzeigen überflüssig mit neuem system :)
   puzzle - points - user table erst user eintragen, wenn er min. ein match gemacht hat. (find_or_create)
   Display the time each player has wasted solving cubes.
+  List of singles should have some kind of time stamp for client-side statistics (data-time)
 
 Chart:
   Small chart for scrolling and zooming
