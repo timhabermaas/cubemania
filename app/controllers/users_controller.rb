@@ -7,8 +7,8 @@ class UsersController < ApplicationController
   #cache_sweeper :user_sweeper, :only => [:create, :update, :destroy]
 
   def index
-    @max_averages_count = User.max_averages_count
-    @users = User.order('averages_count desc')
+    @max_singles_count = User.max_singles_count
+    @users = User.order('singles_count desc')
   end
 
   def show

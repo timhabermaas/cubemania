@@ -24,11 +24,11 @@ class User < ActiveRecord::Base
     def records; find_all_by_record true, :include => { :puzzle => :kind }, :order => 'puzzles.name, kinds.name'; end
     def best(puzzle_id); find_by_puzzle_id puzzle_id, :conditions => {:dnf => false}, :order => 'time'; end
   end
-  
+
   def single_records
     singles.order(:time).where(:dnf => false).group(:puzzle_id).includes(:puzzle => :kind).all
   end
-  
+
   has_many :average_records, :include => { :puzzle => :kind }, :order => 'puzzles.name, kinds.name'
 
   validates_uniqueness_of :name, :email, :case_sensitive => false, :message => 'is already in use by another user'
@@ -48,8 +48,8 @@ class User < ActiveRecord::Base
     user if user and user.encrypted_password == ENCRYPT.hexdigest(password + user.salt)
   end
 
-  def self.max_averages_count
-    find(:first, :select => 'averages_count', :order => 'averages_count desc').averages_count
+  def self.max_singles_count
+    maximum("singles_count")
   end
 
   def self.all_with_ranking
@@ -99,10 +99,10 @@ class User < ActiveRecord::Base
     if max.zero?
       1
     else
-      averages.size / max.to_f
+      singles.size / max.to_f
     end
   end
-  
+
   def wasted_time
     singles.sum(time) / 1000
   end
