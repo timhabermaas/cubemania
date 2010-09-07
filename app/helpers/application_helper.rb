@@ -89,7 +89,7 @@ module ApplicationHelper
     end
   end
 
-  def ft(time, spacer = ' ')
+  def ft(time, spacer = '')
     hs = (time / 10.0).round
     if hs >= 6000
       min = hs / 6000
