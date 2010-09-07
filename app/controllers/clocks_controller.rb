@@ -5,7 +5,7 @@ class ClocksController < ApplicationController
   def index
     @puzzle = Puzzle.find params[:puzzle_id]
     @scrambles = @puzzle.scrambles
-    @singles = current_user.singles.for(params[:puzzle_id])
+    @singles = current_user.singles.for(params[:puzzle_id]).paginate :page => params[:page], :per_page => 50
   end
 
   def create
