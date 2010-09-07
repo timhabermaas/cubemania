@@ -15,29 +15,6 @@ class ApplicationController < ActionController::Base
   #  render :template => "errors/#{response_code_for_rescue(exception)}"
   #end
 
-
-=begin
-  alias_method :orig_login, :login
-  def login
-    if request.format.json?
-      authenticate_or_request_with_http_basic do |user_name, password|
-        @login = Login.new :name => user_name, :password => password
-        self.current_user = @login.validate
-      end
-    else
-      orig_login
-    end
-  end
-
-  alias_method :orig_permit, :permit
-  def permit(role)
-    if request.format.json?
-      head(401) unless self.role? role
-    else
-      orig_permit role
-    end
-  end
-=end
 protected
   def facebook_client
     @facebook_client ||= OAuth2::Client.new(ENV['FACEBOOK_ID'], ENV['FACEBOOK_SECRET'], :site => "https://graph.facebook.com")
