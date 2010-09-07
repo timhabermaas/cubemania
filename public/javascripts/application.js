@@ -22,6 +22,18 @@ function tooltip() {
   });
 };
 
+function formatTime(time) {
+  var seconds = (time / 1000).toFixed(2);
+  if (seconds < 60) {
+    return seconds;
+  } else {
+    var minutes = Math.floor(seconds / 60);
+    seconds = seconds - minutes * 60;
+    var s = seconds < 10 ? "0" : "";
+    return minutes + ":" + s + seconds.toFixed(2);
+  }
+}
+
 $.fn.textToggle = function(open, close) {
   $(this).text($(this).text() == open ? close : open);
 };

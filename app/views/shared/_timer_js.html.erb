@@ -2,7 +2,7 @@
   interval = null;
   keyEnabled = true;
   timerStopped = false;
-  
+
   function toggleTimer() {
     if (timerEnabled())
       this.interval == null ? startTimer() : stopTimer();
@@ -176,7 +176,7 @@
   function toggleDnf(index) {
     if ($("#timer tr:eq(" + index + ")").hasClass("plus2")) {
       $("#timer tr:eq(" + index + ") .milliseconds").text(parseInt($("#timer tr:eq(" + index + ") .milliseconds").text()) - 2000);
-      $("#timer tr:eq(" + index + ") .time").text(formatTime($("#timer tr:eq(" + index + ") .milliseconds").text())) 
+      $("#timer tr:eq(" + index + ") .time").text(formatTime($("#timer tr:eq(" + index + ") .milliseconds").text()))
     }
     $("#timer tr:eq(" + index + ")").toggleClass("dnf").removeClass("plus2");
     updateAverage();
@@ -188,7 +188,7 @@
     if ($("#timer tr:eq(" + index + ")").hasClass("plus2")) {
       time += 2000;
     } else {
-      time -= 2000; 
+      time -= 2000;
     }
     $("#timer tr:eq(" + index + ") .time").text(formatTime(time));
     $("#timer tr:eq(" + index + ") .milliseconds").text(time);
@@ -213,17 +213,6 @@
       sum += this[i];
     }
     return this.length == 0 ? 0 : Math.round(sum/this.length);
-  }
-  function formatTime(time) {
-    var seconds = (time / 1000).toFixed(2);
-    if (seconds < 60) {
-      return seconds;
-    } else {
-      var minutes = Math.floor(seconds / 60);
-      seconds = seconds - minutes * 60;
-      var s = seconds < 10 ? "0" : "";
-      return minutes + ":" + s + seconds.toFixed(2);
-    }
   }
   function toggleInputMethod() {
     $('#dynamic').toggle();
