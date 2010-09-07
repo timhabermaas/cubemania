@@ -5,3 +5,5 @@ tmp/**/*
 tmp
 .DS_Store
 config/database.yml
+public/images/kinds
+public/images/puzzles
