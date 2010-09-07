@@ -1,3 +1,5 @@
+DEFAULT_PUZZLE = Puzzle.default
+
 Cubemania::Application.routes.draw do |map|
   root :to => 'homes#show'
 
@@ -17,7 +19,7 @@ Cubemania::Application.routes.draw do |map|
 
   # resources :matches, :only => :index
 
-  resources :puzzles, :defaults => {:id => DEFAULT_PUZZLE} do
+  resources :puzzles, :defaults => { :id => DEFAULT_PUZZLE } do
     resources :times, :controller => :clocks do
       post :tweet, :on => :member
     end

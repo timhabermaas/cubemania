@@ -27,6 +27,11 @@ class Puzzle < ActiveRecord::Base
   validates_attachment_size :image, :less_than => 20.kilobytes, :unless => Proc.new { |puzzle| puzzle.image_file_name.blank? }
   validates_attachment_content_type :image, :content_type => ['image/png', 'image/gif'], :unless => Proc.new { |puzzle| puzzle.image_file_name.blank? }
 
+
+  def self.default
+    where("puzzles.name" => "3x3x3").joins(:kind).where("kinds.name" => "speed").first.try(:id) || 1
+  end
+
   def scrambles
     (1..attempt_count).map {|i| scramble}
   end

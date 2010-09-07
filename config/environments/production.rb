@@ -41,5 +41,3 @@ Cubemania::Application.configure do
   # Enable threaded mode
   # config.threadsafe!
 end
-
-DEFAULT_PUZZLE = 2
