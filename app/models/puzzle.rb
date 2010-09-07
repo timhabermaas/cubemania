@@ -12,12 +12,10 @@ class Puzzle < ActiveRecord::Base
     singles.includes(:user).where('users.ignored' => false).order(:time).group("users.id")
   end
 
-  has_attached_file :image, :storage => :s3,
-                            :s3_credentials => "#{Rails.root}/config/s3.yml",
-                            :path => ":class/:id/:style/:basename.:extension",
+  has_attached_file :image, :path => "public/images/:class/:id/:style/:basename.:extension",
+                            :url => ":class/:id/:style/:basename.:extension",
                             :styles => { :facebook => "" },
-                            :processors => [:facebook],
-                            :default_url => "/images/once.png"
+                            :processors => [:facebook]
   #attr_protected :image_file_name, :image_content_type, :image_size
 
   validates_presence_of :name, :image, :attempt_count, :countdown, :kind_id
