@@ -4,10 +4,17 @@ Redesign:
   Display the time each player has wasted solving cubes.
   List of singles should have some kind of time stamp for client-side statistics (data-time)
   List of singles should contain the scramble (title attribute vs. data-scramble attribute)
+  Import for cct session?
 Chart:
   Small chart for scrolling and zooming
   Threshold at where your best x averages lie below
   Remove data point from Chart after destroying it
+  http://www.facebook.com/album.php?aid=85369&id=1376617312 (Zeitenverteilung)
+Timer:
+  allow to stop timer with all keys
+User's profile:
+  Total cubing time: 4 days 12 hours 21 minutes and 3 seconds
+
 
 General:
   make a general cache_key(args*) helper method which joins with "/"
