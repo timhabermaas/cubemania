@@ -29,7 +29,11 @@ class User < ActiveRecord::Base
     singles.order(:time).where(:dnf => false).group(:puzzle_id).includes(:puzzle => :kind).all
   end
 
-  has_many :average_records, :include => { :puzzle => :kind }, :order => 'puzzles.name, kinds.name'
+  has_many :average_records, :include => { :puzzle => :kind }, :order => 'puzzles.name, kinds.name' do
+    def for(puzzle_id)
+      find_by_puzzle_id puzzle_id
+    end
+  end
 
   validates_uniqueness_of :name, :email, :case_sensitive => false, :message => 'is already in use by another user'
   validates_format_of :name, :with => /^([a-z0-9_]{2,16})$/i, :message => 'must be 2 to 16 letters, numbers or underscores and have no spaces'
