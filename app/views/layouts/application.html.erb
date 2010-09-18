@@ -5,7 +5,7 @@
     <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
     <title><%= page_title %> &middot; Cubemania</title>
     <%= stylesheet_link_tag 'reset', 'application', :cache => true %>
-    <%= javascript_include_tag 'jquery', 'rails', 'application', 'timer', :cache => true %>
+    <%= javascript_include_tag 'jquery', 'rails', 'application', :cache => true %>
     <%= yield :head %>
     <link rel="shortcut icon" href="/favicon.ico" type="image/ico" />
     <%= csrf_meta_tag %>
@@ -14,7 +14,7 @@
     <div id="site">
       <%= render 'layouts/header' %>
       <%= render 'layouts/navigation' unless controller? :items %>
-      <%= render 'layouts/subnavigation' if controller?(:clocks, :competitions, :records) or (controller?(:matches) and action?(:new)) %>
+      <%= render 'layouts/subnavigation' if controller?(:times, :competitions, :records) or (controller?(:matches) and action?(:new)) %>
       <%= render 'layouts/notice' unless flash[:notice].nil? %>
       <%= render 'layouts/content' %>
       <%= render 'layouts/footer' %>

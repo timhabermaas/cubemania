@@ -20,7 +20,7 @@ Cubemania::Application.routes.draw do |map|
   # resources :matches, :only => :index
 
   resources :puzzles, :defaults => { :id => DEFAULT_PUZZLE } do
-    resources :times, :controller => :clocks do
+    resources :times do
       post :tweet, :on => :member
     end
     resources :singles
@@ -31,7 +31,7 @@ Cubemania::Application.routes.draw do |map|
       # resources :matches, :defaults => { :puzzle_id => DEFAULT_PUZZLE }
     end
     resources :competitions do
-      resources :times, :controller => :clocks
+      resources :times
       resources :shouts
     end
     resources :scrambles
@@ -40,7 +40,7 @@ Cubemania::Application.routes.draw do |map|
   end
   match 'puzzles/:puzzle_id/records/:type' => 'records#index', :as => 'puzzle_records', :defaults => { :type => 'average', :puzzle_id => DEFAULT_PUZZLE },
           :type => /(single)|(average)/
-  match 'puzzles/:puzzle_id/times' => 'clocks#index', :as => 'puzzle_times', :defaults => { :puzzle_id => DEFAULT_PUZZLE }
+  match 'puzzles/:puzzle_id/times' => 'times#index', :as => 'puzzle_times', :defaults => { :puzzle_id => DEFAULT_PUZZLE }
   match 'puzzles/:puzzle_id/competitions' => 'competitions#index', :as => 'puzzle_competitions', :defaults => { :puzzle_id => DEFAULT_PUZZLE }
   match 'puzzles/:puzzle_id/competitions/:id/:date' => 'competitions#show', :as => 'puzzle_competition_date'
 

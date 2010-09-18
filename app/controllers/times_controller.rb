@@ -1,4 +1,4 @@
-class ClocksController < ApplicationController
+class TimesController < ApplicationController
   login :except => []
   before_filter :facebook_required, :only => :tweet
 
