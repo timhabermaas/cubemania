@@ -19,7 +19,7 @@ class User < ActiveRecord::Base
     Competition.joins(:averages).select("#{cols}, clocks.created_at as date").where(:user_id => self.id).group("#{cols}, clocks.created_at").all
   end
   has_many :singles, :order => 'created_at desc', :dependent => :delete_all do
-    def for(puzzle_id); find_all_by_puzzle_id puzzle_id, :order => 'created_at'; end
+    def for(puzzle_id); find_all_by_puzzle_id puzzle_id, :order => 'created_at desc'; end
     def record(puzzle_id); find_by_puzzle_id_and_record puzzle_id, true; end
     def records; find_all_by_record true, :include => { :puzzle => :kind }, :order => 'puzzles.name, kinds.name'; end
     def best(puzzle_id); find_by_puzzle_id puzzle_id, :conditions => {:dnf => false}, :order => 'time'; end
@@ -73,7 +73,7 @@ class User < ActiveRecord::Base
 
   def reset_password!
     available_characters = ('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a
-    self.password = Array.new(12) { available_characters.rand }.join
+    self.password = Array.new(12) { available_characters.sample }.join
   end
 
   def role?(required_role, request_id, object)
