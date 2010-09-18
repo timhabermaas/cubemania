@@ -51,6 +51,7 @@ function updateDisplay() {
 function stopTimer() {
   updateDisplay();
   $("#timer #single_time").val(new Date().getTime() - startTime);
+  $("#timer #single_human_time").val("");
   $("#timer form").submit();
   clearInterval(intervalId);
   timerStarted = false;
