@@ -5,15 +5,21 @@ var justStopped = false;
 var timerEnabled = true;
 
 $(document).ready(function() {
-  $('#single_human_time').hide();
+  $('#timer #single_human_time').hide();
   $('#timer form input[type=submit]').hide();
 
   $('#timer #toggle').bind('click', function() {
     $('#single_human_time').toggle();
+    $("#timer time").toggle();
     $('#timer form input[type=submit]').toggle();
     $(this).text($(this).text() == 'Set times manually' ? 'Changed your mind?' : 'Set times manually');
     timerEnabled = timerEnabled ? false : true;
   });
+
+  // get the javascript object for the graph
+  $("#timer #singles li time").map(function() {
+    return $(this).attr("data-time");
+  }).get();
 
   $(document).keyup(function(event) {
     if (event.keyCode == 32 && !timerStarted && timerEnabled) {
@@ -49,7 +55,7 @@ function updateDisplay() {
 
 function stopTimer() {
   updateDisplay();
-  $("#single_time").val(new Date().getTime() - startTime);
+  $("#timer #single_time").val(new Date().getTime() - startTime);
   $("#timer form").submit();
   clearInterval(intervalId);
   timerStarted = false;

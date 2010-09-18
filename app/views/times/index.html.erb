@@ -3,7 +3,7 @@
 <% end %>
 
 <div id="timer">
-  <time data-time="0"><%= Single.new.human_time %></time>
+  <time><%= Single.new.human_time %></time>
   <%= form_tag puzzle_times_path(params[:puzzle_id]), :remote => true do %>
     <p>
       <%= text_field_tag 'single[human_time]', "" %>
@@ -21,3 +21,9 @@
 <ul id="singles">
   <%= render :partial => 'single', :collection => @singles %>
 </ul>
+
+<div id="statistics">
+  <p>
+    You've made <%= @singles.size %> solves.
+  </p>
+</div>

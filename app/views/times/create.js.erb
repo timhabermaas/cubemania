@@ -1,2 +1,2 @@
-$("#singles").prepend("<%= escape_javascript(render(:partial => 'single', :object => @single)) %>")
-$("#timer form")[0].reset()
+$("#singles").prepend($("<%= escape_javascript(render(:partial => 'single', :object => @single)) %>").fadeIn('slow'));
+$("#timer form")[0].reset();

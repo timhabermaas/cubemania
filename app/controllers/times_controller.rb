@@ -38,4 +38,10 @@ class TimesController < ApplicationController
       end
     end
   end
+
+  def destroy
+    @puzzle = Puzzle.find params[:puzzle_id]
+    @single = current_user.singles.find params[:id]
+    @single.destroy
+  end
 end
