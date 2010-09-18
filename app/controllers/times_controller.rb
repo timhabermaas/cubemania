@@ -9,17 +9,13 @@ class TimesController < ApplicationController
   end
 
   def create
-    @average = current_user.averages.build params[:average].merge(:puzzle_id => params[:puzzle_id],
-                                                                  :competition_id => params[:competition_id],
-                                                                  :match_id => params[:match_id])
-    @average.singles = params[:singles].map { |index, single| current_user.singles.build single.merge(:puzzle_id => params[:puzzle_id],
-                                                                                                      :competition_id => params[:competition_id],
-                                                                                                      :match_id => params[:match_id],
-                                                                                                      :position => index) }
-
-    if @average.save
-      @puzzle = @average.puzzle
-      @scrambles = @puzzle.scrambles
+    @puzzle = Puzzle.find params[:puzzle_id]
+    @single = current_user.singles.build(params[:single].merge!(:puzzle_id => @puzzle.id))
+    if @single.save
+      respond_to do |format|
+        format.html { redirect_to puzzle_times_path(@puzzle) }
+        format.js
+      end
     end
   end
 

@@ -3,5 +3,18 @@
 <% end %>
 
 <div id="timer">
-  <time><%=ft 0 %></time>
+  <time data-time="0"><%= Single.new.human_time %></time>
+  <%= form_tag puzzle_times_path(params[:puzzle_id]), :remote => true do %>
+    <p>
+      <%= text_field_tag 'single[human_time]', "" %>
+    </p>
+    <p>
+      <%= submit_tag 'Enter' %>
+    </p>
+  <% end %>
+  <%= link_to "Set times manually", "#" %>
 </div>
+
+<ul id="singles">
+  <%= render :partial => 'single', :collection => @singles %>
+</ul>
