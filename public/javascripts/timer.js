@@ -16,11 +16,6 @@ $(document).ready(function() {
     timerEnabled = timerEnabled ? false : true;
   });
 
-  // get the javascript object for the graph
-  $("#timer #singles li time").map(function() {
-    return $(this).attr("data-time");
-  }).get();
-
   $(document).keyup(function(event) {
     if (event.keyCode == 32 && !timerStarted && timerEnabled) {
       if (justStopped) {
@@ -59,4 +54,8 @@ function stopTimer() {
   $("#timer form").submit();
   clearInterval(intervalId);
   timerStarted = false;
+}
+
+function updateStatistics() {
+  // oh yeah :)
 }
