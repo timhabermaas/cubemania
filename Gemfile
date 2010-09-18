@@ -24,7 +24,7 @@ group :test do
   gem "autotest"
   gem "rspec-rails"
   gem 'metric_fu'
-  gem "factory_girl", :git => "git://github.com/szimek/factory_girl.git", :branch => "rails3"
+  gem "factory_girl_rails"
 end
 
 
