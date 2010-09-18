@@ -56,6 +56,7 @@ GEM
     arel (1.0.1)
       activesupport (~> 3.0.0)
     arrayfields (4.7.4)
+    autotest (4.3.2)
     aws-s3 (0.6.2)
       builder
       mime-types
@@ -174,6 +175,7 @@ PLATFORMS
 
 DEPENDENCIES
   RedCloth
+  autotest
   aws-s3
   factory_girl!
   metric_fu
@@ -181,7 +183,8 @@ DEPENDENCIES
   oauth2
   paperclip!
   rails (= 3.0.0.rc2)
-  rspec-rails (>= 2.0.0.beta.1)
+  rspec
+  rspec-rails
   smurf
   sqlite3-ruby
   will_paginate!
