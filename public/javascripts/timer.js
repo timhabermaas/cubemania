@@ -14,6 +14,7 @@ $(document).ready(function() {
     $('#timer form input[type=submit]').toggle();
     $(this).text($(this).text() == 'Set times manually' ? 'Changed your mind?' : 'Set times manually');
     timerEnabled = timerEnabled ? false : true;
+    return false;
   });
 
   $(document).keyup(function(event) {
