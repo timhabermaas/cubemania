@@ -9,10 +9,13 @@
       <%= text_field_tag 'single[human_time]', "" %>
     </p>
     <p>
-      <%= submit_tag 'Enter' %>
+      <%= hidden_field_tag 'single[time]', "" %>
+    </p>
+    <p>
+      <%= submit_tag 'Submit' %>
     </p>
   <% end %>
-  <%= link_to "Set times manually", "#" %>
+  <%= link_to "Set times manually", "#", :id => "toggle" %>
 </div>
 
 <ul id="singles">

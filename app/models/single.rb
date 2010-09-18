@@ -7,7 +7,7 @@ class Single < ActiveRecord::Base
   validates_presence_of :user_id, :puzzle_id, :time
   validates_format_of :human_time, :with => /\A(\d+:)?(\d+:)?\d+(.\d+)?\s*(min|s|h)?\Z/
 
-  before_validation :set_time
+  before_validation :set_time, :if => :human_time_is_set
   after_save :check_for_new_record
 
   def human_time(spacer = '')
@@ -35,5 +35,9 @@ private
   def set_time
     seconds, minutes, hours = @human_time.split(':').reverse
     self.time = (hours.to_i * 3600 + minutes.to_i * 60) * 1000 + (seconds.to_f * 1000).to_i
+  end
+
+  def human_time_is_set
+    not @human_time.blank?
   end
 end

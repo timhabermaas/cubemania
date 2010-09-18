@@ -56,9 +56,3 @@ function calculateDst() {
 }
 
 document.cookie = 'tz_offset=' + ((new Date()).getTimezoneOffset() + calculateDst() * 60);
-
-$(document).ready(function() {
-  tooltip();
-  $("#users_search input[type=text]").liveUpdate("#users");
-  $("#users_search input[type=text]").Watermark("Type a name");
-});
