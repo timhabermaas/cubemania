@@ -3,7 +3,8 @@
 <% end %>
 
 <div id="timer">
-  <time><%= Single.new.human_time %></time>
+  <div id="scramble"><%= @scramble %></div>
+  <time id="current_time"><%= Single.new.human_time %></time>
   <%= form_tag puzzle_times_path(params[:puzzle_id]), :remote => true do %>
     <p>
       <%= text_field_tag 'single[human_time]', "" %>
@@ -12,21 +13,21 @@
       <%= hidden_field_tag 'single[time]', "" %>
     </p>
     <p>
-      <%= submit_tag 'Submit' %>
+      <%= hidden_field_tag 'single[scramble]', @scramble %>
+    </p>
+    <p>
+      <%= submit_tag 'Submit', :disable_with => 'Submit!' %>
     </p>
   <% end %>
-  <%= link_to "Set times manually", "#", :id => "toggle" %>
-</div>
-
-<ul id="singles">
-  <%= render :partial => 'single', :collection => @singles %>
-</ul>
-
-<div id="chart">
-</div>
-
-<div id="statistics">
-  <p>
-    You've made <%= @singles.size %> solves.
-  </p>
+  <%= link_to 'Set times manually', '#', :id => 'toggle' %>
+  <ul id="singles">
+    <%= render :partial => 'single', :collection => @singles %>
+  </ul>
+  <div id="chart">
+  </div>
+  <div id="statistics">
+    <p>
+      You've made <%= @singles.size %> solves.
+    </p>
+  </div>
 </div>

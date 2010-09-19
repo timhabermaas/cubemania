@@ -4,12 +4,13 @@ class TimesController < ApplicationController
 
   def index
     @puzzle = Puzzle.find params[:puzzle_id]
-    @scrambles = @puzzle.scrambles
+    @scramble = @puzzle.scramble
     @singles = current_user.singles.for(params[:puzzle_id]).paginate :page => params[:page], :per_page => 50
   end
 
   def create
     @puzzle = Puzzle.find params[:puzzle_id]
+    @scramble = @puzzle.scramble
     @single = current_user.singles.build(params[:single].merge!(:puzzle_id => @puzzle.id))
     if @single.save
       respond_to do |format|

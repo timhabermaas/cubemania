@@ -1,4 +1,8 @@
 <li id="single-<%= single.id %>">
   <time data-time="<%= single.time %>"><%= single.human_time %></time>
+  <div id="details">
+    <span><%= single.scramble %></span>
+    <time><%=dt single.created_at %></time>
+  </div>
   <%= link_to "X", puzzle_time_path(@puzzle, single), :method => :delete, :remote => true %>
 </li>

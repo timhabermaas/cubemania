@@ -1,2 +1,4 @@
 $("#singles").prepend($("<%= escape_javascript(render(:partial => 'single', :object => @single)) %>").fadeIn('slow'));
 $("#timer form")[0].reset();
+$("#timer #scramble").text("<%= @scramble %>");
+$("#timer form #single_scramble").val("<%= @scramble %>");

@@ -10,7 +10,7 @@ $(document).ready(function() {
 
   $('#timer #toggle').bind('click', function() {
     $('#single_human_time').toggle();
-    $("#timer time").toggle();
+    $("#timer #current_time").toggle();
     $('#timer form input[type=submit]').toggle();
     $(this).text($(this).text() == 'Set times manually' ? 'Changed your mind?' : 'Set times manually');
     timerEnabled = timerEnabled ? false : true;
@@ -46,7 +46,7 @@ function startTimer() {
 }
 
 function updateDisplay() {
-  $("#timer time").text(formatTime(new Date().getTime() - startTime));
+  $("#timer #current_time").text(formatTime(new Date().getTime() - startTime));
 }
 
 function stopTimer() {
