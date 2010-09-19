@@ -1,0 +1,91 @@
+/*
+Syntax error: Undefined variable: "$light_blue".
+        on line 2 of /Users/tim/Projects/Cubemania_git/public/stylesheets/sass/header.sass
+
+1: header
+2:   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, !light_blue - #333), color-stop(0.7, !light_blue), color-stop(1, !light_blue - #111))
+3:   padding: 40px 0px 10px 30px
+4:   h3
+5:     height: 40px
+6:     background:  url('../images/logo.gif') no-repeat left top
+7:     span
+
+Backtrace:
+/Users/tim/Projects/Cubemania_git/public/stylesheets/sass/header.sass:2
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/script/variable.rb:39:in `_perform'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/script/node.rb:61:in `perform'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/script/operation.rb:66:in `_perform'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/script/node.rb:61:in `perform'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/script/funcall.rb:63:in `block in _perform'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/script/funcall.rb:63:in `map'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/script/funcall.rb:63:in `_perform'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/script/node.rb:61:in `perform'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/script/funcall.rb:63:in `block in _perform'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/script/funcall.rb:63:in `map'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/script/funcall.rb:63:in `_perform'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/script/node.rb:61:in `perform'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/tree/prop_node.rb:132:in `perform!'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/tree/node.rb:305:in `_perform'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/tree/node.rb:213:in `perform'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/tree/node.rb:326:in `block in perform_children'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/tree/node.rb:326:in `map'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/tree/node.rb:326:in `perform_children'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/tree/node.rb:317:in `perform!'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/tree/rule_node.rb:191:in `perform!'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/tree/node.rb:305:in `_perform'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/tree/node.rb:213:in `perform'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/tree/node.rb:326:in `block in perform_children'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/tree/node.rb:326:in `map'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/tree/node.rb:326:in `perform_children'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/tree/node.rb:317:in `perform!'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/tree/root_node.rb:59:in `perform!'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/tree/node.rb:305:in `_perform'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/tree/node.rb:213:in `perform'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/tree/root_node.rb:37:in `perform'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/tree/root_node.rb:29:in `render'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/plugin.rb:220:in `update_stylesheet'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/plugin.rb:85:in `block (2 levels) in update_stylesheets'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/plugin.rb:78:in `each'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/plugin.rb:78:in `block in update_stylesheets'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/plugin.rb:76:in `each'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/plugin.rb:76:in `update_stylesheets'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/plugin.rb:50:in `check_for_updates'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/haml-3.0.18/lib/sass/plugin/rack.rb:40:in `call'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/actionpack-3.0.0.rc2/lib/action_dispatch/middleware/best_standards_support.rb:17:in `call'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/actionpack-3.0.0.rc2/lib/action_dispatch/middleware/head.rb:14:in `call'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/rack-1.2.1/lib/rack/methodoverride.rb:24:in `call'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/actionpack-3.0.0.rc2/lib/action_dispatch/middleware/params_parser.rb:21:in `call'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/actionpack-3.0.0.rc2/lib/action_dispatch/middleware/flash.rb:177:in `call'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/actionpack-3.0.0.rc2/lib/action_dispatch/middleware/session/abstract_store.rb:149:in `call'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/actionpack-3.0.0.rc2/lib/action_dispatch/middleware/cookies.rb:278:in `call'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/activerecord-3.0.0.rc2/lib/active_record/query_cache.rb:32:in `block in call'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/activerecord-3.0.0.rc2/lib/active_record/connection_adapters/abstract/query_cache.rb:28:in `cache'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/activerecord-3.0.0.rc2/lib/active_record/query_cache.rb:12:in `cache'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/activerecord-3.0.0.rc2/lib/active_record/query_cache.rb:31:in `call'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/activerecord-3.0.0.rc2/lib/active_record/connection_adapters/abstract/connection_pool.rb:355:in `call'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/actionpack-3.0.0.rc2/lib/action_dispatch/middleware/callbacks.rb:46:in `block in call'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/activesupport-3.0.0.rc2/lib/active_support/callbacks.rb:415:in `_run_call_callbacks'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/actionpack-3.0.0.rc2/lib/action_dispatch/middleware/callbacks.rb:44:in `call'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/rack-1.2.1/lib/rack/sendfile.rb:107:in `call'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/actionpack-3.0.0.rc2/lib/action_dispatch/middleware/remote_ip.rb:48:in `call'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/actionpack-3.0.0.rc2/lib/action_dispatch/middleware/show_exceptions.rb:46:in `call'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/railties-3.0.0.rc2/lib/rails/rack/logger.rb:13:in `call'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/rack-1.2.1/lib/rack/runtime.rb:17:in `call'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/activesupport-3.0.0.rc2/lib/active_support/cache/strategy/local_cache.rb:72:in `call'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/rack-1.2.1/lib/rack/lock.rb:11:in `block in call'
+<internal:prelude>:10:in `synchronize'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/rack-1.2.1/lib/rack/lock.rb:11:in `call'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/actionpack-3.0.0.rc2/lib/action_dispatch/middleware/static.rb:30:in `call'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/railties-3.0.0.rc2/lib/rails/application.rb:168:in `call'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/railties-3.0.0.rc2/lib/rails/application.rb:77:in `method_missing'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/railties-3.0.0.rc2/lib/rails/rack/log_tailer.rb:14:in `call'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/rack-1.2.1/lib/rack/content_length.rb:13:in `call'
+/Users/tim/.rvm/gems/ruby-1.9.2-preview3/gems/rack-1.2.1/lib/rack/handler/webrick.rb:52:in `service'
+/Users/tim/.rvm/rubies/ruby-1.9.2-preview3/lib/ruby/1.9.1/webrick/httpserver.rb:111:in `service'
+/Users/tim/.rvm/rubies/ruby-1.9.2-preview3/lib/ruby/1.9.1/webrick/httpserver.rb:70:in `run'
+/Users/tim/.rvm/rubies/ruby-1.9.2-preview3/lib/ruby/1.9.1/webrick/server.rb:183:in `block in start_thread'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Syntax error: Undefined variable: \"$light_blue\".\A         on line 2 of /Users/tim/Projects/Cubemania_git/public/stylesheets/sass/header.sass\A \A 1: header\A 2:   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, !light_blue - #333), color-stop(0.7, !light_blue), color-stop(1, !light_blue - #111))\A 3:   padding: 40px 0px 10px 30px\A 4:   h3\A 5:     height: 40px\A 6:     background:  url('../images/logo.gif') no-repeat left top\A 7:     span"; }

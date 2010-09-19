@@ -1,11 +1,11 @@
 body {
-  color: black;
-  width: 1000px;
+  color: white;
   margin: 0 auto;
+  background-color: #e0e4cc;
   font-family: "Verdana"; }
 
 a {
-  color: #4c5b79; }
+  color: #f38630; }
 
 a:visited {
   text-decoration: none; }
@@ -14,7 +14,8 @@ a:link {
   text-decoration: none; }
 
 a:hover {
-  text-decoration: underline; }
+  color: #fa6900;
+  text-decoration: none; }
 
 h1 {
   font-size: 250%; }
@@ -24,3 +25,53 @@ h2 {
 
 h3 {
   font-size: 150%; }
+
+header {
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #74a8a5), color-stop(0.7, #a7dbd8), color-stop(1, #96cac7));
+  padding: 40px 0px 10px 30px; }
+  header h3 {
+    height: 40px;
+    background: url("../images/logo.gif") no-repeat left top; }
+    header h3 span {
+      margin-left: -9999em; }
+  header blockquote {
+    margin-left: -9999em; }
+
+nav {
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #96cac7), color-stop(0.7, #a7dbd8), color-stop(1, #96cac7));
+  border-bottom: 1px solid #f38630; }
+  nav ul {
+    padding-left: 2em;
+    padding-top: 1em;
+    padding-bottom: 0.75em;
+    height: 2.5em; }
+    nav ul li a {
+      float: left;
+      /*text-shadow: #111 0px 0px 1px */
+      display: block;
+      padding: 7px 10px 10px 10px;
+      margin-right: 16px; }
+    nav ul li a:hover, nav ul li.checked a {
+      border: 1px solid #e0ffff;
+      border-radius: 4px;
+      /*text-shadow: #111 0px 0px 2px */
+      background-color: #58c1d6;
+      padding: 6px 9px 9px 9px; }
+  nav ul:after {
+    content: ".";
+    display: none;
+    clear: both; }
+
+#content {
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #cfd3bb), color-stop(0.05, #e0e4cc)); }
+
+#timer #singles li time:after {
+  display: none; }
+#timer #singles li time:hover::after {
+  width: 200px;
+  position: absolute;
+  display: block;
+  background: yellow;
+  border: 1px solid black;
+  padding: 8px;
+  margin: 25px 0 0 10px; }

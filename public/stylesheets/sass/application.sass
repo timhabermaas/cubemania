@@ -1,3 +1,10 @@
+!blue = #69D2E7
+!light_blue = #A7DBD8
+!grey = #E0E4CC
+!orange = #F38630
+!dark_orange = #FA6900
+
+
 =centered
   margin: 0 auto
 
@@ -18,13 +25,14 @@
   overflow: hidden
   visibility: hidden
 
+
 body
-  color: black
-  width: 1000px
+  color: white
   +centered
+  background-color: !grey
   font-family: "Verdana"
 a
-  color: #4c5b79
+  color: !orange
 
 a:visited
   text-decoration: none
@@ -33,9 +41,8 @@ a:link
   text-decoration: none
 
 a:hover
-  text-decoration: underline
-
-
+  color: !dark_orange
+  text-decoration: none
 
 h1
   font-size: 250%
@@ -49,3 +56,4 @@ h3
 @import "header.sass"
 @import "navigation.sass"
 @import "content.sass"
+@import "timer.sass"
