@@ -1,0 +1,51 @@
+=centered
+  margin: 0 auto
+
+=curved
+  -webkit-border-top-left-radius: 8px
+  -webkit-border-top-right-radius: 8px
+  -moz-border-radius-topleft: 8px
+  -moz-border-radius-topright: 8px
+  border-top-left-radius: 8px
+  border-top-right-radius: 8px
+
+
+=clear_float
+  content: "\0020"
+  display: block
+  height: 0
+  clear: both
+  overflow: hidden
+  visibility: hidden
+
+body
+  color: black
+  width: 1000px
+  +centered
+  font-family: "Verdana"
+a
+  color: #4c5b79
+
+a:visited
+  text-decoration: none
+
+a:link
+  text-decoration: none
+
+a:hover
+  text-decoration: underline
+
+
+
+h1
+  font-size: 250%
+
+h2
+  font-size: 180%
+
+h3
+  font-size: 150%
+
+@import "header.sass"
+@import "navigation.sass"
+@import "content.sass"

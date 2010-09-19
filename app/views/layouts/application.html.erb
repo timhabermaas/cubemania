@@ -11,16 +11,14 @@
     <%= csrf_meta_tag %>
   </head>
   <body>
-    <div id="site">
-      <%= render 'layouts/header' %>
-      <%= render 'layouts/navigation' unless controller? :items %>
-      <%= render 'layouts/subnavigation' if controller?(:times, :competitions, :records) or (controller?(:matches) and action?(:new)) %>
-      <%= render 'layouts/notice' unless flash[:notice].nil? %>
-      <%= render 'layouts/content' %>
-      <%= render 'layouts/footer' %>
-      <%= render 'layouts/tooltip' %>
-      <%= render 'layouts/feedback' unless controller? :averages %>
-    </div>
+    <%= render 'layouts/header' %>
+    <%= render 'layouts/navigation' unless controller? :items %>
+    <%= render 'layouts/subnavigation' if controller?(:times, :competitions, :records) or (controller?(:matches) and action?(:new)) %>
+    <%= render 'layouts/notice' unless flash[:notice].nil? %>
+    <%= render 'layouts/content' %>
+    <%= render 'layouts/footer' %>
+    <%= render 'layouts/tooltip' %>
+    <%= render 'layouts/feedback' unless controller? :averages %>
     <script type="text/javascript">
       var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
       document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));

@@ -13,8 +13,9 @@ gem 'paperclip', :git => "git://github.com/thoughtbot/paperclip.git"
 gem 'RedCloth'
 gem 'will_paginate', :git => "git://github.com/mislav/will_paginate.git", :branch => "rails3"
 
-gem 'aws-s3'
 # gem 'memcached'
+
+gem 'haml'
 
 gem 'oauth2'
 gem 'smurf'
