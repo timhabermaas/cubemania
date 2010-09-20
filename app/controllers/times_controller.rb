@@ -17,6 +17,11 @@ class TimesController < ApplicationController
         format.html { redirect_to puzzle_times_path(@puzzle) }
         format.js
       end
+    else
+      respond_to do |format|
+        format.html { redirect_to puzzle_times_path(@puzzle) }
+        format.js { render 'create.failure.js' }
+      end
     end
   end
 
