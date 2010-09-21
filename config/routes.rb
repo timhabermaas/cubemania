@@ -1,6 +1,6 @@
 DEFAULT_PUZZLE = Puzzle.default
 
-Cubemania::Application.routes.draw do |map|
+Cubemania::Application.routes.draw do
   root :to => 'homes#show'
 
   resource :facebook do
@@ -53,5 +53,5 @@ Cubemania::Application.routes.draw do |map|
   match 'logout' => 'logins#destroy', :as => 'logout'
   match 'register' => 'users#new', :as => 'register'
 
-  map.connect '*path', :controller => 'errors', :action => 'not_found'
+  #map.connect '*path', :controller => 'errors', :action => 'not_found'
 end
