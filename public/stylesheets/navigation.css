@@ -3,8 +3,8 @@ Syntax error: Undefined variable: "$light_blue".
         on line 2 of /Users/tim/Projects/Cubemania_git/public/stylesheets/sass/navigation.sass
 
 1: nav
-2:   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, !light_blue - #111), color-stop(0.7, !light_blue), color-stop(1, !light_blue - #111))
-3:   border-bottom: 1px solid !orange
+2:   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, $light_blue - #111), color-stop(0.7, $light_blue), color-stop(1, $light_blue - #111))
+3:   border-bottom: 1px solid $orange
 4:   ul
 5:     padding-left: 2em
 6:     padding-top: 1em
@@ -88,4 +88,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Syntax error: Undefined variable: \"$light_blue\".\A         on line 2 of /Users/tim/Projects/Cubemania_git/public/stylesheets/sass/navigation.sass\A \A 1: nav\A 2:   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, !light_blue - #111), color-stop(0.7, !light_blue), color-stop(1, !light_blue - #111))\A 3:   border-bottom: 1px solid !orange\A 4:   ul\A 5:     padding-left: 2em\A 6:     padding-top: 1em\A 7:     padding-bottom: 0.75em"; }
+  content: "Syntax error: Undefined variable: \"$light_blue\".\A         on line 2 of /Users/tim/Projects/Cubemania_git/public/stylesheets/sass/navigation.sass\A \A 1: nav\A 2:   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, $light_blue - #111), color-stop(0.7, $light_blue), color-stop(1, $light_blue - #111))\A 3:   border-bottom: 1px solid $orange\A 4:   ul\A 5:     padding-left: 2em\A 6:     padding-top: 1em\A 7:     padding-bottom: 0.75em"; }

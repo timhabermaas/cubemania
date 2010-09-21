@@ -3,7 +3,7 @@ Syntax error: Undefined variable: "$grey".
         on line 2 of /Users/tim/Projects/Cubemania_git/public/stylesheets/sass/content.sass
 
 1: #content
-2:   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, !grey - #111), color-stop(0.05, !grey))
+2:   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, $grey - #111), color-stop(0.05, $grey))
 
 Backtrace:
 /Users/tim/Projects/Cubemania_git/public/stylesheets/sass/content.sass:2
@@ -83,4 +83,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Syntax error: Undefined variable: \"$grey\".\A         on line 2 of /Users/tim/Projects/Cubemania_git/public/stylesheets/sass/content.sass\A \A 1: #content\A 2:   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, !grey - #111), color-stop(0.05, !grey))"; }
+  content: "Syntax error: Undefined variable: \"$grey\".\A         on line 2 of /Users/tim/Projects/Cubemania_git/public/stylesheets/sass/content.sass\A \A 1: #content\A 2:   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, $grey - #111), color-stop(0.05, $grey))"; }
