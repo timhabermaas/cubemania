@@ -8,13 +8,14 @@ class Puzzle < ActiveRecord::Base
   has_many :average_records, :order => :time, :include => :user, :conditions => { 'users.ignored' => false }
 
   has_many :singles
+
   def single_records
-    singles.includes(:user).where('users.ignored' => false).order(:time).group("users.id")
+    singles.joins(:user).where('users.ignored' => false).order(:time).group('users.id').select('singles.*')
   end
 
-  has_attached_file :image, :path => "public/images/:class/:id/:style/:basename.:extension",
-                            :url => ":class/:id/:style/:basename.:extension",
-                            :styles => { :facebook => "" },
+  has_attached_file :image, :path => 'public/images/:class/:id/:style/:basename.:extension',
+                            :url => ':class/:id/:style/:basename.:extension',
+                            :styles => { :facebook => '' },
                             :processors => [:facebook]
   #attr_protected :image_file_name, :image_content_type, :image_size
 
@@ -29,7 +30,7 @@ class Puzzle < ActiveRecord::Base
 
 
   def self.default
-    where("puzzles.name" => "3x3x3").joins(:kind).where("kinds.name" => "speed").first.try(:id) || 1
+    where('puzzles.name' => '3x3x3').joins(:kind).where('kinds.name' => 'speed').first.try(:id) || 1
   end
 
   def scrambles
@@ -74,7 +75,7 @@ class Puzzle < ActiveRecord::Base
       variants_for_u = ['\'', '']
       scramble_length.times do |index|
         scramble += (scramble.empty? ? '' : ' ') + turns[index % 2] + variants.sample
-        scramble += ' U' + variants_for_u.sample + "<br/>" if index % 10 == 9
+        scramble += ' U' + variants_for_u.sample + '<br/>' if index % 10 == 9
       end
       scramble
     end
@@ -159,7 +160,7 @@ class Puzzle < ActiveRecord::Base
     	  moves = []
     		moves << 'u = ' + (rand(13) - 6).to_s if state.gsub('d', '').length > 1
     		moves << 'd = ' + (rand(13) - 6).to_s if state.gsub('U', '').length > 1
-    		state + ' ' + moves.join("; ")
+    		state + ' ' + moves.join('; ')
     	end
     	scramble << Array.new(4).map do
     		pins.sample
