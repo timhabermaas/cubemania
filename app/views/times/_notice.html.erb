@@ -1,8 +1,3 @@
 <% if average.notice %>
 <%= average.notice %>
-<% if average.user.connected_to_facebook? %>
-<span class="facebook">
-  <%= link_to('Share it!', tweet_puzzle_time_path(average.puzzle, average), :method => :post, :remote => true) if average.user.connected_to_facebook? %>
-</span>
-<% end %>
 <% end %>

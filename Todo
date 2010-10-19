@@ -14,6 +14,12 @@ Timer:
   allow to stop timer with all keys
 User's profile:
   Total cubing time: 4 days 12 hours 21 minutes and 3 seconds
+Facebook:
+ facebook_access_token.post("/me/feed", :picture => @puzzle.image.url(:facebook),
+                                        :name => @puzzle.name + ' ' + @puzzle.kind.name,
+                                        :description => 'Keep track of your times and join Cubemania',
+                                        :link => user_url(@average.user_id, :host => "cubemania.org"),
+                                        :message => render_to_string('tweet.text', :layout => false))# if Rails.env.production?
 
 
 General:

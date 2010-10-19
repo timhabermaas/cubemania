@@ -4,13 +4,6 @@
   <% end) if @user.sponsor? %>
   <h1><%= @user.name %></h1>
 
-  <% if not @user.connected_to_facebook? and self? %>
-  <div id="facebook">
-    <%= link_to "&nbsp".html_safe, "http://www.facebook.com", :class => 'logo' %>
-    <%= link_to 'Connect to Facebook!', new_facebook_url %>
-  </div>
-  <% end %>
-
   <% if @user.wca.blank? and self? %>
   <div id="wca">
     <%= link_to '&nbsp;'.html_safe, 'http://www.worldcubeassociation.org', :class => 'logo' %>

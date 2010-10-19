@@ -16,14 +16,6 @@ class ApplicationController < ActionController::Base
   #end
 
 protected
-  def facebook_client
-    @facebook_client ||= OAuth2::Client.new(ENV['FACEBOOK_ID'], ENV['FACEBOOK_SECRET'], :site => "https://graph.facebook.com")
-  end
-
-  def facebook_access_token
-    @facebook_access_token ||= OAuth2::AccessToken.new(facebook_client, current_user.fb_access_token)
-  end
-
   def facebook_required
     unless current_user.connected_to_facebook?
       flash[:notice] = "You need to connect your Cubemania profile with Facebook!"

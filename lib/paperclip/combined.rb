@@ -1,5 +1,5 @@
 module Paperclip
-  class Facebook < Thumbnail
+  class Combined < Thumbnail
     def transformation_command
       super + [" -crop '50x50+50+0'"] +
         if @attachment.instance.kind.image.path

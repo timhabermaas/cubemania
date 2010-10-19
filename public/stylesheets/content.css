@@ -382,14 +382,6 @@
   text-align: left;
 }
 
-#facebook h1 {
-  background-image: url(/images/facebook.png);
-  background-repeat: no-repeat;
-  padding-top: 10px;
-  text-indent: 80px;
-  min-height: 64px;
-}
-
 #users {
   font-size: 1.5em;
   text-align: center;
@@ -408,19 +400,6 @@
 }
 #users_search input[type=submit] {
   margin-left: 1em;
-}
-
-#user #facebook {
-  margin: 3em 0;
-  text-align: center;
-}
-#user #facebook a.logo {
-  background: transparent url(/images/facebook-medium.png) left no-repeat;
-  padding: 12px 20px;
-  margin-right: 1em;
-}
-#user #facebook a {
-  font-size: 1.25em;
 }
 
 #wca {

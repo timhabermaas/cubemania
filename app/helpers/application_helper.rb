@@ -139,14 +139,6 @@ module ApplicationHelper
     'http://www.worldcubeassociation.org/results/p.php?i=' + id
   end
 
-  def twitter(name)
-    'http://twitter.com/' + name
-  end
-
-  def facebook(id)
-    'http://www.facebook.com/profile.php?id=' + id.to_s
-  end
-
   def li_for(record, *args, &block)
     content_tag_for :li, record, *args, &block
   end

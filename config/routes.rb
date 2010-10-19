@@ -3,10 +3,6 @@ DEFAULT_PUZZLE = Puzzle.default
 Cubemania::Application.routes.draw do
   root :to => 'homes#show'
 
-  resource :facebook do
-    get :callback
-  end
-
   resources :posts do
     resources :comments
   end
@@ -20,9 +16,7 @@ Cubemania::Application.routes.draw do
   # resources :matches, :only => :index
 
   resources :puzzles, :defaults => { :id => DEFAULT_PUZZLE } do
-    resources :times do
-      post :tweet, :on => :member
-    end
+    resources :times
     resources :singles
     # resources :matches do
     #   resources :times, :controller => :clocks
