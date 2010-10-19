@@ -14,7 +14,7 @@ class Puzzle < ActiveRecord::Base
   end
 
   has_attached_file :image, :path => 'public/images/:class/:id/:style/:basename.:extension',
-                            :url => ':class/:id/:style/:basename.:extension',
+                            :url => '/images/:class/:id/:style/:basename.:extension',
                             :styles => { :facebook => '' },
                             :processors => [:facebook]
   #attr_protected :image_file_name, :image_content_type, :image_size
