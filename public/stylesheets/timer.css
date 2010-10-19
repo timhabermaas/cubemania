@@ -1,10 +1,17 @@
-#timer #singles li time:after {
-  display: none; }
-#timer #singles li time:hover::after {
-  width: 200px;
-  position: absolute;
-  display: block;
-  background: yellow;
-  border: 1px solid black;
-  padding: 8px;
-  margin: 25px 0 0 10px; }
+#timer #singles li .details {
+  display: none;
+}
+#timer #singles li {
+  display: inline-block;
+  padding: 0.25em;
+}
+#timer #singles li {
+  font-size: 90%;
+}
+#timer #singles {
+  width: 500px;
+}
+#timer #chart {
+  width: 500px;
+  float: left;
+}

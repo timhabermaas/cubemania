@@ -1,5 +1,5 @@
 <% content_for :head do %>
-  <%= javascript_include_tag 'timer', 'highcharts', 'chart' %>
+  <%= javascript_include_tag 'timer', 'highcharts', 'chart', :cache => true %>
 <% end %>
 
 <div id="timer">
@@ -22,6 +22,7 @@
   <%= link_to 'Set times manually', '#', :id => 'toggle' %>
   <ul id="singles">
     <%= render :partial => 'single', :collection => @singles %>
+    <%= will_paginate @singles %>
   </ul>
   <div id="chart">
   </div>
