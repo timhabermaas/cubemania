@@ -15,8 +15,6 @@ gem 'will_paginate', :git => "git://github.com/mislav/will_paginate.git", :branc
 
 # gem 'memcached'
 
-gem 'haml'
-
 gem 'oauth2'
 gem 'smurf'
 

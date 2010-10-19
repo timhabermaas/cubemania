@@ -76,7 +76,6 @@ GEM
     flog (2.5.0)
       ruby_parser (~> 2.0)
       sexp_processor (~> 3.0)
-    haml (3.0.18)
     hirb (0.3.4)
     hoe (2.6.2)
       rake (>= 0.8.7)
@@ -163,7 +162,6 @@ DEPENDENCIES
   RedCloth
   autotest
   factory_girl_rails
-  haml
   metric_fu
   mysql
   oauth2
