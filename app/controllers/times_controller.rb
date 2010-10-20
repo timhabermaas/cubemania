@@ -24,6 +24,12 @@ class TimesController < ApplicationController
     end
   end
 
+  def dnf
+    @puzzle = Puzzle.find params[:puzzle_id]
+    @single = current_user.singles.find params[:id]
+    @single.toggle_dnf!
+  end
+
   def destroy
     @puzzle = Puzzle.find params[:puzzle_id]
     @single = current_user.singles.find params[:id]

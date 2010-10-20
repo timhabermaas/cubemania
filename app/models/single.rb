@@ -27,6 +27,14 @@ class Single < ActiveRecord::Base
     @human_time = ht
   end
 
+  def toggle_dnf!
+    if self.dnf?
+      self.update_attribute :dnf, false
+    else
+      self.update_attribute :dnf, true
+    end
+  end
+
 private
   def check_for_new_record
     # get the last 5 solves, calculate an average. if the average is lower than user.average_records.for(puzzle_id).time replace the old one

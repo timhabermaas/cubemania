@@ -1,17 +1,48 @@
-#timer #singles li .details {
+#singles li .details {
   display: none;
 }
-#timer #singles li {
+#singles li {
   display: inline-block;
-  padding: 0.25em;
+  margin-bottom: 0.5em;
+  margin-right: 0.5em;
 }
-#timer #singles li {
+#singles li {
   font-size: 90%;
 }
-#timer #singles {
-  width: 500px;
-}
-#timer #chart {
+#chart {
   width: 500px;
   float: left;
+}
+#singles .dnf {
+  text-decoration: line-through;
+  color: #aaa;
+}
+#singles li:hover .details {
+  display: block;
+}
+
+#singles li .details {
+  position: absolute;
+  background-color: rgba(0,0,0,0.8);
+  border: 1px solid #df0;
+  padding: 1em;
+}
+
+#timer {
+  display: block;
+  text-align: center;
+  margin: 1em 0em;
+}
+#timer time {
+  font-size: 300%;
+}
+#timer form input[type=submit] {
+  margin: 0;
+  padding: 0;
+}
+
+#timer #scramble {
+  text-align: center;
+  display: block;
+  margin-bottom: 1em;
 }

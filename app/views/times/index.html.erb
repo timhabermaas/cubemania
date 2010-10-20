@@ -3,7 +3,7 @@
 <% end %>
 
 <div id="timer">
-  <div id="scramble"><%= @scramble %></div>
+  <strong id="scramble"><%= @scramble %></strong>
   <time id="current_time"><%= Single.new.human_time %></time>
   <%= form_tag puzzle_times_path(params[:puzzle_id]), :remote => true do %>
     <p>
@@ -20,15 +20,15 @@
     </p>
   <% end %>
   <%= link_to 'Set times manually', '#', :id => 'toggle' %>
-  <ul id="singles">
-    <%= render :partial => 'single', :collection => @singles %>
-    <%= will_paginate @singles %>
-  </ul>
-  <div id="chart">
-  </div>
-  <div id="statistics">
-    <p>
-      You've made <%= @singles.size %> solves.
-    </p>
-  </div>
+</div>
+<ul id="singles">
+  <%= render :partial => 'single', :collection => @singles %>
+  <%= will_paginate @singles %>
+</ul>
+<div id="chart">
+</div>
+<div id="statistics">
+  <p>
+    You've made <%= @singles.size %> solves.
+  </p>
 </div>
