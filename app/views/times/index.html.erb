@@ -1,7 +1,3 @@
-<% content_for :head do %>
-  <%= javascript_include_tag 'timer', 'highcharts', 'chart', :cache => true %>
-<% end %>
-
 <div id="timer">
   <strong id="scramble"><%= @scramble %></strong>
   <time id="current_time"><%= Single.new.human_time %></time>
