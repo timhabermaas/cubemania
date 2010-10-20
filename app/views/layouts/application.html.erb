@@ -8,7 +8,7 @@
     <!--[if IE]>
       <%= stylesheet_link_tag 'ie' %>
     <![endif]-->
-    <%= javascript_include_tag 'jquery', 'rails', 'application', 'timer', 'highcharts', 'chart' %>
+    <%= javascript_include_tag 'jquery', 'rails', 'application', 'timer', 'highcharts', 'chart', :cache => true %>
     <%= yield :head %>
     <link rel="shortcut icon" href="/favicon.ico" type="image/ico" />
     <%= csrf_meta_tag %>

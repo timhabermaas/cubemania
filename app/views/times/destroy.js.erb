@@ -1,5 +1,3 @@
 $('#single-<%= @single.id %>').fadeOut(200, function() {
   $(this).remove();
 });
-
-$('#statistics p').text("You've made " + $("#singles li").size() + " solves.");
