@@ -25,12 +25,12 @@ function tooltip() {
 function formatTime(time) {
   var seconds = (time / 1000).toFixed(2);
   if (seconds < 60) {
-    return seconds;
+    return seconds + "s";
   } else {
     var minutes = Math.floor(seconds / 60);
     seconds = seconds - minutes * 60;
     var s = seconds < 10 ? "0" : "";
-    return minutes + ":" + s + seconds.toFixed(2);
+    return minutes + ":" + s + seconds.toFixed(2) + "min";
   }
 }
 

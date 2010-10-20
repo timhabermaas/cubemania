@@ -42,7 +42,7 @@ $(document).ready(function() {
 function startTimer() {
   timerStarted = true;
   startTime = new Date().getTime();
-  intervalId = setInterval(updateDisplay, 20)
+  intervalId = setInterval(updateDisplay, 42)
 }
 
 function updateDisplay() {
