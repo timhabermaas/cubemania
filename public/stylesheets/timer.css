@@ -26,6 +26,14 @@
   background-color: rgba(0,0,0,0.8);
   border: 1px solid #df0;
   padding: 1em;
+  z-index: 1;
+}
+#singles li a.destroy {
+  color: #f00;
+}
+#singles li a.destroy:hover {
+  color: #000;
+  background-color: #f00;
 }
 
 #timer {

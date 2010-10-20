@@ -4,8 +4,8 @@
     <span class="scramble"><%= single.scramble %></span>
     <time><%=dt single.created_at %></time>
     <div class="edit">
-      <%= link_to "Delete", puzzle_time_path(@puzzle, single), :method => :delete, :remote => true %>
       <%= link_to "DNF", dnf_puzzle_time_path(@puzzle, single), :method => :put, :remote => true %>
+      <%= link_to "X", puzzle_time_path(@puzzle, single), :method => :delete, :remote => true, :class => "destroy" %>
     </div>
   </div>
 </li>
