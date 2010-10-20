@@ -1,4 +1,4 @@
-DEFAULT_PUZZLE = Puzzle.default
+DEFAULT_PUZZLE = 2#Puzzle.default
 
 Cubemania::Application.routes.draw do
   root :to => 'homes#show'
