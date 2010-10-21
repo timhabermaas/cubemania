@@ -3,15 +3,11 @@
 }
 #singles li {
   display: inline-block;
-  margin-bottom: 0.5em;
+  margin-top: 0.5em;
   margin-right: 0.5em;
 }
 #singles li {
   font-size: 90%;
-}
-#chart {
-  width: 500px;
-  float: left;
 }
 #singles .dnf {
   text-decoration: line-through;
@@ -20,7 +16,6 @@
 #singles li:hover .details {
   display: block;
 }
-
 #singles li .details {
   position: absolute;
   background-color: rgba(0,0,0,0.8);
@@ -35,6 +30,9 @@
   color: #000;
   background-color: #f00;
 }
+#singles {
+  text-align: center;
+}
 
 #timer {
   display: block;
@@ -48,9 +46,14 @@
   margin: 0;
   padding: 0;
 }
-
 #timer #scramble {
   text-align: center;
   display: block;
   margin-bottom: 1em;
+}
+
+#chart {
+  width: 700px;
+  margin: 1.5em auto;
+
 }
