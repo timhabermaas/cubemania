@@ -40,7 +40,8 @@
   margin: 1em 0em;
 }
 #timer time {
-  font-size: 300%;
+  font-size: 500%;
+  font-weight: bold;
 }
 #timer form input[type=submit] {
   margin: 0;
