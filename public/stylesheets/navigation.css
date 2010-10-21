@@ -1,27 +1,27 @@
-nav {
+#navigation {
   display: block;
   border-top: 1px solid #df0;
   background: #1e1e1e url(/images/navigation.gif) repeat-x;
   overflow: hidden;
 }
-nav li {
+#navigation li {
   display: block;
   float: left;
 }
-nav #login, nav #profile {
+#navigation #login, #navigation #profile {
   float: right;
 }
-nav li a {
+#navigation li a {
   display: block;
   padding: 1em;
   color: #4e4e4e;
   text-transform: uppercase;
 }
-nav li a:hover, nav li.checked a {
+#navigation li a:hover, #navigation li.checked a {
   color: #2f2f2f;
   background: #df0 url(/images/item.gif) repeat-x bottom;
 }
-nav #login a:hover, nav #login.checked a, nav #profile a:hover, nav #profile.checked a {
+#navigation #login a:hover, #navigation #login.checked a, #navigation #profile a:hover, #navigation #profile.checked a {
   color: #df0;
   background: none;
 }
