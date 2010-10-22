@@ -8,7 +8,7 @@ class Single < ActiveRecord::Base
   validates_format_of :human_time, :with => /\A(\d+:)?(\d+:)?\d+(.\d+)?\s*(min|s|h)?\Z/
 
   before_validation :set_time, :if => :human_time_is_set
-  after_save :check_for_new_record
+  after_save :update_average_records
 
   def human_time(spacer = '')
     t = self.time || 0
@@ -36,7 +36,7 @@ class Single < ActiveRecord::Base
   end
 
 private
-  def check_for_new_record
+  def update_average_records
     # get the last 5 solves, calculate an average. if the average is lower than user.average_records.for(puzzle_id).time replace the old one
   end
 
