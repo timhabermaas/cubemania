@@ -3,7 +3,7 @@ var chart;
 $(document).ready(function() {
   var singles = $("#singles li .time").map(function() {
     return parseInt($(this).attr("data-time"));
-  }).get();
+  }).get().reverse();
 
   chart = new Highcharts.Chart({
            chart: {
