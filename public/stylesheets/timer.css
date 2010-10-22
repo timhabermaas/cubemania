@@ -52,6 +52,12 @@
 #timer time {
   font-size: 500%;
   font-weight: bold;
+  display: none;
+}
+#timer form input[type=text] {
+  font-size: 200%;
+  width: 8em;
+  text-align: center;
 }
 #timer form input[type=submit] {
   margin: 0;

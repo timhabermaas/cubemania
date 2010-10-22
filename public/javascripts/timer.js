@@ -5,9 +5,6 @@ var justStopped = false;
 var timerEnabled = true;
 
 $(document).ready(function() {
-  $('#timer #single_human_time').hide();
-  $('#timer form input[type=submit]').hide();
-
   $('#timer #toggle').bind('click', function() {
     $('#single_human_time').toggle();
     $("#timer #current_time").toggle();
