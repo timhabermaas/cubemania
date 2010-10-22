@@ -18,7 +18,7 @@ gem 'will_paginate', :git => "git://github.com/mislav/will_paginate.git", :branc
 gem 'oauth2'
 gem 'smurf'
 
-group :test do
+group :development, :test do
   gem "rspec"
   gem "autotest"
   gem "rspec-rails"

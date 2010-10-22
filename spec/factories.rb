@@ -31,26 +31,12 @@ end
 Factory.define :single do |s|
   s.time rand(16000) + 5000
   s.dnf false
-  s.record false
   s.association :puzzle
   s.association :user
-  s.sequence(:position) { |n| n }
 end
 
-Factory.define :average do |a|
-  a.time rand(16000) + 5000
-  a.dnf false
-  a.record false
-  a.association :puzzle
-  a.association :user
-  a.comment "hey, this is a huuuuuuge comment, 'cause i'm awesome!"
-  a.singles { |average| (1..5).to_a.map{|i| average.association(:single, :user => average.user)} }
-end
-
-Factory.define :average_with_match, :parent => :average do |a|
-  a.association :puzzle
-  a.association :user
-  a.match { |average| average.association(:match, :user => average.user, :puzzle => average.puzzle) }
+Factory.define :dnf_single, :parent => :single do |a|
+  a.dnf true
 end
 
 Factory.define :match do |m|
