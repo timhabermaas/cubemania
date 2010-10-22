@@ -35,6 +35,8 @@ class User < ActiveRecord::Base
     end
   end
 
+  scope :active, where('singles_count > 0')
+
   validates_uniqueness_of :name, :email, :case_sensitive => false, :message => 'is already in use by another user'
   validates_format_of :name, :with => /^([a-z0-9_]{2,16})$/i, :message => 'must be 2 to 16 letters, numbers or underscores and have no spaces'
   validates_exclusion_of :name, :in => %w(admin moderator), :message => "you don't belong here"

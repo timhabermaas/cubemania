@@ -8,7 +8,7 @@ class Single < ActiveRecord::Base
   validates_format_of :human_time, :with => /\A(\d+:)?(\d+:)?\d+(.\d+)?\s*(min|s|h)?\Z/
 
   before_validation :set_time, :if => :human_time_is_set
-  after_save :update_average_records
+  after_save :update_average_record
 
   def human_time(spacer = '')
     t = self.time || 0
@@ -36,8 +36,22 @@ class Single < ActiveRecord::Base
   end
 
 private
-  def update_average_records
-    # get the last 5 solves, calculate an average. if the average is lower than user.average_records.for(puzzle_id).time replace the old one
+  def update_average_record
+    last_singles = Single.where(:user_id => user_id).where(:puzzle_id => puzzle_id).order("created_at desc").limit(5)
+
+    avg = Average.new(last_singles).average
+
+    logger.info("New average: #{avg}")
+
+    old_average = AverageRecord.where(:puzzle_id => puzzle_id, :user_id => user_id).first
+    logger.info("old average: #{old_average.try(:time)}")
+    if old_average.nil?
+      new_average = AverageRecord.new(:puzzle_id => puzzle_id, :user_id => user_id, :time => avg)
+      new_average.singles = last_singles
+      new_average.save!
+    elsif avg < old_average.time
+      old_average.update_attribute :time, avg
+    end
   end
 
   def set_time
