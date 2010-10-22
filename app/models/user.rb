@@ -29,7 +29,7 @@ class User < ActiveRecord::Base
     singles.order(:time).where(:dnf => false).group(:puzzle_id).includes(:puzzle => :kind).all
   end
 
-  has_many :average_records, :include => { :puzzle => :kind }, :order => 'puzzles.name, kinds.name' do
+  has_many :average_records do
     def for(puzzle_id)
       find_by_puzzle_id puzzle_id
     end
