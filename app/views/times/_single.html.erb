@@ -3,9 +3,11 @@
   <div class="details">
     <span class="scramble"><%= single.scramble %></span>
     <time><%=dt single.created_at %></time>
+    <blockquote class="comment"><%= single.comment %></blockquote>
     <div class="edit">
       <%= link_to "DNF", dnf_puzzle_time_path(@puzzle, single), :method => :put, :remote => true %>
       <%= link_to "X", puzzle_time_path(@puzzle, single), :method => :delete, :remote => true, :class => "destroy" %>
+      <%= link_to "+", "#", :class => "add_comment" %>
     </div>
   </div>
 </li>

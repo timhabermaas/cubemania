@@ -1,6 +1,3 @@
-#singles li .details {
-  display: none;
-}
 #singles li {
   display: inline-block;
   margin-top: 0.5em;
@@ -8,6 +5,7 @@
 }
 #singles li {
   font-size: 90%;
+  position: relative;
 }
 #singles .dnf {
   text-decoration: line-through;
@@ -18,10 +16,19 @@
 }
 #singles li .details {
   position: absolute;
+  width: 400px;
+  display: none;
   background-color: rgba(0,0,0,0.8);
   border: 1px solid #df0;
   padding: 1em;
   z-index: 1;
+  text-align: left;
+}
+#singles li a.add_comment {
+  display: inline-block;
+  width: 100px;
+  text-indent: -9999px;
+  background: transparent url(/images/add-comment.gif) no-repeat;
 }
 #singles li a.destroy {
   color: #f00;
@@ -29,6 +36,9 @@
 #singles li a.destroy:hover {
   color: #000;
   background-color: #f00;
+}
+#singles .details blockquote {
+  font-style: italic;
 }
 #singles {
   text-align: center;
