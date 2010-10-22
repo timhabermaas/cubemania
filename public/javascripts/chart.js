@@ -1,8 +1,8 @@
 var chart;
 
 $(document).ready(function() {
-  var singles = $("#singles li time").map(function() {
-    return $(this).attr("data-time");
+  var singles = $("#singles li .time").map(function() {
+    return parseInt($(this).attr("data-time"));
   }).get();
 
   chart = new Highcharts.Chart({
@@ -27,7 +27,10 @@ $(document).ready(function() {
            plotOptions: {
                     line: {
                        dataLabels: {
-                          enabled: true
+                          enabled: true,
+                          formatter: function() {
+                            return formatTime(this.y);
+                          }
                        },
                        enableMouseTracking: false
                     }
