@@ -39,6 +39,8 @@ private
   def update_average_record
     last_singles = Single.where(:user_id => user_id).where(:puzzle_id => puzzle_id).order("created_at desc").limit(5)
 
+    return if last_singles.size < 5
+
     avg = Average.new(last_singles).time
 
     return if avg.nil?
