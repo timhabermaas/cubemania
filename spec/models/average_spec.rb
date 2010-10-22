@@ -19,5 +19,11 @@ describe Average do
                  Factory.build(:single, :time => 7000),
                  Factory.build(:single, :time => 400)])
     a.time.to_i.should == 867
+    a = Average.new([Factory.build(:single, :time => 0),
+                 Factory.build(:single, :time => 0),
+                 Factory.build(:single, :time => 0),
+                 Factory.build(:single, :time => 9),
+                 Factory.build(:single, :time => 9)])
+    a.time.to_i.should == 3
   end
 end
