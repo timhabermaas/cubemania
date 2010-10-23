@@ -69,8 +69,15 @@
   margin-bottom: 1em;
 }
 
-#chart {
-  width: 700px;
-  margin: 1.5em auto;
+#statistics {
+  margin-top: 1em;
+  text-align: center;
+}
+#statistics time {
+  font-weight: bold;
+}
 
+#chart {
+  width: 800px;
+  margin: 1.5em auto;
 }

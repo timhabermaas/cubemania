@@ -13,6 +13,15 @@ $(document).ready(function() {
              text: 'Cubing Progress'
            },
            xAxis: {
+             title: {
+               text: 'Attempts'
+             },
+             allowDecimals: false,
+             labels: {
+               formatter: function() {
+                 return this.value + 1;
+               }
+             }
            },
            yAxis: {
               title: {
