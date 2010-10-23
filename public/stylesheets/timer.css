@@ -54,6 +54,9 @@
   font-weight: bold;
   display: none;
 }
+#timer time.starting {
+  color: #1d1;
+}
 #timer form input[type=text] {
   font-size: 200%;
   width: 8em;

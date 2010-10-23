@@ -7,7 +7,7 @@ var timerEnabled = true;
 $(document).ready(function() {
   $('#timer #toggle').bind('click', function() {
     $('#single_human_time').toggle();
-    $("#timer #current_time").toggle();
+    $("#timer time").toggle();
     $('#timer form input[type=submit]').toggle();
     $(this).text($(this).text() == 'Set times manually' ? 'Changed your mind?' : 'Set times manually');
     return false;
@@ -25,7 +25,7 @@ $(document).ready(function() {
       if (justStopped) {
         justStopped = false;
       } else {
-        $("#timer #current_time").css("color", "#fff");
+        $("#timer time").removeClass("starting");
         startTimer();
       }
       return false;
@@ -38,7 +38,7 @@ $(document).ready(function() {
         stopTimer();
         justStopped = true;
       } else {
-        $("#timer #current_time").css("color", "#1d1");
+        $("#timer time").addClass("starting");
       }
       return false;
     }
@@ -52,7 +52,7 @@ function startTimer() {
 }
 
 function updateDisplay() {
-  $("#timer #current_time").text(formatTime(new Date().getTime() - startTime));
+  $("#timer time").text(formatTime(new Date().getTime() - startTime));
 }
 
 function stopTimer() {
