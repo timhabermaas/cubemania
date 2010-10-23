@@ -1,22 +1,4 @@
-<div id="timer">
-  <strong id="scramble"><%= @scramble %></strong>
-  <time id="current_time"><%= Single.new.human_time %></time>
-  <%= form_tag puzzle_times_path(params[:puzzle_id]), :remote => true do %>
-    <p>
-      <%= text_field_tag 'single[human_time]', "" %>
-    </p>
-    <p>
-      <%= hidden_field_tag 'single[time]', "" %>
-    </p>
-    <p>
-      <%= hidden_field_tag 'single[scramble]', @scramble %>
-    </p>
-    <p>
-      <%= submit_tag 'Submit', :disable_with => 'Submit' %>
-    </p>
-  <% end %>
-  <%= link_to 'Set times manually', '#', :id => 'toggle' %>
-</div>
+<%= render :partial => 'shared/timer' %>
 <script type="text/javascript" language="javascript">
   $('#timer #single_human_time').hide();
   $('#timer form input[type=submit]').hide();

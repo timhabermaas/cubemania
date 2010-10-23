@@ -1,46 +1,19 @@
 <div id="timer">
-<%- unless @scrambles.empty? -%>
-  <p id="scramble"></p>
-<%- end -%>
-  <div id="dynamic"<%= " style='display: none'" if params[:input_method] == 'manual' %>>
-    <%= link_to_function 'GO!', 'toggleTimer()', :id => 'go' %>
-    <p class="help">
-      Press <strong>space</strong>&#47;<strong>s</strong> to start or stop the timer.
-      There will be <%= @puzzle.countdown.zero? ? 'no countdown' : "a <strong>countdown</strong> of #{pluralize @puzzle.countdown, 'second'}".html_safe %>.
+  <strong id="scramble"><%= @scramble %></strong>
+  <time id="current_time"><%= Single.new.human_time %></time>
+  <%= form_tag puzzle_times_path(params[:puzzle_id]), :remote => true do %>
+    <p>
+      <%= text_field_tag 'single[human_time]', "" %>
     </p>
-    <%= link_to_function 'Set times manually?', 'toggleInputMethod()', :class => 'toggle' %>
-  </div>
-  <div id="manual"<%= " style='display: none'" unless params[:input_method] == 'manual' %>>
-    <form onsubmit="insertTime(); return false">
-      <div><%= text_field_tag 'type' %></div>
-    </form>
-    <p class="help">
-      Enter the time in <strong>seconds</strong> (e.g. 21.42) and press return to add it.
+    <p>
+      <%= hidden_field_tag 'single[time]', "" %>
     </p>
-    <%= link_to_function 'Changed your mind?', 'toggleInputMethod()', :class => 'toggle' %>
-  </div>
-  <table>
-  <%- @scrambles.each_index do |index| -%>
-    <tr>
-      <th><%= index + 1 %>.</th>
-      <td class="time">-</td>
-      <td class="milliseconds"></td>
-      <td>
-        <div class="flags">
-          <%= link_to_function 'DNF', "toggleDnf(#{index})", :class => 'dnf' %>
-          <%= link_to_function '+2', "togglePlus2(#{index})", :class => 'plus2' %>
-          <%= link_to_function 'X', "deleteLastTime()", :class => 'delete' %>
-        </div>
-      </td>
-    <%- unless @scrambles[index].nil? -%>
-      <td class="scramble"><%= @scrambles[index] %></td>
-    <%- end -%>
-    </tr>
-  <%- end -%>
-  </table>
-  <p id="average"><%= @puzzle.average_format == 'best_of' ? 'Best' : '&Oslash;'.html_safe %> <span>0.00</span></p>
-  <form>
-    <p><%= text_area_tag 'comment', nil, :rows => 3, :onfocus => 'keyEnabled = false', :onblur => 'keyEnabled = true' %></p>
-    <p><%= button_to_function 'Submit Average', 'commitTimes()', :disabled => true %></p>
-  </form>
+    <p>
+      <%= hidden_field_tag 'single[scramble]', @scramble %>
+    </p>
+    <p>
+      <%= submit_tag 'Submit', :disable_with => 'Submit' %>
+    </p>
+  <% end %>
+  <%= link_to 'Set times manually', '#', :id => 'toggle' %>
 </div>
