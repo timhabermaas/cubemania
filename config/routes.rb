@@ -1,4 +1,8 @@
-DEFAULT_PUZZLE = Puzzle.default
+begin
+  DEFAULT_PUZZLE = Puzzle.default
+rescue # if there's no database yet, it shouldn't crash creating one
+  DEFAULT_PUZZLE = 1
+end
 
 Cubemania::Application.routes.draw do
   root :to => 'homes#show'
