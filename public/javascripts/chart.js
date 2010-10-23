@@ -36,7 +36,7 @@ $(document).ready(function() {
                     }
                  },
            series: [{
-              name: 'tim',
+              name: $("#singles").attr("data-name"),
               data: singles
            }]
         });

@@ -22,7 +22,7 @@
   $('#timer form input[type=submit]').hide();
   $("#timer #current_time").show();
 </script>
-<ul id="singles">
+<ul id="singles" data-name="<%= current_user.name %>">
   <%= render :partial => 'single', :collection => @singles %>
   <%= will_paginate @singles %>
 </ul>
