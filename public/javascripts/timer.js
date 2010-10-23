@@ -10,8 +10,14 @@ $(document).ready(function() {
     $("#timer #current_time").toggle();
     $('#timer form input[type=submit]').toggle();
     $(this).text($(this).text() == 'Set times manually' ? 'Changed your mind?' : 'Set times manually');
-    timerEnabled = timerEnabled ? false : true;
     return false;
+  });
+
+  $("textarea, input[type=text]").bind('focus', function() {
+    timerEnabled = false;
+  });
+  $("textarea, input[type=text]").bind('blur', function() {
+    timerEnabled = true;
   });
 
   $(document).keyup(function(event) {
