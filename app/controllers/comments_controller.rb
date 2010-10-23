@@ -6,6 +6,7 @@ class CommentsController < ApplicationController
     @comment.save
     respond_to do |format|
       format.js
+      format.html { redirect_to @comment.post }
     end
   end
 
@@ -18,7 +19,7 @@ class CommentsController < ApplicationController
     def object
       @comment ||= parent.comments.find params[:id]
     end
-    
+
     def parent
       @post ||= Post.find params[:post_id]
     end
