@@ -12,9 +12,6 @@ module Paperclip
     def compose_command
       kind = @attachment.instance.kind
       " -gravity SouthEast \"#{kind.image.path}\" -compose Over -composite"
-    rescue AWS::S3::NoSuchKey
-      Paperclip.log "AWS::S3::NoSuchKey error"
-      ""
     end
   end
 end
