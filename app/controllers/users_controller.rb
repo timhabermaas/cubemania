@@ -4,11 +4,14 @@ class UsersController < ApplicationController
   permit :self, :only => [:edit, :update, :destroy]
   #protect [:role, :sponsor, :ignored], :but => :admin, :only => [:create, :update]
 
-  #cache_sweeper :user_sweeper, :only => [:create, :update, :destroy]
-
   def index
     @max_singles_count = User.max_singles_count
-    @users = User.order('singles_count desc')
+    @users =
+      if params[:search]
+        User.order('singles_count desc').where('name LIKE ?', "%#{params[:search] || ''}%")
+      else
+        User.order('singles_count desc')
+      end
   end
 
   def show
