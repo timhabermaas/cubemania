@@ -24,15 +24,15 @@ $(document).ready(function() {
                 }
               }
            },
+           tooltip: {
+             formatter: function() {
+               return "hey :)";
+             }
+           },
            plotOptions: {
                     line: {
-                       dataLabels: {
-                          enabled: true,
-                          formatter: function() {
-                            return formatTime(this.y);
-                          }
-                       },
-                       enableMouseTracking: false
+                       enableMouseTracking: true,
+                       allowPointSelect: true
                     }
                  },
            series: [{

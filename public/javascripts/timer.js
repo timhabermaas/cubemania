@@ -19,6 +19,7 @@ $(document).ready(function() {
       if (justStopped) {
         justStopped = false;
       } else {
+        $("#timer #current_time").css("color", "#fff");
         startTimer();
       }
       return false;
@@ -30,6 +31,8 @@ $(document).ready(function() {
       if (timerStarted) {
         stopTimer();
         justStopped = true;
+      } else {
+        $("#timer #current_time").css("color", "#1d1");
       }
       return false;
     }
