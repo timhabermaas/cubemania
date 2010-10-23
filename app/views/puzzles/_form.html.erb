@@ -6,7 +6,7 @@
   </p>
   <p>
     <%= form.label :kind %>
-    <%= form.select :kind_id, @kinds.collect{|k| [k.name, k.id]} %>
+    <%= form.select :kind_id, Kind.all.collect{|k| [k.name, k.id]} %>
     <%= form.error_message_on :kind_id %>
   </p>
   <p>
