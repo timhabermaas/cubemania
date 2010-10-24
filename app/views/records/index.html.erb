@@ -1,21 +1,18 @@
-<%- unless @puzzle.average_format == 'best_of' -%>
 <p class="tabs">
   <%= link_to 'Single', puzzle_records_path(:type => 'single', :puzzle_id => params[:puzzle_id]), :class => ('checked' if type? :single) %>
-  <%= link_to @puzzle.average_format.titleize, puzzle_records_path(:type => 'average', :puzzle_id => params[:puzzle_id]), :class => ('checked' if type? :average) %>
+  <%= link_to 'Average', puzzle_records_path(:type => 'average', :puzzle_id => params[:puzzle_id]), :class => ('checked' if type? :average) %>
 </p>
-<%- end -%>
 
-<% @records = paginate @records, 50 %>
-<%- if @records.empty? -%>
+<% if @records.empty? %>
 <p class="challenge">
   Be the first: <%= link_to 'Get the record!', puzzle_times_path(@puzzle) %>
 </p>
-<%- else -%>
+<% else %>
 <table id="records">
   <tbody>
     <%= render :partial => 'record', :collection => @records, :locals => { :offset => @records.offset } %>
   </tbody>
 </table>
-<%- end -%>
+<% end %>
 
 <%= will_paginate @records, { :params => { :user_id => nil } } %>

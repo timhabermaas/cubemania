@@ -6,6 +6,6 @@ class RecordsController < ApplicationController
         @puzzle.single_records
       else
         @puzzle.average_records
-      end
+      end.paginate(:page => params[:page], :per_page => 50)
   end
 end
