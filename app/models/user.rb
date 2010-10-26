@@ -8,6 +8,8 @@ class User < ActiveRecord::Base
   attr_accessor :bot_email
   attr_accessible :name, :email, :time_zone, :password, :password_confirmation, :wca, :bot_email, :wants_emails
 
+  humanize :wasted_time => :time
+
   has_many :posts, :dependent => :nullify
   has_many :comments, :dependent => :nullify
   has_many :competitions, :dependent => :nullify

@@ -6,7 +6,12 @@ module Humanizer
           def human_#{attribute}(spacer = '')
             t = self.#{attribute} || 0
             hs = (t / 10.0).round
-            if hs >= 6000
+            if hs >= 360000
+              hours = hs / 360000
+              min = (hs - hours * 360000) / 6000
+              sec = (hs - hours * 360000 - min * 6000) / 100.0
+              '%d:%02d:%05.2f' % [hours, min, sec] + spacer + 'h'
+            elsif hs >= 6000
               min = hs / 6000
               sec = (hs - min * 6000) / 100.0
               '%d:%05.2f' % [min, sec] + spacer + 'min' # 12.555 => "12.55"
