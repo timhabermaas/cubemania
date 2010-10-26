@@ -10,19 +10,9 @@ class Single < ActiveRecord::Base
   before_validation :set_time, :if => :human_time_is_set
   after_create :update_average_record
 
-  def human_time(spacer = '')
-    t = self.time || 0
-    hs = (t / 10.0).round
-    if hs >= 6000
-      min = hs / 6000
-      sec = (hs - min * 6000) / 100.0
-      '%d:%05.2f' % [min, sec] + spacer + 'min' # 12.555 => "12.55"
-    else
-      '%.2f' % (hs.to_f / 100) + spacer + 's'
-    end
-  end
+  humanize :time => :time
 
-  # TODO check for correct format. option 1: validates_format_of + before_save, option 2: don't know
+  # TODO check for correct format. option 1: validates_format_of + before_save, option 2: don't know, option 3: don't care at all
   def human_time=(ht)
     @human_time = ht
   end
