@@ -1,9 +1,12 @@
 class RollingAverage
-  def initialize(size)
+  def initialize(size, singles = [])
     @size = size
     @singles = []
     @dnfs = 0
     @sum = 0.0
+    singles.each do |single|
+      self.<<(single)
+    end
   end
 
   def <<(single)
