@@ -4,7 +4,9 @@ class TimesController < ApplicationController
   def index
     @puzzle = Puzzle.find params[:puzzle_id]
     @scramble = @puzzle.scramble
-    @average_record = current_user.records.for(params[:puzzle_id])
+    @avg1 = current_user.records.for(params[:puzzle_id], 1)
+    @avg5 = current_user.records.for(params[:puzzle_id], 5)
+    @avg12 = current_user.records.for(params[:puzzle_id], 12)
     @singles = current_user.singles.for(params[:puzzle_id]).paginate :page => params[:page], :per_page => 50
   end
 
@@ -13,7 +15,9 @@ class TimesController < ApplicationController
     @scramble = @puzzle.scramble
     @single = current_user.singles.build(params[:single].merge!(:puzzle_id => @puzzle.id))
     if @single.save
-      @average_record = current_user.records.for(params[:puzzle_id])
+      @avg1 = current_user.records.for(params[:puzzle_id], 1)
+      @avg5 = current_user.records.for(params[:puzzle_id], 5)
+      @avg12 = current_user.records.for(params[:puzzle_id], 12)
       respond_to do |format|
         format.html { redirect_to puzzle_times_path(@puzzle) }
         format.js
