@@ -10,16 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101019144531) do
-
-  create_table "average_records", :force => true do |t|
-    t.integer  "time",                      :null => false
-    t.integer  "puzzle_id",                 :null => false
-    t.integer  "user_id",                   :null => false
-    t.string   "single_ids", :limit => 256, :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
+ActiveRecord::Schema.define(:version => 20101028141421) do
 
   create_table "comments", :force => true do |t|
     t.text     "content",    :null => false
@@ -101,6 +92,16 @@ ActiveRecord::Schema.define(:version => 20101019144531) do
   end
 
   add_index "puzzles", ["kind_id", "name"], :name => "index_puzzles_on_kind_id_and_name", :unique => true
+
+  create_table "records", :force => true do |t|
+    t.integer  "time",                                     :null => false
+    t.integer  "puzzle_id",                                :null => false
+    t.integer  "user_id",                                  :null => false
+    t.string   "single_ids", :limit => 256,                :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "amount",                    :default => 5, :null => false
+  end
 
   create_table "scrambles", :force => true do |t|
     t.string   "scramble",       :limit => 1024,                            :null => false

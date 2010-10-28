@@ -5,13 +5,17 @@ class Puzzle < ActiveRecord::Base
   has_many :competitions, :dependent => :destroy
   has_many :matches, :dependent => :destroy
 
-  has_many :average_records, :order => :time, :include => :user, :conditions => { 'users.ignored' => false }
+  has_many :singles, :dependent => :destroy
 
-  has_many :singles
-
-  def single_records
-    singles.joins(:user).where('users.ignored' => false).order(:time).group('users.id').select('singles.*')
+  has_many :records, :order => :time, :include => :user, :conditions => { 'users.ignored' => false }, :dependent => :destroy do
+    def amount(n)
+      where(:amount => n)
+    end
   end
+
+  #def records(amount = 5)
+  #  Record.where(:puzzle_id => id).where(:amount => amount).order(:time).includes(:user).where('users.ignored' => false)
+  #end
 
   has_attached_file :image, :path => 'public/images/:class/:id/:style/:basename.:extension',
                             :url => '/images/:class/:id/:style/:basename.:extension',
@@ -27,7 +31,6 @@ class Puzzle < ActiveRecord::Base
   validates_inclusion_of :average_format, :in => FORMATS
   validates_attachment_size :image, :less_than => 20.kilobytes, :unless => Proc.new { |puzzle| puzzle.image_file_name.blank? }
   validates_attachment_content_type :image, :content_type => ['image/png', 'image/gif'], :unless => Proc.new { |puzzle| puzzle.image_file_name.blank? }
-
 
   def self.default
     where('puzzles.name' => '3x3x3').joins(:kind).where('kinds.name' => 'speed').first.try(:id) || 1
@@ -154,17 +157,17 @@ class Puzzle < ActiveRecord::Base
     end
 
     def clock_scramble
-    	pins = %w(U d)
-    	states = %w(UUdd dUdU ddUU UdUd dUUU UdUU UUUd UUdU UUUU dddd)
-    	scramble = states.map do |state|
-    	  moves = []
-    		moves << 'u = ' + (rand(13) - 6).to_s if state.gsub('d', '').length > 1
-    		moves << 'd = ' + (rand(13) - 6).to_s if state.gsub('U', '').length > 1
-    		state + ' ' + moves.join('; ')
-    	end
-    	scramble << Array.new(4).map do
-    		pins.sample
-    	end.join
-    	scramble.join(' / ')
+      pins = %w(U d)
+      states = %w(UUdd dUdU ddUU UdUd dUUU UdUU UUUd UUdU UUUU dddd)
+      scramble = states.map do |state|
+        moves = []
+        moves << 'u = ' + (rand(13) - 6).to_s if state.gsub('d', '').length > 1
+        moves << 'd = ' + (rand(13) - 6).to_s if state.gsub('U', '').length > 1
+        state + ' ' + moves.join('; ')
+      end
+      scramble << Array.new(4).map do
+        pins.sample
+      end.join
+      scramble.join(' / ')
     end
 end
