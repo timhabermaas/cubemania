@@ -13,10 +13,6 @@ class Puzzle < ActiveRecord::Base
     end
   end
 
-  #def records(amount = 5)
-  #  Record.where(:puzzle_id => id).where(:amount => amount).order(:time).includes(:user).where('users.ignored' => false)
-  #end
-
   has_attached_file :image, :path => 'public/images/:class/:id/:style/:basename.:extension',
                             :url => '/images/:class/:id/:style/:basename.:extension',
                             :styles => { :combined => '' },
