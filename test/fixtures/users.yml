@@ -1,6 +1,0 @@
-peter:
-  name: peter
-  email: peter@de.do
-  role: user
-  encrypted_password: dasadds
-  salt: asdda
