@@ -10,11 +10,19 @@ class RollingAverage
   end
 
   def <<(single)
-    @singles << single
+    @singles << single # single.time ??
+
+    if @best == nil || single.time < @best.time
+      @best = single
+    end
+    if @worst == nil || single.time > @worst.time || single.dnf?
+      @worst = single
+    end
+
     @dnfs += 1 if single.dnf?
 
     if @singles.size > @size
-      removed_single = @singles.slice
+      removed_single = @singles.shift
       removed_time = removed_single.time
       @dnfs -= 1 if removed_single.dnf?
     else
@@ -27,6 +35,10 @@ class RollingAverage
   end
 
   def average
-    @dnfs > 1 ? nil : @sum / @singles.size
+    times = @singles.reject { |s| s.dnf? }.collect { |s| s.time }
+    best = times.min
+    worst = @singles.select { |s| s.dnf? }.first.try(:time) || times.max
+
+    @dnfs > 1 ? nil : (@sum - best - worst) / (@singles.size - 2)
   end
 end
