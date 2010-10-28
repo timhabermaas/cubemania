@@ -34,11 +34,17 @@ class TimesController < ApplicationController
     @puzzle = Puzzle.find params[:puzzle_id]
     @single = current_user.singles.find params[:id]
     @single.toggle_dnf!
+    @avg1 = current_user.records.for(params[:puzzle_id], 1)
+    @avg5 = current_user.records.for(params[:puzzle_id], 5)
+    @avg12 = current_user.records.for(params[:puzzle_id], 12)
   end
 
   def destroy
     @puzzle = Puzzle.find params[:puzzle_id]
     @single = current_user.singles.find params[:id]
     @single.destroy
+    @avg1 = current_user.records.for(params[:puzzle_id], 1)
+    @avg5 = current_user.records.for(params[:puzzle_id], 5)
+    @avg12 = current_user.records.for(params[:puzzle_id], 12)
   end
 end

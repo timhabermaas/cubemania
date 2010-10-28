@@ -4,3 +4,4 @@ $("#timer #scramble").text("<%= @scramble %>");
 $("#timer form #single_scramble").val("<%= @scramble %>");
 $("#statistics").replaceWith("<%= escape_javascript(render(:partial => 'statistics')) %>");
 chart.series[0].addPoint(<%= @single.time %>);
+updateStatistics();

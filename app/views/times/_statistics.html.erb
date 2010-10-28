@@ -1,8 +1,8 @@
 <div id="statistics">
   <ul>
-    <li>Best average of 5: <time id="avg5"><%= @avg5.try(:human_time) %></span></li>
+    <li>Best average of 5: <time id="avg5"><%= @avg5.try(:human_time) %></time></li>
     <li>Best average of 12: <time id="avg12"><%= @avg12.try(:human_time) %></time></li>
-    <li>Current average of 5: <time id=""><%=ft RollingAverage.new(5, @singles.reverse).average %></time></li>
-    <li>Current average of 12: <time id=""><%=ft RollingAverage.new(12, @singles.reverse).average %></time></li>
+    <li>Current average of 5: <time id="cur5"></time></li>
+    <li>Current average of 12: <time id="cur12"></time></li>
   </ul>
 </div>

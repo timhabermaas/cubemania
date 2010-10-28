@@ -34,11 +34,18 @@ function formatTime(time) {
   }
 }
 
-Array.max = function( array ){
-    return Math.max.apply( Math, array );
+Array.max = function(array) {
+    return Math.max.apply(Math, array);
 };
-Array.min = function( array ){
-    return Math.min.apply( Math, array );
+Array.min = function(array) {
+    return Math.min.apply(Math, array);
+};
+Array.sum = function(array) {
+  var total = 0;
+  for (var i = 0; i < array.length; i++) {
+    total += array[i];
+  }
+  return total;
 };
 
 $.fn.textToggle = function(open, close) {

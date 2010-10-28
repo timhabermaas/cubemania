@@ -43,6 +43,8 @@ $(document).ready(function() {
       return false;
     }
   });
+
+  updateStatistics();
 });
 
 function startTimer() {
@@ -64,6 +66,46 @@ function stopTimer() {
   timerStarted = false;
 }
 
+function getSingles() {
+  return $("#singles li .time");
+}
+
+function average(singles, size) {
+  var singles = singles.slice(0, size);
+  var dnfs = singles.filter(".dnf");
+
+  var sum = 0;
+
+  if (dnfs.length > 1 || singles.length < size) {
+    return null;
+  }
+  if (dnfs.lenth == 1) {
+    singles = singles.not(".dnf");
+    var times = singles.map(function() {
+      return parseInt($(this).attr("data-time"));
+    }).get();
+  } else {
+    var times = singles.map(function() {
+      return parseInt($(this).attr("data-time"))
+    }).get();
+    sum -= Array.max(times);
+  }
+  sum += Array.sum(times) - Array.min(times);
+  return sum / (times.length - 2);
+}
+
 function updateStatistics() {
-  // oh yeah :)
+  var singles = getSingles();
+  var cur5 = average(singles, 5);
+  var cur12 = average(singles, 12);
+  if (cur5 == null) {
+    $("#cur5").replaceWith("-");
+  } else {
+    $("#cur5").replaceWith(formatTime(cur5));
+  }
+  if (cur12 == null) {
+    $("#cur12").replaceWith("-");
+  } else {
+    $("#cur12").replaceWith(formatTime(cur12));
+  }
 }
