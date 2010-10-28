@@ -14,23 +14,13 @@ class CreateSingles < ActiveRecord::Migration
 
       t.timestamps
     end
-    AverageRecord.reset_column_information
 
     ActiveRecord::Base.record_timestamps = false
-    say_with_time "Copying old average records over to new table" do
+    say_with_time "Rescuing average comments over to singles" do
       Clock.where(:record => true).where(:type => "Average").find_each do |average|
         singles = Clock.where(:average_id => average.id).where(:type => "Single").order(:position).all
         singles.each do |single|
           single.update_attribute :comment, average.comment
-        end
-        record = AverageRecord.new :time => average.time,
-                                   :puzzle_id => average.puzzle_id,
-                                   :user_id => average.user_id,
-                                   :created_at => average.created_at,
-                                   :updated_at => average.created_at,
-                                   :singles => singles
-        unless singles.empty?
-          record.save
         end
       end
     end
