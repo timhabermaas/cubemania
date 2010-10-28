@@ -18,6 +18,8 @@ gem 'will_paginate', :git => 'git://github.com/mislav/will_paginate.git', :branc
 gem 'oauth2'
 gem 'smurf'
 
+gem 'newrelic_rpm'
+
 group :development, :test do
   gem 'rspec'
   gem 'autotest'
