@@ -34,6 +34,13 @@ function formatTime(time) {
   }
 }
 
+Array.max = function( array ){
+    return Math.max.apply( Math, array );
+};
+Array.min = function( array ){
+    return Math.min.apply( Math, array );
+};
+
 $.fn.textToggle = function(open, close) {
   $(this).text($(this).text() == open ? close : open);
 };
