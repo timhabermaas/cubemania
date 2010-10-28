@@ -34,11 +34,13 @@ class RollingAverage
     # keep track of fastest and slowest
   end
 
+  # consider caching the result (clear cache in <<)
   def average
+    return nil if @dnfs > 1 || @singles.size < @size
     times = @singles.reject { |s| s.dnf? }.collect { |s| s.time }
     best = times.min
     worst = @singles.select { |s| s.dnf? }.first.try(:time) || times.max
 
-    @dnfs > 1 ? nil : (@sum - best - worst) / (@singles.size - 2)
+    (@sum - best - worst) / (@singles.size - 2)
   end
 end
