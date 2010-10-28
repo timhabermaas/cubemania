@@ -34,7 +34,6 @@ class CreateSingles < ActiveRecord::Migration
     remove_column :clocks, :record
     remove_column :clocks, :position
     remove_column :clocks, :competition_id
-    remove_column :clocks, :match_id
     rename_table :clocks, :singles
   end
 
