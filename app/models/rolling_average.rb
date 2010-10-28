@@ -12,12 +12,14 @@ class RollingAverage
   def <<(single)
     @singles << single # single.time ??
 
+=begin
     if @best == nil || single.time < @best.time
       @best = single
     end
     if @worst == nil || single.time > @worst.time || single.dnf?
       @worst = single
     end
+=end
 
     @dnfs += 1 if single.dnf?
 
@@ -31,7 +33,6 @@ class RollingAverage
     end
 
     @sum += single.time - removed_time
-    # keep track of fastest and slowest
   end
 
   # consider caching the result (clear cache in <<)
