@@ -9,9 +9,9 @@ gem 'mysql'
 
 gem 'sqlite3-ruby', :require => 'sqlite3'
 
-gem 'paperclip', :git => "git://github.com/thoughtbot/paperclip.git"
+gem 'paperclip', :git => 'git://github.com/thoughtbot/paperclip.git'
 gem 'RedCloth'
-gem 'will_paginate', :git => "git://github.com/mislav/will_paginate.git", :branch => "rails3"
+gem 'will_paginate', :git => 'git://github.com/mislav/will_paginate.git', :branch => 'rails3'
 
 # gem 'memcached'
 
@@ -19,11 +19,12 @@ gem 'oauth2'
 gem 'smurf'
 
 group :development, :test do
-  gem "rspec"
-  gem "autotest"
-  gem "rspec-rails"
+  gem 'rspec'
+  gem 'autotest'
+  gem 'rspec-rails'
   gem 'metric_fu'
-  gem "factory_girl_rails"
+  gem 'factory_girl_rails'
+  gem 'ruby-prof'
 end
 
 
