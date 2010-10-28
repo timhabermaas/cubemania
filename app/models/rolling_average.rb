@@ -36,7 +36,7 @@ class RollingAverage
 
   # consider caching the result (clear cache in <<)
   def average
-    return nil if @dnfs > 1 || @singles.size < @size
+    return nil if @dnfs > 1 || @singles.size < @size || (@singles.size == 1 and @dnfs == 1)
     times = @singles.reject { |s| s.dnf? }.collect { |s| s.time }
     best = times.min
     worst = @singles.select { |s| s.dnf? }.first.try(:time) || times.max
