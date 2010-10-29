@@ -2,7 +2,7 @@ class Record < ActiveRecord::Base
   belongs_to :user
   belongs_to :puzzle
 
-  validates_presence_of :user_id, :puzzle_id, :time, :single_ids, :amount
+  validates_presence_of :user_id, :puzzle_id, :time, :amount
   validates_uniqueness_of :user_id, :scope => [:puzzle_id, :amount]
   validates_inclusion_of :amount, :in => [1, 5, 12]
 
