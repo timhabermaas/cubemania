@@ -8,7 +8,9 @@ class Single < ActiveRecord::Base
   validates_format_of :human_time, :with => /\A(\d+:)?(\d+:)?\d+(.\d+)?\s*(min|s|h)?\Z/
 
   before_validation :set_time, :if => :human_time_is_set
-  after_create :update_records
+  after_create :update_records_after_create
+  after_destroy :update_records_after_destroy
+  after_save
 
   humanize :time => :time
 
@@ -26,7 +28,7 @@ class Single < ActiveRecord::Base
   end
 
 private
-  def update_records
+  def update_records_after_create
     [1, 5, 12].each do |amount|
       last_singles = Single.where(:user_id => user_id).where(:puzzle_id => puzzle_id).order("created_at desc").limit(amount)
 
@@ -45,6 +47,13 @@ private
       elsif avg < old_average.time
         old_average.update_attribute :time, avg
       end
+    end
+  end
+
+  def update_records_after_destroy
+    old_single = Record.where(:puzzle_id => puzzle_id, :user_id => user_id, :amount => 1).first
+    if self.time <= old_single.time and not self.dnf?
+      old_single.update_attribute :time, user.singles.best(puzzle_id).time
     end
   end
 
