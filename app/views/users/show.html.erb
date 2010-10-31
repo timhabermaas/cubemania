@@ -36,7 +36,9 @@
       </tr>
     </thead>
     <tbody>
-      <%= render :partial => 'record', :collection => @records %>
+    <% for puzzle, records in @records %>
+      <%= render :partial => 'record', :locals => { :records => records, :puzzle => puzzle } %>
+    <% end %>
     </tbody>
   </table>
   <% end %>

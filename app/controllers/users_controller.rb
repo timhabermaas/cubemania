@@ -16,13 +16,8 @@ class UsersController < ApplicationController
 
   def show
     @user = object
-    single_records, average_records = @user.single_records, @user.average_records
-    @records = (0...single_records.size).map do |i|
-      unless average_records[i].nil? or single_records[i].puzzle_id == average_records[i].puzzle_id
-        average_records.insert i, nil
-      end
-      { :single => single_records[i], :average => average_records[i] }
-    end.sort_by { |s| "#{s[:single].puzzle.name}, #{s[:single].puzzle.kind.name}" }
+    grouped_by_puzzles = @user.records.group_by { |r| r.puzzle }
+    @records = grouped_by_puzzles.merge(grouped_by_puzzles) { |k, v| v = v.group_by { |r| r.amount }; v.merge(v) { |k, v| v.try(:first) } }
   end
 
   def object(options = nil)

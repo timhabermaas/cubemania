@@ -26,7 +26,7 @@ class User < ActiveRecord::Base
     def average(puzzle_id); where(:dnf => false).where(:puzzle_id => puzzle_id).average(:time); end
   end
 
-  has_many :records, :dependent => :delete_all do
+  has_many :records, :include => { :puzzle => :kind }, :order => 'puzzles.name, kinds.name', :dependent => :delete_all do
     def for(puzzle_id, amount = 5)
       find_by_puzzle_id_and_amount puzzle_id, amount
     end
