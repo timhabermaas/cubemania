@@ -10,7 +10,7 @@ class UsersController < ApplicationController
       if params[:search]
         User.order('singles_count desc').where('name LIKE ?', "%#{params[:search] || ''}%")
       else
-        User.order('singles_count desc')
+        User.order('singles_count desc').paginate(:page => params[:page], :per_page => 100)
       end
   end
 
