@@ -6,7 +6,8 @@ namespace :records do
       user.singles.select("distinct(singles.puzzle_id), created_at").each do |puzzle|
         time = user.singles.best(puzzle.puzzle_id).try(:time)
         unless time == nil
-          Record.find_or_create_by_puzzle_id_and_user_id(puzzle.puzzle_id, user.id, :time => time, :amount => 1)
+          record = Record.find_or_initialize_by_puzzle_id_and_user_id(puzzle.puzzle_id, user.id, :time => time, :amount => 1)
+          record.save!
         end
       end
     end
