@@ -36,7 +36,7 @@ class User < ActiveRecord::Base
     best = nil
     best_ra = nil
     ra = RollingAverage.new(amount)
-    singles.for(puzzle_id).all.each do |single|
+    singles.for(puzzle_id).find_each do |single|
       ra << single
       if ra.average and (best.nil? or ra.average < best)
         best = ra.average
