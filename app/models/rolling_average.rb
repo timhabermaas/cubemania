@@ -1,4 +1,11 @@
 class RollingAverage
+  attr_reader :singles
+
+  def initialize_copy(source)
+    super
+    @singles = @singles.clone
+  end
+
   def initialize(size, singles = [])
     @size = size
     @singles = []

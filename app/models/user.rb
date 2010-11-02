@@ -33,15 +33,17 @@ class User < ActiveRecord::Base
   end
 
   def best_average(puzzle_id, amount = 5)
-    best = 2140123012311023120320103211
+    best = nil
+    best_ra = nil
     ra = RollingAverage.new(amount)
-    singles.for(puzzle_id).find_each do |single|
+    singles.for(puzzle_id).all.each do |single|
       ra << single
-      if ra.average.try(:<, best)
+      if ra.average and (best.nil? or ra.average < best)
         best = ra.average
+        best_ra = ra.dup
       end
     end
-    best # Average.new ?
+    best_ra # Average.new ?
   end
 
   scope :active, where('singles_count > 0')
