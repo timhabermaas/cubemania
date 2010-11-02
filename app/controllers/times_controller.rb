@@ -7,7 +7,7 @@ class TimesController < ApplicationController
     @avg1 = current_user.records.for(params[:puzzle_id], 1)
     @avg5 = current_user.records.for(params[:puzzle_id], 5)
     @avg12 = current_user.records.for(params[:puzzle_id], 12)
-    @singles = current_user.singles.for(params[:puzzle_id]).paginate :page => params[:page], :per_page => 50
+    @singles = current_user.singles.for(params[:puzzle_id]).paginate :page => params[:page], :per_page => 100
   end
 
   def create
