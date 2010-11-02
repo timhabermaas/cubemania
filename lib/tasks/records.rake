@@ -29,7 +29,7 @@ namespace :records do
     User.find_each do |user|
       p "User #{user.id}/#{count}: #{user.name}"
       puzzles.each do |puzzle|
-        user.calculate_record! puzzle.id, 5
+        user.calculate_record_for! puzzle.id, 5
       end
     end
   end
@@ -41,7 +41,7 @@ namespace :records do
     User.find_each do |user|
       p "User #{user.id}/#{count}: #{user.name}"
       puzzles.each do |puzzle|
-        user.calculate_record! puzzle.id, 12
+        user.calculate_record_for! puzzle.id, 12
       end
     end
   end

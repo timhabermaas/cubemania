@@ -116,12 +116,12 @@ class User < ActiveRecord::Base
     end
   end
 
-  def calculate_record!(puzzle_id, attempts = 5)
+  def calculate_record_for!(puzzle_id, attempts = 5)
     ActiveRecord::Base.record_timestamps = false
     ra = best_average(puzzle_id, attempts)
+    record = records.for(puzzle_id, attempts)
     if ra
       timestamp = ra.singles.last.created_at
-      record = records.for(puzzle_id, attempts)
       if record and ra.average
         record.update_attributes(:time => ra.average, :created_at => timestamp, :updated_at => timestamp)
       elsif record.nil? and ra.average
@@ -131,6 +131,8 @@ class User < ActiveRecord::Base
       elsif record and ra.average.nil?
         record.destroy
       end
+    elsif ra.nil? and record
+      record.destroy
     end
     ActiveRecord::Base.record_timestamps = true
   end
