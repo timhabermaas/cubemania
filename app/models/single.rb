@@ -52,7 +52,7 @@ private
 
   def update_records_after_change
     single_record = Record.where(:puzzle_id => puzzle_id, :user_id => user_id, :amount => 1).first
-    # actually we don't need to set a new record if the destroyed single is a dnf, but since we use this method for destroying and updating, we can't
+    # actually we don't need to set a new record if the destroyed single is a dnf, but since we use this method for destroying and updating, we can't ignore it
     if self.time <= single_record.time
       fastest = user.singles.best(puzzle_id)
       if fastest.nil?

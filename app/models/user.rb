@@ -32,6 +32,18 @@ class User < ActiveRecord::Base
     end
   end
 
+  def best_average(puzzle_id, amount = 5)
+    best = 2140123012311023120320103211
+    ra = RollingAverage.new(amount)
+    singles.for(puzzle_id).find_each do |single|
+      ra << single
+      if ra.average.try(:<, best)
+        best = ra.average
+      end
+    end
+    best # Average.new ?
+  end
+
   scope :active, where('singles_count > 0')
 
   validates_uniqueness_of :name, :email, :case_sensitive => false, :message => 'is already in use by another user'
