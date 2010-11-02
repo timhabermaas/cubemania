@@ -116,6 +116,25 @@ class User < ActiveRecord::Base
     end
   end
 
+  def calculate_record!(puzzle_id, attempts = 5)
+    ActiveRecord::Base.record_timestamps = false
+    ra = best_average(puzzle_id, attempts)
+    if ra
+      timestamp = ra.singles.last.created_at
+      record = records.for(puzzle_id, attempts)
+      if record and ra.average
+        record.update_attributes(:time => ra.average, :created_at => timestamp, :updated_at => timestamp)
+      elsif record.nil? and ra.average
+        Record.create!(:puzzle_id => puzzle_id, :user_id => id, :amount => attempts,
+                       :time => ra.average, :created_at => timestamp,
+                       :updated_at => timestamp)
+      elsif record and ra.average.nil?
+        record.destroy
+      end
+    end
+    ActiveRecord::Base.record_timestamps = true
+  end
+
   def wasted_time
     singles.where('singles.dnf' => false).sum('singles.time')
   end
