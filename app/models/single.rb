@@ -61,6 +61,9 @@ private
         single_record.update_attribute :time, fastest.time
       end
     end
+
+    user.calculate_record_for!(puzzle_id, 5) # TODO this is so damn expensive!
+    user.calculate_record_for!(puzzle_id, 12)
   end
 
   def set_time
