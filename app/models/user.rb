@@ -119,7 +119,7 @@ class User < ActiveRecord::Base
   def calculate_record_for!(puzzle_id, attempts = 5)
     ActiveRecord::Base.record_timestamps = false
     ra = best_average(puzzle_id, attempts)
-    record = records.for(puzzle_id, attempts)
+    record = records.for(puzzle_id, attempts) # putting this line here makes it really slow
     if ra
       timestamp = ra.singles.last.created_at
       if record and ra.average
