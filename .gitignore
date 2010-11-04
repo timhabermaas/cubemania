@@ -4,6 +4,7 @@ db/*.sqlite3
 log/*.log
 tmp/**/*
 tmp
+bin
 .DS_Store
 config/database.yml
 public/images/kinds

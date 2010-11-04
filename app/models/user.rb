@@ -32,19 +32,7 @@ class User < ActiveRecord::Base
     end
   end
 
-  def best_average(puzzle_id, amount = 5)
-    best = nil
-    best_ra = nil
-    ra = RollingAverage.new(amount)
-    singles.for(puzzle_id).find_each do |single|
-      ra << single
-      if ra.average and (best.nil? or ra.average < best)
-        best = ra.average
-        best_ra = ra.dup
-      end
-    end
-    best_ra # Average.new ?
-  end
+
 
   scope :active, where('singles_count > 0')
 
@@ -106,6 +94,10 @@ class User < ActiveRecord::Base
 
   def admin?
     role.to_sym == :admin
+  end
+
+  def moderator?
+    role.to_sym == :moderator
   end
 
   def activity(max)
@@ -187,5 +179,20 @@ class User < ActiveRecord::Base
 
     def password_is_being_updated?
       id.nil? or not password.blank?
+    end
+
+    def best_average(puzzle_id, amount = 5)
+      # result = `bin/average #{id} #{puzzle_id} #{amount}`
+      best = nil
+      best_ra = nil
+      ra = RollingAverage.new(amount)
+      singles.for(puzzle_id).find_each do |single|
+        ra << single
+        if ra.average and (best.nil? or ra.average < best)
+          best = ra.average
+          best_ra = ra.dup
+        end
+      end
+      best_ra # Average.new ?
     end
 end
