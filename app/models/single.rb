@@ -9,8 +9,8 @@ class Single < ActiveRecord::Base
 
   before_validation :set_time, :if => :human_time_is_set
   after_create :update_records_after_create
-  after_destroy :update_records_after_change
-  after_update :update_records_after_change
+  after_destroy :update_single_record
+  after_update :update_single_record
 
   humanize :time => :time
 
@@ -50,7 +50,7 @@ private
     end
   end
 
-  def update_records_after_change
+  def update_single_record
     single_record = Record.where(:puzzle_id => puzzle_id, :user_id => user_id, :amount => 1).first
     # actually we don't need to set a new record if the destroyed single is a dnf, but since we use this method for destroying and updating, we can't ignore it
     if self.time <= single_record.time

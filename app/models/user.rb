@@ -33,7 +33,6 @@ class User < ActiveRecord::Base
   end
 
 
-
   scope :active, where('singles_count > 0')
 
   validates_uniqueness_of :name, :email, :case_sensitive => false, :message => 'is already in use by another user'
@@ -108,23 +107,23 @@ class User < ActiveRecord::Base
     end
   end
 
-  def calculate_record_for!(puzzle_id, attempts = 5)
+  def update_record_for!(puzzle_id, amount = 5)
+    record = self.records.for(puzzle_id, amount)
+    output = `bin/average #{self.id} #{puzzle_id} #{amount}`
+
+    if output == "NULL"
+      record.try(:destroy)
+      return
+    end
+
+    t, *singles = output.split(',').map { |v| v.to_i }
+    single_ids = singles.join(';')
+
     ActiveRecord::Base.record_timestamps = false
-    ra = best_average(puzzle_id, attempts)
-    record = records.for(puzzle_id, attempts) # putting this line here makes it really slow
-    if ra
-      timestamp = ra.singles.last.created_at
-      if record and ra.average
-        record.update_attributes(:time => ra.average, :created_at => timestamp, :updated_at => timestamp)
-      elsif record.nil? and ra.average
-        Record.create!(:puzzle_id => puzzle_id, :user_id => id, :amount => attempts,
-                       :time => ra.average, :created_at => timestamp,
-                       :updated_at => timestamp)
-      elsif record and ra.average.nil?
-        record.destroy
-      end
-    elsif ra.nil? and record
-      record.destroy
+    if record.nil?
+      Record.create!(:user_id => self.id, :puzzle_id => puzzle_id, :single_ids => single_ids, :amount => amount, :time => t)
+    else
+      record.update_attributes(:time => t, :single_ids => single_ids)
     end
     ActiveRecord::Base.record_timestamps = true
   end

@@ -34,7 +34,8 @@ class TimesController < ApplicationController
     @puzzle = Puzzle.find params[:puzzle_id]
     @single = current_user.singles.find params[:id]
     @single.toggle_dnf!
-    Record.update_for(current_user.id, @puzzle.id)
+    current_user.update_record_for!(@puzzle.id, 5)
+    current_user.update_record_for!(@puzzle.id, 12)
     @avg1 = current_user.records.for(params[:puzzle_id], 1)
     @avg5 = current_user.records.for(params[:puzzle_id], 5)
     @avg12 = current_user.records.for(params[:puzzle_id], 12)
@@ -44,7 +45,8 @@ class TimesController < ApplicationController
     @puzzle = Puzzle.find params[:puzzle_id]
     @single = current_user.singles.find params[:id]
     @single.destroy
-    Record.update_for(current_user.id, @puzzle.id)
+    current_user.update_record_for!(@puzzle.id, 5)
+    current_user.update_record_for!(@puzzle.id, 12)
     @avg1 = current_user.records.for(params[:puzzle_id], 1)
     @avg5 = current_user.records.for(params[:puzzle_id], 5)
     @avg12 = current_user.records.for(params[:puzzle_id], 12)
