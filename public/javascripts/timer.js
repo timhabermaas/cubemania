@@ -67,7 +67,7 @@ function stopTimer() {
 }
 
 function getSingles() {
-  return $("#singles li .time");
+  return $("#singles li #time");
 }
 
 function average(singles, size) {
@@ -79,19 +79,18 @@ function average(singles, size) {
   if (dnfs.length > 1 || singles.length < size) {
     return null;
   }
-  if (dnfs.lenth == 1) {
+  if (dnfs.length == 1) {
     singles = singles.not(".dnf");
     var times = singles.map(function() {
       return parseInt($(this).attr("data-time"));
     }).get();
+    return (Array.sum(times) - Array.min(times)) / (times.length - 1);
   } else {
     var times = singles.map(function() {
       return parseInt($(this).attr("data-time"))
     }).get();
-    sum -= Array.max(times);
+    return (Array.sum(times) - Array.min(times) - Array.max(times)) / (times.length - 2);
   }
-  sum += Array.sum(times) - Array.min(times);
-  return sum / (times.length - 2);
 }
 
 function updateStatistics() {

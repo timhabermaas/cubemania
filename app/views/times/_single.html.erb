@@ -1,5 +1,5 @@
 <li id="single-<%= single.id %>">
-  <time class="time<%= raw(' dnf') if single.dnf? %>" data-time="<%= single.time %>"><%= single.human_time %></time>
+  <time id ="time"<%= raw(' class="dnf"') if single.dnf? %> data-time="<%= single.time %>"><%= single.human_time %></time>
   <div class="details">
     <span class="scramble"><%= single.scramble %></span>
     <time><%=dt single.created_at %></time>
