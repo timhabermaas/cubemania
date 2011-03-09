@@ -51,6 +51,7 @@ GEM
     arrayfields (4.7.4)
     autotest (4.4.1)
     builder (2.1.2)
+    cancan (1.4.0)
     chronic (0.2.3)
       hoe (>= 1.2.1)
     churn (0.0.12)
@@ -178,6 +179,7 @@ PLATFORMS
 DEPENDENCIES
   RedCloth
   autotest
+  cancan
   factory_girl_rails
   metric_fu
   mysql

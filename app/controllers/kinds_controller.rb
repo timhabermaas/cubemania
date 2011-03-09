@@ -1,18 +1,18 @@
 class KindsController < ApplicationController
   permit :admin
-  
+
   def index
     @kinds = Kind.all
   end
-  
+
   def new
     @kind = Kind.new
   end
-  
+
   def edit
     @kind = Kind.find params[:id]
   end
-  
+
   def create
     @kind = Kind.new params[:kind]
     if @kind.save
@@ -21,7 +21,7 @@ class KindsController < ApplicationController
       render :new
     end
   end
-  
+
   def update
     @kind = Kind.find params[:id]
     if @kind.update_attributes params[:kind]
@@ -30,7 +30,7 @@ class KindsController < ApplicationController
       render :edit
     end
   end
-  
+
   def object
     Kind.find params[:id]
   end

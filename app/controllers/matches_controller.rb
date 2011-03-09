@@ -1,12 +1,12 @@
 class MatchesController < ApplicationController
   before_filter :show_permit, :only => :show
-  
+
   def new
     @user = User.find params[:user_id]
     @puzzle = Puzzle.find params[:puzzle_id]
     @match = current_user.home_matches.build(:opponent => @user)
   end
-  
+
   def index
     if logged_in?
       @finished_matches = Match.for(current_user).finished.recent
@@ -33,23 +33,23 @@ class MatchesController < ApplicationController
       redirect_to matches_path
     end
   end
-  
+
   def destroy
     if object.destroy
       flash[:notice] = 'Successfully removed!'
     end
     redirect_to matches_path
   end
-  
+
 private
   def object
     @match ||= parent.matches.find params[:id]
   end
-  
+
   def parent
     @puzzle ||= Puzzle.find params[:puzzle_id]
   end
-  
+
   def show_permit
     if not object.finished? and not logged_in?
       flash[:notice] = 'Please login or <a href="/register">register</a> to continue'

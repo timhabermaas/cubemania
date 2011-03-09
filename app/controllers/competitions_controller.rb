@@ -15,20 +15,20 @@ class CompetitionsController < ApplicationController
                       paginate(:page => params[:page], :per_page => 10)
     end
   end
-  
+
   def create
     @puzzle = Puzzle.find params[:puzzle_id]
     @competition = current_user.competitions.build params[:competition]
     @competition.puzzle_id = params[:puzzle_id]
     @competition.save
   end
-  
+
   def update
     @puzzle = Puzzle.find params[:puzzle_id]
     @competition = object
     @competition.update_attributes params[:competition]
   end
-  
+
   def show
     @puzzle = Puzzle.find params[:puzzle_id]
     @competition = Competition.find params[:id]
@@ -50,7 +50,7 @@ class CompetitionsController < ApplicationController
     @shouts = @competition.shouts.for @competition, @date
     @parent = @competition
   end
-  
+
   def object
     Competition.find params[:id]
   end

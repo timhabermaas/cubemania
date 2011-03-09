@@ -1,5 +1,6 @@
 <div id="content">
   <div class="center">
+    <%= render 'layouts/advert' unless controller? :homes %>
     <%= render 'layouts/admin' if permit? %>
     <%= yield %>
     <div class="clear"></div>

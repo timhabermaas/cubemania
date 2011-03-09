@@ -60,19 +60,19 @@ class Competition < ActiveRecord::Base
       date.send "end_of_#{nominalize_repeat}"
     end
   end
-  
+
   def previous?(date)
     started_at(date) != started_at(created_at_utc)
   end
-  
+
   def previous_date(date)
     started_at date.ago(1.send(nominalize_repeat))
   end
-  
+
   def next?(date)
     ended_at(date) != ended_at(Time.now.utc)
   end
-  
+
   def next_date(date)
     started_at date.in(1.send(nominalize_repeat))
   end
@@ -80,20 +80,20 @@ class Competition < ActiveRecord::Base
   def old?(date)
     started_at(date) != started_at(Time.now.utc)
   end
-  
+
   def once?
     repeat == 'once'
   end
-  
+
   def range(date)
     started_at(date)..ended_at(date)
   end
 
-  private    
+  private
     def nominalize_repeat
       repeat == 'daily' ? 'day' : repeat[0..-3]
     end
-    
+
     def created_at_utc
       created_at.utc
     end
