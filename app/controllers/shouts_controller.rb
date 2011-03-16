@@ -1,5 +1,4 @@
 class ShoutsController < ApplicationController
-  permit :moderator, :only => :destroy
 
   def create
     @puzzle = Puzzle.find params[:puzzle_id]

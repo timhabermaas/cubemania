@@ -1,5 +1,5 @@
 class CommentsController < ApplicationController
-  permit :moderator, :only => :destroy
+  load_and_authorize_resource
 
   def create
     @comment = current_user.comments.build(params[:comment].merge :post_id => parent.id)

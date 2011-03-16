@@ -17,21 +17,21 @@ module Authentication
       before_filter :logout, filters
     end
 
-    def permit(role, filters = {})
-      before_filter filters do |controller|
-        controller.permit role
-      end
-    end
+#    def permit(role, filters = {})
+#      before_filter filters do |controller|
+#        controller.permit role
+#      end
+#    end
   end
 
-  def permit(role)
-    if role? role
-      yield if block_given?
-    else
-      flash[:notice] = 'You do not have the necessary permissions'
-      redirect_to root_url
-    end
-  end
+#  def permit(role)
+#    if role? role
+#      yield if block_given?
+#    else
+#      flash[:notice] = 'You do not have the necessary permissions'
+#      redirect_to root_url
+#    end
+#  end
 
   protected
     def login

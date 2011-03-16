@@ -1,7 +1,6 @@
 class UsersController < ApplicationController
   skip_login :only => [:new, :create]
   logout :only => [:new, :create]
-  permit :self, :only => [:edit, :update, :destroy]
   #protect [:role, :sponsor, :ignored], :but => :admin, :only => [:create, :update]
 
   def index

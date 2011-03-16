@@ -1,6 +1,4 @@
 class CompetitionsController < ApplicationController
-  permit :owner, :only => [:update, :destroy]
-  #protect :sticky, :but => :admin, :only => [:create, :update]
 
   def index
     @puzzle = Puzzle.find params[:puzzle_id]

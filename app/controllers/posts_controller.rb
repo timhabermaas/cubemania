@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  permit :moderator, :except => [:index, :show]
+  load_and_authorize_resource
 
   def index
     @posts = Post.paginate :include => :user, :order => 'created_at desc', :page => params[:page], :per_page => 5

@@ -1,5 +1,4 @@
 class ItemsController < ApplicationController
-  permit :admin
 
   def index
     @items = Item.all

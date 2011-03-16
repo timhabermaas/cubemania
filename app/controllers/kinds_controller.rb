@@ -1,5 +1,4 @@
 class KindsController < ApplicationController
-  permit :admin
 
   def index
     @kinds = Kind.all

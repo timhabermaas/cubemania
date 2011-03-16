@@ -1,5 +1,4 @@
 class PuzzlesController < ApplicationController
-  permit :admin
 
   def new
     @puzzle = Puzzle.new
