@@ -3,8 +3,8 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe User do
 
   describe "validations" do
-    def user
-      @user ||= Factory.build(:user)
+    let(:user) do
+      Factory.build(:user)
     end
 
     it "should create a new instance given valid attributes" do
@@ -46,20 +46,20 @@ describe User do
   end
 
   describe "to_json" do
-    def forbidden_attributes
-      @forbidden_attributes ||= [:encrypted_password, :ignored, :role, :salt, :email, :created_at, :sponsor]
+    let(:forbidden_attributes) do
+      [:encrypted_password, :ignored, :role, :salt, :email, :created_at, :sponsor]
     end
 
-    def necessary_attributes
-      @necessary_attributes ||= [:id, :singles_count, :time_zone, :wca, :name]
+    let(:necessary_attributes) do
+      [:id, :singles_count, :time_zone, :wca, :name]
     end
 
-    def user
-      @user ||= Factory(:user, :name => 'peter', :email => 'peter@doc.com', :wca => '2007JDAE01')
+    let(:user) do
+      Factory(:user, :name => 'peter', :email => 'peter@doc.com', :wca => '2007JDAE01')
     end
 
-    def user_hash
-      @user_hash ||= JSON.parse(user.to_json)
+    let(:user_hash) do
+      JSON.parse(user.to_json)
     end
 
     it "should not display sensible information via json" do
@@ -80,22 +80,21 @@ describe User do
       user_hash['user']['wca'].should == '2007JDAE01'
     end
   end
-end
 
-describe User, "password" do
+  describe "password" do
+    let(:user) do
+      Factory(:user)
+    end
 
-  def user
-    @user ||= Factory(:user)
-  end
+    it "should flash the password after save" do
+      user.password.should be_nil
+      user.password_confirmation.should be_nil
+    end
 
-  it "should flash the password after save" do
-    user.password.should be_nil
-    user.password_confirmation.should be_nil
-  end
-
-  it "should reset the password to a at least 12 characters long string"do
-    user.reset_password!
-    user.password.should =~ /[a-z0-9A-Z]{12}/
+    it "should reset the password to a at least 12 characters long string"do
+      user.reset_password!
+      user.password.should =~ /[a-z0-9A-Z]{12}/
+    end
   end
 
 end
