@@ -1,5 +1,7 @@
 class TimesController < ApplicationController
   login :except => []
+  load_and_authorize_resource :class => Single
+  skip_load_and_authorize_resource
 
   def index
     @puzzle = Puzzle.find params[:puzzle_id]

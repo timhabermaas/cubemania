@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base
   include Authentication
 
+  load_and_authorize_resource
+
   rescue_from ActiveRecord::RecordNotFound do |exception|
     render 'errors/not_found'
   end
