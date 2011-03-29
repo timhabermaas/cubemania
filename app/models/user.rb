@@ -35,6 +35,8 @@ class User < ActiveRecord::Base
 
   scope :active, where('singles_count > 0')
 
+  validates_presence_of :name, :email, :encrypted_password, :salt, :role
+  validates_presence_of :password, :password_confirmation, :if => :password_is_being_updated?
   validates_uniqueness_of :name, :email, :case_sensitive => false, :message => 'is already in use by another user'
   validates_format_of :name, :with => /^([a-z0-9_]{2,16})$/i, :message => 'must be 2 to 16 letters, numbers or underscores and have no spaces'
   validates_exclusion_of :name, :in => %w(admin moderator), :message => "you don't belong here"
@@ -164,11 +166,9 @@ class User < ActiveRecord::Base
     Match.for(self)
   end
 
-  alias_method :ar_to_json, :to_json
   def to_json(options = {})
-    default_except = [:encrypted_password, :salt, :ignored, :email, :created_at, :role, :sponsor]
-    options[:except] = (options[:except] ? options[:ecept] + default_except : default_except)
-    ar_to_json(options)
+    options[:except] ||= [:encrypted_password, :salt, :ignored, :email, :created_at, :role, :sponsor]
+    super(options)
   end
 
   private

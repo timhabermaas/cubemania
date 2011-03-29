@@ -1,5 +1,5 @@
 Factory.define :user do |u|
-  u.sequence(:name) { |n| "tim#{n}"}
+  u.sequence(:name) { |n| "tim#{n}" }
   u.password 'some_password'
   u.password_confirmation { |u| u.password }
   u.sequence(:email) { |n| "foo#{n}@bar.com" }

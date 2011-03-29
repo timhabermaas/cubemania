@@ -1,0 +1,31 @@
+require 'spec_helper'
+
+describe "Posts" do
+  include DefaultUsers
+
+  before(:each) do
+    visit login_path
+    fill_in 'Name', :with => default_admin.name
+    fill_in 'Password', :with => "something"
+    click_button 'Login'
+  end
+
+  describe "GET /posts" do
+    it "display posts" do
+      Factory(:post, :title => "Yeah")
+      visit posts_path
+      page.should have_content("Yeah")
+    end
+  end
+
+  describe "POST /posts" do
+    it "creates posts" do
+      visit new_post_path
+      fill_in "Title", :with => 'Hey!'
+      fill_in "Content", :with => "Cubemania is awesome. True fact!"
+      click_button "Create"
+      page.should have_content("Cubemania is awesome")
+      page.should have_content("")
+    end
+  end
+end

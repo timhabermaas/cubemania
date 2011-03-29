@@ -14,8 +14,7 @@ gem 'RedCloth'
 gem 'will_paginate', :git => 'git://github.com/mislav/will_paginate.git', :branch => 'rails3'
 
 gem 'cancan'
-
-# gem 'memcached'
+gem 'decent_exposure'
 
 gem 'oauth2'
 gem 'smurf'
@@ -23,29 +22,10 @@ gem 'smurf'
 gem 'newrelic_rpm'
 
 group :development, :test do
-  gem 'rspec'
   gem 'autotest'
   gem 'rspec-rails'
-  gem 'metric_fu'
+  gem 'shoulda-matchers'
+  gem 'capybara'
+  gem 'launchy'
   gem 'factory_girl_rails'
-  gem 'ruby-prof'
 end
-
-
-# Use unicorn as the web server
-# gem 'unicorn'
-
-# Deploy with Capistrano
-# gem 'capistrano'
-
-# Bundle the extra gems:
-# gem 'bj'
-# gem 'nokogiri', '1.4.1'
-# gem 'sqlite3-ruby', :require => 'sqlite3'
-# gem 'aws-s3', :require => 'aws/s3'
-
-# Bundle gems for certain environments:
-# gem 'rspec', :group => :test
-# group :test do
-#   gem 'webrat'
-# end

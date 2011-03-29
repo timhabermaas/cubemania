@@ -24,3 +24,19 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = true
 end
+
+module DefaultUsers
+  def default_admin
+    @default_admin ||= Factory(:user, :password => 'something', :role => 'admin')
+  end
+
+  def default_user
+    @default_user ||= Factory(:user, :password => 'something')
+  end
+
+
+  def default_moderator
+    @default_moderator ||= Factory(:user, :password => 'something', :role => 'moderator')
+  end
+
+end

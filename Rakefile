@@ -8,10 +8,3 @@ require 'rake/testtask'
 require 'rake/rdoctask'
 
 Cubemania::Application.load_tasks
-
-require 'metric_fu'
-
-MetricFu::Configuration.run do |config|
-  #define which metrics you want to use
-  config.metrics  = [:churn, :stats, :flog, :flay, :reek, :roodi]
-end

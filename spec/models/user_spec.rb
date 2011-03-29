@@ -3,45 +3,45 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe User do
 
   describe "validations" do
-    let(:user) do
-      Factory.build(:user)
-    end
 
-    it "should create a new instance given valid attributes" do
-      user.should be_valid
-    end
+    subject { Factory.build(:user) }
+
+    it { should be_valid }
+
+    it { should validate_presence_of(:email) }
+    it { should validate_presence_of(:name) }
+    it { should validate_presence_of(:role) }
+    it { should validate_presence_of(:encrypted_password) }
+    it { should validate_presence_of(:salt) }
+
+    it { should_not allow_value('sho').for(:password) }
+    it { should_not allow_value('u/rq').for(:password) }
+    it { should_not allow_value('fagdjagladjklajfldsfklsdjlsd').for(:password) }
+
+    it { should_not allow_value('sho').for(:email) }
+    it { should_not allow_value('foo@bar.').for(:email) }
+    it { should_not allow_value('foo.de.de').for(:email) }
+    it { should_not allow_value('foo@bar.de.').for(:email) }
+    it { should_not allow_value('@bar.').for(:email) }
+    it { should allow_value('foo.hello@bar.de').for(:email) }
 
     it "should be invalid given a wrong password_confirmation" do
-      user.password_confirmation = 'blub'
-      user.should_not be_valid
-      user.should have(1).error_on(:password)
+      subject.password = 'blubber'
+      subject.password_confirmation = 'blub'
+      subject.should_not be_valid
+      subject.should have(1).error_on(:password)
     end
 
-    it "should be invalid with a pasword of length less than 4" do
-      user.password = 'sho'
-      user.password_confirmation = 'sho'
-      user.should_not be_valid
-      user.should have(1).error_on(:password)
+    it "should have a unique email" do
+      user2 = Factory.create(:user, :email => subject.email)
+      subject.should_not be_valid
+      subject.should have(1).error_on(:email)
     end
 
-    it "should be invalid if the name isn't unique" do
-      user1 = Factory(:user, :name => 'peter')
-      user2 = Factory.build(:user, :name => 'peter')
-      user2.should_not be_valid
-    end
-
-    it "should be invalid if the email isn't unique" do
-      user1 = Factory(:user, :email => 'peter@test.com')
-      user2 = Factory.build(:user, :email => 'peter@test.com')
-      user2.should_not be_valid
-    end
-
-    it "should be invalid given an invalid email address" do
-      invalid_emails = ['foo@bar.', 'foo@bar.de.', 'foo.de.de', '@bar.de']
-      invalid_emails.each do |email|
-        user.email = email
-        user.should_not be_valid
-      end
+    it "should have a unique name" do
+      user2 = Factory.create(:user, :name => subject.name)
+      subject.should_not be_valid
+      subject.should have(1).error_on(:name)
     end
   end
 
