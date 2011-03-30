@@ -5,6 +5,7 @@ class Average
     @singles = singles
   end
 
+  # Returns the average time for given singles. Returns nil if the average is a DNF.
   def time
     non_dnf_singles = @singles.reject { |s| s.dnf? }
 

@@ -5,7 +5,6 @@ class Single < ActiveRecord::Base
   attr_accessible :time, :human_time, :puzzle_id, :scramble, :dnf
 
   validates_presence_of :user_id, :puzzle_id, :time
-  validates_format_of :human_time, :with => /\A(\d+:)?(\d+:)?\d+(.\d+)?\s*(min|s|h)?\Z/
 
   before_validation :set_time, :if => :human_time_is_set
   after_create :update_records_after_create
