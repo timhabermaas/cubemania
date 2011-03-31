@@ -20,7 +20,7 @@ class User < ActiveRecord::Base
     cols = %w(id name puzzle_id created_at repeat).map { |c| "competitions.#{c}"}.join(', ')
     Competition.joins(:averages).select("#{cols}, clocks.created_at as date").where(:user_id => self.id).group("#{cols}, clocks.created_at").all
   end
-  has_many :singles, :order => 'created_at desc', :dependent => :delete_all do
+  has_many :singles, :dependent => :delete_all do
     def for(puzzle_id); where(:puzzle_id => puzzle_id).order('created_at desc'); end
     def best(puzzle_id); find_by_puzzle_id puzzle_id, :conditions => { :dnf => false }, :order => 'time'; end
     def average(puzzle_id); where(:dnf => false).where(:puzzle_id => puzzle_id).average(:time); end
