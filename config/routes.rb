@@ -27,9 +27,9 @@ Cubemania::Application.routes.draw do
     # resources :matches do
     #   resources :times, :controller => :clocks
     # end
-    resources :users do
-      # resources :matches, :defaults => { :puzzle_id => DEFAULT_PUZZLE }
-    end
+    # resources :users do
+    #   resources :matches, :defaults => { :puzzle_id => DEFAULT_PUZZLE }
+    # end
     resources :competitions do
       resources :times
       resources :shouts
