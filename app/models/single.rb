@@ -7,7 +7,7 @@ class Single < ActiveRecord::Base
   validates_presence_of :user_id, :puzzle_id, :time
 
   before_validation :set_time, :if => :human_time_is_set
-  after_create :update_records_after_create
+  after_create :update_average_records_after_create, :update_single_record
   after_destroy :update_single_record
   after_update :update_single_record
 
@@ -27,8 +27,8 @@ class Single < ActiveRecord::Base
   end
 
 private
-  def update_records_after_create
-    [1, 5, 12].each do |amount|
+  def update_average_records_after_create
+    [5, 12].each do |amount|
       last_singles = Single.where(:user_id => user_id).where(:puzzle_id => puzzle_id).order("created_at desc").limit(amount)
 
       next if last_singles.size < amount
@@ -52,14 +52,23 @@ private
   def update_single_record
     single_record = Record.where(:puzzle_id => puzzle_id, :user_id => user_id, :amount => 1).first
     # actually we don't need to set a new record if the destroyed single is a dnf, but since we use this method for destroying and updating, we can't ignore it
-    if self.time <= single_record.time
+    if single_record.nil?
       fastest = user.singles.best(puzzle_id)
-      if fastest.nil?
-        single_record.destroy
-      else
-        single_record.update_attribute :time, fastest.time
+      unless fastest.nil?
+        user.records.create(:puzzle_id => puzzle_id, :time => fastest.time, :amount => 1, :singles => [fastest])
+      end
+    else
+      if self.time <= single_record.time
+        fastest = user.singles.best(puzzle_id)
+        if fastest.nil?
+          single_record.destroy
+        else
+          # single_record.update_with_singles!(fastest)
+          single_record.update_with_single!(fastest)
+        end
       end
     end
+
   end
 
   def set_time

@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Single do
   let(:single) { Factory.build(:single) }
+
   subject { single }
 
   it { should be_valid }
@@ -65,26 +66,35 @@ describe Single do
   end
 
   describe "#update_single_record" do
-    subject { Record.where(:amount => 1).first.try(:time) }
+    subject { record.first.try(:time) }
 
-    let(:record) do
-      Record.where(:amount => 1).first
-    end
+    let(:user) { Factory(:user) }
+    let(:puzzle) { Factory(:puzzle) }
+    let(:record) { Record.where(:amount => 1, :puzzle_id => puzzle.id, :user_id => user.id) }
 
     before do
       Single.delete_all
       Record.delete_all
-      @fastest = Factory(:single, :time => 10)
+      @fastest = Factory(:single, :time => 10, :user => user, :puzzle => puzzle)
     end
 
     context "when creating the first single" do
       it { should == @fastest.time }
     end
 
+    context "when deleting the fastest single" do
+      before do
+        @new_single = Factory(:single, :time => 9, :user => user, :puzzle => puzzle)
+      end
+
+      it { should == @new_single.time }
+      it { record.first.singles.first.should == @new_single }
+    end
+
     context "when creating worse singles" do
       before do
-        Factory(:single, :time => 20)
-        Factory(:single, :time => 30)
+        Factory(:single, :time => 20, :user => user, :puzzle => puzzle)
+        Factory(:single, :time => 30, :user => user, :puzzle => puzzle)
       end
 
       it { should == @fastest.time }
@@ -92,8 +102,8 @@ describe Single do
 
     context "when deleting a single" do
       before do
-        Factory(:single, :time => 20)
-        single = Factory(:single, :time => 5)
+        Factory(:single, :time => 20, :user => user, :puzzle => puzzle)
+        single = Factory(:single, :time => 5, :user => user, :puzzle => puzzle)
         single.destroy
       end
 
@@ -110,12 +120,24 @@ describe Single do
 
     context "when dnfing the last single" do
       before do
-        Factory(:single, :time => 20)
-        single = Factory(:single, :time => 5)
+        Factory(:single, :time => 20, :user => user, :puzzle => puzzle)
+        single = Factory(:single, :time => 5, :user => user, :puzzle => puzzle)
         single.update_attribute(:dnf, true)
       end
 
       it { should == @fastest.time }
+    end
+
+    context "when there's no record but existing singles" do
+      before do
+        Single.delete_all
+        @single = Factory(:single, :time => 30, :user => user, :puzzle => puzzle)
+        Factory(:single, :time => 40, :user => user, :puzzle => puzzle)
+        Record.delete_all
+        @single.destroy
+      end
+
+      it { should == 40 }
     end
   end
 end
