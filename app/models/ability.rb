@@ -9,7 +9,7 @@ class Ability
       can :read, :all
       can :create, Comment
       can :create, Single
-      can :destroy, Single do |single|
+      can [:destroy, :dnf], Single do |single|
         single.user == user || user.admin?
       end
       can :destroy, Comment do |comment|
