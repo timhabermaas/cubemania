@@ -63,4 +63,59 @@ describe Single do
       end
     end
   end
+
+  describe "#update_single_record" do
+    subject { Record.where(:amount => 1).first.try(:time) }
+
+    let(:record) do
+      Record.where(:amount => 1).first
+    end
+
+    before do
+      Single.delete_all
+      Record.delete_all
+      @fastest = Factory(:single, :time => 10)
+    end
+
+    context "when creating the first single" do
+      it { should == @fastest.time }
+    end
+
+    context "when creating worse singles" do
+      before do
+        Factory(:single, :time => 20)
+        Factory(:single, :time => 30)
+      end
+
+      it { should == @fastest.time }
+    end
+
+    context "when deleting a single" do
+      before do
+        Factory(:single, :time => 20)
+        single = Factory(:single, :time => 5)
+        single.destroy
+      end
+
+      it { should == @fastest.time }
+    end
+
+    context "when deleting all singles" do
+      before do
+        @fastest.destroy
+      end
+
+      it { should == nil }
+    end
+
+    context "when dnfing the last single" do
+      before do
+        Factory(:single, :time => 20)
+        single = Factory(:single, :time => 5)
+        single.update_attribute(:dnf, true)
+      end
+
+      it { should == @fastest.time }
+    end
+  end
 end
