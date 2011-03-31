@@ -1,8 +1,8 @@
 var chart;
 
 $(document).ready(function() {
-  var singles = $("#singles li .time").map(function() {
-    return parseInt($(this).attr("data-time"));
+  var singles = $("#singles li #time").map(function() {
+    return parseInt($(this).data("time"));
   }).get().reverse();
 
   chart = new Highcharts.Chart({
