@@ -34,7 +34,7 @@ namespace :records do
     end
   end
 
-  desc 'Recalculate all average of 5 records'
+  desc 'Recalculate all average of 12 records'
   task :avg12 => :environment do
     puzzles = Puzzle.all
     count = User.count
