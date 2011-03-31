@@ -36,7 +36,7 @@ class TimesController < ApplicationController
     @records = current_user.records.for(@puzzle.id, 1, 5, 12)
     respond_to do |format|
       format.html { redirect_to puzzle_times_path(@puzzle) }
-      format.js { render 'dnf.js' }
+      format.js
     end
   end
 
