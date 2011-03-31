@@ -1,29 +1,22 @@
 class ApplicationController < ActionController::Base
   include Authentication
 
+  login :except => [:index, :show]
+
   load_and_authorize_resource
+
+  #protect_from_forgery
 
   rescue_from ActiveRecord::RecordNotFound do |exception|
     render 'errors/not_found'
   end
 
-  before_filter :set_time_zone, :store_return_to
-
-  login :except => [:index, :show]
-
-  protect_from_forgery
-
-  #def rescue_action_in_public(exception)
-  #  render :template => "errors/#{response_code_for_rescue(exception)}"
-  #end
-
-protected
-  def facebook_required
-    unless current_user.connected_to_facebook?
-      flash[:notice] = "You need to connect your Cubemania profile with Facebook!"
-      redirect_to new_facebook_path
-    end
+  rescue_from CanCan::AccessDenied do |exception|
+    flash[:notice] = 'You do not have the necessary permissions'
+    redirect_to root_path
   end
+
+  before_filter :set_time_zone, :store_return_to
 
 private
   def set_time_zone
