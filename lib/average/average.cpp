@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
 
   conn = mysql_init(NULL);
 
-  if (mysql_real_connect(conn, "localhost", getenv("DB_USERNAME"), getenv("DB_PASSWORD"), getenv("DB_DATABASE"), 0, NULL, 0) == NULL) {
+  if (mysql_real_connect(conn, "localhost", getenv("CUBEMANIA_USERNAME"), getenv("CUBEMANIA_PASSWORD"), getenv("CUBEMANIA_DATABASE"), 0, NULL, 0) == NULL) {
     std::cout << "ERROR: Can't connect to database" << std::endl;
     return 1;
   }
