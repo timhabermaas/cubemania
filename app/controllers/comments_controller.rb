@@ -10,7 +10,7 @@ class CommentsController < ApplicationController
 
   def destroy
     object.destroy
-    redirect_to post_path(@post, :anchor => 'comments')
+    redirect_to post_path(parent, :anchor => 'comments')
   end
 
   private
