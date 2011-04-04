@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
 
   load_and_authorize_resource
 
-  #protect_from_forgery
+  protect_from_forgery
 
   rescue_from ActiveRecord::RecordNotFound do |exception|
     render 'errors/not_found'
