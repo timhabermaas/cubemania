@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe Single do
   let(:single) { Factory.build(:single) }
+  let(:user) { Factory(:user) }
+  let(:puzzle) { Factory(:puzzle) }
 
   subject { single }
 
@@ -65,11 +67,9 @@ describe Single do
     end
   end
 
-  describe "#update_single_record" do
+  describe "update single record" do
     subject { record.first.try(:time) }
 
-    let(:user) { Factory(:user) }
-    let(:puzzle) { Factory(:puzzle) }
     let(:record) { Record.where(:amount => 1, :puzzle_id => puzzle.id, :user_id => user.id) }
 
     before do
@@ -139,5 +139,37 @@ describe Single do
 
       it { should == 40 }
     end
+  end
+
+  describe "update average of 5 record" do
+
+    def avg5_record
+      user.records.for(puzzle.id, 5)[5]
+    end
+
+    before do
+      4.downto(1) do |n|
+        Factory(:single, :user => user, :puzzle => puzzle, :time => n)
+      end # 4 3 2 1
+    end
+
+    context "when not enough times are available" do
+      it "shouldn't set a record" do
+        avg5_record.should be_nil
+      end
+    end
+
+    context "when adding singles" do
+      it "should change average of 5 from 3 to 2 and update ids" do
+        Factory(:single, :user => user, :puzzle => puzzle, :time => 5) # 4 3 2 1 5
+        s = Factory(:single, :user => user, :puzzle => puzzle, :time => 1) # 4 3 2 1 5 1
+        avg5_record.time.should == 2
+        avg5_record.singles.map(&:id).should include(s.id)
+      end
+    end
+
+    context "when updating singles"
+
+    context "when deleting singles"
   end
 end

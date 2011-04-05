@@ -37,14 +37,16 @@ private
 
       return if avg.nil?
 
-      old_average = Record.where(:puzzle_id => puzzle_id, :user_id => user_id, :amount => amount).first
+      old_record = Record.where(:puzzle_id => puzzle_id, :user_id => user_id, :amount => amount).first
 
-      if old_average.nil?
+      if old_record.nil?
         new_average = Record.new(:puzzle_id => puzzle_id, :user_id => user_id, :time => avg, :singles => last_singles, :amount => amount)
         new_average.singles = last_singles
         new_average.save!
-      elsif avg < old_average.time
-        old_average.update_attribute :time, avg
+      elsif avg < old_record.time
+        old_record.time = avg
+        old_record.singles = last_singles
+        old_record.save!
       end
     end
   end
