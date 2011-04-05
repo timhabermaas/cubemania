@@ -17,16 +17,7 @@ class RollingAverage
   end
 
   def <<(single)
-    @singles << single # single.time ??
-
-=begin
-    if @best == nil || single.time < @best.time
-      @best = single
-    end
-    if @worst == nil || single.time > @worst.time || single.dnf?
-      @worst = single
-    end
-=end
+    @singles << single
 
     @dnfs += 1 if single.dnf?
 
@@ -51,4 +42,5 @@ class RollingAverage
 
     (@sum - best - worst) / (@singles.size - 2)
   end
+  alias_method :time, :average
 end
