@@ -24,7 +24,7 @@ gem 'decent_exposure'
 
 gem 'omniauth'
 
-gem 'newrelic_rpm'
+#gem 'newrelic_rpm'
 
 group :development, :test do
   gem 'autotest'
