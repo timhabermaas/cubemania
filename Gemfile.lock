@@ -7,6 +7,13 @@ GIT
       activesupport (>= 2.3.2)
       cocaine (>= 0.0.2)
 
+GIT
+  remote: git://github.com/xspond/will_paginate.git
+  revision: 7dfc31d01982a801b1c96211ad4b0d83b1dd0804
+  branch: rails3-1
+  specs:
+    will_paginate (3.0.pre3)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -238,3 +245,4 @@ DEPENDENCIES
   shoulda-matchers
   sqlite3
   uglifier
+  will_paginate!
