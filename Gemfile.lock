@@ -208,7 +208,6 @@ GEM
       json_pure
       rubyzip
     shoulda-matchers (1.0.0.beta2)
-    smurf (1.0.6)
     sprockets (2.0.0.beta.10)
       hike (~> 1.0)
       rack (~> 1.0)
@@ -246,7 +245,6 @@ DEPENDENCIES
   rspec-rails
   sass-rails (~> 3.1.0.rc)
   shoulda-matchers
-  smurf
   sqlite3
   uglifier
   will_paginate!

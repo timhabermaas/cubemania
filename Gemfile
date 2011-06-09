@@ -22,8 +22,6 @@ gem 'will_paginate', :git => 'git://github.com/mislav/will_paginate.git', :branc
 gem 'cancan'
 gem 'decent_exposure'
 
-gem 'smurf'
-
 gem 'omniauth'
 
 gem 'newrelic_rpm'
