@@ -1,11 +1,4 @@
 GIT
-  remote: git://github.com/mislav/will_paginate.git
-  revision: b1a5beeec9f56ecbe3594fcdca76d92b6767ce50
-  branch: rails3
-  specs:
-    will_paginate (3.0.pre3)
-
-GIT
   remote: git://github.com/thoughtbot/paperclip.git
   revision: 79381dc9fce76900f1006db27904d1296cb1c5ff
   specs:
@@ -247,4 +240,3 @@ DEPENDENCIES
   shoulda-matchers
   sqlite3
   uglifier
-  will_paginate!

@@ -17,7 +17,7 @@ gem 'sqlite3'
 
 gem 'paperclip', :git => 'git://github.com/thoughtbot/paperclip.git'
 gem 'RedCloth'
-gem 'will_paginate', :git => 'git://github.com/mislav/will_paginate.git', :branch => 'rails3'
+#gem 'will_paginate', :git => 'git://github.com/mislav/will_paginate.git', :branch => 'rails3'
 
 gem 'cancan'
 gem 'decent_exposure'
