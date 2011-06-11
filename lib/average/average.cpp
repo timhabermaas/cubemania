@@ -5,6 +5,7 @@
 #include <vector>
 #include <cfloat>
 #include <algorithm>
+#include <cstring>
 
 struct Single {
   long id;
