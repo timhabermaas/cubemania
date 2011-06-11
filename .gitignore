@@ -7,5 +7,4 @@ tmp
 bin
 .DS_Store
 config/database.yml
-public/images/kinds
-public/images/puzzles
+public/assets

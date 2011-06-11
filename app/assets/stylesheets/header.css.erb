@@ -1,6 +1,6 @@
 #header {
   height: 100px;
-  background: url(/assets/header.gif) repeat-x;
+  background: url(<%= asset_path "header.gif" %>) repeat-x;
 }
 #header .center {
   position: relative;
@@ -17,16 +17,16 @@
   display: block;
   width: 295px;
   height: 100px;
-  background: url(/assets/logo.gif) left center no-repeat;
+  background: url(<%= asset_path "logo.gif" %>) left center no-repeat;
 }
 #header blockquote {
   float: right;
   margin-top: 42px;
   padding-left: 21px;
-  background: url(/assets/open-quote.gif) top left no-repeat;
+  background: url(<%= asset_path "open-quote.gif" %>) top left no-repeat;
 }
 #header p {
   color: #fff;
   padding-right: 21px;
-  background: url(/assets/close-quote.gif) bottom right no-repeat;
+  background: url(<%= asset_path "close-quote.gif" %>) bottom right no-repeat;
 }
