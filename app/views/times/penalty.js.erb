@@ -1,0 +1,3 @@
+$('#single-<%= @single.id %>').replaceWith('<%= escape_javascript(render(:partial => 'single', :locals => {:single => @single })) %>');
+$('#statistics').replaceWith('<%= escape_javascript(render(:partial => 'statistics')) %>');
+updateStatistics();

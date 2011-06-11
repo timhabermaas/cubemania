@@ -22,6 +22,7 @@ Cubemania::Application.routes.draw do
   resources :puzzles, :defaults => { :id => DEFAULT_PUZZLE } do
     resources :times do
       put :dnf, :on => :member
+      put :plus2, :on => :member
     end
     resources :singles
     # resources :matches do
