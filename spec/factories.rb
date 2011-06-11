@@ -30,13 +30,12 @@ end
 
 Factory.define :single do |s|
   s.time rand(16000) + 5000
-  s.dnf false
   s.association :puzzle
   s.association :user
 end
 
 Factory.define :dnf_single, :parent => :single do |a|
-  a.dnf true
+  a.penalty "dnf"
 end
 
 Factory.define :match do |m|

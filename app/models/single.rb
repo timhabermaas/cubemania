@@ -2,7 +2,7 @@ class Single < ActiveRecord::Base
   belongs_to :user, :counter_cache => true
   belongs_to :puzzle
 
-  attr_accessible :time, :human_time, :puzzle_id, :scramble, :dnf
+  attr_accessible :time, :human_time, :puzzle_id, :scramble, :penalty
 
   validates_presence_of :user_id, :puzzle_id, :time
 
@@ -10,6 +10,8 @@ class Single < ActiveRecord::Base
   after_create :update_average_records_after_create, :update_single_record
   after_destroy :update_single_record
   after_update :update_single_record
+
+  scope :not_dnf, where("penalty IS NULL OR penalty NOT LIKE 'dnf'")
 
   humanize :time => :time
 
@@ -20,10 +22,14 @@ class Single < ActiveRecord::Base
 
   def toggle_dnf!
     if self.dnf?
-      self.update_attribute :dnf, false
+      self.update_attribute :penalty, nil
     else
-      self.update_attribute :dnf, true
+      self.update_attribute :penalty, "dnf"
     end
+  end
+
+  def dnf?
+    self.penalty == "dnf"
   end
 
 private

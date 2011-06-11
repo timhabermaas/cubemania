@@ -4,7 +4,7 @@ class Competition < ActiveRecord::Base
 
   belongs_to :puzzle
   belongs_to :user; attr_protected :user_id, :user
-  has_many :averages, :include => :user, :order => 'dnf, time', :dependent => :nullify do
+  has_many :averages, :include => :user, :order => 'penalty, time', :dependent => :nullify do
     def for(competition, date, ignore = true)
       if ignore
         find :all, :conditions => { 'clocks.created_at' => competition.range(date), 'users.ignored' => false }, :include => :user

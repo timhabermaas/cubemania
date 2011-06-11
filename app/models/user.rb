@@ -22,8 +22,8 @@ class User < ActiveRecord::Base
   end
   has_many :singles, :dependent => :delete_all do
     def for(puzzle_id); where(:puzzle_id => puzzle_id).order('created_at desc'); end
-    def best(puzzle_id); find_by_puzzle_id puzzle_id, :conditions => { :dnf => false }, :order => 'time'; end
-    def average(puzzle_id); where(:dnf => false).where(:puzzle_id => puzzle_id).average(:time); end
+    def best(puzzle_id); not_dnf.where(:puzzle_id => puzzle_id).order(:time).first; end
+    def average(puzzle_id); not_dnf.where(:puzzle_id => puzzle_id).calculate(:average, :time); end
   end
 
   has_many :records, :include => { :puzzle => :kind }, :order => 'puzzles.name, kinds.name', :dependent => :delete_all do

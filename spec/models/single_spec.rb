@@ -24,7 +24,7 @@ describe Single do
     subject { single.dnf? }
 
     context "when dnf = false" do
-      before { single.dnf = false }
+      before { single.penalty = nil }
       it "should become true" do
         single.toggle_dnf!
         should == true
@@ -32,7 +32,7 @@ describe Single do
     end
 
     context "when dnf = true" do
-      before { single.dnf = true }
+      before { single.penalty = "dnf" }
       it "should become false" do
         single.toggle_dnf!
         should == false
@@ -122,7 +122,7 @@ describe Single do
       before do
         Factory(:single, :time => 20, :user => user, :puzzle => puzzle)
         single = Factory(:single, :time => 5, :user => user, :puzzle => puzzle)
-        single.update_attribute(:dnf, true)
+        single.update_attribute(:penalty, "dnf")
       end
 
       it { should == @fastest.time }

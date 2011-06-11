@@ -11,7 +11,7 @@ struct Single {
   long time;
   bool dnf;
 
-  Single(long id, long time, bool dnf) : time(time), dnf(dnf), id(id) {
+  Single(long id, long time, bool dnf) : id(id), time(time), dnf(dnf) {
   }
 
   bool operator<(const Single& other) const {
@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
   int amount = atoi(argv[3]);
 
   char buffer[1024];
-  sprintf(buffer, "SELECT id, time, dnf from singles WHERE user_id = %d AND puzzle_id = %d ORDER BY created_at desc;", user_id, puzzle_id);
+  sprintf(buffer, "SELECT id, time, penalty from singles WHERE user_id = %d AND puzzle_id = %d ORDER BY created_at desc;", user_id, puzzle_id);
   mysql_query(conn, buffer);
   result = mysql_store_result(conn);
 
@@ -97,7 +97,7 @@ int main(int argc, char *argv[]) {
   std::vector<Single> bestSingles;
 
   while (row = mysql_fetch_row(result)) {
-    ra.add(Single(atoi(row[0]), atoi(row[1]), atoi(row[2]) != 0));
+    ra.add(Single(atoi(row[0]), atoi(row[1]), row[2] ? strcmp(row[2], "dnf") : false));
     if (ra.average() < best && ra.average() > 0) {
       best = ra.average();
       bestSingles = ra.getSingles();

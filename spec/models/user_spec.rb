@@ -105,7 +105,7 @@ describe User do
 
     before do
       Factory(:single, :time => 20, :user => user, :puzzle => puzzle)
-      Factory(:single, :time => 9, :user => user, :puzzle => puzzle, :dnf => true)
+      Factory(:single, :time => 9, :user => user, :puzzle => puzzle, :penalty => "dnf")
       Factory(:single, :time => 10, :user => user, :puzzle => puzzle)
       Factory(:single, :time => 30, :user => user, :puzzle => puzzle)
     end

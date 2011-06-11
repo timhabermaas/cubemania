@@ -11,9 +11,9 @@ describe RollingAverage do
     average.average.should == 3
     average << Single.new(:time => 0)
     ("%.2f" % average.average).should == "2.67"
-    average << Single.new(:time => 2, :dnf => true)
+    average << Single.new(:time => 2, :penalty => "dnf")
     ("%.2f" % average.average).should == "2.67"
-    average << Single.new(:time => 10, :dnf => true)
+    average << Single.new(:time => 10, :penalty => "dnf")
     average.average.should be_nil
     average << Single.new(:time => 4)
     average << Single.new(:time => 3)
@@ -26,9 +26,9 @@ describe RollingAverage do
 
   it "shouldn't crash if all times are DNFs" do
     average = RollingAverage.new(3)
-    average << Single.new(:time => 2, :dnf => true)
-    average << Single.new(:time => 4, :dnf => true)
-    average << Single.new(:time => 1, :dnf => true)
+    average << Single.new(:time => 2, :penalty => "dnf")
+    average << Single.new(:time => 4, :penalty => "dnf")
+    average << Single.new(:time => 1, :penalty => "dnf")
 
     lambda {
       average.average
@@ -49,9 +49,9 @@ describe RollingAverage do
 
   it "should work for average of 1" do
     average = RollingAverage.new(1)
-    average << Single.new(:time => 5, :dnf => false)
+    average << Single.new(:time => 5)
     average.average.should == 5
-    average << Single.new(:time => 3, :dnf => true)
+    average << Single.new(:time => 3, :penalty => "dnf")
     average.average.should be_nil
     average << Single.new(:time => 3)
     average.average.should == 3
