@@ -1,7 +1,7 @@
 class Kind < ActiveRecord::Base
   has_many :puzzles, :order => 'name', :dependent => :destroy
 
-  has_attached_file :image, :path => "public/images/:class/:id/:style/:basename.:extension", :url => "/images/:class/:id/:style/:basename.:extension"
+  has_attached_file :image, :path => "public/assets/:class/:id/:style/:basename.:extension", :url => "/assets/:class/:id/:style/:basename.:extension"
   attr_protected :image_file_name, :image_content_type, :image_size
 
   validates_presence_of :name
