@@ -5,6 +5,7 @@ class Single < ActiveRecord::Base
   attr_accessible :time, :human_time, :puzzle_id, :scramble, :penalty
 
   validates_presence_of :user_id, :puzzle_id, :time
+  validates_inclusion_of :penalty, :in => %w( plus2 dnf ), :allow_nil => true
 
   before_validation :set_time, :if => :human_time_is_set
   after_create :update_average_records_after_create, :update_single_record
@@ -28,8 +29,20 @@ class Single < ActiveRecord::Base
     end
   end
 
+  def toggle_plus2!
+    if self.plus2?
+      self.update_attributes :penalty => nil, :time => self.time - 2000
+    else
+      self.update_attributes :penalty => "plus2", :time => self.time + 2000
+    end
+  end
+
   def dnf?
     self.penalty == "dnf"
+  end
+
+  def plus2?
+    self.penalty == "plus2"
   end
 
 private

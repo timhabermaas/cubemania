@@ -1,17 +1,20 @@
 require 'spec_helper'
 
 describe Single do
-  let(:single) { Factory.build(:single, :user => user, :puzzle => puzzle) }
+  let(:single) { Factory.build(:single, :user => user, :puzzle => puzzle, :time => 20000) }
   let(:user) { Factory(:user) }
   let(:puzzle) { Factory(:puzzle) }
 
   subject { single }
-
-  it { should be_valid }
-
-  it { should validate_presence_of(:time) }
-  it { should validate_presence_of(:user_id) }
-  it { should validate_presence_of(:puzzle_id) }
+  describe "validations" do
+    it { should be_valid }
+    it { should validate_presence_of(:time) }
+    it { should validate_presence_of(:user_id) }
+    it { should validate_presence_of(:puzzle_id) }
+    it { should allow_value("dnf").for(:penalty) }
+    it { should allow_value("plus2").for(:penalty) }
+    it { should_not allow_value("m").for(:penalty) }
+  end
 
   it { should belong_to(:user) }
   it { should belong_to(:puzzle) }
@@ -23,7 +26,7 @@ describe Single do
   describe "#toggle_dnf" do
     subject { single.dnf? }
 
-    context "when dnf = false" do
+    context "when no penalty" do
       before { single.penalty = nil }
       it "should become true" do
         single.toggle_dnf!
@@ -31,11 +34,42 @@ describe Single do
       end
     end
 
-    context "when dnf = true" do
+    context "when dnf" do
       before { single.penalty = "dnf" }
       it "should become false" do
         single.toggle_dnf!
         should == false
+      end
+    end
+  end
+
+  describe "#toggle_plus2" do
+    subject { single.plus2? }
+
+    context "when no penalty" do
+      before { single.penalty = nil }
+      it "should increase time and update flag" do
+        single.toggle_plus2!
+        should == true
+        single.time.should == 22000
+      end
+    end
+
+    context "when dnf" do
+      before { single.penalty = "dnf" }
+      it "should increase time and update flag" do
+        single.toggle_plus2!
+        should == true
+        single.time.should == 22000
+      end
+    end
+
+    context "when plus2" do
+      before { single.penalty = "plus2" }
+      it "should decrease time and update flag" do
+        single.toggle_plus2!
+        should == false
+        single.time.should == 18000
       end
     end
   end
