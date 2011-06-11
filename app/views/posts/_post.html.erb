@@ -5,7 +5,7 @@
   </div>
   <div class="meta">
     <%=d post.created_at %> &middot;
-    <cite><%= post.user.nil? ? 'Unknown' : link_to(post.user.name, post.user) %></cite> &middot;
+    <cite><%= post.user.nil? ? 'Unknown' : link_to(post.user.name, post.user) %></cite>
     <% unless action? :show %>
     <%= link_to post_path(post, :anchor => 'comments') do %>
       <%= pluralize post.comments.size, 'Comment' %> &raquo;

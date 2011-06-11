@@ -1,3 +1,0 @@
-#page << "alert('test#{@comment.id}');"
-page['#comments ol'].append render(@comment)# << "$('#comments ol').append('#{render @comment}');"
-#$('#comments ol').append('<li>muh</li>');
