@@ -24,6 +24,8 @@ class Single < ActiveRecord::Base
   def toggle_dnf!
     if self.dnf?
       self.update_attribute :penalty, nil
+    elsif self.plus2?
+      self.update_attributes :penalty => "dnf", :time => self.time - 2000
     else
       self.update_attribute :penalty, "dnf"
     end

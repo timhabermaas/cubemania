@@ -34,6 +34,15 @@ describe Single do
       end
     end
 
+    context "when plus2" do
+      before { single.penalty = "plus2" }
+      it "should become true and decrease time" do
+        single.toggle_dnf!
+        should == true
+        single.time.should == 18000
+      end
+    end
+
     context "when dnf" do
       before { single.penalty = "dnf" }
       it "should become false" do
