@@ -13,8 +13,7 @@ class KindsController < ApplicationController
   end
 
   def create
-    @kind = Kind.new params[:kind]
-    if @kind.save
+    if object.save
       redirect_to kinds_path
     else
       render :new
@@ -23,11 +22,16 @@ class KindsController < ApplicationController
 
   def update
     @kind = Kind.find params[:id]
-    if @kind.update_attributes params[:kind]
+    if object.update_attributes params[:kind]
       redirect_to kinds_path
     else
       render :edit
     end
+  end
+
+  def destroy
+    object.destroy
+    redirect_to kinds_path
   end
 
   def object

@@ -36,7 +36,7 @@ class UsersController < ApplicationController
 
   def update
     @user = User.find params[:id]
-    if @user.update_attributes params[:user]
+    if @user.update_attributes params[:user], :as => current_user.role.to_sym
       flash[:notice] = "Successfully updated"
       redirect_to user_path
     else
