@@ -51,7 +51,7 @@ $(function() {
     prePopulate: [{id: $("#singles").data("id"), name: $("#singles").data("name")}],
     hintText: "Type a User Name",
     onAdd: function(item) {
-      $.getJSON("/users/" + item.id + "/puzzles/" + 4 + "/singles", function(data) {
+      $.getJSON("/users/" + item.id + "/puzzles/" + $("#singles").data("puzzle") + "/singles", function(data) {
         singles = $.map(data, function(item) {
           return item.single.time;
         });
