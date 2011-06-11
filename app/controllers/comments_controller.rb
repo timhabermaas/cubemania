@@ -17,7 +17,10 @@ class CommentsController < ApplicationController
 
   def destroy
     object.destroy
-    redirect_to post_path(parent, :anchor => 'comments')
+    respond_to do |format|
+      format.js
+      format.html { redirect_to object.post }
+    end
   end
 
   private
