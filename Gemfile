@@ -34,3 +34,7 @@ group :development, :test do
   gem 'launchy'
   gem 'factory_girl_rails'
 end
+
+group :production do
+  gem 'therubyracer' # for compiling CoffeeScript
+end
