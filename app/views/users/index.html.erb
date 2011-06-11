@@ -1,6 +1,6 @@
 <%= form_tag users_path, :method => 'get', :id => "users_search" do %>
   <p>
-    <%= text_field_tag :search, params[:search] %>
+    <%= text_field_tag :q, params[:q] %>
   </p>
 <% end %>
 <ul id="users">

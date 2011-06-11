@@ -4,7 +4,7 @@ var intervalId = null;
 var justStopped = false;
 var timerEnabled = true;
 
-$(document).ready(function() {
+$(function() {
   $('#timer #toggle').bind('click', function() {
     $('#single_human_time').toggle();
     $("#timer time").toggle();
@@ -41,6 +41,29 @@ $(document).ready(function() {
         $("#timer time").addClass("starting");
       }
       return false;
+    }
+  });
+
+  $("#user_tokens").tokenInput("/users.json", {
+    crossDomain: false,
+    theme: "facebook",
+    preventDuplicates: true,
+    prePopulate: [{id: $("#singles").data("id"), name: $("#singles").data("name")}],
+    hintText: "Type a User Name",
+    onAdd: function(item) {
+      $.getJSON("/users/" + item.id + "/puzzles/" + 4 + "/singles", function(data) {
+        singles = $.map(data, function(item) {
+          return item.single.time;
+        });
+        chart.addSeries( {
+          name: item.name,
+          id: item.id,
+          data: singles
+        });
+      });
+    },
+    onDelete: function(item) {
+      chart.get(item.id).remove();
     }
   });
 

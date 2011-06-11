@@ -1,16 +1,18 @@
 class UsersController < ApplicationController
+  respond_to :html, :json
+
   skip_login :only => [:new, :create]
   logout :only => [:new, :create]
   #protect [:role, :sponsor, :ignored], :but => :admin, :only => [:create, :update]
 
   def index
     @max_singles_count = User.max_singles_count
-    @users =
-      if params[:search]
-        User.order('singles_count desc').where('name LIKE ?', "%#{params[:search] || ''}%")
-      else
-        User.order('singles_count desc').paginate(:page => params[:page], :per_page => 100)
-      end
+    @users = User.order('singles_count desc').where('name LIKE ?', "%#{params[:q]}%").paginate(:page => params[:page], :per_page => 100)
+
+    respond_to do |format|
+      format.html
+      format.json { render :json => @users.map(&:attributes) }
+    end
   end
 
   def show

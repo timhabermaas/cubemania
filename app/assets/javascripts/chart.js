@@ -46,7 +46,8 @@ $(document).ready(function() {
                       }
                    },
              series: [{
-                name: $("#singles").attr("data-name"),
+                name: $("#singles").data("name"),
+                id: parseInt($("#singles").data("id")),
                 data: singles
              }]
           });
