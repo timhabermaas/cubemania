@@ -6,4 +6,6 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require highcharts
+//= require jquery.tokeninput
 //= require_tree .
