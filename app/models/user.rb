@@ -175,8 +175,9 @@ class User < ActiveRecord::Base
     Match.for(self)
   end
 
-  def to_json(options = {})
-    options[:except] ||= [:encrypted_password, :salt, :ignored, :email, :created_at, :role, :sponsor]
+  def as_json(options = {})
+    options ||= {}
+    options[:except] = (options[:except] || []) + [:encrypted_password, :salt, :ignored, :email, :created_at, :role, :sponsor, :wants_emails]
     super(options)
   end
 
