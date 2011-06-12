@@ -17,3 +17,9 @@
   <% end %>
   <%= link_to 'Set times manually', '#', :id => 'toggle' %>
 </div>
+
+<script type="text/javascript" language="javascript">
+  $('#timer #single_human_time').hide();
+  $('#timer form input[type=submit]').hide();
+  $("#timer #current_time").show();
+</script>

@@ -1,9 +1,4 @@
 <%= render :partial => 'shared/timer' %>
-<script type="text/javascript" language="javascript">
-  $('#timer #single_human_time').hide();
-  $('#timer form input[type=submit]').hide();
-  $("#timer #current_time").show();
-</script>
 <ul id="singles" data-id="<%= current_user.id %>" data-name="<%= current_user.name %>" data-puzzle="<%= params[:puzzle_id] %>">
   <%= render :partial => 'single', :collection => @singles %>
   <%= will_paginate @singles %>
