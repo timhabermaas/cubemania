@@ -82,28 +82,9 @@ private
   end
 
   def update_records
-    # Record.calculate_for!(user_id, puzzle_id, 1) ?
+    Record.calculate_for!(user_id, puzzle_id, 1)
     Record.calculate_for!(user_id, puzzle_id, 5)
     Record.calculate_for!(user_id, puzzle_id, 12)
-
-    # single record TODO put in Record.calculate_for!
-    single_record = Record.where(:puzzle_id => puzzle_id, :user_id => user_id, :amount => 1).first
-    # actually we don't need to set a new record if the destroyed single is a dnf, but since we use this method for destroying and updating, we can't ignore it
-    if single_record.nil?
-      fastest = user.singles.best(puzzle_id)
-      unless fastest.nil?
-        user.records.create(:puzzle_id => puzzle_id, :time => fastest.time, :amount => 1, :singles => [fastest])
-      end
-    else
-      if self.time <= single_record.time
-        fastest = user.singles.best(puzzle_id)
-        if fastest.nil?
-          single_record.destroy
-        else
-          # single_record.update_with_singles!(fastest)
-          single_record.update_with_single!(fastest)
-        end
-      end
-    end
   end
+  handle_asynchronously :update_records
 end
