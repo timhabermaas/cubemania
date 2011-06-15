@@ -42,9 +42,7 @@ class Record < ActiveRecord::Base
           Record.create!(:user_id => user_id, :puzzle_id => puzzle_id, :amount => format, :time => time, :singles => best_singles)
         end
       else
-        if current_record
-          current_record.destroy
-        end
+        current_record.try(:destroy)
       end
     end
     handle_asynchronously :calculate_for!

@@ -52,10 +52,4 @@ namespace :records do
     Rake::Task["records:avg5"].invoke
     Rake::Task["records:avg12"].invoke
   end
-
-  desc 'Compile C++ implementation of searching for best average'
-  task :compile do
-    `g++ lib/average/average.cpp -O2 -o bin/average \`mysql_config --cflags --libs\``
-  end
-
 end
