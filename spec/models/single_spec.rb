@@ -187,7 +187,7 @@ describe Single do
   describe "update average of 5 record" do
 
     def avg5_record
-      user.records.for(puzzle.id, 5)[5]
+      user.records.for(puzzle.id, 5)
     end
 
     before do

@@ -3,10 +3,11 @@ class TimesController < ApplicationController
   skip_load_and_authorize_resource
   load_and_authorize_resource :class => Single
 
+  before_filter :fetch_records, :except => :create
+
   def index
     @puzzle = Puzzle.find params[:puzzle_id]
     @scramble = @puzzle.scramble
-    @records = current_user.records.for(@puzzle.id, 1, 5, 12)
     @singles = current_user.singles.for(params[:puzzle_id]).paginate :page => params[:page], :per_page => 100
   end
 
@@ -15,7 +16,7 @@ class TimesController < ApplicationController
     @scramble = @puzzle.scramble
     @single = current_user.singles.build(params[:single].merge!(:puzzle_id => @puzzle.id))
     if @single.save
-      @records = current_user.records.for(@puzzle.id, 1, 5, 12)
+      fetch_records
       respond_to do |format|
         format.html { redirect_to puzzle_times_path(@puzzle) }
         format.js
@@ -32,7 +33,6 @@ class TimesController < ApplicationController
     @puzzle = Puzzle.find params[:puzzle_id]
     @single = current_user.singles.find params[:id]
     @single.toggle_dnf!
-    @records = current_user.records.for(@puzzle.id, 1, 5, 12)
     respond_to do |format|
       format.html { redirect_to puzzle_times_path(@puzzle) }
       format.js { render :penalty }
@@ -43,7 +43,6 @@ class TimesController < ApplicationController
     @puzzle = Puzzle.find params[:puzzle_id]
     @single = current_user.singles.find params[:id]
     @single.toggle_plus2!
-    @records = current_user.records.for(@puzzle.id, 1, 5, 12)
     respond_to do |format|
       format.html { redirect_to puzzle_times_path(@puzzle) }
       format.js { render :penalty }
@@ -54,10 +53,16 @@ class TimesController < ApplicationController
     @puzzle = Puzzle.find params[:puzzle_id]
     @single = current_user.singles.find params[:id]
     @single.destroy
-    @records = current_user.records.for(@puzzle.id, 1, 5, 12)
     respond_to do |format|
       format.html { redirect_to puzzle_times_path(@puzzle) }
       format.js
     end
+  end
+
+private
+  def fetch_records
+    @records = { 1 => current_user.records.for(params[:puzzle_id], 1),
+                 5 => current_user.records.for(params[:puzzle_id], 5),
+                12 => current_user.records.for(params[:puzzle_id], 12) }
   end
 end

@@ -29,13 +29,8 @@ class User < ActiveRecord::Base
   end
 
   has_many :records, :include => { :puzzle => :kind }, :order => 'puzzles.name, kinds.name', :dependent => :delete_all do
-    def for(puzzle_id, *amounts)
-      result = {}
-      # TODO looping is unnecessary. can be done at the database.
-      amounts.each do |amount|
-        result[amount] = find_by_puzzle_id_and_amount puzzle_id, amount
-      end
-      result
+    def for(puzzle_id, amount)
+      find_by_puzzle_id_and_amount puzzle_id, amount
     end
   end
 
@@ -113,29 +108,6 @@ class User < ActiveRecord::Base
       1
     else
       singles.size / max.to_f
-    end
-  end
-
-  def update_records_for!(puzzle_id, *amounts)
-    records = self.records.for(puzzle_id, *amounts)
-    amounts.each do |amount|
-      output = `bin/average #{self.id} #{puzzle_id} #{amount}`
-
-      if output == "NULL"
-        records[amount].try(:destroy)
-        return
-      end
-
-      t, *singles = output.split(',').map { |v| v.to_i }
-      single_ids = singles.join(';')
-
-      ActiveRecord::Base.record_timestamps = false
-      if records[amount].nil?
-        Record.create!(:user_id => self.id, :puzzle_id => puzzle_id, :single_ids => single_ids, :amount => amount, :time => t)
-      else
-        records[amount].update_attributes(:time => t, :single_ids => single_ids)
-      end
-      ActiveRecord::Base.record_timestamps = true
     end
   end
 
