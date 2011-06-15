@@ -11,11 +11,11 @@ namespace :records do
         if single
           record = Record.find_by_puzzle_id_and_user_id_and_amount(puzzle.id, user.id, 1)
           if record
-            record.update_attributes(:time => single.time, :created_at => single.created_at, :updated_at => single.created_at)
+            record.update_attributes(:time => single.time, :created_at => single.created_at, :updated_at => single.created_at, :singles => [single])
           else
             Record.create!(:puzzle_id => puzzle.id, :user_id => user.id,
                            :amount => 1, :time => single.time, :created_at => single.created_at,
-                           :updated_at => single.updated_at)
+                           :updated_at => single.updated_at, :singles => [single])
           end
         end
       end
@@ -29,7 +29,7 @@ namespace :records do
     User.find_each do |user|
       p "User #{user.id}/#{count}: #{user.name}"
       puzzles.each do |puzzle|
-        user.update_record_for! puzzle.id, 5
+        Record.calculate_for! user.id, puzzle.id, 5
       end
     end
   end
@@ -41,7 +41,7 @@ namespace :records do
     User.find_each do |user|
       p "User #{user.id}/#{count}: #{user.name}"
       puzzles.each do |puzzle|
-        user.update_record_for! puzzle.id, 12
+        Record.calculate_for! user.id, puzzle.id, 12
       end
     end
   end
