@@ -52,7 +52,7 @@ private
     [1, 5, 12].each do |amount|
       last_singles = Single.where(:user_id => user_id).where(:puzzle_id => puzzle_id).order("created_at desc").limit(amount)
 
-      next if last_singles.size < amount
+      return if last_singles.size < amount
 
       avg = RollingAverage.new(amount, last_singles).average
 
