@@ -86,5 +86,4 @@ private
     Record.calculate_for!(user_id, puzzle_id, 5)
     Record.calculate_for!(user_id, puzzle_id, 12)
   end
-  handle_asynchronously :update_records
 end
