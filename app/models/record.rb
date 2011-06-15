@@ -16,12 +16,6 @@ class Record < ActiveRecord::Base
     Single.find(single_ids.split(';'))
   end
 
-  def update_with_single!(single)
-    self.time = single.time
-    self.singles = [single]
-    save
-  end
-
   class << self
     def calculate_for!(user_id, puzzle_id, format)
       best = nil
