@@ -1,3 +1,18 @@
+if ($("#notice").length > 0) {
+  <% unless flash[:notice].nil? %>
+    $("#notice").replace_with("<%= escape_javascript(render 'layouts/notice') %>");
+    <% flash.discard %>
+  <% else %>
+    $("#notice").slideUp("normal", function() {
+      $(this).remove();
+    });
+  <% end %>
+} else {
+  <% unless flash[:notice].nil? %>
+    $("#subnavigation").after("<%= escape_javascript(render 'layouts/notice') %>");
+    <% flash.discard %>
+  <% end %>
+}
 $("#singles").prepend($("<%= escape_javascript(render(:partial => 'single', :object => @single)) %>").fadeIn('slow'));
 $("#timer form")[0].reset();
 $("#timer #scramble").text("<%= @scramble %>");

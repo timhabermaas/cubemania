@@ -17,6 +17,9 @@ class TimesController < ApplicationController
     @single = current_user.singles.build(params[:single].merge!(:puzzle_id => @puzzle.id))
     if @single.save
       fetch_records
+      flash[:notice] = "You set a new average of 12 record with #{@single.time}" if @records[12].try(:has_single?, @single)
+      flash[:notice] = "You set a new average of 5 record with #{@single.time}" if @records[5].try(:has_single?, @single)
+      flash[:notice] = "You set a single record with #{@single.time}" if @records[1].try(:has_single?, @single)
       respond_to do |format|
         format.html { redirect_to puzzle_times_path(@puzzle) }
         format.js

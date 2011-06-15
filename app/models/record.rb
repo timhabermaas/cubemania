@@ -16,6 +16,10 @@ class Record < ActiveRecord::Base
     Single.find(single_ids.split(';'))
   end
 
+  def has_single?(single)
+    single_ids.split(';').first == single.id.to_s
+  end
+
   class << self
     def calculate_for!(user_id, puzzle_id, format)
       best = nil
