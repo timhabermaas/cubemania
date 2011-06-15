@@ -4,9 +4,7 @@ class Puzzle < ActiveRecord::Base
   belongs_to :kind
   has_many :competitions, :dependent => :destroy
   has_many :matches, :dependent => :destroy
-
   has_many :singles, :dependent => :destroy
-
   has_many :records, :order => :time, :include => :user, :conditions => { 'users.ignored' => false }, :dependent => :destroy do
     def amount(n)
       where(:amount => n)

@@ -1,6 +1,6 @@
 class Record < ActiveRecord::Base
-  belongs_to :user
   belongs_to :puzzle
+  belongs_to :user
 
   validates_presence_of :user_id, :puzzle_id, :time, :amount, :single_ids
   validates_uniqueness_of :user_id, :scope => [:puzzle_id, :amount]
