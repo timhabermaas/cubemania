@@ -17,6 +17,7 @@ class RollingAverage
   end
 
   def <<(single)
+    @average = nil
     @singles << single
 
     @dnfs += 1 if single.dnf?
@@ -35,12 +36,16 @@ class RollingAverage
 
   # consider caching the result (clear cache in <<)
   def average
-    return nil if @dnfs > 1 || @singles.size < @size || (@singles.size == 1 and @dnfs == 1)
-    times = @singles.reject { |s| s.dnf? }.collect { |s| s.time }
-    best = times.min
-    worst = @singles.select { |s| s.dnf? }.first.try(:time) || times.max
+    @average ||=
+      if @dnfs > 1 || @singles.size < @size || (@singles.size == 1 and @dnfs == 1)
+        nil
+      else
+        times = @singles.reject { |s| s.dnf? }.collect { |s| s.time }
+        best = times.min
+        worst = @singles.select { |s| s.dnf? }.first.try(:time) || times.max
 
-    (@sum - best - worst) / (@singles.size - 2)
+        (@sum - best - worst) / (@singles.size - 2)
+      end
   end
   alias_method :time, :average
 end

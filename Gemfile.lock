@@ -75,7 +75,11 @@ GEM
     coffee-script-source (1.1.1)
     configuration (1.2.0)
     culerity (0.2.15)
+    daemons (1.1.3)
     decent_exposure (1.0.1)
+    delayed_job (2.1.4)
+      activesupport (~> 3.0)
+      daemons
     diff-lcs (1.1.2)
     erubis (2.7.0)
     execjs (1.1.2)
@@ -238,6 +242,7 @@ DEPENDENCIES
   capybara
   coffee-script
   decent_exposure
+  delayed_job
   factory_girl_rails
   jquery-rails
   launchy

@@ -24,6 +24,8 @@ gem 'decent_exposure'
 
 gem 'omniauth'
 
+gem 'delayed_job'
+
 #gem 'newrelic_rpm'
 
 group :development, :test do

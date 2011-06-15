@@ -8,9 +8,9 @@ class Single < ActiveRecord::Base
   validates_inclusion_of :penalty, :in => %w( plus2 dnf ), :allow_nil => true
 
   before_validation :set_time, :if => :human_time_is_set
-  after_create :update_average_records_after_create, :update_single_record
-  after_destroy :update_single_record
-  after_update :update_single_record
+  after_create :update_records_after_create
+  after_destroy :update_records
+  after_update :update_records
 
   scope :not_dnf, where("penalty IS NULL OR penalty NOT LIKE 'dnf'")
 
@@ -48,8 +48,8 @@ class Single < ActiveRecord::Base
   end
 
 private
-  def update_average_records_after_create
-    [5, 12].each do |amount|
+  def update_records_after_create
+    [1, 5, 12].each do |amount|
       last_singles = Single.where(:user_id => user_id).where(:puzzle_id => puzzle_id).order("created_at desc").limit(amount)
 
       next if last_singles.size < amount
@@ -72,7 +72,21 @@ private
     end
   end
 
-  def update_single_record
+  def set_time
+    seconds, minutes, hours = @human_time.split(':').reverse
+    self.time = (hours.to_i * 3600 + minutes.to_i * 60) * 1000 + (seconds.to_f * 1000).to_i
+  end
+
+  def human_time_is_set
+    not @human_time.blank?
+  end
+
+  def update_records
+    # Record.calculate_for!(user_id, puzzle_id, 1) ?
+    Record.calculate_for!(user_id, puzzle_id, 5)
+    Record.calculate_for!(user_id, puzzle_id, 12)
+
+    # single record TODO put in Record.calculate_for!
     single_record = Record.where(:puzzle_id => puzzle_id, :user_id => user_id, :amount => 1).first
     # actually we don't need to set a new record if the destroyed single is a dnf, but since we use this method for destroying and updating, we can't ignore it
     if single_record.nil?
@@ -91,15 +105,5 @@ private
         end
       end
     end
-
-  end
-
-  def set_time
-    seconds, minutes, hours = @human_time.split(':').reverse
-    self.time = (hours.to_i * 3600 + minutes.to_i * 60) * 1000 + (seconds.to_f * 1000).to_i
-  end
-
-  def human_time_is_set
-    not @human_time.blank?
   end
 end

@@ -21,4 +21,32 @@ class Record < ActiveRecord::Base
     self.singles = [single]
     save
   end
+
+  class << self
+    def calculate_for!(user_id, puzzle_id, format)
+      ra = RollingAverage.new(format)
+      current_record = Record.where(:user_id => user_id, :puzzle_id => puzzle_id, :amount => format).first
+      best = nil
+      best_singles = nil
+      Single.where(:user_id => user_id).where(:puzzle_id => puzzle_id).find_each do |single|
+        ra << single
+        if best.nil? or (ra.average and ra.average < best)
+          best = ra.average
+          best_singles = ra.singles
+        end
+      end
+      if best
+        if current_record
+          current_record.update_attributes(:time => best, :singles => best_singles)
+        else
+          Record.create!(:user_id => user_id, :puzzle_id => puzzle_id, :amount => format, :time => time, :singles => best_singles)
+        end
+      else
+        if current_record
+          current_record.destroy
+        end
+      end
+    end
+    handle_asynchronously :calculate_for!
+  end
 end

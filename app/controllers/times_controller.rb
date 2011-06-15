@@ -32,7 +32,6 @@ class TimesController < ApplicationController
     @puzzle = Puzzle.find params[:puzzle_id]
     @single = current_user.singles.find params[:id]
     @single.toggle_dnf!
-    current_user.update_records_for!(@puzzle.id, 5, 12)
     @records = current_user.records.for(@puzzle.id, 1, 5, 12)
     respond_to do |format|
       format.html { redirect_to puzzle_times_path(@puzzle) }
@@ -44,7 +43,6 @@ class TimesController < ApplicationController
     @puzzle = Puzzle.find params[:puzzle_id]
     @single = current_user.singles.find params[:id]
     @single.toggle_plus2!
-    current_user.update_records_for!(@puzzle.id, 5, 12)
     @records = current_user.records.for(@puzzle.id, 1, 5, 12)
     respond_to do |format|
       format.html { redirect_to puzzle_times_path(@puzzle) }
@@ -56,7 +54,6 @@ class TimesController < ApplicationController
     @puzzle = Puzzle.find params[:puzzle_id]
     @single = current_user.singles.find params[:id]
     @single.destroy
-    current_user.update_records_for!(@puzzle.id, 5, 12)
     @records = current_user.records.for(@puzzle.id, 1, 5, 12)
     respond_to do |format|
       format.html { redirect_to puzzle_times_path(@puzzle) }

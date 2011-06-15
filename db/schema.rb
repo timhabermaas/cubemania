@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110610104558) do
+ActiveRecord::Schema.define(:version => 20110614221719) do
 
   create_table "comments", :force => true do |t|
     t.text     "content",    :null => false
@@ -36,6 +36,21 @@ ActiveRecord::Schema.define(:version => 20110610104558) do
 
   add_index "competitions", ["puzzle_id", "sticky", "averages_count", "created_at"], :name => "index_competitions_on_p_id_and_sticky_and_a_count_and_c_at"
 
+  create_table "delayed_jobs", :force => true do |t|
+    t.integer  "priority",   :default => 0
+    t.integer  "attempts",   :default => 0
+    t.text     "handler"
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
+
   create_table "items", :force => true do |t|
     t.string  "name",        :limit => 64,                      :null => false
     t.string  "description",                                    :null => false
@@ -52,6 +67,17 @@ ActiveRecord::Schema.define(:version => 20110610104558) do
     t.string   "image_content_type"
     t.integer  "image_file_size"
     t.datetime "image_updated_at"
+  end
+
+  create_table "matches", :force => true do |t|
+    t.integer  "user_id",                                :null => false
+    t.integer  "opponent_id",                            :null => false
+    t.integer  "puzzle_id",                              :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "status",          :default => "pending", :null => false
+    t.integer  "user_points"
+    t.integer  "opponent_points"
   end
 
   create_table "posts", :force => true do |t|
@@ -83,33 +109,31 @@ ActiveRecord::Schema.define(:version => 20110610104558) do
   add_index "puzzles", ["kind_id", "name"], :name => "index_puzzles_on_kind_id_and_name", :unique => true
 
   create_table "records", :force => true do |t|
-    t.integer  "time",                       :null => false
-    t.integer  "puzzle_id",                  :null => false
-    t.integer  "user_id",                    :null => false
-    t.string   "single_ids", :default => "", :null => false
+    t.integer  "time",                                      :null => false
+    t.integer  "puzzle_id",                                 :null => false
+    t.integer  "user_id",                                   :null => false
+    t.string   "single_ids", :limit => 256, :default => "", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "amount",     :default => 5,  :null => false
-  end
-
-  create_table "schema_info", :id => false, :force => true do |t|
-    t.integer "version"
+    t.integer  "amount",                    :default => 5,  :null => false
   end
 
   create_table "scrambles", :force => true do |t|
-    t.string   "scramble",       :limit => 1024, :null => false
-    t.integer  "position",                       :null => false
-    t.integer  "competition_id",                 :null => false
+    t.string   "scramble",       :limit => 1024,                            :null => false
+    t.integer  "position",                                                  :null => false
     t.datetime "created_at"
+    t.integer  "matchable_id",                   :default => 0,             :null => false
+    t.string   "matchable_type",                 :default => "Competition", :null => false
   end
 
-  add_index "scrambles", ["competition_id", "created_at", "position"], :name => "index_scrambles_on_competition_id_and_created_at_and_position"
+  add_index "scrambles", ["matchable_id", "matchable_type", "created_at", "position"], :name => "index_scrambles_on_matchable_and_created_at_and_position"
 
   create_table "shouts", :force => true do |t|
-    t.string   "content",        :null => false
-    t.integer  "competition_id", :null => false
+    t.string   "content",                                   :null => false
     t.integer  "user_id"
     t.datetime "created_at"
+    t.integer  "matchable_id",   :default => 0,             :null => false
+    t.string   "matchable_type", :default => "Competition", :null => false
   end
 
   create_table "singles", :force => true do |t|
@@ -122,13 +146,9 @@ ActiveRecord::Schema.define(:version => 20110610104558) do
     t.string   "penalty",    :limit => 8
   end
 
-  add_index "singles", ["created_at", "time"], :name => "index_clocks_on_competition_id_and_created_at_and_type_and_time"
-  add_index "singles", ["puzzle_id", "time"], :name => "index_clocks_on_puzzle_id_and_record_and_type_and_time"
-  add_index "singles", ["user_id", "puzzle_id", "created_at"], :name => "index_clocks_on_user_id_and_puzzle_id_and_type_and_created_at"
-
   create_table "users", :force => true do |t|
     t.string   "name",               :limit => 32,                      :null => false
-    t.string   "email",              :limit => 64
+    t.string   "email",              :limit => 64,                      :null => false
     t.string   "salt",               :limit => 8,                       :null => false
     t.string   "encrypted_password",                                    :null => false
     t.datetime "created_at"
@@ -137,6 +157,7 @@ ActiveRecord::Schema.define(:version => 20110610104558) do
     t.boolean  "sponsor",                           :default => false,  :null => false
     t.string   "time_zone",          :limit => 100, :default => "UTC"
     t.boolean  "ignored",                           :default => false,  :null => false
+    t.integer  "points",                            :default => 1000,   :null => false
     t.datetime "updated_at"
     t.boolean  "wants_emails",                      :default => false,  :null => false
     t.integer  "singles_count",                     :default => 0,      :null => false
