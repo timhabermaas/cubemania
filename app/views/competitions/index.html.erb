@@ -18,8 +18,8 @@
   <p>
     The next <%= repeat %> iteration starts at
     <strong><%=dt Time.now.utc.send("end_of_#{nominalize_repeat}").in_time_zone %></strong> your local time.
-  <%- end -%>
   </p>
+  <%- end -%>
   <p class="<%= 'highlight' if repeat? :once %>">
     <strong>One-Time</strong> competitions never end.
   </p>
