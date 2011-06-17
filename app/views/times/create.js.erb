@@ -1,6 +1,6 @@
 if ($("#notice").length > 0) {
   <% unless flash[:notice].nil? %>
-    $("#notice").replace_with("<%= escape_javascript(render 'layouts/notice') %>");
+    $("#notice").replace_with("<%=j render 'layouts/notice' %>");
     <% flash.discard %>
   <% else %>
     $("#notice").slideUp("normal", function() {
@@ -9,14 +9,14 @@ if ($("#notice").length > 0) {
   <% end %>
 } else {
   <% unless flash[:notice].nil? %>
-    $("#subnavigation").after("<%= escape_javascript(render 'layouts/notice') %>");
+    $("#subnavigation").after("<%=j render 'layouts/notice' %>");
     <% flash.discard %>
   <% end %>
 }
-$("#singles").prepend($("<%= escape_javascript(render(:partial => 'single', :object => @single)) %>").fadeIn('slow'));
+$("#singles").prepend($("<%=j render :partial =>'single', :object => @single %>").fadeIn('slow'));
 $("#timer form")[0].reset();
 $("#timer #scramble").text("<%= @scramble %>");
 $("#timer form #single_scramble").val("<%= @scramble %>");
-$("#statistics").replaceWith("<%= escape_javascript(render(:partial => 'statistics')) %>");
+$("#statistics").replaceWith("<%=j render 'statistics' %>");
 chart.series[0].addPoint(<%= @single.time %>);
 updateStatistics();
