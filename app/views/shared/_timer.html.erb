@@ -1,4 +1,4 @@
-<div id="timer">
+<div id="timer" data-user-id="<%= current_user.id %>" data-name="<%= current_user.name %>" data-puzzle-id="<%= params[:puzzle_id] %>">
   <strong id="scramble"><%= @scramble %></strong>
   <time id="current_time"><%= Single.new.human_time %></time>
   <%= form_tag puzzle_times_path(params[:puzzle_id]), :remote => true do %>

@@ -1,5 +1,5 @@
 <%= render :partial => 'shared/timer' %>
-<ul id="singles" data-id="<%= current_user.id %>" data-name="<%= current_user.name %>" data-puzzle="<%= params[:puzzle_id] %>">
+<ul id="singles">
   <%= render :partial => 'single', :collection => @singles %>
   <%= will_paginate @singles %>
 </ul>
