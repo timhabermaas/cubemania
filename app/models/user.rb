@@ -51,7 +51,7 @@ class User < ActiveRecord::Base
 
   after_save :flush_passwords
 
-  def self.find_by_name_and_password(name, password)
+  def self.authorize(name, password)
     user = find_by_name name
     user if user and user.encrypted_password == ENCRYPT.hexdigest(password + user.salt)
   end

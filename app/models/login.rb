@@ -5,7 +5,7 @@ class Login
   attr_accessor :name, :password
 
   def validate
-    user = User.find_by_name_and_password name, password
+    user = User.authorize name, password
     errors.add :password, 'does not match name' if user.nil?
     self.password = nil
     user
