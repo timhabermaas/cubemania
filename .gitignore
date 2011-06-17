@@ -8,3 +8,4 @@ bin
 .DS_Store
 config/database.yml
 public/assets
+public/system

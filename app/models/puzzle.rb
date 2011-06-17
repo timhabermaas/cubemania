@@ -11,10 +11,7 @@ class Puzzle < ActiveRecord::Base
     end
   end
 
-  has_attached_file :image, :path => 'public/assets/:class/:id/:style/:basename.:extension',
-                            :url => '/assets/:class/:id/:style/:basename.:extension',
-                            :styles => { :combined => '' },
-                            :processors => [:combined]
+  has_attached_file :image, :styles => { :combined => '' }, :processors => [:combined]
   #attr_protected :image_file_name, :image_content_type, :image_size
 
   validates_presence_of :name, :image, :attempt_count, :countdown, :kind_id
