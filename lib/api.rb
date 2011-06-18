@@ -27,8 +27,8 @@ class CubemaniaAPI < Grape::API
     user.singles.for params[:puzzle_id]
   end
 
-  get '/puzzles/:puzzle_id/scrambles/(:num)' do
-    num = params[:num].to_i || 10
+  get '/puzzles/:puzzle_id/scrambles/:num' do
+    num = params[:num].to_i > 200 ? 200 : params[:num].to_i
     puzzle = Puzzle.find params[:puzzle_id]
     (1..num).to_a.map { puzzle.scramble }
   end
