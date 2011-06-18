@@ -4,8 +4,12 @@ rescue # if there's no database yet, it shouldn't crash creating one
   DEFAULT_PUZZLE = 1
 end
 
+require 'api'
+
 Cubemania::Application.routes.draw do
   root :to => 'homes#show'
+
+  match '/api/*other' => CubemaniaAPI
 
   resources :posts do
     resources :comments
@@ -55,6 +59,4 @@ Cubemania::Application.routes.draw do
   resource :login
   match 'logout' => 'logins#destroy', :as => 'logout'
   match 'register' => 'users#new', :as => 'register'
-
-  #map.connect '*path', :controller => 'errors', :action => 'not_found'
 end

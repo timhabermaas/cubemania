@@ -26,6 +26,8 @@ gem 'omniauth'
 
 gem 'delayed_job'
 
+gem 'grape'
+
 #gem 'newrelic_rpm'
 
 group :development, :test do
