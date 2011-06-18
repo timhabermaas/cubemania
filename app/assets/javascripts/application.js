@@ -8,4 +8,5 @@
 //= require jquery_ujs
 //= require highcharts
 //= require jquery.tokeninput
+//= require jquery.jgrowl
 //= require_tree .

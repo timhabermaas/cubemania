@@ -69,4 +69,9 @@ function calculateDst() {
   }
 }
 
+$(document).ajaxComplete(function(e, request, options) {
+  message = request.getResponseHeader('X-Message');
+  if (message) $.jGrowl(message, { life: 5000 });
+});
+
 document.cookie = 'tz_offset=' + ((new Date()).getTimezoneOffset() + calculateDst() * 60);

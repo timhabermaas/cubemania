@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base
   include Authentication
 
+  after_filter :flash_to_headers
+
   login :except => [:index, :show]
 
   load_and_authorize_resource
@@ -29,5 +31,11 @@ private
 
   def store_return_to
     store_location params[:return_to] unless params[:return_to].nil?
+  end
+
+  def flash_to_headers
+    return unless request.xhr?
+    response.headers['X-Message'] = flash[:notice] unless flash[:notice].blank?
+    flash.discard
   end
 end
