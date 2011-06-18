@@ -153,6 +153,12 @@ class User < ActiveRecord::Base
     super(options)
   end
 
+  def to_xml(options = {})
+    options ||= {}
+    options[:except] = (options[:except] || []) + [:encrypted_password, :salt, :ignored, :email, :created_at, :role, :sponsor, :wants_emails]
+    super(options)
+  end
+
   private
     def flush_passwords
       @password = @password_confirmation = nil
