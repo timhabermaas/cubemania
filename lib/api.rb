@@ -4,8 +4,12 @@ class CubemaniaAPI < Grape::API
 
   helpers do
     def current_user
-      credentials = Rack::Auth::Basic::Request.new(request.env).credentials
-      @current_user ||= User.authorize(*credentials)
+      auth = Rack::Auth::Basic::Request.new(request.env)
+      if auth.provided? && auth.basic? && auth.credentials
+        @current_user ||= User.authorize(*auth.credentials)
+      else
+        nil
+      end
     end
 
     def authorize!
@@ -21,5 +25,9 @@ class CubemaniaAPI < Grape::API
     authorize!
     user = User.find params[:user_id]
     user.singles.for params[:puzzle_id]
+  end
+
+  get '/puzzles/:puzzle_id/scrambles' do
+
   end
 end
