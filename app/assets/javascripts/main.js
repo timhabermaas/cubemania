@@ -71,7 +71,13 @@ function calculateDst() {
 
 $(document).ajaxComplete(function(e, request, options) {
   message = request.getResponseHeader('X-Message');
-  if (message) $.jGrowl(message, { life: 5000 });
+  if (message) {
+    $.gritter.add({
+      title: 'Record',
+      text: message,
+      image: $("#subnavigation #puzzles .checked .puzzle").css("background-image").replace(/^url|[\(\)]/g, '')
+    });
+  }
 });
 
 document.cookie = 'tz_offset=' + ((new Date()).getTimezoneOffset() + calculateDst() * 60);

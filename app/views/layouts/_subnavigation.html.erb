@@ -7,7 +7,7 @@
         <% for puzzle in kind.puzzles -%>
           <li class="<%= 'checked' if current_puzzle? puzzle %>">
             <a href="<%= subnavigation_path(puzzle) %>">
-              <span class="puzzle" style="background-image: url(<%= puzzle.image.url %>)">
+              <span class="puzzle" style="background-image: url(<%= puzzle.image.url(:combined) %>)">
                 <%= "<span class='kind' style='background-image: url(#{kind.image.url})'></span>".html_safe if kind.image? %>
               </span>
               <span class="name"><%= puzzle.name %></span>
