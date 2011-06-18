@@ -1,6 +1,6 @@
 class CubemaniaAPI < Grape::API
   prefix 'api'
-  version '1'
+  version 'v1'
 
   helpers do
     def current_user
@@ -25,6 +25,11 @@ class CubemaniaAPI < Grape::API
     authorize!
     user = User.find params[:user_id]
     user.singles.for params[:puzzle_id]
+  end
+
+  post '/puzzles/:puzzle_id/singles' do
+    authorize!
+    current_user.singles.create! params[:single].merge(:puzzle_id => params[:puzzle_id])
   end
 
   get '/puzzles/:puzzle_id/scrambles/:num' do
