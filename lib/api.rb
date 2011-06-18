@@ -21,15 +21,17 @@ class CubemaniaAPI < Grape::API
     get { User.all }
   end
 
-  get '/users/:user_id/puzzles/:puzzle_id/singles' do
-    authorize!
-    user = User.find params[:user_id]
-    user.singles.for params[:puzzle_id]
-  end
+  namespace '/puzzles/:puzzle_id/singles' do
+    get do
+      authorize!
+      user = User.find params[:user_id]
+      user.singles.for params[:puzzle_id]
+    end
 
-  post '/puzzles/:puzzle_id/singles' do
-    authorize!
-    current_user.singles.create! params[:single].merge(:puzzle_id => params[:puzzle_id])
+    post do
+      authorize!
+      current_user.singles.create params[:single]
+    end
   end
 
   get '/puzzles/:puzzle_id/scrambles/:num' do
