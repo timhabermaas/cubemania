@@ -12,7 +12,7 @@ set :repository,  "git@timhabermaas.beanstalkapp.com:/cubemania.git"
 set :rails_env, "production"
 
 set :scm, :git
-set :branch, "rails31"
+set :branch, "rails3"
 set :scm_verbose, true
 
 ssh_options[:forward_agent] = true # use local ssh keys
