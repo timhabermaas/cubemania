@@ -8,7 +8,7 @@ class Ability
     elsif user.admin?
       can :manage, :all
     else
-      can :update, User do |u|
+      can [:destroy, :update], User do |u|
         u == user
       end
       can :create, Comment
