@@ -26,7 +26,7 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new params[:user]
+    @user = User.new params[:user], :as => :user
     if @user.save
       flash[:notice] = "Hello #{@user.name}, you are now registered"
       self.current_user = @user
