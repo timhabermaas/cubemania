@@ -70,12 +70,17 @@ function calculateDst() {
 }
 
 $(document).ajaxComplete(function(e, request, options) {
-  message = request.getResponseHeader('X-Message');
+  message = request.getResponseHeader("X-Message");
+  title = request.getResponseHeader("X-Title");
   if (message) {
-    $.gritter.add({
-      title: 'Record',
-      text: message,
-      image: $("#subnavigation #puzzles .checked .puzzle").css("background-image").replace(/^url|[\(\)]/g, '')
+    messages = message.split("@");
+    titles = title.split("@");
+    $.each(messages, function(index, item) {
+      $.gritter.add({
+        title: "Average of " + titles[index] + " Record",
+        text: "You set a time of " + formatTime(parseInt(item)) + "!",
+        image: $("#subnavigation #puzzles .checked .puzzle").css("background-image").replace(/^url|[\(\)]/g, '')
+      });
     });
   }
 });

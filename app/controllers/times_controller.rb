@@ -17,9 +17,7 @@ class TimesController < ApplicationController
     @single = current_user.singles.build(params[:single].merge!(:puzzle_id => @puzzle.id))
     if @single.save
       fetch_records
-      flash[:notice] = "You set a new average of 12 record with #{@single.time}" if @records[12].try(:has_single?, @single)
-      flash[:notice] = "You set a new average of 5 record with #{@single.time}" if @records[5].try(:has_single?, @single)
-      flash[:notice] = "You set a single record with #{@single.time}" if @records[1].try(:has_single?, @single)
+      set_flash
       respond_to do |format|
         format.html { redirect_to puzzle_times_path(@puzzle) }
         format.js
@@ -67,5 +65,19 @@ private
     @records = { 1 => current_user.records.for(params[:puzzle_id], 1),
                  5 => current_user.records.for(params[:puzzle_id], 5),
                 12 => current_user.records.for(params[:puzzle_id], 12) }
+  end
+
+  # TODO deliver only time and format (1, 5, 12). client should create a proper message out of it
+  def set_flash
+    times = []
+    formats = []
+    [1, 5, 12].each do |n|
+      if @records[n].try(:has_single?, @single)
+        times << @records[n].time
+        formats << n
+      end
+    end
+    flash[:notice] = times.join "@"
+    flash[:title] = formats.join "@"
   end
 end

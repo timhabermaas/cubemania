@@ -36,6 +36,7 @@ private
   def flash_to_headers
     return unless request.xhr?
     response.headers['X-Message'] = flash[:notice] unless flash[:notice].blank?
+    response.headers['X-Title'] = flash[:title] unless flash[:title].blank?
     flash.discard
   end
 end
