@@ -35,8 +35,9 @@ private
 
   def flash_to_headers
     return unless request.xhr?
-    response.headers['X-Message'] = flash[:notice] unless flash[:notice].blank?
-    response.headers['X-Title'] = flash[:title] unless flash[:title].blank?
+    response.headers['X-Message-Content'] = flash[:notice] unless flash[:notice].blank?
+    response.headers['X-Message-Title'] = flash[:title] unless flash[:title].blank?
+    response.headers['X-Message-Image'] = flash[:image] unless flash[:image].blank?
     flash.discard
   end
 end

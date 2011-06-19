@@ -14,16 +14,17 @@ tooltip = ->
   )
 
 $(document).ajaxComplete (e, request, options) ->
-  message = request.getResponseHeader("X-Message")
-  title = request.getResponseHeader("X-Title")
+  message = request.getResponseHeader("X-Message-Content")
+  title = request.getResponseHeader("X-Message-Title")
+  image = request.getResponseHeader("X-Message-Image")
   if message?
     messages = message.split("@")
     titles = title.split("@")
     $.each messages, (index, item) ->
       $.gritter.add {
-        title: if titles[index] is "1" then "Single Record" else "Average of #{titles[index]} Record"
-        text: "You set a time of #{formatTime(parseInt(item))}!<br /><a href='#'>Share on Twitter</a>"
-        image: $("#subnavigation #puzzles .checked .puzzle").css("background-image").replace(/^url|[\(\)]/g, '')
+        title: titles[index]
+        text: item
+        image: image
         time: 15000
       }
 

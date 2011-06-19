@@ -69,15 +69,16 @@ private
 
   # TODO deliver only time and format (1, 5, 12). client should create a proper message out of it
   def set_flash
-    times = []
-    formats = []
+    messages = []
+    titles = []
     [1, 5, 12].each do |n|
       if @records[n].try(:has_single?, @single)
-        times << @records[n].time
-        formats << n
+        messages << "You set a time of #{self.class.helpers.ft @records[n].time}<br /><a href='#'>Share on Twitter!</a>"
+        titles << (n == 1 ? "Single Record" : "Average of #{n} Record")
       end
     end
-    flash[:notice] = times.join "@"
-    flash[:title] = formats.join "@"
+    flash[:notice] = messages.join "@"
+    flash[:title] = titles.join "@"
+    flash[:image] = @puzzle.image.url(:combined)
   end
 end
