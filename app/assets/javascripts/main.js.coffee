@@ -26,7 +26,7 @@ root.formatTime = (time) ->
   else
     minutes = Math.floor(seconds / 60)
     seconds = seconds - minutes * 60
-    s = seconds < 10 ? "0" : ""
+    s = if seconds < 10 then "0" else ""
     "#{minutes}:#{s}#{seconds.toFixed(2)}min"
 
 Array.max = (array) ->
