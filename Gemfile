@@ -27,6 +27,8 @@ gem 'delayed_job'
 
 gem 'grape'
 
+gem 'thin'
+
 #gem 'newrelic_rpm'
 
 group :development, :test do
