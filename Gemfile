@@ -1,15 +1,17 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.1.0.rc4'
+gem 'rails', '3.1.0'
 
 # Bundle edge Rails instead:
 #gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'mysql'
 
-gem 'sass-rails', "~> 3.1.0.rc"
-gem 'coffee-script'
-gem 'uglifier'
+group :assets do
+  gem 'sass-rails', "  ~> 3.1.0"
+  gem 'coffee-rails', "~> 3.1.0"
+  gem 'uglifier'
+end
 
 gem 'jquery-rails'
 
@@ -17,12 +19,9 @@ gem 'sqlite3'
 
 gem 'paperclip', :git => 'git://github.com/thoughtbot/paperclip.git'
 gem 'RedCloth'
-gem 'will_paginate', :git => 'git://github.com/xspond/will_paginate.git', :branch => 'rails3-1'
+gem 'will_paginate'
 
 gem 'cancan'
-gem 'decent_exposure'
-
-gem 'omniauth'
 
 gem 'delayed_job'
 
@@ -31,14 +30,11 @@ gem 'grape'
 #gem 'newrelic_rpm'
 
 group :development, :test do
+  gem 'turn', :require => false
   gem 'autotest'
   gem 'rspec-rails'
   gem 'shoulda-matchers'
   gem 'capybara'
   gem 'launchy'
   gem 'factory_girl_rails'
-end
-
-group :production do
-  gem 'therubyracer' # for compiling CoffeeScript
 end
