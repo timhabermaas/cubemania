@@ -2,3 +2,9 @@
   width: $width;
   margin: 0 auto;
 }
+
+@mixin clear-fix {
+  content: "";
+  visibility: hidden;
+  clear: both;
+}

@@ -1,0 +1,32 @@
+nav.main {
+  border-top: 1px solid #df0;
+  background: image-url("navigation.gif") repeat-x;
+  overflow: hidden;
+  ul {
+    @include center(1000px);
+    li {
+      display: block;
+      float: left;
+      a {
+        display: block;
+        padding: 1em;
+        color: #4e4e4e;
+        text-transform: uppercase;
+      }
+    }
+    li.session {
+      float: right;
+    }
+    li a:hover, li.selected a {
+      color: #2f2f2f;
+      background: #df0 image-url("item.gif") repeat-x bottom;
+    }
+    li.session.selected a, li.session a:hover {
+      color: #df0;
+      background: none;
+    }
+  }
+}
+nav.main:after {
+  @include clear-fix;
+}

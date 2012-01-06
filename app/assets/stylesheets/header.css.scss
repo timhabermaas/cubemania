@@ -38,12 +38,11 @@ header.main {
   }
   cite:before {
     left: -2px;
-    top: -2px;
     background: image-url("open-quote.gif") no-repeat top left;
   }
   cite:after {
     right: -2px;
-    bottom: -4px;
+    bottom: -2px;
     background: image-url("close-quote.gif") no-repeat bottom right;
   }
 }
