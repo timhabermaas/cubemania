@@ -10,25 +10,8 @@
     <%= csrf_meta_tag %>
   </head>
   <body>
-    <header>
-      <h1>
-        <%= link_to "Cubemania", root_path %>
-      </h1>
-      <blockquote>
-        Save The World - Solve The Puzzle
-      </blockquote>
-      <nav class="main">
-        <ol>
-          <li class="selected"><%= link_to "Home" %></li>
-          <li><%= link_to "Timer" %></li>
-          <li><%= link_to "Competitions" %></li>
-          <li><%= link_to "Users" %></li>
-          <li><%= link_to "Records" %></li>
-          <li class="session"><%= link_to "Tim's Profile" %></li>
-          <li class="session"><%= link_to "Logout" %></li>
-        </ol>
-      </nav>
-    </header>
+    <%= render "layouts/header" %>
+    <%= render "layouts/navigation" %>
     <nav class="puzzles">
       <ul class="kinds">
         <li><a>Speed</a></li>
@@ -46,7 +29,6 @@
         Founded by Tim Habermaas, <a href="#">Patrick Stadler</a> and <a href="#">Simon Wacker</a>.
       </p>
     </footer>
-
 
     <script type="text/javascript">
       var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");

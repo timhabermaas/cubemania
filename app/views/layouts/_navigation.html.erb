@@ -1,16 +1,11 @@
-<div id="navigation">
-  <div class="center">
-    <ul>
-    <%- for item in navigation() -%>
-      <li class="<%= 'checked' if current_item? item %>"><%= link_to item.name, navigation_path(item), :title => item.description %></li>
-    <%- end -%>
-      <li id="login" class="<%= 'checked' if controller? :logins %>">
-        <%= link_to 'Login', login_path unless logged_in? %>
-        <%= link_to 'Logout', logout_path if logged_in? %>
-      </li>
-      <li id="profile" class="<%= 'checked' if logged_in? and current_page? current_user %>">
-        <%= link_to "#{current_user.name}'s Profile", current_user if logged_in? %>
-      </li>
-    </ul>
-  </div>
-</div>
+<nav class="main">
+  <ul>
+    <li class="selected"><%= link_to "Home" %></li>
+    <li><%= link_to "Timer" %></li>
+    <li><%= link_to "Competitions" %></li>
+    <li><%= link_to "Users" %></li>
+    <li><%= link_to "Records" %></li>
+    <li class="session"><%= link_to "Tim's Profile" %></li>
+    <li class="session"><%= link_to "Logout" %></li>
+  </ul>
+</nav>
