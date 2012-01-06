@@ -1,11 +1,14 @@
-.bundle
-.rspec
+/.bundle
+
+# Ignore the default SQLite database.
 db/*.sqlite3
-log/*.log
-tmp/**/*
-tmp
-bin
-.DS_Store
+
+# Ignore all logfiles and tempfiles.
+/log/*.log
+/tmp
+
+# Ignore compiled assets
+/public/assets
+
 config/database.yml
-public/assets
-public/system
+/public/system
