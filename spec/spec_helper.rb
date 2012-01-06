@@ -17,8 +17,6 @@ RSpec.configure do |config|
   # config.mock_with :rr
   config.mock_with :rspec
 
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
-
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, comment the following line or assign false
   # instead of true.
@@ -34,9 +32,7 @@ module DefaultUsers
     @default_user ||= Factory(:user, :password => 'something')
   end
 
-
   def default_moderator
     @default_moderator ||= Factory(:user, :password => 'something', :role => 'moderator')
   end
-
 end

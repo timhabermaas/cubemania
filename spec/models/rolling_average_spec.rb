@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe RollingAverage do
   it "should return nil for an invalid average" do

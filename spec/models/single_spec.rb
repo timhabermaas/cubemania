@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe Single do
   let(:single) { Factory.build(:single, :user => user, :puzzle => puzzle, :time => 20000) }

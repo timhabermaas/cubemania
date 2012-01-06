@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require "spec_helper"
 
 describe Login do
 
@@ -6,10 +6,10 @@ describe Login do
     user = Factory.create(:user, :name => 'Bob', :password => 'secret')
     Login.new(:name => 'Bob', :password => 'secret').validate.should == user
   end
-  
+
   it "should not authenticate with incorrect password" do
     user = Factory.create(:user, :name => 'Bob', :password => 'secret')
     Login.new(:name => 'Bob', :password => 'seCret').validate.should be_nil
   end
-  
+
 end

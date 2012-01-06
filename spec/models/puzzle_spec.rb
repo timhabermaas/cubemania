@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require "spec_helper"
 
 describe Puzzle, "scrambling length" do
   it "should give a 25 move scramble for a 3x3x3" do
