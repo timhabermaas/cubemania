@@ -6,28 +6,23 @@
   <p>
     <%= form.label :name %>
     <%= form.text_field :name %>
-    <%= form.error_message_on :name %>
   </p>
   <p>
     <%= form.label :description %>
     <%= form.text_area :description, :rows => 5 %>
-    <%= form.error_message_on :description %>
   </p>
   <p>
     <%= form.label :repeat %>
     <%= form.select :repeat, Competition::REPEATS.collect { |r| [r.titleize, r] }, :selected => repeat %>
-    <%= form.error_message_on :repeat %>
   </p>
   <p>
     <%= form.label :skill %>
     <%= form.select :skill, Competition::SKILLS.collect { |s| [s.titleize, s] } %>
-    <%= form.error_message_on :skill %>
   </p>
 <%- if admin? -%>
   <p>
     <%= form.label :sticky %>
     <%= form.check_box :sticky %>
-    <%= form.error_message_on :sticky %>
   </p>
 <%- end -%>
   <p>

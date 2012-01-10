@@ -2,37 +2,30 @@
   <p>
     <%= form.label :name %>
     <%= form.text_field :name %>
-    <%= form.error_message_on :name %>
   </p>
   <p>
     <%= form.label :kind %>
     <%= form.select :kind_id, Kind.all.collect{|k| [k.name, k.id]} %>
-    <%= form.error_message_on :kind_id %>
   </p>
   <p>
     <%= form.label :attempt_count %>
     <%= form.text_field :attempt_count %>
-    <%= form.error_message_on :attempt_count %>
   </p>
   <p>
     <%= form.label :scramble_length %>
     <%= form.text_field :scramble_length %>
-    <%= form.error_message_on :scramble_length %>
   </p>
   <p>
     <%= form.label :average_format, 'Format' %>
     <%= form.select :average_format, Puzzle::FORMATS.collect { |f| [f.titleize, f] } %>
-    <%= form.error_message_on :average_format %>
   </p>
   <p>
     <%= form.label :countdown %>
     <%= form.text_field :countdown %>
-    <%= form.error_message_on :countdown %>
   </p>
   <p>
     <%= form.label :image %>
     <%= form.file_field :image %>
-    <%= form.error_message_on :image %>
   </p>
   <p>
     <%= form.submit action_label %>

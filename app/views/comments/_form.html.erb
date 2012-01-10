@@ -1,7 +1,6 @@
 <%= form_for [@post, @comment ||= @post.comments.build], :remote => true, :before => "$('#comment_submit').attr('disabled', 'disabled')" do |form| %>
   <p>
     <%= form.text_area :content %>
-    <%= form.error_message_on :content %>
   </p>
   <p>
     <%= form.submit 'Respond' %>
