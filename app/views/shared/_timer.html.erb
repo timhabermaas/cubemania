@@ -3,6 +3,7 @@
   <time id="current_time"><%= Single.new.human_time %></time>
   <%= form_tag puzzle_times_path(params[:puzzle_id]), :remote => true do %>
     <p>
+      <%= label_tag "single_human_time", "Time" %>
       <%= text_field_tag 'single[human_time]', "" %>
     </p>
     <p>
