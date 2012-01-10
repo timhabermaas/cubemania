@@ -1,0 +1,17 @@
+footer {
+  background: #1E1E1E image-url("footer.gif") repeat-x;
+  color: #5C7DA0;
+  text-align: center;
+  p {
+    padding: 1em;
+  }
+  a {
+    color: #5C7DA0;
+    text-decoration: underline;
+  }
+  a:hover {
+    text-decoration: none;
+    color: #2F2F2F;
+    background-color: #5C7DA0;
+  }
+}
