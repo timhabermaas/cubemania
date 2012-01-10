@@ -48,6 +48,5 @@ class Record < ActiveRecord::Base
         current_record.try(:destroy)
       end
     end
-    handle_asynchronously :calculate_for!
   end
 end

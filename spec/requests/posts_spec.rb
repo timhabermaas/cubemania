@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe "Posts" do
   before(:each) do
-    login
+    login :as => "admin"
   end
 
   describe "GET /posts" do
