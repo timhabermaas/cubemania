@@ -22,6 +22,8 @@ gem 'paperclip', :git => 'git://github.com/thoughtbot/paperclip.git'
 gem 'RedCloth'
 gem 'will_paginate'
 
+gem 'scrambler'
+
 gem 'cancan'
 
 gem 'delayed_job'
