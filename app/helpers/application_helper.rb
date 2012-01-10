@@ -1,6 +1,6 @@
 module ApplicationHelper
   def page_title
-    current_item.nil? ? params[:controller].titleize : current_item.name
+    current_item.nil? ? params[:controller].titleize : current_item[:name]
   end
 
   def action_label(new = 'Create', edit = 'Update')
@@ -22,7 +22,14 @@ module ApplicationHelper
   end
 
   def navigation
-    @navigation ||= Item.all
+    @navigation ||=
+      [
+        { :name => "Home", :path => root_path, :controller => "homes" },
+        { :name => "Timer", :path => puzzle_times_path(Puzzle.default), :controller => "times" },
+        { :name => "Competitions", :path => puzzle_competitions_path(Puzzle.default), :controller => "competitions" },
+        { :name => "Users", :path => users_path, :controller => "users" },
+        { :name => "Records", :path => puzzle_records_path(Puzzle.default), :controller => "records" } # TODO add default flag to puzzle
+      ]
   end
 
   def current_item
@@ -58,7 +65,7 @@ module ApplicationHelper
   end
 
   def current_item?(item)
-    controller? item.controller.to_sym
+    controller? item[:controller].to_sym
   end
 
   def current_puzzle?(puzzle)

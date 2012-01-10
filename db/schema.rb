@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,7 +11,25 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110614221719) do
+ActiveRecord::Schema.define(:version => 20120110203201) do
+
+  create_table "clocks", :force => true do |t|
+    t.integer  "time",                             :null => false
+    t.integer  "puzzle_id",                        :null => false
+    t.datetime "created_at"
+    t.integer  "user_id",    :default => 0,        :null => false
+    t.string   "scramble"
+    t.string   "type",       :default => "Single", :null => false
+    t.integer  "average_id"
+    t.boolean  "record",     :default => false,    :null => false
+    t.boolean  "dnf",        :default => false,    :null => false
+    t.string   "comment"
+    t.integer  "position"
+  end
+
+  add_index "clocks", ["puzzle_id", "record", "type", "time"], :name => "index_clocks_on_puzzle_id_and_record_and_type_and_time"
+  add_index "clocks", ["user_id", "puzzle_id", "type", "created_at"], :name => "index_clocks_on_user_id_and_puzzle_id_and_type_and_created_at"
+  add_index "clocks", ["user_id", "record", "type"], :name => "index_clocks_on_user_id_and_record_and_type"
 
   create_table "comments", :force => true do |t|
     t.text     "content",    :null => false
@@ -50,16 +69,6 @@ ActiveRecord::Schema.define(:version => 20110614221719) do
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
-
-  create_table "items", :force => true do |t|
-    t.string  "name",        :limit => 64,                      :null => false
-    t.string  "description",                                    :null => false
-    t.integer "position",                  :default => 0,       :null => false
-    t.string  "controller",  :limit => 64, :default => "homes", :null => false
-    t.string  "action",      :limit => 32, :default => "index", :null => false
-  end
-
-  add_index "items", ["position"], :name => "index_items_on_position"
 
   create_table "kinds", :force => true do |t|
     t.string   "name",               :limit => 64, :null => false
