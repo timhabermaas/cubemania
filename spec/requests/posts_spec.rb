@@ -1,18 +1,13 @@
 require "spec_helper"
 
 describe "Posts" do
-  include DefaultUsers
-
   before(:each) do
-    visit login_path
-    fill_in 'Name', :with => default_admin.name
-    fill_in 'Password', :with => "something"
-    click_button 'Login'
+    login
   end
 
   describe "GET /posts" do
     it "display posts" do
-      Factory(:post, :title => "Yeah")
+      create(:post, :title => "Yeah")
       visit posts_path
       page.should have_content("Yeah")
     end
