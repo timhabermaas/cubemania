@@ -33,24 +33,26 @@ class Puzzle < ActiveRecord::Base
 
   def scramble
     case name.downcase
+      when '2x2x2'
+        Scrambler::TwoByTwo.new.scramble(scramble_length)
       when '3x3x3'
-        Scrambler::ThreeByThree.new.scramble(attempt_count)
+        Scrambler::ThreeByThree.new.scramble(scramble_length)
       when '4x4x4'
-        Scrambler::FourByFour.new.scramble(attempt_count)
+        Scrambler::FourByFour.new.scramble(scramble_length)
       when '5x5x5'
-        Scrambler::FiveByFive.new.scramble(attempt_count)
+        Scrambler::FiveByFive.new.scramble(scramble_length)
       when '6x6x6'
-        Scrambler::SixBySix.new.scramble(attempt_count)
+        Scrambler::SixBySix.new.scramble(scramble_length)
       when '7x7x7'
-        Scrambler::SevenBySeven.new.scramble(attempt_count)
+        Scrambler::SevenBySeven.new.scramble(scramble_length)
       when 'megaminx'
-        Scrambler::Megaminx.new.scramble(attempt_count)
+        Scrambler::Megaminx.new.scramble(scramble_length)
       when 'pyraminx'
-        Scrambler::Pyraminx.new.scramble(attempt_count)
+        Scrambler::Pyraminx.new.scramble(scramble_length)
       when 'square-1'
-      	Scrambler::Square1.new.scramble(attempt_count)
+      	Scrambler::Square1.new.scramble(scramble_length)
       when 'clock'
-      	Scrambler::Clock.new.scramble(attempt_count)
+      	Scrambler::Clock.new.scramble(scramble_length)
     	else
     	  ''
     end.html_safe
