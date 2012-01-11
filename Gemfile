@@ -16,7 +16,8 @@ end
 
 gem 'jquery-rails'
 
-gem 'sqlite3'
+gem 'pg', :group => :production
+gem 'sqlite3', :group => :development
 
 gem 'paperclip', :git => 'git://github.com/thoughtbot/paperclip.git'
 gem 'RedCloth'

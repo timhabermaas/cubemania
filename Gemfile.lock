@@ -102,6 +102,7 @@ GEM
     multi_xml (0.4.1)
     mysql (2.8.1)
     nokogiri (1.5.0)
+    pg (0.12.2)
     polyglot (0.3.3)
     rack (1.4.0)
     rack-cache (1.1)
@@ -199,6 +200,7 @@ DEPENDENCIES
   launchy
   mysql
   paperclip!
+  pg
   rails (= 3.2.0.rc2)
   rspec-rails
   sass-rails (~> 3.2.3)
