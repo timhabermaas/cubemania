@@ -4,4 +4,5 @@
 
 require File.expand_path('../config/application', __FILE__)
 
+include Rake::DSL
 Cubemania::Application.load_tasks
