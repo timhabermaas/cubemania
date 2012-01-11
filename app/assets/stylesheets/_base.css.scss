@@ -7,3 +7,12 @@ body {
 a {
   text-decoration: none;
 }
+
+::selection {
+  color: #2f2f2f;
+  background: #df0;
+}
+::-moz-selection {
+  color: #2f2f2f;
+  background: #df0;
+}
