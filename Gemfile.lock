@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/thoughtbot/paperclip.git
-  revision: c34a9fb69f9cac531f7865ed0ed6c743c15c9dcc
+  revision: a83de65ca790f311a7ed70638f497ae258f36952
   specs:
     paperclip (2.4.5)
       activerecord (>= 2.3.0)
@@ -54,7 +54,7 @@ GEM
       rack-test (>= 0.5.4)
       selenium-webdriver (~> 2.0)
       xpath (~> 0.1.4)
-    childprocess (0.2.5)
+    childprocess (0.2.8)
       ffi (~> 1.0.6)
     cocaine (0.2.1)
     coffee-rails (3.2.1)
@@ -100,6 +100,7 @@ GEM
     mime-types (1.17.2)
     multi_json (1.0.4)
     multi_xml (0.4.1)
+    newrelic_rpm (3.3.1)
     nokogiri (1.5.0)
     pg (0.12.2)
     polyglot (0.3.3)
@@ -197,6 +198,7 @@ DEPENDENCIES
   grape
   jquery-rails
   launchy
+  newrelic_rpm
   paperclip!
   pg
   rails (= 3.2.0.rc2)

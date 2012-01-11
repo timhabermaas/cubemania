@@ -31,7 +31,7 @@ gem 'grape'
 
 gem 'thin'
 
-#gem 'newrelic_rpm'
+gem 'newrelic_rpm'
 
 group :development, :test do
   gem 'turn', :require => false
