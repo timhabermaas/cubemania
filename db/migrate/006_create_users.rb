@@ -7,11 +7,9 @@ class CreateUsers < ActiveRecord::Migration
       t.string :encrypted_password, :limit => 16, :null => false
       t.datetime :created_at
     end
-    add_index :users, [:name, :encrypted_password], :unique => true
   end
 
   def self.down
     drop_table :users
-    remove_index :users, [:name, :encrypted_password]
   end
 end

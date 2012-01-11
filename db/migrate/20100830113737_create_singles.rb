@@ -27,8 +27,6 @@ class CreateSingles < ActiveRecord::Migration
     ActiveRecord::Base.record_timestamps = true
 
     execute "DELETE FROM clocks WHERE type='Average'"
-    remove_index :clocks, :name => "index_clocks_on_match_id_and_user_id"
-    remove_index :clocks, :name => "index_clocks_on_user_id_and_record_and_type"
     remove_column :clocks, :type
     remove_column :clocks, :average_id
     remove_column :clocks, :record
