@@ -13,15 +13,7 @@
     <%= render "layouts/header" %>
     <%= render "layouts/nav" %>
     <%= render "layouts/notice" %>
-    <nav class="puzzles">
-      <ul class="kinds">
-        <li><a>Speed</a></li>
-        <li><a>Blindfolded</a></li>
-        <li><a>One-handed</a></li>
-        <li><a>Feet</a></li>
-      </ul>
-    </nav>
-    <!-- subnavigation -->
+    <%= render "layouts/subnavigation" if controller? :times, :records, :competitions %>
     <section id="content">
       <%= yield %>
     </section>

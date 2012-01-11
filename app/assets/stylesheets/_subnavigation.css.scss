@@ -1,0 +1,82 @@
+#subnavigation {
+  border-top: 1px solid #000;
+  li {
+    display: block;
+    float: left;
+    text-align: center;
+  }
+  li a {
+    display: block;
+    color: #fff;
+  }
+  li a:hover, li.checked a {
+    background: none;
+    color: #df0;
+  }
+}
+
+#puzzles {
+  overflow: hidden;
+  height: 68px;
+  padding: 1em 0;
+  background: #5d5d5d image-url("puzzles.gif") repeat-x;
+  ul {
+    position: relative;
+  }
+  li ul {
+    position: static;
+    display: -moz-inline-box;
+    display: inline-block;
+    zoom: 1;
+    *display: inline;
+    width: auto;
+    margin: 0 auto;
+    margin-bottom: 1em;
+  }
+  li li {
+    margin-right: 1em;
+  }
+  li li, x:-moz-any-link {
+    display: table; /* Firefox */
+  }
+  span {
+    display: block;
+  }
+  .puzzle {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto;
+    background-position: center left;
+    background-repeat: no-repeat;
+  }
+  .kind {
+    width: 50px;
+    height: 50px;
+    background-position: bottom right;
+    background-repeat: no-repeat;
+  }
+  a:hover, a:active {
+    width: auto; /* Opera */
+  }
+  a:hover .puzzle, li.checked a .puzzle {
+    background-position: center right;
+  }
+  .name {
+    padding-top: 0.25em;
+    font-size: 0.75em;
+    text-transform: capitalize;
+    white-space: nowrap;
+  }
+}
+
+#kinds {
+  clear: both;
+  height: 1em;
+  padding: 0.3750em 0;
+  padding-top: 0.5em;
+  background: #1c1c1c image-url("kinds.gif") bottom repeat-x;
+  li a {
+    font-size: 0.75em;
+    text-transform: uppercase;
+  }
+}

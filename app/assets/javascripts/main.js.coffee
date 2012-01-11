@@ -28,6 +28,11 @@ $(document).ajaxComplete (e, request, options) ->
         time: 15000
       }
 
+checkKind = (index) ->
+  $("#kinds ul").children("li").removeClass("checked").eq(index).addClass("checked")
+  $("#puzzles > ul").animate({left: -100 * index + "%"}, "normal")
+
+
 calculateDst = ->
   rightNow = new Date()
   jan1 = new Date(rightNow.getFullYear(), 0, 1, 0, 0, 0, 0)
