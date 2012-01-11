@@ -1,0 +1,17 @@
+@import "reset";
+@import "base";
+@import "header";
+@import "navigation";
+@import "subnavigation";
+@import "notice";
+@import "content";
+@import "footer";
+
+<% Puzzle.all.uniq(&:css_class).each do |puzzle| %>
+  #puzzles .puzzle.<%= puzzle.css_class %> {
+    background-position: <%= puzzle.css_position * -100 %>px 0px;
+  }
+  #puzzles a:hover .puzzle.<%= puzzle.css_class %>, #puzzles li.checked a .puzzle.<%= puzzle.css_class %> {
+    background-position: <%= puzzle.css_position * -100 - 50 %>px 0px;
+  }
+<% end %>

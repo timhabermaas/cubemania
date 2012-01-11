@@ -11,17 +11,13 @@ class Puzzle < ActiveRecord::Base
     end
   end
 
-  has_attached_file :image, :styles => { :combined => '' }, :processors => [:combined]
-  #attr_protected :image_file_name, :image_content_type, :image_size
-
-  validates_presence_of :name, :image, :attempt_count, :countdown, :kind_id
+  validates_presence_of :name, :attempt_count, :countdown, :kind_id
   validates_length_of :name, :maximum => 64
   validates_numericality_of :scramble_length, :greater_than_or_equal_to => 0, :less_than_or_equal_to => 255, :only_integer => true
   validates_numericality_of :countdown, :greater_than_or_equal_to => 0, :only_integer => true
   validates_numericality_of :attempt_count, :greater_than => 0, :only_integer => true
   validates_inclusion_of :average_format, :in => FORMATS
-  validates_attachment_size :image, :less_than => 20.kilobytes, :unless => Proc.new { |puzzle| puzzle.image_file_name.blank? }
-  validates_attachment_content_type :image, :content_type => ['image/png', 'image/gif'], :unless => Proc.new { |puzzle| puzzle.image_file_name.blank? }
+  validates_format_of :css_class, :with => /^[a-zA-Z]{1,20}$/
 
   def self.default
     where('puzzles.name' => '3x3x3').joins(:kind).where('kinds.name' => 'speed').first.try(:id) || 1

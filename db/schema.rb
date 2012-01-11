@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120110203201) do
+ActiveRecord::Schema.define(:version => 20120111221855) do
 
   create_table "comments", :force => true do |t|
     t.text     "content",    :null => false
@@ -66,18 +66,16 @@ ActiveRecord::Schema.define(:version => 20120110203201) do
   end
 
   create_table "puzzles", :force => true do |t|
-    t.string   "name",               :limit => 64,                        :null => false
-    t.integer  "kind_id",                                                 :null => false
-    t.integer  "scramble_length"
-    t.integer  "record_id"
-    t.integer  "attempt_count",                    :default => 1,         :null => false
-    t.integer  "countdown",                        :default => 15,        :null => false
-    t.string   "average_format",                   :default => "average", :null => false
-    t.string   "image_file_name"
-    t.string   "image_content_type"
-    t.integer  "image_file_size"
-    t.datetime "image_updated_at"
-    t.integer  "version",                          :default => 0
+    t.string  "name",            :limit => 64,                        :null => false
+    t.integer "kind_id",                                              :null => false
+    t.integer "scramble_length"
+    t.integer "record_id"
+    t.integer "attempt_count",                 :default => 1,         :null => false
+    t.integer "countdown",                     :default => 15,        :null => false
+    t.string  "average_format",                :default => "average", :null => false
+    t.integer "version",                       :default => 0
+    t.string  "css_class",                     :default => "dummy",   :null => false
+    t.integer "css_position",                  :default => 0,         :null => false
   end
 
   create_table "records", :force => true do |t|

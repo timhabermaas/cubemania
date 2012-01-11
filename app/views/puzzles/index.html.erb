@@ -4,13 +4,11 @@
   <tr>
     <th>Name</th>
     <th>Kind</th>
-    <th>Image</th>
   </tr>
 <%- for puzzle in @puzzles -%>
   <tr>
     <td><%=h puzzle.name %></td>
     <td><%=h puzzle.kind.name %>
-    <td><%= image_tag puzzle.image.url(:combined) unless puzzle.image_file_name.nil? %></td>
     <td><%= link_to 'Edit', edit_puzzle_path(puzzle) %></td>
     <td><%= link_to 'Destroy', puzzle_path(puzzle), :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
