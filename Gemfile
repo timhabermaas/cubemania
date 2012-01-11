@@ -17,7 +17,6 @@ gem 'jquery-rails'
 gem 'pg', :group => :production
 gem 'sqlite3', :group => [:development, :test]
 
-gem 'paperclip', :git => 'git://github.com/thoughtbot/paperclip.git'
 gem 'RedCloth'
 gem 'will_paginate'
 

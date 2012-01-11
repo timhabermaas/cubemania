@@ -8,7 +8,7 @@
           <li class="<%= 'checked' if current_puzzle? puzzle %>">
             <a href="<%= subnavigation_path(puzzle) %>">
               <span class="puzzle <%= puzzle.css_class %>">
-                <%= "<span class='kind' style='background-image: url(#{kind.image.url})'></span>".html_safe if kind.image? %>
+                <span class="kind <%= kind.css_class %>"></span>
               </span>
               <span class="name"><%= puzzle.name %></span>
             </a>

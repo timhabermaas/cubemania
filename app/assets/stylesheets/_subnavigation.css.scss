@@ -46,13 +46,17 @@
     width: 50px;
     height: 50px;
     margin: 0 auto;
-    background-repeat: no-repeat;
+    position: relative;
     background-image: image-url("puzzles.png");
+    background-repeat: no-repeat;
   }
   .kind {
-    width: 50px;
-    height: 50px;
-    background-position: bottom right;
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    background-image: image-url("kinds.png");
     background-repeat: no-repeat;
   }
   a:hover, a:active {

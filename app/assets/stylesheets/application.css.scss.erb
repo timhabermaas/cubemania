@@ -7,11 +7,19 @@
 @import "content";
 @import "footer";
 
+#puzzles {
 <% Puzzle.all.uniq(&:css_class).each do |puzzle| %>
-  #puzzles .puzzle.<%= puzzle.css_class %> {
+  .puzzle.<%= puzzle.css_class %> {
     background-position: <%= puzzle.css_position * -100 %>px 0px;
   }
-  #puzzles a:hover .puzzle.<%= puzzle.css_class %>, #puzzles li.checked a .puzzle.<%= puzzle.css_class %> {
+  a:hover .puzzle.<%= puzzle.css_class %>, li.checked a .puzzle.<%= puzzle.css_class %> {
     background-position: <%= puzzle.css_position * -100 - 50 %>px 0px;
   }
 <% end %>
+
+<% Kind.all.each do |kind| %>
+  .kind.<%= kind.css_class %> {
+    background-position: <%= kind.css_position * -25 %>px 0px;
+  }
+<% end %>
+}

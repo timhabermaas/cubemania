@@ -4,10 +4,15 @@
     <%= form.text_field :name %>
   </p>
   <p>
-    <%= form.label :image %>
-    <%= form.file_field :image %>
+    <%= form.label :css_class %>
+    <%= form.text_field :css_class %>
+  </p>
+  <p>
+    <%= form.label :css_position %>
+    <%= form.text_field :css_position %>
   </p>
   <p>
     <%= form.submit action_label %>
   </p>
+  <%= image_tag "kinds.png" %>
 <% end %>
