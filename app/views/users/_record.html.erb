@@ -1,7 +1,7 @@
 <tr class="record <%= cycle 'even', 'odd' %>">
   <th>
-    <div class="puzzle" style="background-image: url(<%= puzzle.image.url %>)">
-      <%= raw "<div class='kind' style='background-image: url(#{puzzle.kind.image.url})'></div>" unless puzzle.kind.image_file_name.nil? %>
+    <div class="puzzle <%= puzzle.css_class %>">
+      <div class="kind <%= puzzle.kind.css_class %>"></div>
     </div>
   </th>
   <td>
