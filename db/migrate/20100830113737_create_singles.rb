@@ -28,6 +28,14 @@ class CreateSingles < ActiveRecord::Migration
     remove_column :clocks, :position
     remove_column :clocks, :competition_id
     rename_table :clocks, :singles
+    add_column :singles, :updated_at, :datetime
+
+    Single.reset_column_information
+    ActiveRecord::Base.record_timestamps = false
+    say_with_time "setting singles#updated_at to singles#created_at" do
+      Single.update_all("updated_at = created_at")
+    end
+    ActiveRecord::Base.record_timestamps = true
   end
 
   def self.down
