@@ -1,4 +1,4 @@
-<%- unless @announcement.nil? -%>
+<% unless @announcement.nil? %>
 <p class="announcement">
   <strong><%= @announcement.title %></strong>
   <span><%= m(@announcement.content)[3..-5] %></span>
@@ -6,7 +6,7 @@
     <%= pluralize @announcement.comments.size, 'Comment' %> &raquo;
   <% end %>
 </p>
-<%- end -%>
+<% end %>
 <p class="introduction">
   You want to keep track of your times, compare yourself with others and become the best?
   If so, Cubemania is the right place for you: <%= link_to 'Register', register_path %> now and get the record!
