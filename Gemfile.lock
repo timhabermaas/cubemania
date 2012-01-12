@@ -89,6 +89,7 @@ GEM
     mime-types (1.17.2)
     multi_json (1.0.4)
     multi_xml (0.4.1)
+    mysql (2.8.1)
     newrelic_rpm (3.3.1)
     nokogiri (1.5.0)
     pg (0.12.2)
@@ -188,6 +189,7 @@ DEPENDENCIES
   grape
   jquery-rails
   launchy
+  mysql
   newrelic_rpm
   pg
   rails (= 3.1.3)

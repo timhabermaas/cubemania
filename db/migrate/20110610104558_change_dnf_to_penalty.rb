@@ -2,7 +2,9 @@ class ChangeDnfToPenalty < ActiveRecord::Migration
   def up
     add_column :singles, :penalty, :string, :limit => 8
     Single.reset_column_information
-    Single.where(:dnf => true).update_all(:penalty => "dnf")
+    say_with_time "set penalty to 'dnf' for all dnfs" do
+      Single.where(:dnf => true).update_all(:penalty => "dnf")
+    end
     remove_column :singles, :dnf
   end
 

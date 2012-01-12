@@ -12,6 +12,8 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
+gem 'mysql'
+
 gem 'jquery-rails'
 
 gem 'pg', :group => :production
