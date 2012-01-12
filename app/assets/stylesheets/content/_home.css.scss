@@ -1,0 +1,40 @@
+p.announcement {
+  background-color: #517397;
+  padding: 0.5em;
+  margin-bottom: 2em;
+  strong {
+    font-weight: bold;
+  }
+}
+
+p.introduction {
+  font-size: 1.25em;
+  text-align: center;
+  margin-bottom: 1.5em;
+}
+
+#features {
+  text-align: center;
+  img {
+    border: 2px solid #517397;
+    margin-bottom: 0.25em;
+  }
+  a:hover {
+    background: none;
+    img {
+      border: 2px solid $yellow;
+    }
+  }
+  li {
+    float: left;
+    display: block;
+    width: 468px;
+    margin-bottom: 1.5em;
+  }
+  li.odd {
+    margin-right: 32px;
+  }
+}
+#features:after {
+  @include clear-fix;
+}

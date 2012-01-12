@@ -5,11 +5,11 @@ footer {
   p {
     padding: 1em;
   }
-  a {
+  a, a:visited {
     color: #5C7DA0;
     text-decoration: underline;
   }
-  a:hover {
+  a:hover, a:active {
     text-decoration: none;
     color: #2F2F2F;
     background-color: #5C7DA0;

@@ -1,5 +1,5 @@
 nav.main {
-  border-top: 1px solid #df0;
+  border-top: 1px solid $yellow;
   background: image-url("navigation.gif") repeat-x;
   overflow: hidden;
   ul {
@@ -19,10 +19,10 @@ nav.main {
     }
     li a:hover, li.selected a {
       color: #2f2f2f;
-      background: #df0 image-url("item.gif") repeat-x bottom;
+      background: $yellow image-url("item.gif") repeat-x bottom;
     }
     li.session.selected a, li.session a:hover {
-      color: #df0;
+      color: $yellow;
       background: none;
     }
   }

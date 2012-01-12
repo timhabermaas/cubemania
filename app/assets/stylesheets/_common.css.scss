@@ -1,3 +1,6 @@
+$width: 1000px;
+$yellow: #df0;
+
 @mixin center($width) {
   width: $width;
   margin: 0 auto;
@@ -6,5 +9,6 @@
 @mixin clear-fix {
   content: "";
   visibility: hidden;
+  display: block;
   clear: both;
 }
