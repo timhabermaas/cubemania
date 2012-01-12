@@ -21,6 +21,7 @@ gem 'sqlite3', :group => [:development, :test]
 
 gem 'RedCloth'
 gem 'will_paginate'
+gem 'formtastic'
 
 gem 'scrambler'
 

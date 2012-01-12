@@ -6,11 +6,40 @@
     padding: 32px 16px;
   }
 
+  h1 {
+    font-size: 2em;
+    margin-bottom: 1em;
+    color: $yellow;
+  }
+  h2 {
+    font-size: 1.25em;
+    margin-bottom: 0.25em;
+    padding-bottom: 0.25em;
+    color: $yellow;
+  }
+  h3 {
+    font-size: 1.25em;
+    margin: 1em 0;
+    color: $yellow;
+  }
+  h4 {
+    font-size: 1.125em;
+    margin-bottom: 1em;
+    color: $yellow;
+  }
   strong {
     font-weight: bold;
   }
   small {
     color: #B5CADF;
+    font-size: 0.75em;
+  }
+
+  .text p, .text blockquote, .text ul, .text ol {
+    margin-bottom: 1em;
+  }
+  .text a {
+    text-decoration: underline;
   }
 
   .challenge, .suggestion {
@@ -39,4 +68,5 @@
   @import "content/home";
   @import "content/users";
   @import "content/records";
+  @import "content/posts";
 }

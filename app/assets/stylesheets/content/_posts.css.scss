@@ -1,0 +1,22 @@
+article.post {
+  .text {
+    margin-bottom: 1em;
+  }
+  .meta {
+    text-align: center;
+    margin: 2em 0;
+  }
+}
+#comments {
+  background-color: #517397;
+  padding: 1em;
+  .comment cite {
+    display: block;
+    font-size: 1.25em;
+    margin-bottom: 0.125em;
+  }
+  .comment small {
+    display: block;
+    margin-bottom: 0.25em;
+  }
+}

@@ -1,8 +1,8 @@
-<%= div_for post do %>
+<article class="post">
   <h1><%= link_to_unless_current post.title.titleize, post %></h1>
-  <div class="text">
+  <section class="text">
     <%=m post.content %>
-  </div>
+  </section>
   <div class="meta">
     <%=d post.created_at %> &middot;
     <cite><%= post.user.nil? ? 'Unknown' : link_to(post.user.name, post.user) %></cite>
@@ -12,4 +12,4 @@
     <% end %>
     <% end %>
   </div>
-<% end %>
+</article>

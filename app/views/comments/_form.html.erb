@@ -1,8 +1,4 @@
-<%= form_for [@post, @comment ||= @post.comments.build], :remote => true, :before => "$('#comment_submit').attr('disabled', 'disabled')" do |form| %>
-  <p>
-    <%= form.text_area :content %>
-  </p>
-  <p>
-    <%= form.submit 'Respond' %>
-  </p>
+<%= semantic_form_for [@post, @comment ||= @post.comments.build], :remote => true do |form| %>
+  <%= form.input :content %>
+  <%= form.commit_button 'Respond', :button_html => { :disable_with => 'Wait...' } %>
 <% end %>
