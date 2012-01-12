@@ -2,6 +2,9 @@
   <p>
     <%= text_field_tag :q, params[:q] %>
   </p>
+  <p>
+    <%= submit_tag "Search" %>
+  </p>
 <% end %>
 <ul id="users">
 <% for user in @users %>

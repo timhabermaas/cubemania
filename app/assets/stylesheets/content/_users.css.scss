@@ -1,0 +1,11 @@
+#users {
+  font-size: 1.5em;
+  text-align: center;
+  li {
+    display: inline;
+    margin-right: 16px;
+    small {
+      font-size: 40%;
+    }
+  }
+}

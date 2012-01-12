@@ -6,5 +6,21 @@
     padding: 32px 16px;
   }
 
-  @import "content/home"
+  .pagination {
+    margin-top: 2em;
+    text-align: center;
+    span, a, em {
+      padding: 0.25em;
+    }
+    .disabled {
+      color: #83A1BF;
+    }
+    .current {
+      background-color: $yellow;
+      color: #2f2f2f;
+    }
+  }
+
+  @import "content/home";
+  @import "content/users";
 }
