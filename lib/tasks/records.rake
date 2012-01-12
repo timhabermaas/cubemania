@@ -5,7 +5,7 @@ namespace :records do
     puzzles = Puzzle.all
     count = User.count
     User.find_each do |user|
-      p "User #{user.id}/#{count}: #{user.name}"
+      puts "User #{user.id}/#{count}: #{user.name}"
       puzzles.each do |puzzle|
         single = user.singles.best(puzzle.id)
         if single
@@ -28,7 +28,7 @@ namespace :records do
     puzzles = Puzzle.all
     count = User.count
     User.find_each do |user|
-      p "User #{user.id}/#{count}: #{user.name}"
+      puts "User #{user.id}/#{count}: #{user.name}"
       puzzles.each do |puzzle|
         Record.calculate_for! user.id, puzzle.id, 5
       end
@@ -40,7 +40,7 @@ namespace :records do
     puzzles = Puzzle.all
     count = User.count
     User.find_each do |user|
-      p "User #{user.id}/#{count}: #{user.name}"
+      puts "User #{user.id}/#{count}: #{user.name}"
       puzzles.each do |puzzle|
         Record.calculate_for! user.id, puzzle.id, 12
       end
