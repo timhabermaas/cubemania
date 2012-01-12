@@ -1,7 +1,7 @@
 <p class="tabs">
-  <%= link_to 'Single', puzzle_records_path(:type => 'single', :puzzle_id => params[:puzzle_id]), :class => ('checked' if type? :single) %>
-  <%= link_to 'Average of 5', puzzle_records_path(:type => 'avg5', :puzzle_id => params[:puzzle_id]), :class => ('checked' if type? :avg5) %>
-  <%= link_to 'Average of 12', puzzle_records_path(:type => 'avg12', :puzzle_id => params[:puzzle_id]), :class => ('checked' if type? :avg12) %>
+  <%= link_to 'Single', puzzle_records_path(:type => 'single', :puzzle_id => params[:puzzle_id]), :class => ('selected' if type? :single) %>
+  <%= link_to 'Average of 5', puzzle_records_path(:type => 'avg5', :puzzle_id => params[:puzzle_id]), :class => ('selected' if type? :avg5) %>
+  <%= link_to 'Average of 12', puzzle_records_path(:type => 'avg12', :puzzle_id => params[:puzzle_id]), :class => ('selected' if type? :avg12) %>
 </p>
 
 <% if @records.empty? %>
