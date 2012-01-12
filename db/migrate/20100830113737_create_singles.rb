@@ -17,12 +17,7 @@ class CreateSingles < ActiveRecord::Migration
 
     ActiveRecord::Base.record_timestamps = false
     say_with_time "Rescuing average comments over to singles" do
-      Clock.where(:record => true).where(:type => "Average").find_each do |average|
-        singles = Clock.where(:average_id => average.id).where(:type => "Single").order(:position).all
-        singles.each do |single|
-          single.update_attribute :comment, average.comment
-        end
-      end
+      Clock.find_by_sql("UPDATE clocks AS c1 INNER JOIN clocks AS c2 ON c1.average_id=c2.id SET c1.comment = c2.comment WHERE c1.type='Single'")
     end
     ActiveRecord::Base.record_timestamps = true
 
