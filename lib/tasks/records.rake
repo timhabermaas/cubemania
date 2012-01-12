@@ -20,6 +20,7 @@ namespace :records do
         end
       end
     end
+    ActiveRecord::Base.record_timestamps = true
   end
 
   desc 'Recalculate all average of 5 records'
