@@ -5,7 +5,7 @@ header.main {
   background: image-url("header.gif") repeat-x;
 
   div.center {
-    @include center(968px);
+    @include center($width - 32px);
     padding-left: 16px;
     padding-right: 16px;
   }

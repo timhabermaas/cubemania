@@ -3,7 +3,7 @@ nav.main {
   background: image-url("navigation.gif") repeat-x;
   overflow: hidden;
   ul {
-    @include center(1000px);
+    @include center($width);
     li {
       display: block;
       float: left;

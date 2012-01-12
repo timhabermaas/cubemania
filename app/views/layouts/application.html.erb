@@ -15,7 +15,9 @@
     <%= render "layouts/notice" %>
     <%= render "layouts/subnavigation" if controller? :times, :records, :competitions %>
     <section id="content">
-      <%= yield %>
+      <div class="center">
+        <%= yield %>
+      </div>
     </section>
     <%= render "layouts/footer" %>
 
