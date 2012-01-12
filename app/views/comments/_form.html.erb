@@ -1,4 +1,8 @@
 <%= semantic_form_for [@post, @comment ||= @post.comments.build], :remote => true do |form| %>
-  <%= form.input :content %>
-  <%= form.commit_button 'Respond', :button_html => { :disable_with => 'Wait...' } %>
+  <%= form.inputs do %>
+    <%= form.input :content %>
+  <% end %>
+  <%= form.buttons do %>
+    <%= form.commit_button 'Respond', :button_html => { :disable_with => 'Wait...' } %>
+  <% end %>
 <% end %>
