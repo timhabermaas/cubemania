@@ -79,6 +79,5 @@ private
     end
     flash[:notice] = messages.join "@"
     flash[:title] = titles.join "@"
-    flash[:image] = @puzzle.image.url(:combined)
   end
 end
