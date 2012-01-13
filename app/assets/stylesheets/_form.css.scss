@@ -1,0 +1,24 @@
+form {
+  li {
+    margin-bottom: 0.5em;
+  }
+  label {
+    display: block;
+    float: left;
+    width: 10em;
+  }
+  input, textarea {
+    padding: 1px;
+    vertical-align: top;
+  }
+  input[type=text], input[type=password], input[type=email], textarea {
+    width: 15em;
+  }
+  input[type=submit] {
+    display: block;
+    margin-left: 160px;
+  }
+  .bot {
+    display: none;
+  }
+}

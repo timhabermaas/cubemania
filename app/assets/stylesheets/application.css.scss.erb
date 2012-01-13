@@ -7,6 +7,7 @@
 @import "notice";
 @import "content";
 @import "footer";
+@import "form";
 
 <% Puzzle.all.uniq(&:css_class).each do |puzzle| %>
   #puzzles .puzzle.<%= puzzle.css_class %> {

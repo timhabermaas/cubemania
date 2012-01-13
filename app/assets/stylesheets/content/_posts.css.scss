@@ -19,4 +19,17 @@ article.post {
     display: block;
     margin-bottom: 0.25em;
   }
+  form li {
+    margin-bottom: 1em;
+  }
+  label {
+    display: none;
+  }
+  textarea {
+    width: 99%;
+    height: 8em;
+  }
+  input[type=submit] {
+    margin-left: 0;
+  }
 }

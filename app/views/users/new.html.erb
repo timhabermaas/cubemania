@@ -1,31 +1,18 @@
 <h1>Register</h1>
 
-<%= form_for @user ||= User.new do |form| %>
-  <p>
-    <%= form.label :name %>
-    <%= form.text_field :name %>
-  </p>
-  <p>
-    <%= form.label :email %>
-    <%= form.text_field :email %>
-  </p>
-  <p class="bot">
-    <%= form.label :bot_email %>
-    <%= form.text_field :bot_email %>
-  </p>
-  <p>
-    <%= form.label :time_zone, 'Time Zone' %>
-    <%= @user.time_zone = Time.zone.name if @user.new_record?; form.time_zone_select :time_zone, ActiveSupport::TimeZone.all %>
-  </p>
-  <p>
-    <%= form.label :password %>
-    <%= form.password_field :password %>
-  </p>
-  <p>
-    <%= form.label :password_confirmation, 'Confirmation' %>
-    <%= form.password_field :password_confirmation %>
-  </p>
-  <p>
-    <%= form.submit action_label('Register') %>
-  </p>
+<%= semantic_form_for @user ||= User.new do |form| %>
+  <%= form.inputs do %>
+    <%= form.input :name %>
+    <%= form.input :email %>
+    <div class="bot">
+      <%= form.input :bot_email %>
+    </div>
+    <%= form.input :wca, :label => "WCA ID (optional)" %>
+    <%= form.input :time_zone, :as => :time_zone %>
+    <%= form.input :password %>
+    <%= form.input :password_confirmation, :label => 'Confirmation' %>
+  <% end %>
+  <%= form.buttons do %>
+    <%= form.commit_button action_label('Register') %>
+  <% end %>
 <% end %>
