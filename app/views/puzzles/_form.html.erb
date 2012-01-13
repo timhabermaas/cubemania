@@ -1,38 +1,16 @@
-<%= form_for @puzzle, :html => { :multipart => true } do |form| %>
-  <p>
-    <%= form.label :name %>
-    <%= form.text_field :name %>
-  </p>
-  <p>
-    <%= form.label :kind %>
-    <%= form.select :kind_id, Kind.all.collect{|k| [k.name, k.id]} %>
-  </p>
-  <p>
-    <%= form.label :attempt_count %>
-    <%= form.text_field :attempt_count %>
-  </p>
-  <p>
-    <%= form.label :scramble_length %>
-    <%= form.text_field :scramble_length %>
-  </p>
-  <p>
-    <%= form.label :average_format, 'Format' %>
-    <%= form.select :average_format, Puzzle::FORMATS.collect { |f| [f.titleize, f] } %>
-  </p>
-  <p>
-    <%= form.label :countdown %>
-    <%= form.text_field :countdown %>
-  </p>
-  <p>
-    <%= form.label :css_class %>
-    <%= form.text_field :css_class %>
-  </p>
-  <p>
-    <%= form.label :css_position %>
-    <%= form.text_field :css_position %>
-  </p>
-  <p>
-    <%= form.submit action_label %>
-  </p>
+<%= semantic_form_for @puzzle do |form| %>
+  <%= form.inputs do %>
+    <%= form.input :name %>
+    <%= form.input :kind, :include_blank => false %>
+    <%= form.input :attempt_count %>
+    <%= form.input :scramble_length %>
+    <%= form.input :average_format, :collection => Puzzle::FORMATS.collect { |f| [f.titleize, f] }, :include_blank => false %>
+    <%= form.input :countdown %>
+    <%= form.input :css_class %>
+    <%= form.input :css_position %>
+  <% end %>
+  <%= form.buttons do %>
+    <%= form.commit_button action_label %>
+  <% end %>
   <%= image_tag "puzzles.png" %>
 <% end %>
