@@ -65,7 +65,7 @@ module ApplicationHelper
   end
 
   def current_puzzle?(puzzle)
-    if params[:puzzle_id] == puzzle.id.to_s
+    if [puzzle.id.to_s, puzzle.slug].include? params[:puzzle_id]
       params[:kind_id] = puzzle.kind_id.to_s
       true
     else
