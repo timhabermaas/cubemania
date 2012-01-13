@@ -9,17 +9,15 @@
 @import "footer";
 @import "form";
 
-<% Puzzle.all.uniq(&:css_class).each do |puzzle| %>
-  #puzzles .puzzle.<%= puzzle.css_class %> {
-    background-position: <%= puzzle.css_position * -100 %>px 0px;
+/* lol */
+<% 20.times do |i| %>
+  #puzzles .puzzle.pos<%= i %> {
+    background-position: <%= i * -50 %>px -50px;
   }
-  #records .puzzle.<%= puzzle.css_class %>, #puzzles a:hover .puzzle.<%= puzzle.css_class %>, #puzzles li.checked a .puzzle.<%= puzzle.css_class %> {
-    background-position: <%= puzzle.css_position * -100 - 50 %>px 0px;
+  #records .puzzle.pos<%= i %>, #puzzles a:hover .puzzle.pos<%= i %>, #puzzles li.checked a .puzzle.pos<%= i %> {
+    background-position: <%= i * -50 %>px 0px;
   }
-<% end %>
-
-<% Kind.all.each do |kind| %>
-  .kind.<%= kind.css_class %> {
-    background-position: <%= kind.css_position * -25 %>px 0px;
+  .kind.pos<%= i %> {
+    background-position: <%= i * -25 %>px 0px;
   }
 <% end %>

@@ -7,8 +7,8 @@
         <% for puzzle in kind.puzzles %>
           <li class="<%= 'checked' if current_puzzle? puzzle %>">
             <a href="<%= subnavigation_path(puzzle) %>">
-              <span class="puzzle <%= puzzle.css_class %>">
-                <span class="kind <%= kind.css_class %>"></span>
+              <span class="puzzle pos<%= puzzle.css_position %>">
+                <span class="kind pos<%= kind.css_position %>"></span>
               </span>
               <span class="name"><%= puzzle.name %></span>
             </a>
