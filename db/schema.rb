@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120111230201) do
+ActiveRecord::Schema.define(:version => 20120113005123) do
 
   create_table "comments", :force => true do |t|
     t.text     "content",    :null => false
@@ -52,6 +52,7 @@ ActiveRecord::Schema.define(:version => 20120111230201) do
     t.string  "name",         :limit => 64,                      :null => false
     t.string  "css_class",                  :default => "dummy", :null => false
     t.integer "css_position",               :default => 0,       :null => false
+    t.string  "short_name"
   end
 
   create_table "posts", :force => true do |t|
@@ -74,7 +75,10 @@ ActiveRecord::Schema.define(:version => 20120111230201) do
     t.integer "version",                       :default => 0
     t.string  "css_class",                     :default => "dummy",   :null => false
     t.integer "css_position",                  :default => 0,         :null => false
+    t.string  "slug"
   end
+
+  add_index "puzzles", ["slug"], :name => "index_puzzles_on_slug", :unique => true
 
   create_table "records", :force => true do |t|
     t.integer  "time",                                      :null => false

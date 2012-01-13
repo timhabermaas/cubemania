@@ -1,18 +1,12 @@
-<%= form_for @kind, :html => { :multipart => true } do |form| %>
-  <p>
-    <%= form.label :name %>
-    <%= form.text_field :name %>
-  </p>
-  <p>
-    <%= form.label :css_class %>
-    <%= form.text_field :css_class %>
-  </p>
-  <p>
-    <%= form.label :css_position %>
-    <%= form.text_field :css_position %>
-  </p>
-  <p>
-    <%= form.submit action_label %>
-  </p>
+<%= semantic_form_for @kind do |form| %>
+  <%= form.inputs do %>
+    <%= form.input :name %>
+    <%= form.input :short_name %>
+    <%= form.input :css_class %>
+    <%= form.input :css_position %>
+  <% end %>
+  <%= form.buttons do %>
+    <%= form.commit_button action_label %>
+  <% end %>
   <%= image_tag "kinds.png" %>
 <% end %>

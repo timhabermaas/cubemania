@@ -1,4 +1,8 @@
 class Puzzle < ActiveRecord::Base
+  extend FriendlyId
+
+  friendly_id :combined, use: :slugged
+
   FORMATS = %w{average mean best_of}
 
   belongs_to :kind
@@ -18,13 +22,18 @@ class Puzzle < ActiveRecord::Base
   validates_numericality_of :attempt_count, :greater_than => 0, :only_integer => true
   validates_inclusion_of :average_format, :in => FORMATS
   validates_format_of :css_class, :with => /^[a-zA-Z]{1,20}$/
+  validates_uniqueness_of :name, :scope => :kind_id
 
   def self.default
-    where('puzzles.name' => '3x3x3').joins(:kind).where('kinds.name' => 'speed').first.try(:id) || 1
+    where('puzzles.name' => '3x3x3').joins(:kind).where('kinds.name' => 'speed').first
   end
 
   def scrambles
     (1..attempt_count).map { |i| scramble }
+  end
+
+  def combined
+    "#{name} #{kind.short_name}"
   end
 
   def scramble

@@ -22,6 +22,7 @@ gem 'sqlite3', :group => [:development, :test]
 gem 'RedCloth'
 gem 'will_paginate'
 gem 'formtastic'
+gem 'friendly_id', '~> 4.0.0'
 
 gem 'scrambler'
 

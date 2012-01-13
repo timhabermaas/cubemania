@@ -41,11 +41,7 @@ module ApplicationHelper
   end
 
   def subnavigation_path(puzzle)
-    if controller? :matches
-      url_for :puzzle_id => puzzle.id, :type => params[:type], :controller => params[:controller], :user_id => params[:user_id], :action => params[:action]
-    else
-      url_for :puzzle_id => puzzle.id, :type => params[:type], :controller => params[:controller]
-    end
+    url_for :puzzle_id => puzzle.slug, :type => params[:type], :controller => params[:controller]
   end
 
   def navigation_path(item)
