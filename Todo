@@ -5,6 +5,7 @@ Redesign:
   List of singles should have some kind of time stamp for client-side statistics (data-time)
   List of singles should contain the scramble (title attribute vs. data-scramble attribute)
   Import for cct session?
+  Rename "times" to "timer"
 Chart:
   Small chart for scrolling and zooming
   Threshold at where your best x averages lie below
