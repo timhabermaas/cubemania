@@ -21,7 +21,6 @@ class Puzzle < ActiveRecord::Base
   validates_numericality_of :countdown, :greater_than_or_equal_to => 0, :only_integer => true
   validates_numericality_of :attempt_count, :greater_than => 0, :only_integer => true
   validates_inclusion_of :average_format, :in => FORMATS
-  validates_format_of :css_class, :with => /^[a-zA-Z]{1,20}$/
   validates_uniqueness_of :name, :scope => :kind_id
 
   def self.default

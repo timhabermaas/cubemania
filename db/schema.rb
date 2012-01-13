@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120113005123) do
+ActiveRecord::Schema.define(:version => 20120113015402) do
 
   create_table "comments", :force => true do |t|
     t.text     "content",    :null => false
@@ -49,9 +49,8 @@ ActiveRecord::Schema.define(:version => 20120113005123) do
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "kinds", :force => true do |t|
-    t.string  "name",         :limit => 64,                      :null => false
-    t.string  "css_class",                  :default => "dummy", :null => false
-    t.integer "css_position",               :default => 0,       :null => false
+    t.string  "name",         :limit => 64,                :null => false
+    t.integer "css_position",               :default => 0, :null => false
     t.string  "short_name"
   end
 
@@ -73,7 +72,6 @@ ActiveRecord::Schema.define(:version => 20120113005123) do
     t.integer "countdown",                     :default => 15,        :null => false
     t.string  "average_format",                :default => "average", :null => false
     t.integer "version",                       :default => 0
-    t.string  "css_class",                     :default => "dummy",   :null => false
     t.integer "css_position",                  :default => 0,         :null => false
     t.string  "slug"
   end

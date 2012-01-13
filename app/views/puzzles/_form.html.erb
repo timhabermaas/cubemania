@@ -6,7 +6,6 @@
     <%= form.input :scramble_length %>
     <%= form.input :average_format, :collection => Puzzle::FORMATS.collect { |f| [f.titleize, f] }, :include_blank => false %>
     <%= form.input :countdown %>
-    <%= form.input :css_class %>
     <%= form.input :css_position %>
   <% end %>
   <%= form.buttons do %>
