@@ -5,7 +5,7 @@ module Capybara
       visit login_path
       fill_in "Name", :with => user.name
       fill_in "Password", :with => "secret"
-      click_on "Login"
+      click_button "Login"
       user
     end
   end
