@@ -1,8 +1,16 @@
 class Login
+  include ActiveModel::Conversion
   include ActiveModel::Naming
   include ActiveModel::Validations
 
   attr_accessor :name, :password
+
+  def initialize(attributes = nil)
+    if attributes
+      @name = attributes[:name]
+      @password = attributes[:password]
+    end
+  end
 
   def validate
     user = User.authorize name, password
@@ -11,10 +19,7 @@ class Login
     user
   end
 
-  def initialize(attributes = nil)
-    if attributes
-      @name = attributes[:name]
-      @password = attributes[:password]
-    end
+  def persisted?
+    false
   end
 end
