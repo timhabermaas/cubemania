@@ -1,9 +1,9 @@
 class Puzzle < ActiveRecord::Base
   extend FriendlyId
 
-  friendly_id :combined, use: :slugged
-
   FORMATS = %w{average mean best_of}
+
+  friendly_id :combined, :use => :slugged
 
   belongs_to :kind
   has_many :competitions, :dependent => :destroy

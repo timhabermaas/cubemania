@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120113015402) do
+ActiveRecord::Schema.define(:version => 20120116031332) do
 
   create_table "comments", :force => true do |t|
     t.text     "content",    :null => false
@@ -24,8 +24,8 @@ ActiveRecord::Schema.define(:version => 20120113015402) do
     t.string   "name",           :limit => 64,                     :null => false
     t.string   "description"
     t.integer  "user_id"
-    t.datetime "created_at",                                       :null => false
-    t.datetime "updated_at",                                       :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "puzzle_id",                    :default => 0,      :null => false
     t.string   "repeat",         :limit => 32, :default => "once", :null => false
     t.boolean  "sticky",                       :default => false,  :null => false
@@ -42,8 +42,8 @@ ActiveRecord::Schema.define(:version => 20120113015402) do
     t.datetime "locked_at"
     t.datetime "failed_at"
     t.string   "locked_by"
-    t.datetime "created_at",                :null => false
-    t.datetime "updated_at",                :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
@@ -58,8 +58,8 @@ ActiveRecord::Schema.define(:version => 20120113015402) do
     t.string   "title"
     t.text     "content"
     t.integer  "user_id"
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "comments_count", :default => 0, :null => false
   end
 
@@ -83,8 +83,8 @@ ActiveRecord::Schema.define(:version => 20120113015402) do
     t.integer  "puzzle_id",                                 :null => false
     t.integer  "user_id",                                   :null => false
     t.string   "single_ids", :limit => 256, :default => "", :null => false
-    t.datetime "created_at",                                :null => false
-    t.datetime "updated_at",                                :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "amount",                    :default => 5,  :null => false
   end
 
@@ -109,6 +109,7 @@ ActiveRecord::Schema.define(:version => 20120113015402) do
     t.integer  "user_id",                    :default => 0, :null => false
     t.string   "scramble",   :limit => 1024
     t.string   "comment"
+    t.datetime "updated_at"
     t.string   "penalty",    :limit => 8
   end
 
@@ -127,6 +128,9 @@ ActiveRecord::Schema.define(:version => 20120113015402) do
     t.datetime "updated_at"
     t.boolean  "wants_emails",                      :default => false,  :null => false
     t.integer  "singles_count",                     :default => 0,      :null => false
+    t.string   "slug"
   end
+
+  add_index "users", ["slug"], :name => "index_users_on_slug"
 
 end

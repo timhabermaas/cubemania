@@ -1,8 +1,12 @@
 require 'digest/sha2'
 
 class User < ActiveRecord::Base
+  extend FriendlyId
+
   ENCRYPT = Digest::SHA256
   ROLES = %w{user moderator admin}
+
+  friendly_id :name, :use => :slugged
 
   attr_reader :password
   attr_accessor :bot_email
