@@ -5,7 +5,7 @@ var justStopped = false;
 var timerEnabled = true;
 
 $(function() {
-  $("#timer #toggle").bind('click', function(e) {
+  $("#timer #toggle").bind('click', function(event) {
     $("#timer #new_single").toggle();
     $("#timer .time").toggle();
     if ($(this).text() === 'Set times manually') {
@@ -14,7 +14,7 @@ $(function() {
     } else {
       $(this).text('Set times manually');
     }
-    return e.preventDefault();
+    event.preventDefault();
   });
 
   $("textarea, input[type=text]").bind('focus', function() {
@@ -29,10 +29,10 @@ $(function() {
       if (justStopped) {
         justStopped = false;
       } else {
-        $("#timer time").removeClass("starting");
+        $("#timer .time").removeClass("starting");
         startTimer();
       }
-      return false;
+      event.preventDefault();
     }
   });
 
@@ -42,9 +42,9 @@ $(function() {
         stopTimer();
         justStopped = true;
       } else {
-        $("#timer time").addClass("starting");
+        $("#timer .time").addClass("starting");
       }
-      return false;
+      event.preventDefault();
     }
   });
 
@@ -58,7 +58,7 @@ function startTimer() {
 }
 
 function updateDisplay() {
-  $("#timer time").text(formatTime(new Date().getTime() - startTime));
+  $("#timer .time").text(formatTime(new Date().getTime() - startTime));
 }
 
 function stopTimer() {
