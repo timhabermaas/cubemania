@@ -7,4 +7,5 @@
 //= require jquery
 //= require jquery_ujs
 //= require highcharts
+//= require jquery.hoverIntent
 //= require_tree .
