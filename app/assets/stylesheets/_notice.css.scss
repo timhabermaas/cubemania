@@ -2,8 +2,17 @@ div.flash {
   background: image-url("notice.gif") bottom repeat-x;
   p {
     margin: 0 auto;
-    color: #2F2F2F;
+    color: #2f2f2f;
     padding: 9px 0;
     text-align: center;
+  }
+  a {
+    color: #2f2f2f;
+    text-decoration: underline;
+  }
+  a:hover {
+    background-color: #2f2f2f;
+    color: $yellow;
+    text-decoration: none;
   }
 }
