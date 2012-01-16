@@ -2,6 +2,15 @@ form {
   li {
     margin-bottom: 0.5em;
   }
+  li.error {
+    input {
+      border: 2px solid #a00;
+    }
+    p.inline-errors {
+      padding-left: 10em;
+      color: #a00;
+    }
+  }
   label {
     display: block;
     float: left;
