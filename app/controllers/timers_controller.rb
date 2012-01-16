@@ -1,14 +1,16 @@
-class TimesController < ApplicationController
+class TimersController < ApplicationController
   login :except => []
   skip_load_and_authorize_resource
   load_and_authorize_resource :class => Single
 
-  before_filter :fetch_records, :except => :create
-
   def index
     @puzzle = Puzzle.find params[:puzzle_id]
     @scramble = @puzzle.scramble
-    @singles = current_user.singles.for(params[:puzzle_id]).paginate :page => params[:page], :per_page => 100
+    @singles = current_user.singles.for(@puzzle).paginate :page => params[:page], :per_page => 12
+    @rolling_average = {
+      5 => RollingAverage.new(5, @singles.reverse),
+      12 => RollingAverage.new(12, @singles.reverse)
+    }
   end
 
   def create
@@ -16,15 +18,18 @@ class TimesController < ApplicationController
     @scramble = @puzzle.scramble
     @single = current_user.singles.build(params[:single].merge!(:puzzle_id => @puzzle.id))
     if @single.save
-      fetch_records
-      set_flash
+      @singles = current_user.singles.for(@puzzle).limit(12)
+      @rolling_average = {
+        5 => RollingAverage.new(5, @singles.reverse),
+        12 => RollingAverage.new(12, @singles.reverse)
+      }
       respond_to do |format|
-        format.html { redirect_to puzzle_times_path(@puzzle) }
+        format.html { redirect_to puzzle_timers_path(@puzzle) }
         format.js
       end
     else
       respond_to do |format|
-        format.html { redirect_to puzzle_times_path(@puzzle) }
+        format.html { redirect_to puzzle_timers_path(@puzzle) }
         format.js { render 'create.failure.js' }
       end
     end
@@ -35,7 +40,7 @@ class TimesController < ApplicationController
     @single = current_user.singles.find params[:id]
     @single.toggle_dnf!
     respond_to do |format|
-      format.html { redirect_to puzzle_times_path(@puzzle) }
+      format.html { redirect_to puzzle_timers_path(@puzzle) }
       format.js { render :penalty }
     end
   end
@@ -45,7 +50,7 @@ class TimesController < ApplicationController
     @single = current_user.singles.find params[:id]
     @single.toggle_plus2!
     respond_to do |format|
-      format.html { redirect_to puzzle_times_path(@puzzle) }
+      format.html { redirect_to puzzle_timers_path(@puzzle) }
       format.js { render :penalty }
     end
   end
@@ -55,16 +60,16 @@ class TimesController < ApplicationController
     @single = current_user.singles.find params[:id]
     @single.destroy
     respond_to do |format|
-      format.html { redirect_to puzzle_times_path(@puzzle) }
+      format.html { redirect_to puzzle_timers_path(@puzzle) }
       format.js
     end
   end
 
 private
   def fetch_records
-    @records = { 1 => current_user.records.for(params[:puzzle_id], 1),
-                 5 => current_user.records.for(params[:puzzle_id], 5),
-                12 => current_user.records.for(params[:puzzle_id], 12) }
+    @records = { 1 => current_user.records.for(@puzzle, 1),
+                 5 => current_user.records.for(@puzzle, 5),
+                12 => current_user.records.for(@puzzle, 12) }
   end
 
   # TODO deliver only time and format (1, 5, 12). client should create a proper message out of it

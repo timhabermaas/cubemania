@@ -24,7 +24,7 @@ Cubemania::Application.routes.draw do
   # resources :matches, :only => :index
 
   resources :puzzles, :defaults => { :puzzle_id => DEFAULT_PUZZLE } do
-    resources :times, :path => "timer" do
+    resources :timers, :path => "timer" do
       put :dnf, :on => :member
       put :plus2, :on => :member
     end
@@ -45,7 +45,7 @@ Cubemania::Application.routes.draw do
   end
   match 'puzzles/:puzzle_id/records/:type' => 'records#index', :as => 'puzzle_records', :defaults => { :type => 'avg5', :puzzle_id => DEFAULT_PUZZLE },
           :type => /(single)|(avg5)|(avg12)/
-  match 'puzzles/:puzzle_id/timer' => 'times#index', :as => 'puzzle_times', :defaults => { :puzzle_id => DEFAULT_PUZZLE }
+  #match 'puzzles/:puzzle_id/timer' => 'times#index', :as => 'puzzle_times', :defaults => { :puzzle_id => DEFAULT_PUZZLE }
   match 'puzzles/:puzzle_id/competitions/:id/:date' => 'competitions#show', :as => 'puzzle_competition_date'
 
   match 'auth/:provider/callback', :to => 'facebooks#create'

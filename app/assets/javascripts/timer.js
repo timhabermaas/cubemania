@@ -5,12 +5,16 @@ var justStopped = false;
 var timerEnabled = true;
 
 $(function() {
-  $('#timer #toggle').bind('click', function() {
-    $('#single_human_time').toggle();
-    $("#timer time").toggle();
-    $('#timer form input[type=submit]').toggle();
-    $(this).text($(this).text() == 'Set times manually' ? 'Changed your mind?' : 'Set times manually');
-    return false;
+  $("#timer #toggle").bind('click', function(e) {
+    $("#timer #new_single").toggle();
+    $("#timer .time").toggle();
+    if ($(this).text() === 'Set times manually') {
+      $(this).text('Changed your mind?');
+      $("#single_human_time").focus();
+    } else {
+      $(this).text('Set times manually');
+    }
+    return e.preventDefault();
   });
 
   $("textarea, input[type=text]").bind('focus', function() {

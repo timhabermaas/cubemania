@@ -13,7 +13,7 @@
     <%= render "layouts/header" %>
     <%= render "layouts/nav" %>
     <%= render "layouts/notice" %>
-    <%= render "layouts/subnavigation" if controller? :times, :records, :competitions %>
+    <%= render "layouts/subnavigation" if controller? :timers, :records, :competitions %>
     <section id="content">
       <div class="center">
         <%= yield %>

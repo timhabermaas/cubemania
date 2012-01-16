@@ -14,5 +14,9 @@ Spork.prefork do
 
     config.include FactoryGirl::Syntax::Methods
     config.include Capybara::SessionHelper
+
+    Capybara.add_selector(:li) do
+      xpath { |num| ".//li[#{num}]" }
+    end
   end
 end

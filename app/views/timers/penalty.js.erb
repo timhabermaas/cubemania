@@ -1,3 +1,3 @@
 $("#single-<%= @single.id %>").replaceWith("<%=j render :partial => 'single', :locals => {:single => @single } %>");
-$("#statistics").replaceWith("<%=j render 'statistics' %>");
+$("#statistics").replaceWith("<%=j render 'stats' %>");
 updateStatistics();

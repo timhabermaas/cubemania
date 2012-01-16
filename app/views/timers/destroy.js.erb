@@ -1,5 +1,5 @@
 $('#single-<%= @single.id %>').fadeOut(200, function() {
   $(this).remove();
-  $("#statistics").replaceWith("<%=j render 'statistics' %>");
+  $("#statistics").replaceWith("<%=j render 'stats' %>");
   updateStatistics();
 });
