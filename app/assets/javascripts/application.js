@@ -8,4 +8,5 @@
 //= require jquery_ujs
 //= require highcharts
 //= require jquery.hoverIntent
+//= require jquery.tokeninput
 //= require_tree .
