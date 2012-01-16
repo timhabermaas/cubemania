@@ -5,18 +5,6 @@ var justStopped = false;
 var timerEnabled = true;
 
 $(function() {
-  $("#timer #toggle").bind('click', function(event) {
-    $("#timer #new_single").toggle();
-    $("#timer .time").toggle();
-    if ($(this).text() === 'Set times manually') {
-      $(this).text('Changed your mind?');
-      $("#single_human_time").focus();
-    } else {
-      $(this).text('Set times manually');
-    }
-    event.preventDefault();
-  });
-
   $("textarea, input[type=text]").bind('focus', function() {
     timerEnabled = false;
   });
