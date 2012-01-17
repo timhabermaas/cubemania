@@ -38,7 +38,6 @@ gem 'newrelic_rpm'
 
 group :development, :test do
   gem 'turn', :require => false
-  gem 'autotest'
   gem 'rspec-rails'
   gem 'shoulda-matchers'
   gem 'capybara'
