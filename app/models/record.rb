@@ -2,23 +2,16 @@ class Record < ActiveRecord::Base
   belongs_to :puzzle
   belongs_to :user
 
-  validates_presence_of :user_id, :puzzle_id, :time, :amount, :single_ids
+  validates_presence_of :user_id, :puzzle_id, :time, :amount, :singles
   validates_uniqueness_of :user_id, :scope => [:puzzle_id, :amount]
   validates_inclusion_of :amount, :in => [1, 5, 12]
+  validate :has_as_many_singles_as_amount
+
+  serialize :singles
+  after_initialize :set_singles_to_empty_array
 
   humanize :time => :time
 
-  def singles=(s)
-    self.single_ids = s.map(&:id).join(';')
-  end
-
-  def singles
-    Single.find(single_ids.split(';'))
-  end
-
-  def has_single?(single)
-    single_ids.split(';').first == single.id.to_s
-  end
 
   class << self
     def calculate_for!(user_id, puzzle_id, format)
@@ -48,5 +41,13 @@ class Record < ActiveRecord::Base
         current_record.try(:destroy)
       end
     end
+  end
+  private
+  def set_singles_to_empty_array
+    self.singles = [] if singles.nil?
+  end
+
+  def has_as_many_singles_as_amount
+    errors.add(:singles) if singles && singles.size != amount
   end
 end
