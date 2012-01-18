@@ -3,7 +3,7 @@ class Record < ActiveRecord::Base
   belongs_to :user
 
   validates_presence_of :user_id, :puzzle_id, :time, :amount, :singles
-  validates_uniqueness_of :user_id, :scope => [:puzzle_id, :amount]
+  validates_uniqueness_of :user_id, :scope => [:puzzle_id, :amount], :message => "can't have more than one record per puzzle and amount"
   validates_inclusion_of :amount, :in => [1, 5, 12]
   validate :has_as_many_singles_as_amount
 
