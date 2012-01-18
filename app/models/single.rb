@@ -13,6 +13,8 @@ class Single < ActiveRecord::Base
   after_update :update_records
 
   scope :not_dnf, where("penalty IS NULL OR penalty NOT LIKE 'dnf'")
+  scope :recent, lambda { |amount| order("created_at desc").limit(amount) }
+  scope :for_user_and_puzzle, lambda { |user, puzzle| where(:user_id => user.id, :puzzle_id => puzzle.id) }
 
   humanize :time => :time
 
@@ -49,27 +51,7 @@ class Single < ActiveRecord::Base
 
 private
   def update_records_after_create
-    [1, 5, 12].each do |amount|
-      last_singles = Single.where(:user_id => user_id).where(:puzzle_id => puzzle_id).order("created_at desc").limit(amount)
-
-      return if last_singles.size < amount
-
-      avg = RollingAverage.new(amount, last_singles).average
-
-      return if avg.nil?
-
-      old_record = Record.where(:puzzle_id => puzzle_id, :user_id => user_id, :amount => amount).first
-
-      if old_record.nil?
-        new_average = Record.new(:puzzle_id => puzzle_id, :user_id => user_id, :time => avg, :singles => last_singles, :amount => amount)
-        new_average.singles = last_singles
-        new_average.save!
-      elsif avg < old_record.time
-        old_record.time = avg
-        old_record.singles = last_singles
-        old_record.save!
-      end
-    end
+    UpdateRecords.for(user, puzzle)
   end
 
   def set_time
@@ -82,8 +64,8 @@ private
   end
 
   def update_records
-    Record.calculate_for!(user_id, puzzle_id, 1)
-    Record.calculate_for!(user_id, puzzle_id, 5)
-    Record.calculate_for!(user_id, puzzle_id, 12)
+    #Record.calculate_for!(user_id, puzzle_id, 1)
+    #Record.calculate_for!(user_id, puzzle_id, 5)
+    #Record.calculate_for!(user_id, puzzle_id, 12)
   end
 end
