@@ -22,16 +22,12 @@ describe Record do
   end
 
   describe ".update_with" do
-    before :each do
-      Single.any_instance.stub(:update_records_after_create) # FIXME dependency :(
-    end
-
-    let(:user) { create :user }
-    let(:puzzle) { create :puzzle }
-    let(:singles) { create_list(:single, 5, :user => user, :puzzle => puzzle) }
+    let(:singles) { create_list(:single, 5) }
 
     context "existing record" do
-      let!(:record) { create :record, :time => 10, :user => user, :puzzle => puzzle, :amount => 5, :singles => singles }
+      let!(:record) { create :record, :time => 10, :amount => 5, :singles => singles }
+      let(:user) { record.user }
+      let(:puzzle) { record.puzzle }
 
       it "updates the existing record with faster time" do
         Record.update_with!(user, puzzle, 5, 9, singles)
@@ -47,6 +43,8 @@ describe Record do
 
     context "no existing record" do
       it "creates a new record" do
+        user = stub(:id => 4)
+        puzzle = stub(:id => 4)
         lambda {
           Record.update_with!(user, puzzle, 5, 9, singles)
         }.should change(Record, :count).by(1)
