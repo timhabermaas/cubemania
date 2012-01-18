@@ -101,7 +101,7 @@ describe User do
     let(:user) { Factory(:user) }
     let(:puzzle) { Factory(:puzzle) }
 
-    subject { user.singles.best(puzzle.id).time }
+    subject { user.singles.best(puzzle).time }
 
     before do
       Factory(:single, :time => 20, :user => user, :puzzle => puzzle)
