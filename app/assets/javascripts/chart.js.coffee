@@ -1,41 +1,28 @@
 root = exports ? this
 
-$ ->
-  if $("#chart").length > 0
-    root.chart = new Highcharts.Chart {
-      chart:
-        renderTo: "chart"
-      title:
-        text: "Cubing Progress"
-      xAxis:
+jQuery ->
+  if $("#chart").length
+    $.getJSON $("#chart").data("url"), (data) ->
+      window.chart = new Highcharts.Chart(
+        chart:
+          renderTo: "chart"
+          type: "spline"
+        rangeSelector:
+          selected: 1
         title:
-          text: "Solves"
-        allowDecimals: false
-        labels:
-          formatter: ->
-            this.value + 1
-      yAxis:
-        title:
-          text: "Time"
-        labels:
-          formatter: ->
-            formatTime(this.value)
-      tooltip:
-        formatter: ->
-          "hey :)"
-      plotOptions:
-        line:
-          enableMouseTracking: true
-          allowPointSelect: true
-      #series: [{}]
-    }
-    addUserToChart($("#timer").data("user-id"), $("#timer").data("name"), $("#timer").data("puzzle-id"))
-
-root.addUserToChart = (userId, userName, puzzleId) ->
-  $.getJSON "/users/" + userId + "/puzzles/" + puzzleId + "/singles", (data) ->
-    singles = (single.single.time for single in data)
-    chart.addSeries {
-      name: userName
-      id: userId
-      data: singles
-    }
+          text: "huhu"
+        xAxis:
+          title:
+            text: "Date"
+          type: "datetime"
+        yAxis:
+          title:
+            text: "Time"
+          labels:
+            formatter: ->
+              formatTime(this.value)
+        series: [
+          name: $("#chart").data("user-name")
+          data: data
+        ]
+      )
