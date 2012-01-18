@@ -5,7 +5,7 @@ describe "Timer" do
     @user = login :as => "user"
   end
 
-  let(:puzzle) { create :puzzle }
+  let(:puzzle) { create :puzzle, :name => "3x3x3" }
 
   describe "adding times" do
     before :each do
@@ -31,24 +31,28 @@ describe "Timer" do
     end
   end
 
-  describe "rolling average of 5" do
+  describe "best average of 5" do
     before :each do
-      4.times { create :single, :user => @user, :puzzle => puzzle, :time => 10000 }
-      5.times { create :single, :user => @user, :puzzle => puzzle, :time => 11000 }
-      3.times { create :single, :user => @user, :puzzle => puzzle, :time => 12000 }
+      create :single, :user => @user, :puzzle => puzzle, :time => 11000
+      3.times { create :single, :user => @user, :puzzle => puzzle, :time => 10000 }
+      create :single, :user => @user, :puzzle => puzzle, :time => 5000
+      # (11.00) 10.00 10.00 10.00 (5.00)
     end
 
-    it "displays current average of 5" do
+    it "displays best average of 5" do
       visit puzzle_timers_path(puzzle)
-      within "#stats" do
-        page.should have_content "11.67"
+      within "#stats .best" do
+        page.should have_content "10.00"
       end
     end
 
-    it "displays current average of 12" do
+    it "updates the record after submitting a faster time" do
       visit puzzle_timers_path(puzzle)
-      within "#stats" do
-        page.should have_content "10.90"
+      fill_in "Time", :with => "5.00"
+      click_button "Submit"
+      # 10.00 10.00 10.00 (5.00) 5.00
+      within "#stats .best" do
+        page.should have_content "8.33"
       end
     end
   end
