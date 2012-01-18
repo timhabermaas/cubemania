@@ -48,6 +48,6 @@ class Record < ActiveRecord::Base
   end
 
   def has_as_many_singles_as_amount
-    errors.add(:singles) if singles && singles.size != amount
+    errors.add(:singles, "must have #{amount} items, but has #{singles.size}") if singles && singles.size != amount
   end
 end
