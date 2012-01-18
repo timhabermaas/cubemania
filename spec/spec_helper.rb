@@ -20,3 +20,8 @@ Spork.prefork do
     end
   end
 end
+
+Spork.each_run do
+  FactoryGirl.factories.clear
+  FactoryGirl.reload
+end
