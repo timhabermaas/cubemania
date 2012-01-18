@@ -17,6 +17,7 @@ class TimersController < ApplicationController
     @single = current_user.singles.build(params[:single].merge(:puzzle_id => @puzzle.id))
     if @single.save
       @singles = current_user.singles.for(@puzzle).limit(12).reverse
+      UpdateRecords.for(current_user, @puzzle)
       fetch_rolling_average
       fetch_records
       respond_to do |format|

@@ -8,7 +8,6 @@ class Single < ActiveRecord::Base
   validates_inclusion_of :penalty, :in => %w( plus2 dnf ), :allow_nil => true
 
   before_validation :set_time, :if => :human_time_is_set
-  after_create :update_records_after_create
   after_destroy :update_records
   after_update :update_records
 
@@ -50,10 +49,6 @@ class Single < ActiveRecord::Base
   end
 
 private
-  def update_records_after_create
-    UpdateRecords.for(user, puzzle)
-  end
-
   def set_time
     seconds, minutes, hours = @human_time.split(':').reverse
     self.time = (hours.to_i * 3600 + minutes.to_i * 60) * 1000 + (seconds.to_f * 1000).to_i

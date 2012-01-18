@@ -107,15 +107,4 @@ describe Single do
       end
     end
   end
-
-  describe "update record after save" do
-    let(:user) { create :user }
-    let(:puzzle) { create :puzzle }
-    subject { build :single, :user => user, :puzzle => puzzle }
-
-    it "calls UpdatesRecords after save" do
-      UpdateRecords.should_receive(:for).with(user, puzzle)
-      subject.save!
-    end
-  end
 end

@@ -36,6 +36,7 @@ describe "Timer" do
       create :single, :user => @user, :puzzle => puzzle, :time => 11000
       3.times { create :single, :user => @user, :puzzle => puzzle, :time => 10000 }
       create :single, :user => @user, :puzzle => puzzle, :time => 5000
+      UpdateRecords.for(@user, puzzle)
       # (11.00) 10.00 10.00 10.00 (5.00)
     end
 
