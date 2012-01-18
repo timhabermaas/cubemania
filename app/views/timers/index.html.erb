@@ -1,7 +1,7 @@
 <section id="timer">
   <div class="scramble"><%= @scramble %></div>
   <div class="time"><%=ft 0 %></div>
-  <%= semantic_form_for Single.new, :url => puzzle_timers_path(params[:puzzle_id]), :remote => true do |form| %>
+  <%= semantic_form_for Single.new, :url => puzzle_timers_path(@puzzle), :remote => true do |form| %>
     <%= form.inputs do %>
       <%= form.input :human_time, :label => 'Time', :input_html => { :value => "" } %>
       <%= form.input :time, :as => :hidden %>
@@ -14,7 +14,7 @@
   <%= link_to 'Set times manually', '#', :id => 'toggle' %>
 </section>
 <%= render "stats" %>
-<div id="chart">
+<div id="chart" data-user-id="<%= current_user.id %>" data-puzzle-id="<%= @puzzle.id %>" data-user-name="<%= current_user.name %>" data-url="<%= user_singles_url(current_user, :puzzle_id => @puzzle.id) %>">
 </div>
 <aside id="singles">
   <ul>
