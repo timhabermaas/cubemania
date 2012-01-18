@@ -14,7 +14,7 @@ class TimersController < ApplicationController
   def create
     @puzzle = Puzzle.find params[:puzzle_id]
     @scramble = @puzzle.scramble
-    @single = current_user.singles.build(params[:single].merge!(:puzzle_id => @puzzle.id))
+    @single = current_user.singles.build(params[:single].merge(:puzzle_id => @puzzle.id))
     if @single.save
       @singles = current_user.singles.for(@puzzle).limit(12).reverse
       fetch_rolling_average
