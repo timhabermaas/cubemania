@@ -42,7 +42,7 @@ describe UpdateRecords do
       it "updates avg5 record if average is valid" do
         average = stub(:time => 10, :dnf? => false)
         CubingAverage.should_receive(:new).with(singles).and_return(average)
-        Record.should_receive(:update_with!).with(user, puzzle, singles, 5, 10)
+        Record.should_receive(:update_with!).with(user, puzzle, 5, 10, singles)
         UpdateRecords.for_amount(user, puzzle, 5)
       end
 
@@ -64,7 +64,7 @@ describe UpdateRecords do
       it "updates single record" do
         average = stub(:time => 1337, :dnf? => false)
         CubingAverage.should_receive(:new).with(singles).and_return(average)
-        Record.should_receive(:update_with!).with(user, puzzle, singles, 5, 1337)
+        Record.should_receive(:update_with!).with(user, puzzle, 1, 1337, singles)
         UpdateRecords.for_amount(user, puzzle, 1)
       end
     end
