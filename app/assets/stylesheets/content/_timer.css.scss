@@ -1,37 +1,57 @@
-#timer {
-  text-align: center;
-  .scramble {
-    font-weight: bold;
-    margin-bottom: 1em;
-  }
-  .time {
-    display: none;
-    font-weight: bold;
-    font-size: 500%;
-  }
-  form {
-    margin-bottom: 1em;
-    label {
-      display: none;
-    }
-    li {
+#porno {
+  margin-bottom: 2em;
+
+  #timer {
+    background-color: #517397;
+    text-align: center;
+    border-radius: 10px;
+    display: inline-block;
+    vertical-align: middle;
+    width: 60%;
+    padding: 0.5em 0.5em 1.5em 0.5em;
+
+    .scramble {
       text-align: center;
+      font-size: 80%;
       margin-bottom: 1em;
     }
-    input[type=submit] {
-      display: inline-block;
-      font-size: 150%;
-      margin: 0;
-    }
-    input[type=text] {
-      font-size: 200%;
+    .time {
+      display: none;
       font-weight: bold;
-      text-align: center;
-      width: 7em;
+      font-size: 500%;
+    }
+    form {
+      margin-top: 1em;
+      margin-bottom: 1em;
+      label {
+        display: none;
+      }
+      li {
+        text-align: center;
+        margin-bottom: 1em;
+      }
+      input[type=submit] {
+        display: inline-block;
+        font-size: 150%;
+        margin: 0;
+      }
+      input[type=text] {
+        font-size: 200%;
+        font-weight: bold;
+        text-align: center;
+        width: 7em;
+      }
     }
   }
-}
-#stats {
-  margin-top: 1em;
-  text-align: center;
+
+  #stats {
+    text-align: center;
+    width: 30%;
+    padding: 1em;
+    margin-left: 2.7em;
+    display: inline-block;
+    border-radius: 10px;
+    background-color: #517397;
+    vertical-align: middle;
+  }
 }
