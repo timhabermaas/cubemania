@@ -2,7 +2,7 @@ $("#singles ul").prepend($("<%=j render :partial =>'single', :object => @single 
 $("#timer form")[0].reset();
 $("#timer .scramble").text("<%=j @scramble %>");
 $("#timer form #single_scramble").val("<%= @scramble %>");
-$("#statistics").replaceWith("<%=j render 'stats' %>");
+$("#stats").replaceWith("<%=j render 'stats' %>");
 <% if params[:single][:human_time].present? %>
   $("#single_human_time").focus();
 <% end %>
