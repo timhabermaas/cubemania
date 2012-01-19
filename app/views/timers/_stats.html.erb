@@ -1,7 +1,7 @@
 <section id="stats">
   <div class="current">
-    Current Average of 5: <strong class="avg5"><%=ft @rolling_average[5].time %></strong><br />
-    Current Average of 12: <strong class="avg12"><%=ft @rolling_average[12].time %></strong>
+    Current Average of 5: <strong class="avg5"><%=ft @current_average[5].time %></strong><br />
+    Current Average of 12: <strong class="avg12"><%=ft @current_average[12].time %></strong>
   <div class="best">
     Best Average of 5: <strong class="avg5"><%=ft @records[5].try(:time) %></strong><br />
     Best Average of 12: <strong class="avg12"><%=ft @records[12].try(:time) %></strong>
