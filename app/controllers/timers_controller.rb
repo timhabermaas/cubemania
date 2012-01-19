@@ -69,8 +69,8 @@ private
   end
 
   def fetch_current_averages(singles)
-    @current_average = { 5 => CubingAverage.new(singles[0..4]),
-                        12 => CubingAverage.new(singles[0..11]) } # TODO
+    @current_average = { 5 => (CubingAverage.new(singles[0..4]) if singles.size >= 5),
+                        12 => (CubingAverage.new(singles[0..11]) if singles.size >= 12) }
   end
 
   # TODO deliver only time and format (1, 5, 12). client should create a proper message out of it
