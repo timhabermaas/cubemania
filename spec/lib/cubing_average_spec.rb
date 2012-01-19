@@ -33,6 +33,14 @@ describe CubingAverage do
     let(:single_10) { stub :time => 10, :dnf? => false }
     let(:single_dnf) { stub :time => 20, :dnf? => true }
 
+    it "actually changes if other times are pushed in" do
+      average = CubingAverage.new([single_5] * 5)
+      lambda {
+        average << single_10
+        average << single_10
+      }.should change(average, :time)
+    end
+
     context "one single" do
       it "returns the time" do
         CubingAverage.new([single_5]).time.should == 5

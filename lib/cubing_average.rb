@@ -7,25 +7,27 @@ class CubingAverage
 
   def <<(single)
     @singles << single
+    @time = nil
   end
 
   def time
-    if @singles.size == 1
-      return @singles.first.dnf? ? nil : @singles.first.time
-    end
+    @time ||=(
+      if @singles.size == 1
+        return @singles.first.dnf? ? nil : @singles.first.time
+      end
 
-    cleaned_up_singles = @singles.reject(&:dnf?)
-    dnfs = @singles.size - cleaned_up_singles.size
+      cleaned_up_singles = @singles.reject(&:dnf?)
+      dnfs = @singles.size - cleaned_up_singles.size
 
-    return nil if dnfs > 1
+      return nil if dnfs > 1
 
-    cleaned_up_singles.sort_by!(&:time)
+      cleaned_up_singles.sort_by!(&:time)
 
-    if dnfs == 0
-      cleaned_up_singles[1..-2].map(&:time).inject(:+) / (cleaned_up_singles.size - 2)
-    else
-      cleaned_up_singles[1..-1].map(&:time).inject(:+) / (cleaned_up_singles.size - 1)
-    end
+      if dnfs == 0
+        cleaned_up_singles[1..-2].map(&:time).inject(:+) / (cleaned_up_singles.size - 2)
+      else
+        cleaned_up_singles[1..-1].map(&:time).inject(:+) / (cleaned_up_singles.size - 1)
+      end)
   end
 
   def dnf?
