@@ -25,7 +25,7 @@ module ApplicationHelper
     @navigation ||=
       [
         { :name => "Home", :path => root_path, :controller => "homes" },
-        { :name => "Timer", :path => puzzle_timers_path(Puzzle.default), :controller => "times" },
+        { :name => "Timer", :path => puzzle_timers_path(Puzzle.default), :controller => "timers" },
         { :name => "Competitions", :path => puzzle_competitions_path(Puzzle.default), :controller => "competitions" },
         { :name => "Users", :path => users_path, :controller => "users" },
         { :name => "Records", :path => puzzle_records_path(Puzzle.default), :controller => "records" } # TODO add default flag to puzzle
