@@ -4,7 +4,7 @@
     <div class="time"><%=ft 0 %></div>
     <%= semantic_form_for Single.new, :url => puzzle_timers_path(@puzzle), :remote => true do |form| %>
       <%= form.inputs do %>
-        <%= form.input :human_time, :label => 'Time', :input_html => { :value => "" } %>
+        <%= form.input :human_time, :label => 'Time', :input_html => { :value => "", :autocomplete => "off" } %>
         <%= form.input :time, :as => :hidden %>
         <%= form.input :scramble, :as => :hidden, :value => @scramble %>
       <% end %>
