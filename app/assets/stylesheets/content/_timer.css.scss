@@ -72,8 +72,26 @@
     padding: 16px;
     ul {
       li {
-      text-align: right;
-      margin-bottom: 0.4em;
+        text-align: right;
+        margin-bottom: 0.4em;
+        .time.dnf {
+          text-decoration: line-through;
+          color: #83A1BF;
+        }
+      }
+    }
+    .details {
+      display: none;
+    }
+    .edit {
+      font-size: 0.75em;
+      display: inline;
+      .delete {
+        color: red;
+      }
+      .delete:hover {
+        background-color: red;
+        color: #ccc;
       }
     }
   }

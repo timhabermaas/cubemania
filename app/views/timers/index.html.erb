@@ -22,9 +22,7 @@
   </div>
   <aside id="singles">
     <ul>
-      <% @singles.each do |single| %>
-        <li><%=ft single.time %></li>
-      <% end %>
+      <%= render :partial => "single", :collection => @singles %>
     </ul>
     <section class="pagination">
       <%= link_to "Load more", "#" %>
