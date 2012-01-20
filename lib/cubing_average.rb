@@ -21,7 +21,7 @@ class CubingAverage
 
       return nil if dnfs > 1
 
-      cleaned_up_singles.sort_by!(&:time)
+      cleaned_up_singles = cleaned_up_singles.sort_by(&:time)
 
       if dnfs == 0
         cleaned_up_singles[1..-2].map(&:time).inject(:+) / (cleaned_up_singles.size - 2)
