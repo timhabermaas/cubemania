@@ -26,7 +26,9 @@
         <li><%=ft single.time %></li>
       <% end %>
     </ul>
-    <%= will_paginate @singles %>
+    <section class="pagination">
+      <%= link_to "Load more", "#" %>
+    </section>
   </aside>
 </div>
 
