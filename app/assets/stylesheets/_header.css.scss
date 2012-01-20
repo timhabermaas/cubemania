@@ -19,7 +19,7 @@ header.main {
     }
   }
 
-  cite {
+  q {
     float: right;
     margin-top: 42px;
     color: white;
@@ -27,18 +27,18 @@ header.main {
     padding: 0 21px 0 21px;
     position: relative;
   }
-  cite:before, cite:after {
+  q:before, q:after {
     content: '"';
     width: 18px;
     display: block;
     text-indent: -9999px;
     position: absolute;
   }
-  cite:before {
+  q:before {
     left: -2px;
     background: image-url("open-quote.gif") no-repeat top left;
   }
-  cite:after {
+  q:after {
     right: -2px;
     bottom: -2px;
     background: image-url("close-quote.gif") no-repeat bottom right;
