@@ -1,6 +1,7 @@
 class Single < ActiveRecord::Base
   belongs_to :user, :counter_cache => true
   belongs_to :puzzle
+  has_and_belongs_to_many :records
 
   attr_accessible :time, :human_time, :puzzle_id, :scramble, :penalty
 

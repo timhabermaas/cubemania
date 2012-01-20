@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -11,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120117191037) do
+ActiveRecord::Schema.define(:version => 20120120205717) do
 
   create_table "comments", :force => true do |t|
     t.text     "content",    :null => false
@@ -85,7 +84,11 @@ ActiveRecord::Schema.define(:version => 20120117191037) do
     t.datetime "created_at",                :null => false
     t.datetime "updated_at",                :null => false
     t.integer  "amount",     :default => 5, :null => false
-    t.text     "singles"
+  end
+
+  create_table "records_singles", :id => false, :force => true do |t|
+    t.integer "record_id"
+    t.integer "single_id"
   end
 
   create_table "scrambles", :force => true do |t|
