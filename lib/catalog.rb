@@ -1,3 +1,6 @@
+Day = Struct.new(:year, :month, :day)
+Month = Struct.new(:year, :month)
+
 class Catalog
   def self.by_day(singles)
     singles.group_by do |single|
@@ -13,7 +16,4 @@ class Catalog
     end
   end
 end
-
-Day = Struct.new(:year, :month, :day)
-Month = Struct.new(:year, :month)
 
