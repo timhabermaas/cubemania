@@ -1,6 +1,4 @@
 class Match < ActiveRecord::Base
-  extend ActiveSupport::Memoizable
-
   STATUSES = %w(pending challenged finished)
   C1 = 30
   C2 = 400
@@ -68,7 +66,6 @@ class Match < ActiveRecord::Base
       nil
     end
   end
-  memoize :winner, :loser
 
   def other(u)
     u.id == user_id ? opponent : user
