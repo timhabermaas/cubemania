@@ -7,8 +7,8 @@
     border-radius: 10px;
     display: inline-block;
     vertical-align: middle;
-    width: 60%;
-    padding: 0.5em 0.5em 1.5em 0.5em;
+    width: 564px;
+    padding: 8px 16px 24px 16px;
 
     .scramble {
       text-align: center;
@@ -46,9 +46,9 @@
 
   #stats {
     text-align: center;
-    width: 30%;
-    padding: 1em;
-    margin-left: 2.6em;
+    width: 290px;
+    padding: 16px;
+    margin-left: 44px;
     display: inline-block;
     border-radius: 10px;
     background-color: #517397;
@@ -57,4 +57,27 @@
       margin-bottom: 0.5em;
     }
   }
+
+}
+#times {
+  #chart {
+    width: 61.55%;
+    float: left;
+  }
+  #singles {
+    width: 290px;
+    float: right;
+    background-color: #517397;
+    border-radius: 10px;
+    padding: 16px;
+    ul {
+      li {
+      text-align: right;
+      margin-bottom: 0.4em;
+      }
+    }
+  }
+}
+#times:after {
+  @include clear-fix;
 }
