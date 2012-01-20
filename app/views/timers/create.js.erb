@@ -1,4 +1,5 @@
 $("#singles ul").prepend($("<%=j render :partial =>'single', :object => @single %>").fadeIn('slow'));
+$("#singles ul li:last-child").remove();
 $("#timer form")[0].reset();
 $("#timer .scramble").text("<%=j @scramble %>");
 $("#timer form #single_scramble").val("<%= @scramble %>");
