@@ -16,4 +16,3 @@ class Catalog
     end
   end
 end
-
