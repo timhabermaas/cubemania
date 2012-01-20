@@ -75,7 +75,9 @@
       list-style-position: outside;
       padding-left: 2em;
       li {
-        text-align: right;
+        .fu {
+          text-align: right;
+        }
         margin-bottom: 0.4em;
         .time.dnf {
           text-decoration: line-through;
