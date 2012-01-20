@@ -21,9 +21,9 @@
   <div id="chart" data-user-id="<%= current_user.id %>" data-puzzle-id="<%= @puzzle.id %>" data-user-name="<%= current_user.name %>" data-url="<%= user_singles_url(current_user, :puzzle_id => @puzzle.id) %>">
   </div>
   <aside id="singles">
-    <ul>
+    <ol>
       <%= render :partial => "single", :collection => @singles %>
-    </ul>
+    </ol>
     <section class="pagination">
       <%= link_to "Load more", "#" %>
     </section>

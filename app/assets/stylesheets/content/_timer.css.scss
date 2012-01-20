@@ -70,7 +70,10 @@
     background-color: #517397;
     border-radius: 10px;
     padding: 16px;
-    ul {
+    ol {
+      list-style-type: decimal;
+      list-style-position: outside;
+      padding-left: 2em;
       li {
         text-align: right;
         margin-bottom: 0.4em;
