@@ -64,20 +64,20 @@ describe User do
 
     it "should not display sensible information via json" do
       forbidden_attributes.each do |attribute|
-        user_hash['user'].keys.should_not include(attribute.to_s)
+        user_hash.keys.should_not include(attribute.to_s)
       end
     end
 
     it "should contain necessary informations about a user" do
       necessary_attributes.each do |attribute|
-        user_hash['user'].keys.should include(attribute.to_s)
+        user_hash.keys.should include(attribute.to_s)
       end
     end
 
     it "should contain proper values" do
-      user_hash['user']['name'].should == 'peter'
-      user_hash['user']['singles_count'].should == 0
-      user_hash['user']['wca'].should == '2007JDAE01'
+      user_hash['name'].should == 'peter'
+      user_hash['singles_count'].should == 0
+      user_hash['wca'].should == '2007JDAE01'
     end
   end
 
