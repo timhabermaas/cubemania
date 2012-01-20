@@ -12,21 +12,23 @@
         <%= form.commit_button 'Submit' %>
       <% end %>
     <% end %>
-    <%= link_to 'Set times manually', '#', :id => 'toggle' %>
+    <%= link_to 'Set times manually', '#', :class => 'toggle' %>
   </section>
   <%= render "stats" %>
 </div>
 
-<div id="chart" data-user-id="<%= current_user.id %>" data-puzzle-id="<%= @puzzle.id %>" data-user-name="<%= current_user.name %>" data-url="<%= user_singles_url(current_user, :puzzle_id => @puzzle.id) %>">
+<div id="times">
+  <div id="chart" data-user-id="<%= current_user.id %>" data-puzzle-id="<%= @puzzle.id %>" data-user-name="<%= current_user.name %>" data-url="<%= user_singles_url(current_user, :puzzle_id => @puzzle.id) %>">
+  </div>
+  <aside id="singles">
+    <ul>
+      <% @singles.each do |single| %>
+        <li><%=ft single.time %></li>
+      <% end %>
+    </ul>
+    <%= will_paginate @singles %>
+  </aside>
 </div>
-<aside id="singles">
-  <ul>
-    <% @singles.each do |single| %>
-      <li><%=ft single.time %></li>
-    <% end %>
-  </ul>
-  <%= will_paginate @singles %>
-</aside>
 
 <script type="text/javascript" language="javascript">
   $("#new_single").hide();
