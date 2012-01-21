@@ -1,6 +1,7 @@
 root = exports ? this
 
 root.formatTime = (time) ->
+  return "-:--.--" unless time
   seconds = (time / 1000).toFixed(2);
   if seconds < 60
     "#{seconds}s"

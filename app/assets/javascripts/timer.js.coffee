@@ -1,3 +1,5 @@
+root = exports ? this
+
 jQuery ->
   if $("#timer").length
     timerStarted = false
@@ -63,3 +65,14 @@ jQuery ->
 
     updateDisplay = ->
       $("#timer .time").text(formatTime(currentTime()))
+
+    getSingles = ->
+      $("#singles ol .time")
+
+    root.updateStatistics = ->
+      singles = getSingles()
+      cur5 = average(singles, 5)
+      cur12 = average(singles, 12)
+
+      $("#stats .current strong.avg5").text(formatTime(cur5));
+      $("#stats .current strong.avg12").text(formatTime(cur12))
