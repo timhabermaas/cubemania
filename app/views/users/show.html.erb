@@ -20,7 +20,7 @@
     How fast do you solve the cube?<br/>
     <%= link_to 'Stop your times and get the record!', puzzle_timers_path %>
   <% else %>
-    <%= @user.name %> has no personal records yet. <%= link_to 'Do you?', puzzle_times_path if logged_in? %>
+    <%= @user.name %> has no personal records yet. <%= link_to 'Do you?', puzzle_timers_path if logged_in? %>
   <% end %>
   </p>
   <% else %>
