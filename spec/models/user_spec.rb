@@ -91,9 +91,10 @@ describe User do
       user.password_confirmation.should be_nil
     end
 
-    it "should reset the password to a at least 12 characters long string"do
-      user.reset_password!
-      user.password.should =~ /[a-z0-9A-Z]{12}/
+    it "should reset the password to a new one" do
+      old_password = user.encrypted_password
+      user.reset_password!.should =~ /[a-z0-9A-Z]{12}/
+      old_password.should_not == user.encrypted_password
     end
   end
 

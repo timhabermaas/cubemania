@@ -80,8 +80,11 @@ class User < ActiveRecord::Base
   end
 
   def reset_password!
-    available_characters = ('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a
-    self.password = Array.new(12) { available_characters.sample }.join
+    new_password = SecureRandom.hex(6)
+    self.password = new_password
+    self.password_confirmation = new_password
+    save!
+    new_password
   end
 
   def role?(required_role, request_id, object)
