@@ -17,6 +17,7 @@ class TimersController < ApplicationController
     if @single.save
       UpdateRecords.for(current_user, @puzzle)
       fetch_records
+      set_flash
       respond_to do |format|
         format.html { redirect_to puzzle_timers_path(@puzzle) }
         format.js
@@ -71,12 +72,14 @@ private
     messages = []
     titles = []
     [1, 5, 12].each do |n|
-      if @records[n].try(:has_single?, @single)
+      if @records[n] && @records[n].singles.include?(@single)
         messages << "You set a time of #{self.class.helpers.ft @records[n].time}<br /><a href='#'>Share on Twitter!</a>"
         titles << (n == 1 ? "Single Record" : "Average of #{n} Record")
       end
     end
     flash[:notice] = messages.join "@"
     flash[:title] = titles.join "@"
+    flash[:image] = view_context.image_path("puzzles.png")
+    flash[:image_position] = @puzzle.css_position.to_s#view_context.image_path("puzzles.png")
   end
 end

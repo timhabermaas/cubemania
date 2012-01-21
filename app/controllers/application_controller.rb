@@ -38,6 +38,7 @@ private
     response.headers['X-Message-Content'] = flash[:notice] unless flash[:notice].blank?
     response.headers['X-Message-Title'] = flash[:title] unless flash[:title].blank?
     response.headers['X-Message-Image'] = flash[:image] unless flash[:image].blank?
+    response.headers['X-Message-Image-Position'] = flash[:image_position] unless flash[:image_position].blank?
     flash.discard
   end
 end

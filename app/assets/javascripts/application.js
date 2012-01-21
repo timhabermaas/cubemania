@@ -9,6 +9,7 @@
 //= require highcharts
 //= require jquery.hoverIntent
 //= require jquery.tokeninput
+//= require jquery.gritter
 //= require_tree .
 
 document.cookie = 'tz_offset=' + ((new Date()).getTimezoneOffset() + calculateDst() * 6);
