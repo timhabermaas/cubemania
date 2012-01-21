@@ -7,6 +7,7 @@ jQuery ->
     justStopped = false
     timerEnabled = true
     startTime = 0
+    stopTime = 0
 
     $("#singles li a.dnf").bind "click", (event) ->
       time = $(this).parent().parent().find(".time")
@@ -57,7 +58,7 @@ jQuery ->
           justStopped = false
         else
           $("#timer .time").removeClass("starting")
-          startTimer()
+          startTimer() if timeSinceStopped() > 2000
         event.preventDefault()
 
     startTimer = ->
@@ -67,6 +68,7 @@ jQuery ->
 
     stopTimer = ->
       updateDisplay()
+      stopTime = new Date().getTime()
       submitTime(currentTime())
       clearInterval(intervalId)
       timerStarted = false
@@ -78,6 +80,9 @@ jQuery ->
 
     currentTime = ->
       new Date().getTime() - startTime
+
+    timeSinceStopped = ->
+      new Date().getTime() - stopTime
 
     updateDisplay = ->
       $("#timer .time").text(formatTime(currentTime()))
