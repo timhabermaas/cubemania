@@ -1,7 +1,7 @@
 class UserMailer < ActionMailer::Base
   default :from => 'Cubemania <info@cubemania.org>'
 
-  def welcome_mail(user)
+  def welcome(user)
     @user = user
     mail :to => "#{user.name} <#{user.email}>", :subject => 'Welcome to Cubemania'
   end

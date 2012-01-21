@@ -26,9 +26,10 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new params[:user], :as => :user
+    @user = User.new params[:user]
     if @user.save
-      flash[:notice] = "Hello #{@user.name}, you are now registered"
+      UserMailer.welcome(@user).deliver
+      flash[:notice] = "Hello #{@user.name}, you are now registered."
       self.current_user = @user
       redirect_back @user
     else
