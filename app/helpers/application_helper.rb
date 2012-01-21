@@ -37,7 +37,7 @@ module ApplicationHelper
   end
 
   def kinds
-    Kind.all
+    @kinds ||= Kind.includes(:puzzles)
   end
 
   def subnavigation_path(puzzle)
