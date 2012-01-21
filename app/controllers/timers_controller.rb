@@ -73,7 +73,7 @@ private
     titles = []
     [1, 5, 12].each do |n|
       if @records[n] && @records[n].singles.include?(@single)
-        messages << "You set a time of #{self.class.helpers.ft @records[n].time}<br /><a href='#'>Share on Twitter!</a>"
+        messages << "You set a time of <strong>#{view_context.ft @records[n].time}</strong>!<br /><a href='#'>Share on Facebook!</a>"
         titles << (n == 1 ? "Single Record" : "Average of #{n} Record")
       end
     end
