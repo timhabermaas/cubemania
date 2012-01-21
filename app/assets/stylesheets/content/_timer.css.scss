@@ -45,9 +45,14 @@
   }
 
   #stats {
+    h4 {
+      font-weight: bold;
+      margin-bottom: 0.2em;
+    }
     text-align: center;
     width: 290px;
     padding: 16px;
+    padding-top: 8px;
     margin-left: 44px;
     display: inline-block;
     border-radius: 10px;
