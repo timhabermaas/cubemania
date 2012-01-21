@@ -23,4 +23,4 @@ root.average = (singles, size) ->
   if dnfs.length == 1
     return (Array.sum(times) - Array.min(times)) / (times.length - 1)
   else # dnf.length == 0
-    return (Array.sum(times) - Array.min(times)) / (times.length - 2)
+    return (Array.sum(times) - Array.min(times) - Array.max(times)) / (times.length - 2)
