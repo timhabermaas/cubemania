@@ -1,9 +1,9 @@
-class LoginsController < ApplicationController
+class SessionsController < ApplicationController
   skip_load_and_authorize_resource
   skip_login :except => :destroy
   logout :only => [:show, :create]
 
-  def show
+  def new
     @login = Login.new
   end
 
