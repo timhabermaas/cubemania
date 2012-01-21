@@ -25,6 +25,7 @@ Cubemania::Application.routes.draw do
     resources :timers, :path => "timer" do
       put :dnf, :on => :member
       put :plus2, :on => :member
+      get :more, :on => :collection
     end
     resources :singles
     # resources :matches do

@@ -1,0 +1,2 @@
+$("#singles ol").append("<%=j render :partial => 'timers/single', :collection => @singles %>");
+$("#singles .load-more a").attr("href", "<%= more_puzzle_timers_path(@puzzle, :page => params[:page].to_i + 1) %>");

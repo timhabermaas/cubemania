@@ -2,16 +2,15 @@ class TimersController < ApplicationController
   login :except => []
   skip_load_and_authorize_resource
   load_and_authorize_resource :class => Single
+  before_filter :load_puzzle
 
   def index
-    @puzzle = Puzzle.find params[:puzzle_id]
     @scramble = @puzzle.scramble
     @singles = current_user.singles.for(@puzzle).paginate :page => params[:page], :per_page => 12
     fetch_records
   end
 
   def create
-    @puzzle = Puzzle.find params[:puzzle_id]
     @scramble = @puzzle.scramble
     @single = current_user.singles.build(params[:single].merge(:puzzle_id => @puzzle.id))
     if @single.save
@@ -31,7 +30,6 @@ class TimersController < ApplicationController
   end
 
   def dnf
-    @puzzle = Puzzle.find params[:puzzle_id]
     @single = current_user.singles.find params[:id]
     @single.toggle_dnf!
     respond_to do |format|
@@ -41,7 +39,6 @@ class TimersController < ApplicationController
   end
 
   def plus2
-    @puzzle = Puzzle.find params[:puzzle_id]
     @single = current_user.singles.find params[:id]
     @single.toggle_plus2!
     respond_to do |format|
@@ -51,11 +48,18 @@ class TimersController < ApplicationController
   end
 
   def destroy
-    @puzzle = Puzzle.find params[:puzzle_id]
     @single = current_user.singles.find params[:id]
     @single.destroy
     respond_to do |format|
       format.html { redirect_to puzzle_timers_path(@puzzle) }
+      format.js
+    end
+  end
+
+  def more
+    @singles = current_user.singles.for(@puzzle).paginate :page => params[:page], :per_page => 12
+    respond_to do |format|
+      format.html { redirect_to puzzle_timers_path(@puzzle, :page => params[:page]) }
       format.js
     end
   end
@@ -65,6 +69,10 @@ private
     @records = { 1 => current_user.records.for(@puzzle, 1),
                  5 => current_user.records.for(@puzzle, 5),
                 12 => current_user.records.for(@puzzle, 12) }
+  end
+
+  def load_puzzle
+    @puzzle = Puzzle.find params[:puzzle_id]
   end
 
   # TODO deliver only time and format (1, 5, 12). client should create a proper message out of it

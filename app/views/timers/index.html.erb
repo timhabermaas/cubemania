@@ -24,13 +24,16 @@
     <ol>
       <%= render :partial => "single", :collection => @singles %>
     </ol>
-    <section class="pagination">
-      <%= link_to "Load more", "#" %>
+    <section class="load-more">
+      <%= link_to "Load more", more_puzzle_timers_path(@puzzle, :page => (params[:page] || 1).to_i + 1), :remote => true %>
     </section>
+    <%= will_paginate @singles %>
   </aside>
 </div>
 
 <script type="text/javascript">
   $("#new_single").hide();
   $("#timer .time").show();
+  $("#singles .pagination").hide();
+  $("#singles .load-more").show();
 </script>
