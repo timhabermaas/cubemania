@@ -91,6 +91,9 @@
           text-decoration: line-through;
           color: #83A1BF;
         }
+        .time.plus2:after {
+          content: "+";
+        }
       }
     }
     .details {
