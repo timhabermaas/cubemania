@@ -1,4 +1,4 @@
-var timerStarted = false;
+/*var timerStarted = false;
 var startTime;
 var intervalId = null;
 var justStopped = false;
@@ -99,4 +99,4 @@ function updateStatistics() {
   } else {
     $("#cur12").replaceWith(formatTime(cur12));
   }
-}
+}*/
