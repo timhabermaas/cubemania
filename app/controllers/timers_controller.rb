@@ -7,7 +7,6 @@ class TimersController < ApplicationController
     @puzzle = Puzzle.find params[:puzzle_id]
     @scramble = @puzzle.scramble
     @singles = current_user.singles.for(@puzzle).paginate :page => params[:page], :per_page => 12
-    fetch_current_averages(@singles)
     fetch_records
   end
 
@@ -17,7 +16,6 @@ class TimersController < ApplicationController
     @single = current_user.singles.build(params[:single].merge(:puzzle_id => @puzzle.id))
     if @single.save
       UpdateRecords.for(current_user, @puzzle)
-      fetch_current_averages(current_user.singles.for(@puzzle).limit(12))
       fetch_records
       respond_to do |format|
         format.html { redirect_to puzzle_timers_path(@puzzle) }
@@ -66,11 +64,6 @@ private
     @records = { 1 => current_user.records.for(@puzzle, 1),
                  5 => current_user.records.for(@puzzle, 5),
                 12 => current_user.records.for(@puzzle, 12) }
-  end
-
-  def fetch_current_averages(singles)
-    @current_average = { 5 => (CubingAverage.new(singles[0..4]) if singles.size >= 5),
-                        12 => (CubingAverage.new(singles[0..11]) if singles.size >= 12) }
   end
 
   # TODO deliver only time and format (1, 5, 12). client should create a proper message out of it
