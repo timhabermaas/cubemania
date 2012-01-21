@@ -52,7 +52,7 @@ Cubemania::Application.routes.draw do
   resources :kinds
   resources :items
 
-  resource :password_recovery
+  resource :reset_password
 
   resource :login
   match 'logout' => 'logins#destroy', :as => 'logout'

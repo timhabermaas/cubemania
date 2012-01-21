@@ -3,10 +3,9 @@ ActionMailer::Base.smtp_settings = {
   :address => "smtp.gmail.com",
   :port => 587,
   :domain => "cubemania.org",
-  :user_name => "info",
+  :user_name => "info@cubemania.org",
   :password => ENV['EMAIL_PASSWORD'] || "blub",
   :authentication => :plain
 }
 
-#ActionMailer::Base.default_url_options[:host] = "localhost:3000"
-#Mail.register_interceptor(DevelopmentMailInterceptor) if Rails.env.development?
+Mail.register_interceptor(DevelopmentMailInterceptor) if Rails.env.development?

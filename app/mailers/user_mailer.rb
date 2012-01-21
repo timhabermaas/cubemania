@@ -1,15 +1,15 @@
 class UserMailer < ActionMailer::Base
-  default :from => 't.habermaas@gmail.com'
+  default :from => 'Cubemania <info@cubemania.org>'
 
   def welcome_mail(user)
     @user = user
     mail :to => "#{user.name} <#{user.email}>", :subject => 'Welcome to Cubemania'
   end
 
-  def password_reset(user, password)
+  def reset_password(user, password)
     @user = user
     @password = password
-    mail :to => "#{user.name} <#{user.email}>", :subject => 'New Password For Cubemania'
+    mail :to => "#{user.name} <#{user.email}>", :subject => 'New Password for Cubemania'
   end
 
   def match_mail(user, match)
