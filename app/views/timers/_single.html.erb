@@ -1,14 +1,14 @@
 <li id="single-<%= single.id %>">
   <div class="fu">
-    <span class="time<%= " dnf" if single.dnf? %>" data-dnf="<%= single.dnf? %>" data-time="<%= single.time %>"><%= single.human_time %><%= "+" if single.plus2? %></span>
+    <span class="time <%= single.penalty %>" data-time="<%= single.time %>"><%= single.human_time %></span>
     <div class="details">
       <small class="scramble"><%= single.scramble %></small>
       <time datetime="<%= single.created_at.iso8601 %>"><%=dt single.created_at %></time>
       <q class="comment"><%= single.comment %></q>
     </div>
     <div class="edit">
-      <%= link_to "DNF", dnf_puzzle_timer_path(@puzzle, single), :method => :put, :remote => true %>
-      <%= link_to "+2", plus2_puzzle_timer_path(@puzzle, single), :method => :put, :remote => true %>
+      <%= link_to "DNF", dnf_puzzle_timer_path(@puzzle, single), :method => :put, :remote => true, :class => "dnf" %>
+      <%= link_to "+2", plus2_puzzle_timer_path(@puzzle, single), :method => :put, :remote => true, :class => "plus2" %>
       <%= link_to "X", puzzle_timer_path(@puzzle, single), :method => :delete, :remote => true, :class => "delete" %>
     </div>
   </div>

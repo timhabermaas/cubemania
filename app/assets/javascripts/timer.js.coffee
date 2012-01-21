@@ -8,6 +8,22 @@ jQuery ->
     timerEnabled = true
     startTime = 0
 
+    $("#singles li a.dnf").bind "click", (event) ->
+      time = $(this).parent().parent().find(".time")
+      time.toggleClass("dnf")
+      updateStatistics()
+
+    $("#singles li a.plus2").bind "click", (event) ->
+      time = $(this).parent().parent().find(".time")
+      time.toggleClass("plus2")
+      console.log time.data("time")
+      if time.hasClass("plus2")
+        time.data("time", parseInt(time.data("time")) + 2000)
+      else
+        time.data("time", parseInt(time.data("time")) - 2000)
+      time.text(formatTime parseInt(time.data("time")))
+      updateStatistics()
+
     $("#timer .toggle").bind "click", (event) ->
       $("#timer #new_single").toggle()
       $("#timer .time").toggle()
