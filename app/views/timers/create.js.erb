@@ -1,5 +1,7 @@
 $("#singles ol").prepend($("<%=j render :partial =>'single', :object => @single %>").fadeIn('slow'));
-$("#singles ol li:last-child").remove();
+if ($("#singles li").length > 12) {
+  $("#singles li:last-child").remove();
+}
 $("#timer form")[0].reset();
 $("#timer .scramble").text("<%=j @scramble %>");
 $("#timer form #single_scramble").val("<%=j @scramble %>");
