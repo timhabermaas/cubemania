@@ -36,6 +36,7 @@ describe Record do
 
       it "doesn't update the existing record if the time is not faster" do
         old_updated_at = record.updated_at
+        sleep 5
         Record.update_with!(user, puzzle, 5, 10, singles)
         record.reload.updated_at.should == old_updated_at
       end
