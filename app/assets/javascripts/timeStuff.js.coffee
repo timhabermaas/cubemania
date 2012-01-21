@@ -14,7 +14,7 @@ root.average = (singles, size) ->
   singles = singles[0...size]
   dnfs = (single for single in singles when $(single).data("dnf"))
 
-  return nil if dnfs.length > 1 or singles.length < size
+  return null if dnfs.length > 1 or singles.length < size
 
   solvedSingles = (single for single in singles when not $(single).data("dnf"))
   times = (parseInt($(single).data("time")) for single in solvedSingles)
