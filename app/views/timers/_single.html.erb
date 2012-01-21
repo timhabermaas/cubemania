@@ -1,6 +1,6 @@
 <li id="single-<%= single.id %>">
   <div class="fu">
-    <span class="time<%= " dnf" if single.dnf? %>" data-time="<%= single.time %>"><%= single.human_time %><%= "+" if single.plus2? %></span>
+    <span class="time<%= " dnf" if single.dnf? %>" data-dnf="<%= single.dnf? %>" data-time="<%= single.time %>"><%= single.human_time %><%= "+" if single.plus2? %></span>
     <div class="details">
       <small class="scramble"><%= single.scramble %></small>
       <time datetime="<%= single.created_at.iso8601 %>"><%=dt single.created_at %></time>
