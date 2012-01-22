@@ -11,7 +11,7 @@ Array.sum = (array) ->
   total += item for item in array
   total
 
-$.fn.textToggle = (open, close) ->
+$.fn.toggleText = (open, close) ->
   $(this).text(if $(this).text() is open then close else open)
 
 root.calculateDst = ->

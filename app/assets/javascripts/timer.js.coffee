@@ -17,7 +17,6 @@ jQuery ->
     $("#singles li a.plus2").bind "click", (event) ->
       time = $(this).parent().parent().find(".time")
       time.toggleClass("plus2")
-      console.log time.data("time")
       if time.hasClass("plus2")
         time.data("time", parseInt(time.data("time")) + 2000)
       else
@@ -25,14 +24,14 @@ jQuery ->
       time.text(formatTime parseInt(time.data("time")))
       updateStatistics()
 
-    $("#timer .toggle").bind "click", (event) ->
+    $("#timer a.toggle").bind "click", (event) ->
       $("#timer #new_single").toggle()
       $("#timer .time").toggle()
-      if $(this).text() == "Set times manually"
-        $(this).text("Changed your mind?")
+      $(this).toggleText("Changed your mind?", "Set times manually")
+      if $(this).text() == "Changed your mind?"
         $("#single_human_time").focus()
       else
-        $(this).text("Set times manually")
+        $("#single_human_time").blur()
       event.preventDefault()
 
     $("textarea, input[type=text]").bind('focus', ->
