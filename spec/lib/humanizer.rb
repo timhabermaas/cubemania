@@ -1,4 +1,4 @@
-require "spec_helper"
+require "humanizer"
 
 class Dummy
   extend Humanizer
