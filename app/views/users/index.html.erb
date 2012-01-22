@@ -1,10 +1,6 @@
-<%= form_tag users_path, :method => 'get', :id => "users_search" do %>
-  <p>
-    <%= text_field_tag :q, params[:q] %>
-  </p>
-  <p>
-    <%= submit_tag "Search" %>
-  </p>
+<%= form_tag users_path, :method => 'get', :id => "users-search" do %>
+
+  <%= search_field_tag :q, params[:q], :placeholder => "Search", :results => "5", :autosave => "users-search" %>
 <% end %>
 <ul id="users">
 <% for user in @users %>
