@@ -1,6 +1,6 @@
-<div class="admin">
-  <%= link_to_function admin_label, "$(this).textToggle('#{admin_label}', 'Changed your mind?'); $('#form').slideToggle('fast')", :class => 'toggle' %>
-  <div id="form" style="display: none">
-    <%= render 'form' %>
+<section class="admin">
+  <%= link_to admin_label, "#", :class => "toggle", :data => { :text => admin_label } %>
+  <div class="form">
+    <%= render "form" %>
   </div>
-</div>
+</section>

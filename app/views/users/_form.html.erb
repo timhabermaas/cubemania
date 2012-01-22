@@ -1,3 +1,21 @@
-<h1>Editing Account</h1>
-
-<%= render 'edit_form' %>
+<%= semantic_form_for @user do |form| %>
+  <%= form.inputs do %>
+    <%= form.input :name %>
+    <%= form.input :email %>
+    <%= form.input :bot_email %>
+    <%= form.input :wca, :label => 'WCA ID (optional)' %>
+    <%= form.input :time_zone, :as => :time_zone %>
+    <%= form.input :wants_emails, :label => 'Receive Emails' %>
+    <% if admin? %>
+      <%= form.input :sponsor %>
+      <%= form.input :ignored %>
+      <%= form.input :role, :collection => User::ROLES.collect { |r| [r.titleize, r] }, :include_blank => false %>
+    <% end %>
+    <%= form.input :password %>
+    <%= form.input :password_confirmation, :label => 'Confirmation' %>
+  <% end %>
+  <%= form.buttons do %>
+    <%= form.commit_button action_label('Register') %>
+    <%= link_to 'Destroy', @user, :confirm => 'Are you sure?', :method => :delete %>
+  <% end %>
+<% end %>
