@@ -47,10 +47,12 @@ Cubemania::Application.routes.draw do
   #match 'puzzles/:puzzle_id/timer' => 'times#index', :as => 'puzzle_times', :defaults => { :puzzle_id => default_puzzle }
   match 'puzzles/:puzzle_id/competitions/:id/:date' => 'competitions#show', :as => 'puzzle_competition_date'
 
-  match 'auth/:provider/callback', :to => 'facebooks#create'
-
   resources :kinds
   resources :items
+
+  resources :authorizations
+  match '/auth/twitter/callback' => 'authorizations#create'
+  match '/auth/failure' => 'authorizations#failure'
 
   resource :reset_password
 

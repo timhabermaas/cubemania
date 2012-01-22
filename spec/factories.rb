@@ -13,6 +13,12 @@ FactoryGirl.define do
     end
   end
 
+  factory :authorization do
+    provider "twitter"
+    uid "12325141asda"
+    user
+  end
+
   factory :post do
     sequence(:title) { |n| "title #{n}" }
     content 'some stupid content full of stuff'

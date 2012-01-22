@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/rack/rack.git
+  revision: e20baec005238f9876281c0d083fe5a4e01aa034
+  ref: e20baec005238f9876281c0d083fe5a4e01aa034
+  specs:
+    rack (1.4.0)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -73,6 +80,7 @@ GEM
       rack
       rack-jsonp
       rack-mount
+    hashie (1.2.0)
     hike (1.2.1)
     i18n (0.6.0)
     journey (1.0.0)
@@ -92,9 +100,17 @@ GEM
     mysql (2.8.1)
     newrelic_rpm (3.3.1)
     nokogiri (1.5.0)
+    oauth (0.4.5)
+    omniauth (1.0.2)
+      hashie (~> 1.2)
+      rack
+    omniauth-oauth (1.0.0)
+      oauth
+      omniauth (~> 1.0)
+    omniauth-twitter (0.0.7)
+      omniauth-oauth (~> 1.0)
     pg (0.12.2)
     polyglot (0.3.3)
-    rack (1.4.0)
     rack-cache (1.1)
       rack (>= 0.4)
     rack-jsonp (1.3.0)
@@ -192,7 +208,9 @@ DEPENDENCIES
   launchy
   mysql
   newrelic_rpm
+  omniauth-twitter
   pg
+  rack!
   rails (= 3.2.0)
   rspec-rails
   sass-rails (~> 3.2.3)

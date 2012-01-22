@@ -1,0 +1,8 @@
+<ul id="providers">
+  <% @authorizations.each do |authorization| %>
+    <li>
+      <strong><%= authorization.provider.humanize %></strong>
+      <%= link_to "Disconnect", authorization, :method => :delete %>
+    </li>
+  <% end %>
+</ul>
