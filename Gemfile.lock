@@ -70,6 +70,10 @@ GEM
     factory_girl_rails (1.5.0)
       factory_girl (~> 2.4.0)
       railties (>= 3.0.0)
+    faraday (0.7.6)
+      addressable (~> 2.2)
+      multipart-post (~> 1.1)
+      rack (~> 1.1)
     ffi (1.0.11)
     formtastic (2.0.2)
       rails (~> 3.0)
@@ -97,15 +101,24 @@ GEM
     mime-types (1.17.2)
     multi_json (1.0.4)
     multi_xml (0.4.1)
+    multipart-post (1.1.4)
     mysql (2.8.1)
     newrelic_rpm (3.3.1)
     nokogiri (1.5.0)
     oauth (0.4.5)
+    oauth2 (0.5.2)
+      faraday (~> 0.7)
+      multi_json (~> 1.0)
     omniauth (1.0.2)
       hashie (~> 1.2)
       rack
+    omniauth-facebook (1.2.0)
+      omniauth-oauth2 (~> 1.0.0)
     omniauth-oauth (1.0.0)
       oauth
+      omniauth (~> 1.0)
+    omniauth-oauth2 (1.0.0)
+      oauth2 (~> 0.5.0)
       omniauth (~> 1.0)
     omniauth-twitter (0.0.7)
       omniauth-oauth (~> 1.0)
@@ -208,6 +221,7 @@ DEPENDENCIES
   launchy
   mysql
   newrelic_rpm
+  omniauth-facebook
   omniauth-twitter
   pg
   rack!

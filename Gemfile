@@ -26,6 +26,7 @@ gem 'will_paginate'
 gem 'formtastic'
 gem 'friendly_id', '~> 4.0.0'
 gem 'omniauth-twitter'
+gem 'omniauth-facebook'
 gem 'rack', :git => 'https://github.com/rack/rack.git', :ref =>'e20baec005238f9876281c0d083fe5a4e01aa034' # FIXME https://github.com/intridea/omniauth/issues/562
 
 gem 'scrambler'

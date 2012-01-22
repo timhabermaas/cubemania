@@ -52,6 +52,8 @@ Cubemania::Application.routes.draw do
 
   resources :authorizations
   match '/auth/twitter/callback' => 'authorizations#create'
+  match '/auth/facebook/callback' => 'authorizations#create'
+  match '/auth/developer/callback' => 'authorizations#create'
   match '/auth/failure' => 'authorizations#failure'
 
   resource :reset_password
