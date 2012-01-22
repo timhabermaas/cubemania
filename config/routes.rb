@@ -1,7 +1,7 @@
 begin
-  DEFAULT_PUZZLE = Puzzle.default.id
+  default_puzzle = Puzzle.default.id
 rescue # if there's no database yet, it shouldn't crash creating one
-  DEFAULT_PUZZLE = 1
+  default_puzzle = 1
 end
 
 #require 'api'
@@ -21,7 +21,7 @@ Cubemania::Application.routes.draw do
 
   # resources :matches, :only => :index
 
-  resources :puzzles, :defaults => { :puzzle_id => DEFAULT_PUZZLE } do
+  resources :puzzles, :defaults => { :puzzle_id => default_puzzle } do
     resources :timers, :path => "timer" do
       put :dnf, :on => :member
       put :plus2, :on => :member
@@ -32,7 +32,7 @@ Cubemania::Application.routes.draw do
     #   resources :times, :controller => :clocks
     # end
     # resources :users do
-    #   resources :matches, :defaults => { :puzzle_id => DEFAULT_PUZZLE }
+    #   resources :matches, :defaults => { :puzzle_id => default_puzzle }
     # end
     resources :competitions do
       resources :times
@@ -42,9 +42,9 @@ Cubemania::Application.routes.draw do
     #match 'competitions/:id/:date' => 'competitions#show', :as => 'competition_date'
     #match 'records/:type' => 'records#index', :as => 'records', :defaults => { :type => 'average' }, :type => /(single)|(average)/
   end
-  match 'puzzles/:puzzle_id/records/:type' => 'records#index', :as => 'puzzle_records', :defaults => { :type => 'avg5', :puzzle_id => DEFAULT_PUZZLE },
+  match 'puzzles/:puzzle_id/records/:type' => 'records#index', :as => 'puzzle_records', :defaults => { :type => 'avg5', :puzzle_id => default_puzzle },
           :type => /(single)|(avg5)|(avg12)/
-  #match 'puzzles/:puzzle_id/timer' => 'times#index', :as => 'puzzle_times', :defaults => { :puzzle_id => DEFAULT_PUZZLE }
+  #match 'puzzles/:puzzle_id/timer' => 'times#index', :as => 'puzzle_times', :defaults => { :puzzle_id => default_puzzle }
   match 'puzzles/:puzzle_id/competitions/:id/:date' => 'competitions#show', :as => 'puzzle_competition_date'
 
   match 'auth/:provider/callback', :to => 'facebooks#create'
