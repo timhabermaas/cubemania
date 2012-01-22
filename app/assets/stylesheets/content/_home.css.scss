@@ -1,5 +1,5 @@
 p.announcement {
-  background-color: #517397;
+  background-color: $darkblue;
   padding: 0.5em;
   margin-bottom: 2em;
 }
@@ -13,7 +13,7 @@ p.introduction {
 #features {
   text-align: center;
   img {
-    border: 2px solid #517397;
+    border: 2px solid $darkblue;
     margin-bottom: 0.25em;
   }
   a:hover {

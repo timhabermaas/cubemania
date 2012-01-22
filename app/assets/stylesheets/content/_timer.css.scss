@@ -2,7 +2,7 @@
   margin-bottom: 2em;
 
   #timer {
-    background-color: #517397;
+    background-color: $darkblue;
     text-align: center;
     border-radius: 10px;
     display: inline-block;
@@ -59,7 +59,7 @@
     margin-left: 44px;
     display: inline-block;
     border-radius: 10px;
-    background-color: #517397;
+    background-color: $darkblue;
     vertical-align: middle;
     .current {
       margin-bottom: 0.5em;
@@ -75,7 +75,7 @@
   #singles {
     width: 290px;
     float: right;
-    background-color: #517397;
+    background-color: $darkblue;
     border-radius: 10px;
     padding: 16px;
     ol {
