@@ -24,4 +24,5 @@ end
 Spork.each_run do
   FactoryGirl.factories.clear
   FactoryGirl.reload
+  load File.expand_path("../../config/routes.rb", __FILE__)
 end
