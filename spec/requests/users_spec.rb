@@ -16,6 +16,7 @@ describe "Users" do
       ActionMailer::Base.deliveries.last.to.should include("rowe@awesome.com")
     end
   end
+
   describe "GET /users" do
     it "lists users" do
       create :user, :name => "ryan"
@@ -24,6 +25,19 @@ describe "Users" do
 
       page.should have_content "ryan"
       page.should have_content "rowe"
+    end
+  end
+
+  describe "PUT /users" do
+    it "updates users's name" do
+      user = login
+      visit user_path(user)
+      fill_in "Name", :with => "Peter"
+      click_button "Update"
+
+      within("#user") do
+        page.should have_content "Peter"
+      end
     end
   end
 end
