@@ -1,7 +1,7 @@
 class SessionsController < ApplicationController
   skip_load_and_authorize_resource
   skip_login :except => :destroy
-  logout :only => [:show, :create]
+  logout :only => [:new, :create]
 
   def new
     @login = Login.new
@@ -13,7 +13,7 @@ class SessionsController < ApplicationController
       flash[:notice] = "Hello #{current_user.name}, you are now logged in"
       redirect_back root_path
     else
-      render :action => 'show'
+      render :new
     end
   end
 
