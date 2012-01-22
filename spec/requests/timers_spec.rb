@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe "Timer" do
   before :each do
-    @user = login :as => "user"
+    @user = login
   end
 
   let(:puzzle) { create :puzzle, :name => "3x3x3" }
@@ -54,6 +54,19 @@ describe "Timer" do
       # 10.00 10.00 10.00 (5.00) 5.00
       within "#stats .best" do
         page.should have_content "8.33"
+      end
+    end
+  end
+
+  describe "displaying new records" do
+    it "shows flash message with time and link to share page" do
+      visit puzzle_timers_path(puzzle)
+      fill_in "Time", :with => "13.37"
+      click_button "Submit"
+      within "div.flash" do
+        page.should have_content "single record"
+        page.should have_content "13.37"
+        page.should have_link "Share"
       end
     end
   end

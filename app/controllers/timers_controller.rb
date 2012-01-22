@@ -75,19 +75,9 @@ private
     @puzzle = Puzzle.find params[:puzzle_id]
   end
 
-  # TODO deliver only time and format (1, 5, 12). client should create a proper message out of it
   def set_flash
-    messages = []
-    titles = []
-    [1, 5, 12].each do |n|
-      if @records[n] && @records[n].singles.include?(@single)
-        messages << "You set a time of <strong>#{view_context.ft @records[n].time}</strong>!<br /><a href='#'>Share on Facebook!</a>"
-        titles << (n == 1 ? "Single Record" : "Average of #{n} Record")
-      end
+    if @records[1] && @records[1].singles.include?(@single)
+      flash[:notice] = "You have a new single record with #{view_context.ft(@single.time)}! #{view_context.link_to 'Share', root_path}".html_safe
     end
-    flash[:notice] = messages.join "@"
-    flash[:title] = titles.join "@"
-    flash[:image] = view_context.image_path("puzzles.png")
-    flash[:image_position] = @puzzle.css_position.to_s#view_context.image_path("puzzles.png")
   end
 end

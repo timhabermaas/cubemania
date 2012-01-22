@@ -1,5 +1,3 @@
-<% flash.each do |type, msg| %>
-  <%= content_tag :div, :class => "flash #{type}" do %>
-    <%= content_tag :p, msg %>
-  <% end %>
-<% end %>
+<div class="flash notice"<%= " style='display:none'" unless flash[:notice] %>>
+  <p><%= flash[:notice] %></p>
+</div>
