@@ -1,10 +1,12 @@
+<%= render 'layouts/admin' %>
+
 <%= render 'tabs' %>
 
 <%- if @competitions.empty? -%>
 <p class="challenge">
   No<%= repeat?(:once) ? ' one-time' : " #{repeat}" unless repeat? :all %> competitions for <%= @puzzle.name %> <%= @puzzle.kind.name %> yet.<br/>
-  <%= link_to_function 'Create One!', "$('.admin a.toggle').click(); $('#competition_name').focus()" if logged_in? %>
-  <%= link_to 'Login To Create One!', login_path(:return_to => request.request_uri) unless logged_in? %>
+  <%= link_to_function 'Create One!', "$('section.admin a.toggle').click(); $('#competition_name').focus()" if logged_in? %>
+  <%= link_to 'Login To Create One!', login_path(:return_to => request.fullpath) unless logged_in? %>
 </p>
 <%- else -%>
 <div id="competitions">
