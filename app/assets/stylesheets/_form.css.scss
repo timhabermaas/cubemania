@@ -1,4 +1,7 @@
 form {
+  input, textarea, select {
+    margin: 0;
+  }
   li {
     margin-bottom: 0.75em;
   }
@@ -18,7 +21,6 @@ form {
   }
   input, textarea {
     padding: 1px;
-    margin: 0;
   }
   input[type=text], input[type=password], input[type=email] {
     width: 15em;
