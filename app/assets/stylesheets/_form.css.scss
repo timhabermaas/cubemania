@@ -1,6 +1,6 @@
 form {
   li {
-    margin-bottom: 0.5em;
+    margin-bottom: 0.75em;
   }
   li.error {
     input {
@@ -18,7 +18,7 @@ form {
   }
   input, textarea {
     padding: 1px;
-    vertical-align: top;
+    margin: 0;
   }
   input[type=text], input[type=password], input[type=email] {
     width: 15em;
@@ -29,5 +29,12 @@ form {
   }
   .bot {
     display: none;
+  }
+  li.boolean label {
+    float: none;
+    margin-left: 10em;
+    input {
+      margin-right: 0.75em;
+    }
   }
 }
