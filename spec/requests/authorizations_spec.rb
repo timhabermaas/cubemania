@@ -16,9 +16,18 @@ describe "Authorizations" do
   end
 
   describe "POST /authorizations" do
+    before :each do
+      OmniAuth.config.mock_auth[:twitter] = { :provider => "twitter",
+                                              :uid => "12345",
+                                              :credentials => { :token => "afdsaf32412", :secret => "ads41s" } }
+      OmniAuth.config.mock_auth[:facebook] = { :provider => "facebook",
+                                               :uid => "54321",
+                                               :credentials => { :token => "agsasfa", :secret => "addsafasers41s" } }
+    end
     describe "Twitter" do
+
+
       it "connects user with Twitter" do
-        OmniAuth.config.mock_auth[:twitter] = { :provider => "twitter", :uid => "12345" }
         visit "/auth/twitter"
         page.should have_content "Successfully connected to Twitter."
         @user.authorizations.first.provider.should == "twitter"
@@ -26,11 +35,10 @@ describe "Authorizations" do
       end
 
       it "updates uid if user connects again" do
-        @user.authorizations.create! :uid => "32411012", :provider => "twitter"
-        OmniAuth.config.mock_auth[:twitter] = { :provider => "twitter", :uid => "1234" }
+        create :authorization, :user => @user, :uid => "32411012", :provider => "twitter"
         visit "/auth/twitter"
         @user.reload.authorizations.should have(1).item
-        @user.reload.authorizations.first.uid.should == "1234"
+        @user.reload.authorizations.first.uid.should == "12345"
       end
 
       it "displays error if some information is missing" do
@@ -48,19 +56,17 @@ describe "Authorizations" do
 
     describe "Facebook" do
       it "connects user with Facebook" do
-        OmniAuth.config.mock_auth[:facebook] = { :provider => "facebook", :uid => "12345" }
         visit "/auth/facebook"
         page.should have_content "Successfully connected to Facebook."
         @user.authorizations.first.provider.should == "facebook"
-        @user.authorizations.first.uid.should == "12345"
+        @user.authorizations.first.uid.should == "54321"
       end
 
       it "updates uid if user connects again" do
-        @user.authorizations.create! :uid => "32411012", :provider => "facebook"
-        OmniAuth.config.mock_auth[:facebook] = { :provider => "facebook", :uid => "1234" }
+        create :authorization, :user => @user, :uid => "32411012", :provider => "facebook"
         visit "/auth/facebook"
         @user.reload.authorizations.should have(1).item
-        @user.reload.authorizations.first.uid.should == "1234"
+        @user.reload.authorizations.first.uid.should == "54321"
       end
 
       it "displays error if some information is missing" do
@@ -77,8 +83,6 @@ describe "Authorizations" do
     end
 
     it "user can haz two connections" do
-      OmniAuth.config.mock_auth[:facebook] = { :provider => "facebook", :uid => "141231" }
-      OmniAuth.config.mock_auth[:twitter] = { :provider => "twitter", :uid => "515121" }
       visit "auth/facebook"
       visit "auth/twitter"
       page.should have_content "Facebook"

@@ -5,6 +5,7 @@ describe Authorization do
     it { should validate_presence_of :user_id }
     it { should validate_presence_of :provider }
     it { should validate_presence_of :uid }
+    it { should validate_presence_of :token }
 
     it "can have only one twitter account for each user" do
       user = create :user
