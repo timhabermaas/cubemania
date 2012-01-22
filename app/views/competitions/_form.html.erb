@@ -1,32 +1,19 @@
-<%= form_for [@puzzle, @competition ||= @puzzle.competitions.build], :remote => true do |form| %>
-  <p>
-    <%= form.label :puzzle %>
-    <%= "#{@puzzle.name.titleize} (#{@puzzle.kind.name.titleize})" %>
-  </p>
-  <p>
-    <%= form.label :name %>
-    <%= form.text_field :name %>
-  </p>
-  <p>
-    <%= form.label :description %>
-    <%= form.text_area :description, :rows => 5 %>
-  </p>
-  <p>
-    <%= form.label :repeat %>
-    <%= form.select :repeat, Competition::REPEATS.collect { |r| [r.titleize, r] }, :selected => repeat %>
-  </p>
-  <p>
-    <%= form.label :skill %>
-    <%= form.select :skill, Competition::SKILLS.collect { |s| [s.titleize, s] } %>
-  </p>
-<%- if admin? -%>
-  <p>
-    <%= form.label :sticky %>
-    <%= form.check_box :sticky %>
-  </p>
-<%- end -%>
-  <p>
-    <%= form.submit action_label %>
+<%= semantic_form_for [@puzzle, @competition ||= @puzzle.competitions.build], :remote => true do |form| %>
+  <%= form.inputs do %>
+    <li>
+      <%= form.label "Puzzle" %>
+      <%= "#{@puzzle.name.titleize} (#{@puzzle.kind.name.titleize})" %>
+    </li>
+    <%= form.input :name %>
+    <%= form.input :description, :as => :text, :input_html => { :rows => 5 } %>
+    <%= form.input :repeat, :collection => Competition::REPEATS.collect { |r| [r.titleize, r] }, :include_blank => false, :input_html => { :selected => repeat } %>
+    <%= form.input :skill, :collection => Competition::SKILLS.collect { |s| [s.titleize, s] }, :include_blank => false %>
+    <% if admin? %>
+      <%= form.input :sticky %>
+    <% end %>
+  <% end %>
+  <%= form.buttons do %>
+    <%= form.commit_button action_label %>
     <%= link_to 'Destroy', [@puzzle, @competition], :confirm => 'Are you sure?', :method => :delete if edit? %>
-  </p>
+  <% end %>
 <% end %>
