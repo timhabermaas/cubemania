@@ -1,20 +1,17 @@
 Redesign:
   inaktive user anzeigen überflüssig mit neuem system :)
-  puzzle - points - user table erst user eintragen, wenn er min. ein match gemacht hat. (find_or_create)
-  Display the time each player has wasted solving cubes.
-  List of singles should have some kind of time stamp for client-side statistics (data-time)
-  List of singles should contain the scramble (title attribute vs. data-scramble attribute)
   Import for cct session?
-  Rename "times" to "timer"
 Chart:
   Small chart for scrolling and zooming
   Threshold at where your best x averages lie below
   Remove data point from Chart after destroying it
-  http://www.facebook.com/album.php?aid=85369&id=1376617312 (Zeitenverteilung)
+Chart Types (different page):
+  Time Distribution (http://www.facebook.com/album.php?aid=85369&id=1376617312)
+  Punch Card (http://code.google.com/apis/chart/image/docs/user_submitted_gallery.html)
 Timer:
   allow to stop timer with all keys
 User's profile:
-  Total cubing time: 4 days 12 hours 21 minutes and 3 seconds
+  Rowe spent <strong>4 days 12 hours 21 minutes and 3 seconds</strong> cubing!
 Facebook:
  facebook_access_token.post("/me/feed", :picture => @puzzle.image.url(:facebook),
                                         :name => @puzzle.name + ' ' + @puzzle.kind.name,
@@ -33,10 +30,7 @@ General:
 
 Random ideas:
   Gray out comments from users, which are stupid. (http://www.joystiq.com/2010/03/17/steam-on-mac-os-x-interview/#comments)
-
-Matches should be destroyable, but only through a destroy request including a reason why the user wants to delete that match.
-Ask Patrick for a user's statistics table.
-User#index becomes the ranking page.
+  Achievments
 
 Matches:
   Every Match has shouts
