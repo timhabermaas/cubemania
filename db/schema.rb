@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120122011355) do
+ActiveRecord::Schema.define(:version => 20120123212030) do
 
   create_table "authorizations", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -20,6 +20,21 @@ ActiveRecord::Schema.define(:version => 20120122011355) do
     t.string   "secret"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+  end
+
+  create_table "averages", :force => true do |t|
+    t.integer  "time",                              :null => false
+    t.boolean  "dnf",            :default => false, :null => false
+    t.integer  "user_id",                           :null => false
+    t.integer  "puzzle_id",                         :null => false
+    t.integer  "competition_id",                    :null => false
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
+  end
+
+  create_table "averages_singles", :id => false, :force => true do |t|
+    t.integer "average_id", :null => false
+    t.integer "single_id",  :null => false
   end
 
   create_table "comments", :force => true do |t|

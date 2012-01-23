@@ -16,6 +16,11 @@ class Competition < ActiveRecord::Base
       where(:created_at => competition.range(date))
     end
   end
+  has_many :averages, :order => 'dnf, time' do
+    def for(competition, date, ignore = true)
+      where("averages.created_at" => competition.range(date))
+    end
+  end
 
 =begin
   belongs_to :puzzle

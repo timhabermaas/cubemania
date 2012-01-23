@@ -56,6 +56,13 @@ FactoryGirl.define do
     penalty "dnf"
   end
 
+  factory :average do
+    time { rand(16000) + 5000 }
+    association :puzzle
+    association :user
+    association :competition
+  end
+
   factory :record do
     time { rand(16000) + 5000 }
     association :puzzle
