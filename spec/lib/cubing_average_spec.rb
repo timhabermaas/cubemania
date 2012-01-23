@@ -41,6 +41,11 @@ describe CubingAverage do
       }.should change(average, :time)
     end
 
+    it "returns nil for an empty singles array" do
+      average = CubingAverage.new([])
+      average.time.should == nil
+    end
+
     context "one single" do
       it "returns the time" do
         CubingAverage.new([single_5]).time.should == 5

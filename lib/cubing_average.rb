@@ -12,6 +12,8 @@ class CubingAverage
 
   def time
     @time ||=(
+      return nil if singles.empty?
+
       if @singles.size == 1
         return @singles.first.dnf? ? nil : @singles.first.time
       end
