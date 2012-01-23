@@ -9,9 +9,9 @@
   <%= link_to 'Login To Create One!', login_path(:return_to => request.fullpath) unless logged_in? %>
 </p>
 <%- else -%>
-<div id="competitions">
+<ul id="competitions">
   <%= render @competitions %>
-</div>
+</ul>
 <div id="info">
   <p>
     Competitions start immediately after creation.
