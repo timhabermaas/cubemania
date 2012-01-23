@@ -1,6 +1,8 @@
-<div class="flash notice"<%= " style='display:none'" unless flash[:notice] %>>
-  <p>
-    <%= flash[:notice] %>
-  </p>
-  <a class="close" href="#">X</a>
-</div>
+<% [:alert, :notice].each do |type| %>
+  <div class="flash <%= type %>"<%= " style='display:none'" unless flash[type] %>>
+    <p>
+      <%= flash[type] %>
+    </p>
+    <a class="close" href="#">X</a>
+  </div>
+<% end %>
