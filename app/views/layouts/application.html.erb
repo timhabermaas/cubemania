@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html>
+<html class="no-js">
   <head>
     <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
     <title><%= page_title %> &middot; Cubemania</title>
@@ -8,6 +8,9 @@
     <%= javascript_include_tag "application" %>
 
     <%= csrf_meta_tag %>
+    <script type="text/javascript">
+      document.documentElement.className = "js";
+    </script>
   </head>
   <body>
     <%= render "layouts/header" %>
