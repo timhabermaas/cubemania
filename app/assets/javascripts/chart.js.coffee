@@ -2,15 +2,15 @@ root = exports ? this
 
 jQuery ->
   if $("#chart").length
-    $.getJSON $("#chart").data("url"), (data) ->
+    $.getJSON $("#chart").data("url"), (singles) ->
+      singles = (single.time for single in singles)
       window.chart = new Highcharts.Chart(
         chart:
           renderTo: "chart"
-          type: "spline"
         rangeSelector:
           selected: 1
         title:
-          text: "huhu"
+          text: $("#chart").data("puzzle-name")
         xAxis:
           title:
             text: "Date"
@@ -23,6 +23,6 @@ jQuery ->
               formatTime(this.value)
         series: [
           name: $("#chart").data("user-name")
-          data: data
+          data: singles
         ]
       )

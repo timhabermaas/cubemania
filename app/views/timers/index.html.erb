@@ -18,7 +18,7 @@
 </div>
 
 <div id="times">
-  <div id="chart" data-user-id="<%= current_user.id %>" data-puzzle-id="<%= @puzzle.id %>" data-user-name="<%= current_user.name %>" data-url="<%= user_singles_url(current_user, :puzzle_id => @puzzle.id) %>">
+  <div id="chart" data-user-id="<%= current_user.id %>" data-puzzle-id="<%= @puzzle.id %>" data-user-name="<%= current_user.name %>" data-puzzle-name="<%= @puzzle.name %> <%= @puzzle.kind.short_name %>" data-url="<%= user_singles_url(current_user, :puzzle_id => @puzzle.id) %>">
   </div>
   <aside id="singles">
     <ol>
