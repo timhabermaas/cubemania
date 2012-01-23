@@ -43,4 +43,9 @@ describe Humanizer do
       end
     end
   end
+
+  describe "#human_attribute=" do
+    it "understands 10.32s"
+    it "understands 10,32s"
+  end
 end
