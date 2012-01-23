@@ -12,6 +12,10 @@ class Ability
         u == user
       end
       can :create, Comment
+      can :create, Competition
+      can :update, Competition do |competition|
+        competition.user == user
+      end
       can :create, Single
       can [:destroy, :dnf, :plus2], Single do |single|
         single.user == user

@@ -1,7 +1,7 @@
 class CompetitionsController < ApplicationController
+  before_filter :load_puzzle
 
   def index
-    @puzzle = Puzzle.find params[:puzzle_id]
     params[:repeat] ||= 'all'
     if params[:repeat] == 'all'
       @competitions = @puzzle.competitions.includes(:user).
@@ -15,10 +15,13 @@ class CompetitionsController < ApplicationController
   end
 
   def create
-    @puzzle = Puzzle.find params[:puzzle_id]
     @competition = current_user.competitions.build params[:competition]
-    @competition.puzzle_id = params[:puzzle_id]
-    @competition.save
+    @competition.puzzle = @puzzle
+    if @competition.save
+      redirect_to [@puzzle, @competition], :notice => "Successfully created competition."
+    else
+      redirect_to puzzle_competitions_path(@puzzle) # TODO open panel again
+    end
   end
 
   def update
@@ -28,7 +31,6 @@ class CompetitionsController < ApplicationController
   end
 
   def show
-    @puzzle = Puzzle.find params[:puzzle_id]
     @competition = Competition.find params[:id]
     if params[:date].nil?
       time = Time.now.utc
@@ -37,6 +39,7 @@ class CompetitionsController < ApplicationController
       time = Time.utc time.year, time.month, time.day
     end
     @date = time
+=begin
     unless @competition.old? @date
       scrambles = @competition.scrambles.for @competition, @date
       if scrambles.empty?
@@ -45,11 +48,16 @@ class CompetitionsController < ApplicationController
         @scrambles = scrambles.map(&:scramble)
       end
     end
+=end
     @shouts = @competition.shouts.for @competition, @date
-    @parent = @competition
   end
 
   def object
     Competition.find params[:id]
+  end
+
+  private
+  def load_puzzle
+    @puzzle = Puzzle.find params[:puzzle_id]
   end
 end

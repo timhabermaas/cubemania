@@ -13,6 +13,15 @@ FactoryGirl.define do
     end
   end
 
+  factory :competition do
+    name "CubeMonster"
+    description "Rule it!"
+    user
+    puzzle
+    repeat "daily"
+    skill "beginner"
+  end
+
   factory :authorization do
     provider "twitter"
     uid "12325141asda"

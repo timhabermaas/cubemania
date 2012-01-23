@@ -2,6 +2,22 @@ class Competition < ActiveRecord::Base
   REPEATS = %w{once daily weekly monthly}
   SKILLS  = %w{all beginner intermediate expert}
 
+  attr_accessible :name, :description, :repeat, :skill, :sticky # TODO remove sticky from attributes
+
+  belongs_to :puzzle
+  belongs_to :user
+  has_many :scrambles, :order => 'created_at desc, position', :dependent => :destroy do
+    def for(competition, date)
+      where(:created_at => competition.range(date))
+    end
+  end
+  has_many :shouts, :order => 'created_at', :dependent => :destroy do
+    def for(competition, date)
+      where(:created_at => competition.range(date))
+    end
+  end
+
+=begin
   belongs_to :puzzle
   belongs_to :user; attr_protected :user_id, :user
   has_many :averages, :include => :user, :order => 'penalty, time', :dependent => :nullify do
@@ -25,7 +41,9 @@ class Competition < ActiveRecord::Base
     end
   end
 
-  validates_presence_of :name, :repeat, :user_id
+=end
+
+  validates_presence_of :name, :repeat, :skill, :user_id, :puzzle_id
   validates_length_of :name, :in => 2..64
   validates_length_of :description, :maximum => 256, :allow_nil => true
   validates_inclusion_of :repeat, :in => REPEATS
