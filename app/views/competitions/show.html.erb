@@ -10,4 +10,26 @@
       <%=m @competition.description %>
     </div>
   </div>
+  <%= semantic_form_for @competition, :url => add_average_puzzle_competition_path(@puzzle, @competition), :method => :post do |form| %>
+    <%= form.inputs do %>
+      <% @puzzle.attempt_count.times do |n| %>
+        <li>
+          <label class="label" for="average_single_time">Solve <%= n + 1 %><abbr title="required">*</abbr></label>
+          <input id="average_single_time" name="average[singles_attributes][][time]" step="any" type="text">
+        </li>
+        <li>
+          <label class="label" for="average_single_penalty">Penalty<abbr title="required">*</abbr></label>
+          <input id="average_single_penalty" name="average[singles_attributes][][penalty]" step="any" type="text">
+        </li>
+        <input id="average_single_scramble" name="average[singles_attributes][][scramble]" step="any" type="hidden" value="Fasf  fdsa fsda s">
+      <% end %>
+    <% end %>
+    <%= form.buttons do %>
+      <%= form.commit_button "Submit Average" %>
+    <% end %>
+  <% end %>
+
+  <table id="results">
+    <%= render :partial => "result", :collection => @competition.averages.for(@competition, @date) %>
+  </table>
 </section>

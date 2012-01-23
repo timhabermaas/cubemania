@@ -52,6 +52,19 @@ class CompetitionsController < ApplicationController
     @shouts = @competition.shouts.for @competition, @date
   end
 
+  def add_average
+    @competition = Competition.find params[:id]
+    @average = current_user.averages.build params[:average]
+    @average.competition = @competition
+    @average.puzzle = @puzzle
+    @average.singles.each { |s| s.penalty = nil if s.penalty.blank? }
+    if @average.save
+      redirect_to [@puzzle, @competition]
+    else
+      render :show
+    end
+  end
+
   def object
     Competition.find params[:id]
   end

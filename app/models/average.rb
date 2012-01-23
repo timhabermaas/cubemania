@@ -12,6 +12,10 @@ class Average < ActiveRecord::Base
 
   accepts_nested_attributes_for :singles
 
+  def comment
+    ""
+  end
+
   private
   def set_user_and_puzzle_for_singles
     singles.each do |s|
@@ -21,6 +25,7 @@ class Average < ActiveRecord::Base
   end
 
   def calculate_average
+    return if singles.any? { |s| s.time.nil? }
     average = CubingAverage.new(singles)
     self.time = average.time
     self.dnf = average.dnf?

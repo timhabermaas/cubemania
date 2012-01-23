@@ -24,7 +24,7 @@ describe "Competitions" do
     let(:competition) { create :competition, :puzzle => puzzle }
 
     it "enter all solves, click on submit and see your average" do
-      visit puzzle_competition_path(competition)
+      visit puzzle_competition_path(puzzle, competition)
       fill_in "Solve 1", :with => "12.32"
       fill_in "Solve 2", :with => "14.32"
       fill_in "Solve 3", :with => "16.42"

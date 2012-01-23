@@ -18,6 +18,8 @@ module ApplicationHelper
         new
       when :show, :update
         edit
+      else
+        edit # fix for competitions/1/add_average
     end.+ " #{params[:controller].singularize.titleize}"
   end
 
