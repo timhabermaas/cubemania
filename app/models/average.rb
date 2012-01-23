@@ -4,9 +4,11 @@ class Average < ActiveRecord::Base
   belongs_to :puzzle
   belongs_to :competition
 
+  attr_protected :user_id
+
   validates_presence_of :time, :user_id, :puzzle_id, :competition_id
 
-  before_validation :set_user_and_puzzle_for_singles, :calculate_time
+  before_validation :set_user_and_puzzle_for_singles, :calculate_average
 
   accepts_nested_attributes_for :singles
 
@@ -18,7 +20,9 @@ class Average < ActiveRecord::Base
     end
   end
 
-  def calculate_time
-    self.time = CubingAverage.new(singles).time
+  def calculate_average
+    average = CubingAverage.new(singles)
+    self.time = average.time
+    self.dnf = average.dnf?
   end
 end
