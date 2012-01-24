@@ -2,8 +2,13 @@ root = exports ? this
 
 jQuery ->
   if $("#chart").length
+    $("#singles li a.delete").live "click", (event) ->
+      id = $(this).parent().parent().parent().data("id")
+      element = chart.get(id)
+      if element
+        element.remove()
+
     $.getJSON $("#chart").data("url"), (singles) ->
-      singles = (single.time for single in singles)
       window.chart = new Highcharts.Chart(
         chart:
           renderTo: "chart"
@@ -13,8 +18,7 @@ jQuery ->
           text: $("#chart").data("puzzle-name")
         xAxis:
           title:
-            text: "Date"
-          type: "datetime"
+            text: "Singles"
         yAxis:
           title:
             text: "Time"

@@ -64,6 +64,15 @@ class TimersController < ApplicationController
     end
   end
 
+  def chart
+    user = User.find_by_id params[:user_id] || current_user
+    @singles = user.singles.for(@puzzle).recent(200).reverse
+    @singles = @singles.map { |s| { :id => s.id, :y => s.time } }
+    respond_to do |format|
+      format.json { render :json => @singles.to_json }
+    end
+  end
+
 private
   def fetch_records
     @records = { 1 => current_user.records.for(@puzzle, 1),

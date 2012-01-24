@@ -5,6 +5,7 @@ Chart:
   Small chart for scrolling and zooming
   Threshold at where your best x averages lie below
   Remove data point from Chart after destroying it
+  Mark DNF Singles
 Chart Types (different page):
   Time Distribution (http://www.facebook.com/album.php?aid=85369&id=1376617312)
   Punch Card (http://code.google.com/apis/chart/image/docs/user_submitted_gallery.html)

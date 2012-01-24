@@ -26,6 +26,7 @@ Cubemania::Application.routes.draw do
       put :dnf, :on => :member
       put :plus2, :on => :member
       get :more, :on => :collection
+      get :chart, :on => :collection
     end
     resources :singles
     # resources :matches do

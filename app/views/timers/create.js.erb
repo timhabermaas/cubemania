@@ -9,5 +9,11 @@ $("#stats").replaceWith("<%=j render 'stats' %>");
 <% if params[:single][:human_time].present? %>
   $("#single_human_time").focus();
 <% end %>
-chart.series[0].addPoint(<%= @single.time %>);
+chart.series[0].addPoint({id: <%= @single.id %>,
+                          y:  <%= @single.time %>}); // TODO single should know how to return chart structure
+if (chart.series[0].length > 200) {
+  chart.series[0].splice(0,1)
+  chart.redraw();
+}
+
 updateStatistics();
