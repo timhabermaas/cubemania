@@ -21,6 +21,12 @@ describe Single do
 
   it { should respond_to(:human_time) }
 
+  it "sets penalty to nil before validation if it's left blank" do
+    single = Single.new :penalty => " "
+    single.valid?
+    single.penalty.should == nil
+  end
+
   describe "#toggle_dnf" do
     subject { single.dnf? }
 
@@ -84,25 +90,27 @@ describe Single do
   describe "#set_time" do
     subject { single.time }
 
-    context "when human_time is set" do
-      before do
-        single.human_time = "1:12.32"
-        single.save
-      end
-
+    context "when human_time is set to non blank string" do
+      before { single.human_time = "1:12.32" }
       it "should set time to 72320 for 1:12.32" do
         should == 72320
       end
-    end
 
-    context "when human_time is not set" do
-      before do
-        single.human_time = ""
-        single.time = 1337
-        single.save
+      it "should not be overriden by blank time" do
+        single.time = ""
+        should == 72320
       end
 
-      it "should not change time" do
+      it "should allow time to be reset to nil" do
+        single.time = nil
+        should == nil
+      end
+    end
+
+    context "when human_time is set to blank string" do
+      it "should not change old time to 0" do
+        single.time = 1337
+        single.human_time = ""
         should == 1337
       end
     end
