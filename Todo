@@ -21,25 +21,17 @@ Facebook:
                                         :message => render_to_string('tweet.text', :layout => false))# if Rails.env.production?
 
 
+Sharing:
+  FbGraph::User.new("invalid_token").fetch raises FbGraph::Unauthorized. If this happens -> redirect
+
 General:
-  make a general cache_key(args*) helper method which joins with "/"
-  Remove Timer JS Code to external JS file. Use the data-attributes for urls and stuff. Also remove all link_to_functions
   Puzzle#destroy is missing
-  Reduce the size of averages.json to fit more averages into memcache (create tooltip at client side and only send raw data)
-  Better cache expiration for averages. At the moment all averages of one user get expired if he creates a new average.
-  Make facebook connection more fluent. If "Share it!" fails, user shouldn't do anything to share it anyway.
+  Add Faqs page
+    How to delete your account?
 
 Random ideas:
   Gray out comments from users, which are stupid. (http://www.joystiq.com/2010/03/17/steam-on-mac-os-x-interview/#comments)
   Achievments
-
-Matches:
-  Every Match has shouts
-  Design results page
-  Email the opponent if he has a new challenge
-
-Bugs:
-
 
 Enhancements:
 
@@ -56,7 +48,7 @@ Enhancements:
   Competition Messages/Challenges Vertical Align
   Proper route for competitions index repeat
   Reevaluate Indexes and Includes
-  Competitions: Challange another user
+  Competitions: Challenge another user
   Competitions: Add notice for new record
   Records: Write a method which repairs record flags.
   Competitions: Disable updating of competitions#repeat after first iteration
