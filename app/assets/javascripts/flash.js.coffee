@@ -4,7 +4,8 @@ jQuery ->
 
   $(document).ajaxComplete (e, request, options) ->
     message = request.getResponseHeader("X-Message")
+    type = request.getResponseHeader("X-Type")
 
     if message
-      $("div.flash p").html(message);
-      $("div.flash").show();
+      $("div.flash.#{type} p").html(message);
+      $("div.flash.#{type}").show();

@@ -35,7 +35,12 @@ private
 
   def flash_to_headers
     return unless request.xhr?
-    response.headers['X-Message'] = flash[:notice] unless flash[:notice].blank?
+    [:notice, :alert].each do |type|
+      if flash[type].present?
+        response.headers['X-Message'] = flash[type]
+        response.headers['X-Type'] = type.to_s
+      end
+    end
     flash.discard
   end
 end
