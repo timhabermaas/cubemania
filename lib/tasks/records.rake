@@ -30,7 +30,7 @@ namespace :records do
     User.find_each do |user|
       puts "User #{user.id}/#{count}: #{user.name}"
       puzzles.each do |puzzle|
-        Record.calculate_for! user.id, puzzle.id, 5
+        UpdateRecords.for_amount user, puzzle, 5
       end
     end
   end
@@ -42,7 +42,7 @@ namespace :records do
     User.find_each do |user|
       puts "User #{user.id}/#{count}: #{user.name}"
       puzzles.each do |puzzle|
-        Record.calculate_for! user.id, puzzle.id, 12
+        UpdateRecords.for_amount user, puzzle, 12
       end
     end
   end
