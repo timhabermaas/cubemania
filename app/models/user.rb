@@ -74,6 +74,20 @@ class User < ActiveRecord::Base
              :order => 'rank')
   end
 
+  def best_average(puzzle, amount)
+    result = CubingAverage.new [] # is basically a dnf average due to implementation of CubingAverage
+    current_average = RollingAverage.new amount
+
+    singles.for(puzzle).find_each do |single|
+      current_average << single
+      if current_average < result
+        result = current_average.dup
+      end
+    end
+
+    result
+  end
+
   def password=(password)
     @password = password
     if password_is_being_updated?
@@ -176,20 +190,5 @@ class User < ActiveRecord::Base
 
     def password_is_being_updated?
       id.nil? or not password.blank?
-    end
-
-    def best_average(puzzle_id, amount = 5)
-      # result = `bin/average #{id} #{puzzle_id} #{amount}`
-      best = nil
-      best_ra = nil
-      ra = RollingAverage.new(amount)
-      singles.for(puzzle_id).find_each do |single|
-        ra << single
-        if ra.average and (best.nil? or ra.average < best)
-          best = ra.average
-          best_ra = ra.dup
-        end
-      end
-      best_ra # Average.new ?
     end
 end

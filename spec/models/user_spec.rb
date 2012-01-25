@@ -113,4 +113,36 @@ describe User do
 
     it { should == 10 }
   end
+
+
+  describe "#best_average" do
+    let(:user) { Factory(:user) }
+    let(:puzzle) { Factory(:puzzle) }
+
+    context "given [10, 3, 15, 4, 6, 8, 7]" do
+      before :each do
+        [10, 3, 15, 4, 6, 8, 7].each do |time|
+          create :single, :puzzle => puzzle, :user => user, :time => time
+        end
+      end
+
+      it "returns an average with a time of 6" do
+        user.best_average(puzzle, 5).time.should == (4 + 6 + 8)/3.0
+      end
+    end
+
+    context "given [10, 3, DNF, 5, DNF, 2]" do
+      before :each do
+        singles = [10, 3, 20, 5, 4, 2].map do |time|
+          create :single, :puzzle => puzzle, :user => user, :time => time
+        end
+        singles[2].toggle_dnf!
+        singles[4].toggle_dnf!
+      end
+
+      it "returns a dnf average" do
+        user.best_average(puzzle, 5).should be_dnf
+      end
+    end
+  end
 end
