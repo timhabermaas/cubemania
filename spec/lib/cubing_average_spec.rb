@@ -71,6 +71,11 @@ describe CubingAverage do
         singles = [single_dnf] + [single_5] * 3 + [single_dnf]
         CubingAverage.new(singles).time.should == nil
       end
+
+      it "returns 6.67 for [7, 10, 6, 7, 5]" do
+        singles = [single_7, single_10, single_6, single_7, single_5]
+        ("%.2f" % CubingAverage.new(singles).time).should == "6.67"
+      end
     end
   end
 
