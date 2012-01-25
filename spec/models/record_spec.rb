@@ -7,11 +7,24 @@ describe Record do
     it { should validate_presence_of :time }
     it { should validate_presence_of :amount }
     it { should validate_presence_of :singles }
+    it { should validate_presence_of :set_at }
 
     it "has as many singles as amount" do
       record = Record.new :amount => 5, :singles => [Single.new] * 3
       record.should_not be_valid
       record.errors[:singles].should_not be_empty
+    end
+  end
+
+  describe "#set_at" do
+    it "is set to date of last single" do
+      last_single = nil
+      Timecop.freeze(DateTime.new(2010, 1, 2)) do
+        last_single = create :single
+      end
+      record = Record.new :amount => 5, :singles => ([create :single] * 4) + [last_single]
+      record.save
+      record.set_at.should == DateTime.new(2010, 1, 2)
     end
   end
 

@@ -3,10 +3,12 @@ class Record < ActiveRecord::Base
   belongs_to :user
   has_and_belongs_to_many :singles
 
-  validates_presence_of :user_id, :puzzle_id, :time, :amount, :singles
+  validates_presence_of :user_id, :puzzle_id, :time, :amount, :singles, :set_at
   validates_uniqueness_of :user_id, :scope => [:puzzle_id, :amount], :message => "can't have more than one record per puzzle and amount"
   validates_inclusion_of :amount, :in => [1, 5, 12]
   validate :has_as_many_singles_as_amount
+
+  before_validation :set_set_at
 
   humanize :time => :time
 
@@ -33,5 +35,11 @@ class Record < ActiveRecord::Base
   private
   def has_as_many_singles_as_amount
     errors.add(:singles, "must have #{amount} items, but has #{singles.size}") if singles && singles.size != amount
+  end
+
+  def set_set_at
+    unless singles.empty?
+      self.set_at = singles.last.created_at || Time.now
+    end
   end
 end
