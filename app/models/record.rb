@@ -25,6 +25,11 @@ class Record < ActiveRecord::Base
     end
   end
 
+  def self.remove!(user, puzzle, amount)
+    record = where(:user_id => user.id, :puzzle_id => puzzle.id, :amount => amount).first
+    record.destroy if record
+  end
+
   private
   def has_as_many_singles_as_amount
     errors.add(:singles, "must have #{amount} items, but has #{singles.size}") if singles && singles.size != amount
