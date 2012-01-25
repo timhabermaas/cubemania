@@ -8,20 +8,20 @@ describe RollingAverage do
     average << Single.new(:time => 1)
     average << Single.new(:time => 3)
     average << Single.new(:time => 4)
-    average.average.should == 3
+    average.time.should == 3
     average << Single.new(:time => 0)
-    ("%.2f" % average.average).should == "2.67"
+    ("%.2f" % average.time).should == "2.67"
     average << Single.new(:time => 2, :penalty => "dnf")
-    ("%.2f" % average.average).should == "2.67"
+    ("%.2f" % average.time).should == "2.67"
     average << Single.new(:time => 10, :penalty => "dnf")
-    average.average.should be_nil
+    average.time.should be_nil
     average << Single.new(:time => 4)
     average << Single.new(:time => 3)
     average << Single.new(:time => 2)
     average << Single.new(:time => 5)
-    average.average.should == 4
+    average.time.should == 4
     average << Single.new(:time => 2)
-    average.average.should == 3
+    average.time.should == 3
   end
 
   it "shouldn't crash if all times are DNFs" do
@@ -30,30 +30,28 @@ describe RollingAverage do
     average << Single.new(:time => 4, :penalty => "dnf")
     average << Single.new(:time => 1, :penalty => "dnf")
 
-    lambda {
-      average.average
-    }.should_not raise_error
+    average.time.should == nil
   end
 
   it "should return nil if average is requested before x times are added" do
     average = RollingAverage.new(3)
     average << Single.new(:time => 2)
-    average.average.should be_nil
+    average.time.should be_nil
     average << Single.new(:time => 2)
-    average.average.should be_nil
+    average.time.should be_nil
   end
 
   it "should return nil if no times are added" do
-    RollingAverage.new(5).average.should be_nil
+    RollingAverage.new(5).time.should be_nil
   end
 
   it "should work for average of 1" do
     average = RollingAverage.new(1)
     average << Single.new(:time => 5)
-    average.average.should == 5
+    average.time.should == 5
     average << Single.new(:time => 3, :penalty => "dnf")
-    average.average.should be_nil
+    average.time.should be_nil
     average << Single.new(:time => 3)
-    average.average.should == 3
+    average.time.should == 3
   end
 end

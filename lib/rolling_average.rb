@@ -1,0 +1,16 @@
+class RollingAverage < CubingAverage
+  def initialize(*arguments)
+    if arguments.size == 1
+      super Window.new([], arguments.first)
+    elsif arguments.size == 2
+      super Window.new(arguments.first, arguments.last)
+    else
+      raise ArgumentError, "pass in either the window size or an initial array and the window size"
+    end
+  end
+
+  def time
+    return nil if singles.size < singles.frame_size
+    super
+  end
+end
