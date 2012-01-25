@@ -112,8 +112,8 @@ ActiveRecord::Schema.define(:version => 20120123212030) do
   end
 
   create_table "records_singles", :id => false, :force => true do |t|
-    t.integer "record_id"
-    t.integer "single_id"
+    t.integer "record_id", :null => false
+    t.integer "single_id", :null => false
   end
 
   create_table "scrambles", :force => true do |t|
