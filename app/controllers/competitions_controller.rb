@@ -57,7 +57,7 @@ class CompetitionsController < ApplicationController
     @average = current_user.averages.build params[:average].merge(:puzzle_id => @puzzle.id,
                                                                   :competition_id => @competition.id)
 
-    if @average.save!
+    if @average.save
       redirect_to [@puzzle, @competition]
     else
       render :show
