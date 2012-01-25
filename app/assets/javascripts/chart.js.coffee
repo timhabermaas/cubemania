@@ -7,6 +7,7 @@ jQuery ->
       element = chart.get(id)
       if element
         element.remove()
+      event.preventDefault()
 
     $.getJSON $("#chart").data("url"), (singles) ->
       window.chart = new Highcharts.Chart(
