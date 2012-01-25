@@ -54,4 +54,11 @@ describe RollingAverage do
     average << Single.new(:time => 3)
     average.time.should == 3
   end
+
+  describe "#singles" do
+    it "should return an instance of Array" do
+      RollingAverage.new(5).singles.should be_instance_of Array
+    end
+  end
+
 end

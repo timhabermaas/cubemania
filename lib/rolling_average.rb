@@ -12,7 +12,11 @@ class RollingAverage < CubingAverage
   end
 
   def time
-    return nil if singles.size < singles.frame_size
+    return nil if @singles.size < @singles.frame_size # TODO this is kinda ugly, delegate instead?
     super
+  end
+
+  def singles
+    super.array
   end
 end
