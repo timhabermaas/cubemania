@@ -32,6 +32,7 @@ class TimersController < ApplicationController
   def dnf
     @single = current_user.singles.find params[:id]
     @single.toggle_dnf!
+    UpdateRecords.for(current_user, @puzzle)
     respond_to do |format|
       format.html { redirect_to puzzle_timers_path(@puzzle) }
       format.js { render :penalty }
@@ -41,6 +42,7 @@ class TimersController < ApplicationController
   def plus2
     @single = current_user.singles.find params[:id]
     @single.toggle_plus2!
+    UpdateRecords.for(current_user, @puzzle)
     respond_to do |format|
       format.html { redirect_to puzzle_timers_path(@puzzle) }
       format.js { render :penalty }
@@ -50,6 +52,7 @@ class TimersController < ApplicationController
   def destroy
     @single = current_user.singles.find params[:id]
     @single.destroy
+    UpdateRecords.for(current_user, @puzzle)
     respond_to do |format|
       format.html { redirect_to puzzle_timers_path(@puzzle) }
       format.js
