@@ -27,6 +27,20 @@ describe Single do
     single.penalty.should == nil
   end
 
+  it "is destroyable if it doesn't belong to an average" do
+    single = create :single
+    lambda {
+      single.destroy
+    }.should change(Single, :count).by(-1)
+  end
+
+  it "isn't destroyable if it belongs to an average" do
+    average = create :average, :singles => create_list(:single, 5)
+    average.singles.first.destroy
+    average.singles.first.destroy.should == false
+    average.singles.count.should == 5
+  end
+
   describe "#toggle_dnf" do
     subject { single.dnf? }
 

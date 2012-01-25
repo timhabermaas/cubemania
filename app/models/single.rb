@@ -10,6 +10,7 @@ class Single < ActiveRecord::Base
   validates_inclusion_of :penalty, :in => %w( plus2 dnf ), :allow_nil => true
 
   before_validation :set_blank_penalty_to_nil
+  before_destroy :destroyable_unless_belongs_to_average
 
   scope :not_dnf, where("penalty IS NULL OR penalty NOT LIKE 'dnf'")
   scope :recent, lambda { |amount| order("created_at desc").limit(amount) }
@@ -54,6 +55,10 @@ class Single < ActiveRecord::Base
     self.penalty == "plus2"
   end
 
+  def belongs_to_average?
+    averages.size > 0
+  end
+
 private
   def set_time
     seconds, minutes, hours = @human_time.split(':').reverse
@@ -62,5 +67,9 @@ private
 
   def set_blank_penalty_to_nil
     self.penalty = nil if self.penalty.blank?
+  end
+
+  def destroyable_unless_belongs_to_average
+    false if self.belongs_to_average?
   end
 end
