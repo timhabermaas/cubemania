@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120123212030) do
+ActiveRecord::Schema.define(:version => 20120125020425) do
 
   create_table "authorizations", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -147,7 +147,6 @@ ActiveRecord::Schema.define(:version => 20120123212030) do
     t.string   "encrypted_password",                                    :null => false
     t.datetime "created_at"
     t.string   "role",               :limit => 16,  :default => "user"
-    t.integer  "clocks_count",                      :default => 0,      :null => false
     t.string   "wca"
     t.boolean  "sponsor",                           :default => false,  :null => false
     t.string   "time_zone",          :limit => 100, :default => "UTC"
