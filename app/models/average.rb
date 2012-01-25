@@ -10,6 +10,7 @@ class Average < ActiveRecord::Base
   validate :hasnt_competed_before
 
   before_validation :set_user_and_puzzle_for_singles, :calculate_average
+  before_destroy :delete_singles
 
   accepts_nested_attributes_for :singles
 
@@ -36,6 +37,12 @@ class Average < ActiveRecord::Base
   def hasnt_competed_before
     if competition && user && competition.participated?(Time.zone.now, user)
       errors.add(:user_id, "has already competed in this competition")
+    end
+  end
+
+  def delete_singles # TODO this stuff is easier with simple belongs_to relationship
+    singles.each do |single|
+      single.delete
     end
   end
 end

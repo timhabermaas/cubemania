@@ -44,4 +44,14 @@ describe Average do
     average.valid?
     average.dnf.should == true
   end
+
+  describe "#destroy" do
+    it "removes all singles if it gets destroyed" do
+      singles = create_list :single, 5
+      average = create :average, :singles => singles
+      lambda {
+        average.destroy
+      }.should change(Single, :count).by(-5)
+    end
+  end
 end
