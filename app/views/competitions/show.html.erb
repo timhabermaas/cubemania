@@ -10,7 +10,7 @@
       <%=m @competition.description %>
     </div>
   </div>
-  <%= semantic_form_for @competition, :url => add_average_puzzle_competition_path(@puzzle, @competition), :method => :post do |form| %>
+  <%= semantic_form_for @competition, :url => compete_puzzle_competition_path(@puzzle, @competition), :method => :post do |form| %>
     <%= form.inputs do %>
       <% @scrambles.each_with_index do |scramble, n| %>
         <li>

@@ -36,7 +36,7 @@ Cubemania::Application.routes.draw do
     #   resources :matches, :defaults => { :puzzle_id => default_puzzle }
     # end
     resources :competitions do
-      post :add_average, :on => :member
+      post :compete, :on => :member
       resources :shouts
     end
     resources :scrambles

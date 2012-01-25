@@ -13,7 +13,7 @@ class Ability
       end
       can :create, Comment
       can :create, Competition
-      can :add_average, Competition
+      can :compete, Competition
       can :update, Competition do |competition|
         competition.user == user
       end

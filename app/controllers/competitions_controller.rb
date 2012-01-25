@@ -52,7 +52,7 @@ class CompetitionsController < ApplicationController
     @shouts = @competition.shouts.for @competition, @date
   end
 
-  def add_average
+  def compete
     @competition = Competition.find params[:id]
     @average = current_user.averages.build params[:average].merge(:puzzle_id => @puzzle.id,
                                                                   :competition_id => @competition.id)
