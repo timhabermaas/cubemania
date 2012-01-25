@@ -10,6 +10,15 @@
       <%=m @competition.description %>
     </div>
   </div>
+  <% if @results.empty? %>
+    <p class="challenge">
+      Be the first to compete!
+    </p>
+  <% else %>
+    <table id="results">
+      <%= render :partial => "result", :collection => @results %>
+    </table>
+  <% end %>
   <%= semantic_form_for @competition, :url => compete_puzzle_competition_path(@puzzle, @competition), :method => :post do |form| %>
     <%= form.inputs do %>
       <% @scrambles.each_with_index do |scramble, n| %>
@@ -27,8 +36,4 @@
       <%= form.commit_button "Submit Average" %>
     <% end %>
   <% end %>
-
-  <table id="results">
-    <%= render :partial => "result", :collection => @competition.averages.for(@competition, @date) %>
-  </table>
 </section>

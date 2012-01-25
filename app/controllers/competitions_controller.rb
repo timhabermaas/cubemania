@@ -50,6 +50,7 @@ class CompetitionsController < ApplicationController
     end
 
     @shouts = @competition.shouts.for @competition, @date
+    @results = @competition.averages.for @competition, @date
   end
 
   def compete
