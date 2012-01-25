@@ -1,4 +1,4 @@
-class UpdateRecords
+class UpdateRecentRecords
   def self.for(user, puzzle)
     [1, 5, 12].each do |amount|
       for_amount(user, puzzle, amount)

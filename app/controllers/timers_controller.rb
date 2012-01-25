@@ -14,7 +14,7 @@ class TimersController < ApplicationController
     @scramble = @puzzle.scramble
     @single = current_user.singles.build(params[:single].merge(:puzzle_id => @puzzle.id))
     if @single.save
-      UpdateRecords.for(current_user, @puzzle)
+      UpdateRecentRecords.for(current_user, @puzzle)
       fetch_records
       set_flash
       respond_to do |format|
