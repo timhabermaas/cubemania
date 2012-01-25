@@ -22,7 +22,7 @@ describe UpdateRecords do
 
       it "sets the single record to the lowest time" do
         user.stub_chain(:singles, :best) { best }
-        Record.should_receive(:update_with!).with(user, puzzle, 1, 1337, [best])
+        Record.should_receive(:update_with!).with(user, puzzle, 1, 1337, [best], true)
         subject.single(user, puzzle)
       end
     end
@@ -44,7 +44,7 @@ describe UpdateRecords do
       singles = [stub, stub, stub, stub, stub]
       average = stub(:time => 12341, :singles => singles, :dnf? => false)
       user.should_receive(:best_average).with(puzzle, 5) { average }
-      Record.should_receive(:update_with!).with(user, puzzle, 5, 12341, singles)
+      Record.should_receive(:update_with!).with(user, puzzle, 5, 12341, singles, true)
       subject.for_amount(user, puzzle, 5)
     end
 

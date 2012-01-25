@@ -35,10 +35,15 @@ describe Record do
       end
 
       it "doesn't update the existing record if the time is not faster" do
-        old_updated_at = record.updated_at
-        sleep 5
-        Record.update_with!(user, puzzle, 5, 10, singles)
-        record.reload.updated_at.should == old_updated_at
+        Record.update_with!(user, puzzle, 5, 11, singles)
+        record.reload.time.should == 10
+      end
+
+      context "force writing of record" do
+        it "overwrites existing record if force flag is set" do
+          Record.update_with!(user, puzzle, 5, 11, singles, true)
+          record.reload.time.should == 11
+        end
       end
     end
 

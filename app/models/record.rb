@@ -10,11 +10,11 @@ class Record < ActiveRecord::Base
 
   humanize :time => :time
 
-  def self.update_with!(user, puzzle, amount, time, singles) # TODO use hash
+  def self.update_with!(user, puzzle, amount, time, singles, force = false) # TODO use hash
     old_record = where(:user_id => user.id,
                        :puzzle_id => puzzle.id,
                        :amount => amount).first
-    if old_record && old_record.time > time
+    if old_record && (force || old_record.time > time)
       old_record.update_attributes(:time => time, :singles => singles)
     elsif old_record.nil?
       Record.create! :user_id => user.id,
