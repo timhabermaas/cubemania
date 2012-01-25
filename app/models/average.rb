@@ -25,9 +25,10 @@ class Average < ActiveRecord::Base
   end
 
   def calculate_average
-    return if singles.any? { |s| s.time.nil? }
+    return true if singles.any? { |s| s.time.nil? }
     average = CubingAverage.new(singles)
     self.time = average.time
     self.dnf = average.dnf?
+    true # fuuuuuu has to return something trueish...
   end
 end

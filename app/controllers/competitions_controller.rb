@@ -39,7 +39,7 @@ class CompetitionsController < ApplicationController
       time = Time.utc time.year, time.month, time.day
     end
     @date = time
-=begin
+
     unless @competition.old? @date
       scrambles = @competition.scrambles.for @competition, @date
       if scrambles.empty?
@@ -48,17 +48,16 @@ class CompetitionsController < ApplicationController
         @scrambles = scrambles.map(&:scramble)
       end
     end
-=end
+
     @shouts = @competition.shouts.for @competition, @date
   end
 
   def add_average
     @competition = Competition.find params[:id]
-    @average = current_user.averages.build params[:average]
-    @average.competition = @competition
-    @average.puzzle = @puzzle
-    @average.singles.each { |s| s.penalty = nil if s.penalty.blank? }
-    if @average.save
+    @average = current_user.averages.build params[:average].merge(:puzzle_id => @puzzle.id,
+                                                                  :competition_id => @competition.id)
+
+    if @average.save!
       redirect_to [@puzzle, @competition]
     else
       render :show
