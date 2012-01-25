@@ -7,17 +7,7 @@ namespace :records do
     User.find_each do |user|
       puts "User #{user.id}/#{count}: #{user.name}"
       puzzles.each do |puzzle|
-        single = user.singles.best(puzzle.id)
-        if single
-          record = Record.find_by_puzzle_id_and_user_id_and_amount(puzzle.id, user.id, 1)
-          if record
-            record.update_attributes(:time => single.time, :created_at => single.created_at, :updated_at => single.created_at, :singles => [single])
-          else
-            Record.create!(:puzzle_id => puzzle.id, :user_id => user.id,
-                           :amount => 1, :time => single.time, :created_at => single.created_at,
-                           :updated_at => single.updated_at, :singles => [single])
-          end
-        end
+        UpdateRecords.single user, puzzle
       end
     end
     ActiveRecord::Base.record_timestamps = true
