@@ -9,7 +9,7 @@ describe UpdateRecentRecords do
   let(:user) { stub(:id => 2) }
   let(:puzzle) { stub(:id => 3) }
 
-  context ".for" do
+  describe ".for" do
     it "calls for_amount for 1, 5 and 12" do
       subject.should_receive(:for_amount).with(user, puzzle, 1)
       subject.should_receive(:for_amount).with(user, puzzle, 5)
@@ -18,7 +18,7 @@ describe UpdateRecentRecords do
     end
   end
 
-  context ".for_amount" do
+  describe ".for_amount" do
     context "not enough singles given" do
       before do
         Single.stub_chain(:for_user_and_puzzle, :recent) { [] }
