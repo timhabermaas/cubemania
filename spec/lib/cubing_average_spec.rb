@@ -102,6 +102,13 @@ describe CubingAverage do
       end
     end
 
+    describe "both dnfs" do
+      it "neither a < b nor a > b is true" do
+        (average(12, true) < average(13, true)).should == false
+        (average(12, true) > average(13, true)).should == false
+      end
+    end
+
     describe "#<" do
       context "is dnf, other is not a dnf" do
         it "is less than even if the times are greater" do

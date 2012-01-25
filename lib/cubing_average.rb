@@ -19,7 +19,22 @@ class CubingAverage
       1
     elsif other.dnf? and not self.dnf?
       -1
-    else # wtf?
+    end
+  end
+
+  def <(other)
+    if self.dnf? and other.dnf?
+      false
+    else
+      (self <=> other) == -1
+    end
+  end
+
+  def >(other)
+    if self.dnf? and other.dnf?
+      false
+    else
+      (self <=> other) == 1
     end
   end
 
