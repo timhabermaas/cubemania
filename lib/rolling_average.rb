@@ -1,3 +1,5 @@
+require "window"
+
 class RollingAverage < CubingAverage
   def initialize(*arguments)
     if arguments.size == 1
