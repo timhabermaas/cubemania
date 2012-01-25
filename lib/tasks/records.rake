@@ -1,7 +1,6 @@
 namespace :records do
   desc 'Recalculate all single records'
   task :single => :environment do
-    ActiveRecord::Base.record_timestamps = false
     puzzles = Puzzle.all
     count = User.count
     User.find_each do |user|
@@ -10,7 +9,6 @@ namespace :records do
         UpdateRecords.single user, puzzle
       end
     end
-    ActiveRecord::Base.record_timestamps = true
   end
 
   desc 'Recalculate all average of 5 records'
