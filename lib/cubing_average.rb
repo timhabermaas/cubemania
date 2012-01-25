@@ -1,4 +1,6 @@
 class CubingAverage
+  include Comparable
+
   attr_reader :singles
 
   def initialize(singles = [])
@@ -8,6 +10,17 @@ class CubingAverage
   def <<(single)
     @singles << single
     @time = nil
+  end
+
+  def <=>(other)
+    if not self.dnf? and not other.dnf?
+      self.time <=> other.time
+    elsif self.dnf? and not other.dnf?
+      1
+    elsif other.dnf? and not self.dnf?
+      -1
+    else # wtf?
+    end
   end
 
   def time

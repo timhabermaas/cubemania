@@ -81,4 +81,44 @@ describe CubingAverage do
       average.should be_dnf
     end
   end
+
+  describe "comparison" do
+    def average(time, dnf = false)
+      CubingAverage.new.tap do |a|
+        a.stub(:time => time, :dnf? => dnf)
+      end
+    end
+
+    describe "#==" do
+      it "is equal if time and dnf are equal" do
+        average = average 31
+        other = average 31
+        (average == other).should == true
+      end
+    end
+
+    describe "#<" do
+      context "is dnf, other is not a dnf" do
+        it "is less than even if the times are greater" do
+          average = average 100
+          other = average 40, true
+          (average < other).should ==true
+        end
+      end
+
+      context "both are no dnfs" do
+        it "is less than if the time is smaller" do
+          average = average 100
+          other = average 110
+          (average < other).should == true
+        end
+
+        it "is not less than if the time is greater" do
+          average = average 120
+          other = average 110
+          (average < other).should == false
+        end
+      end
+    end
+  end
 end
