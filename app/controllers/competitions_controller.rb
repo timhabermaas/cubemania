@@ -60,7 +60,7 @@ class CompetitionsController < ApplicationController
     if @average.save
       redirect_to [@puzzle, @competition]
     else
-      render :show
+      redirect_to [@puzzle, @competition], :notice => "Get out of here!"
     end
   end
 

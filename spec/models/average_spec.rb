@@ -2,10 +2,29 @@ require 'spec_helper'
 
 describe Average do
   describe "validations" do
+    let(:competition) { create :competition, :repeat => "weekly" }
+    let(:user) { create :user }
+
     it { should validate_presence_of :time }
     it { should validate_presence_of :user_id }
     it { should validate_presence_of :puzzle_id }
     it { should validate_presence_of :competition_id }
+
+    it "can compete twice in a competition" do
+      create :average, :competition => competition, :user => user
+
+      Timecop.freeze(Date.today + 8) do
+        average = build :average, :competition => competition, :user => user
+        average.should be_valid
+      end
+    end
+
+    it "cannot compete twice in the same week" do
+      create :average, :competition => competition, :user => user
+
+      average = build :average, :competition => competition, :user => user
+      average.should_not be_valid
+    end
   end
 
   it "calculates average before validation" do

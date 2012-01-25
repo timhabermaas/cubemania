@@ -61,6 +61,7 @@ FactoryGirl.define do
     association :puzzle
     association :user
     association :competition
+    singles { FactoryGirl.build_list(:single, 5) }
   end
 
   factory :record do
