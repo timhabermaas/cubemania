@@ -10,8 +10,6 @@ class Single < ActiveRecord::Base
   validates_inclusion_of :penalty, :in => %w( plus2 dnf ), :allow_nil => true
 
   before_validation :set_blank_penalty_to_nil
-  after_destroy :update_records
-  after_update :update_records
 
   scope :not_dnf, where("penalty IS NULL OR penalty NOT LIKE 'dnf'")
   scope :recent, lambda { |amount| order("created_at desc").limit(amount) }
@@ -60,12 +58,6 @@ private
   def set_time
     seconds, minutes, hours = @human_time.split(':').reverse
     self.time = (hours.to_i * 3600 + minutes.to_i * 60) * 1000 + (seconds.to_f * 1000).to_i
-  end
-
-  def update_records
-    #Record.calculate_for!(user_id, puzzle_id, 1)
-    #Record.calculate_for!(user_id, puzzle_id, 5)
-    #Record.calculate_for!(user_id, puzzle_id, 12)
   end
 
   def set_blank_penalty_to_nil
