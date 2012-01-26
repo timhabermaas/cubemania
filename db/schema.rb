@@ -33,11 +33,6 @@ ActiveRecord::Schema.define(:version => 20120125020425) do
     t.datetime "updated_at",                        :null => false
   end
 
-  create_table "averages_singles", :id => false, :force => true do |t|
-    t.integer "average_id", :null => false
-    t.integer "single_id",  :null => false
-  end
-
   create_table "comments", :force => true do |t|
     t.text     "content",    :null => false
     t.integer  "post_id",    :null => false

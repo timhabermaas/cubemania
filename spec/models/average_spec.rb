@@ -46,12 +46,13 @@ describe Average do
   end
 
   describe "#destroy" do
-    it "removes all singles if it gets destroyed" do
+    it "nullifys all singles" do
       singles = create_list :single, 5
       average = create :average, :singles => singles
-      lambda {
-        average.destroy
-      }.should change(Single, :count).by(-5)
+      average.destroy
+      singles.each do |single|
+        single.reload.average_id.should be_nil
+      end
     end
   end
 end

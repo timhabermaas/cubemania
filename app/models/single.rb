@@ -1,8 +1,8 @@
 class Single < ActiveRecord::Base
   belongs_to :user, :counter_cache => true
   belongs_to :puzzle
+  belongs_to :average
   has_and_belongs_to_many :records
-  has_and_belongs_to_many :averages
 
   attr_accessible :time, :human_time, :puzzle_id, :scramble, :penalty
 
@@ -56,7 +56,7 @@ class Single < ActiveRecord::Base
   end
 
   def belongs_to_average?
-    averages.size > 0
+    average_id.present?
   end
 
 private
