@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120125203611) do
+ActiveRecord::Schema.define(:version => 20120125020425) do
 
   create_table "authorizations", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(:version => 20120125203611) do
     t.integer  "user_id",                           :null => false
     t.integer  "puzzle_id",                         :null => false
     t.integer  "competition_id",                    :null => false
+    t.string   "comment"
     t.datetime "created_at",                        :null => false
     t.datetime "updated_at",                        :null => false
   end
@@ -103,13 +104,13 @@ ActiveRecord::Schema.define(:version => 20120125203611) do
   add_index "puzzles", ["slug"], :name => "index_puzzles_on_slug", :unique => true
 
   create_table "records", :force => true do |t|
-    t.integer  "time",                                          :null => false
-    t.integer  "puzzle_id",                                     :null => false
-    t.integer  "user_id",                                       :null => false
-    t.datetime "created_at",                                    :null => false
-    t.datetime "updated_at",                                    :null => false
-    t.integer  "amount",     :default => 5,                     :null => false
-    t.datetime "set_at",     :default => '2012-01-25 21:14:55', :null => false
+    t.integer  "time",       :null => false
+    t.integer  "puzzle_id",  :null => false
+    t.integer  "user_id",    :null => false
+    t.integer  "amount",     :null => false
+    t.datetime "set_at",     :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "records_singles", :id => false, :force => true do |t|
@@ -137,7 +138,9 @@ ActiveRecord::Schema.define(:version => 20120125203611) do
     t.datetime "created_at"
     t.integer  "user_id",                    :default => 0, :null => false
     t.string   "scramble",   :limit => 1024
+    t.integer  "average_id"
     t.string   "comment"
+    t.datetime "updated_at"
     t.string   "penalty",    :limit => 8
   end
 
