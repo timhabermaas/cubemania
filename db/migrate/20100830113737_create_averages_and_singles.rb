@@ -37,7 +37,7 @@ class CreateAveragesAndSingles < ActiveRecord::Migration
     end
 
     say_with_time "Rescuing average comments for non-competitions over to singles" do
-      execute "UPDATE clocks AS c1 INNER JOIN clocks AS c2 ON c1.average_id=c2.id SET c1.comment = c2.comment WHERE c1.type='Single' AND c1.competition_id IS NULL"
+      execute "UPDATE clocks SET comment = c2.comment FROM clocks c2 WHERE clocks.type='Single' AND clocks.competition_id IS NULL AND clocks.average_id=c2.id"
     end
 
     say_with_time "Get rid of all old averages in clocks" do
