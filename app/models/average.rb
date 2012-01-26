@@ -1,7 +1,7 @@
 class Average < ActiveRecord::Base
   belongs_to :user
   belongs_to :puzzle
-  belongs_to :competition
+  belongs_to :competition, :counter_cache => true
   has_many :singles, :dependent => :nullify
 
   attr_protected :user_id
