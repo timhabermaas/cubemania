@@ -78,7 +78,7 @@ class User < ActiveRecord::Base
     result = CubingAverage.new [] # is basically a dnf average due to implementation of CubingAverage
     current_average = RollingAverage.new amount
 
-    singles.for(puzzle).find_each do |single|
+    singles.order(:created_at).for(puzzle).find_each do |single|
       current_average << single
       if current_average < result
         result = current_average.dup
