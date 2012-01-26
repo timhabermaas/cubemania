@@ -3,8 +3,8 @@ class RemoveAveragesCountAndAddSinglesCountToUsers < ActiveRecord::Migration
     add_column :users, :singles_count, :integer, :default => 0, :null => false
     say_with_time "Update users.singles_count" do
       User.find_each do |u|
-        puts "User ##{u.id}"
-        u.update_attribute :singles_count, u.singles.count
+        singles_count = execute("SELECT COUNT(*) as count FROM singles WHERE user_id=#{u.id}")
+        execute "UPDATE users SET singles_count=#{singles_count[0]["count"]} WHERE id=#{u.id}"
       end
     end
   end
