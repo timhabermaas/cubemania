@@ -29,7 +29,8 @@ class CreateAveragesAndSingles < ActiveRecord::Migration
                         :user_id => clock.user_id,
                         :puzzle_id => clock.puzzle_id,
                         :competition_id => clock.competition_id,
-                        :comment => clock.comment)
+                        :comment => clock.comment,
+                        :created_at => clock.created_at, :updated_at => clock.created_at)
       end
 
       ActiveRecord::Base.record_timestamps = true
