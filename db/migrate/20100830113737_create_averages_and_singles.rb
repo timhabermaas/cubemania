@@ -49,7 +49,7 @@ class CreateAveragesAndSingles < ActiveRecord::Migration
     remove_column :clocks, :position
     remove_column :clocks, :competition_id
     rename_table :clocks, :singles
-    add_column :singles, :updated_at, :datetime
+    add_column :singles, :updated_at, :datetime, :null => false, :default => 0
 
     Single.reset_column_information
     ActiveRecord::Base.record_timestamps = false
@@ -57,6 +57,7 @@ class CreateAveragesAndSingles < ActiveRecord::Migration
       Single.update_all("updated_at = created_at")
     end
     ActiveRecord::Base.record_timestamps = true
+    change_column :singles, :updated_at, :datetime, :null => false
   end
 
   def self.down
