@@ -22,6 +22,7 @@ Facebook:
                                         :message => render_to_string('tweet.text', :layout => false))# if Rails.env.production?
 Code:
   extract puzzle divs into helper
+  extract single display into helper (for dnf stuff) (<%= single(single, 'li') do %>)
 
 
 Sharing:
