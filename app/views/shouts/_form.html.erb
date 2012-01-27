@@ -1,10 +1,12 @@
-<%= form_for [@puzzle, @parent, @shout ||= Shout.new], :remote => true, :before => "$('#shout_submit').attr('disabled', 'disabled')" do |form| %>
-  <div class="top_left"><div class="top_right"><div class="bottom_left"><div class="bottom_right">
-    <%= form.text_area :content, :rows => 4, :onfocus => 'keyEnabled = false', :onblur => 'keyEnabled = true' %>
-    <%= form.hidden_field :matchable_id, :value => @parent.id %>
-    <%= form.hidden_field :matchable_type, :value => @parent.class %>
-  </div></div></div></div>
-  <div class="flag">
-    <%= form.submit 'Shout!' %>
-  </div>
+<%= semantic_form_for [@puzzle, @competition, @shout ||= Shout.new], :remote => true do |form| %>
+  <%= form.inputs do %>
+    <div class="top_left"><div class="top_right"><div class="bottom_left"><div class="bottom_right">
+      <%= form.input :content, :input_html => { :rows => 4 } %>
+    </div></div></div></div>
+  <% end %>
+  <%= form.buttons do %>
+    <div class="flag">
+      <%= form.commit_button 'Shout!' %>
+    </div>
+  <% end %>
 <% end %>

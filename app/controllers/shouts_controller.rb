@@ -2,8 +2,9 @@ class ShoutsController < ApplicationController
 
   def create
     @puzzle = Puzzle.find params[:puzzle_id]
-    @parent = @puzzle.competitions.find params[:competition_id]
-    @shout = current_user.shouts.build(params[:shout])
+    @competition = @puzzle.competitions.find params[:competition_id]
+    @shout = current_user.shouts.build params[:shout]
+    @shout.competition = @competition
     @shout.save
   end
 

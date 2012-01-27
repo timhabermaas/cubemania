@@ -19,7 +19,13 @@
       <%= render :partial => "result", :collection => @results %>
     </table>
   <% end %>
-  <%= semantic_form_for @competition, :url => compete_puzzle_competition_path(@puzzle, @competition), :method => :post do |form| %>
+  <section>
+    <%= render :partial => "shouts/shouts" %>
+    <%= render :partial => "shouts/form" %>
+  </section>
+</section>
+
+<%= semantic_form_for @competition, :url => compete_puzzle_competition_path(@puzzle, @competition), :method => :post do |form| %>
     <%= form.inputs do %>
       <% @scrambles.each_with_index do |scramble, n| %>
         <li>
@@ -36,4 +42,3 @@
       <%= form.commit_button "Submit Average" %>
     <% end %>
   <% end %>
-</section>

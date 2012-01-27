@@ -1,5 +1,6 @@
 class Shout < ActiveRecord::Base
   belongs_to :user
+  belongs_to :competition
 
   attr_accessible :content
 

@@ -3,5 +3,5 @@
   <div class="flag"><div class="top_left"><div class="top_right"><div class="bottom_left"><div class="bottom_right">
     <div class="text"><%=m shout.content %></div>
   </div></div></div></div></div>
-  <small><%= link_to 'Destroy', [@puzzle, @parent, shout], :confirm => 'Are you sure?', :method => :delete if moderator? %></small>
+  <small><%= link_to 'Destroy', [@puzzle, @competition, shout], :confirm => 'Are you sure?', :method => :delete if can? :destroy, shout %></small>
 <% end %>

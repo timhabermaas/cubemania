@@ -13,6 +13,7 @@ class Ability
       end
       can :create, Comment
       can :create, Competition
+      can :create, Shout
       can :compete, Competition
       can :update, Competition do |competition|
         competition.user == user
@@ -21,7 +22,7 @@ class Ability
       can [:destroy, :dnf, :plus2], Single do |single|
         single.user == user
       end
-      can :destroy, Comment do |comment|
+      can :destroy, [Comment, Shout] do |comment|
         comment.user == user
       end
     end
