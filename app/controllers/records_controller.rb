@@ -1,5 +1,6 @@
 class RecordsController < ApplicationController
   def index
+    params[:type] ||= "avg5"
     @puzzle = Puzzle.find params[:puzzle_id]
     @records =
       if params[:type] == "single"

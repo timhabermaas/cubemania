@@ -19,8 +19,6 @@ Cubemania::Application.routes.draw do
 
   resources :users
 
-  # resources :matches, :only => :index
-
   resources :puzzles, :defaults => { :puzzle_id => default_puzzle } do
     resources :timers, :path => "timer" do
       put :dnf, :on => :member
@@ -28,24 +26,16 @@ Cubemania::Application.routes.draw do
       get :more, :on => :collection
       get :chart, :on => :collection
     end
-    # resources :matches do
-    #   resources :times, :controller => :clocks
-    # end
-    # resources :users do
-    #   resources :matches, :defaults => { :puzzle_id => default_puzzle }
-    # end
+
     resources :competitions do
       post :compete, :on => :member
       resources :shouts
     end
     resources :scrambles
+
+    resources :records
     #match 'competitions/:id/:date' => 'competitions#show', :as => 'competition_date'
-    #match 'records/:type' => 'records#index', :as => 'records', :defaults => { :type => 'average' }, :type => /(single)|(average)/
   end
-  match 'puzzles/:puzzle_id/records/:type' => 'records#index', :as => 'puzzle_records', :defaults => { :type => 'avg5', :puzzle_id => default_puzzle },
-          :type => /(single)|(avg5)|(avg12)/
-  #match 'puzzles/:puzzle_id/timer' => 'times#index', :as => 'puzzle_times', :defaults => { :puzzle_id => default_puzzle }
-  match 'puzzles/:puzzle_id/competitions/:id/:date' => 'competitions#show', :as => 'puzzle_competition_date'
 
   resources :kinds
   resources :items
