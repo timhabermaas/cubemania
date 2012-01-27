@@ -17,9 +17,7 @@ Cubemania::Application.routes.draw do
     resources :comments
   end
 
-  resources :users do
-    resources :singles
-  end
+  resources :users
 
   # resources :matches, :only => :index
 
@@ -30,7 +28,6 @@ Cubemania::Application.routes.draw do
       get :more, :on => :collection
       get :chart, :on => :collection
     end
-    resources :singles
     # resources :matches do
     #   resources :times, :controller => :clocks
     # end
