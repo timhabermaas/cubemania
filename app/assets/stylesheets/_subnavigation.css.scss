@@ -49,6 +49,7 @@
   }
   .puzzle {
     @include puzzle-image;
+    margin: 0 auto;
   }
   .kind {
     @include kind-image;

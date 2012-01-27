@@ -69,6 +69,8 @@ FactoryGirl.define do
     association :puzzle
     association :user
     amount 5
+    singles { FactoryGirl.build_list(:single, amount) }
+    set_at Time.now
   end
 
   factory :match do

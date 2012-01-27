@@ -12,10 +12,13 @@
 
 /* lol */
 @for $i from 0 through 20 {
+  .puzzle.pos#{$i} {
+    background-position: $i * -50px 0px;
+  }
   #puzzles .puzzle.pos#{$i} {
     background-position: $i * -50px -50px;
   }
-  #records .puzzle.pos#{$i}, #puzzles a:hover .puzzle.pos#{$i}, #puzzles li.checked a .puzzle.pos#{$i} {
+  #puzzles a:hover .puzzle.pos#{$i}, #puzzles li.checked a .puzzle.pos#{$i} {
     background-position: $i * -50px 0px;
   }
   .kind.pos#{$i} {

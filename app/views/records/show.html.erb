@@ -1,0 +1,30 @@
+<h1><%= record_format @record %></h1>
+
+<article id="record">
+  <header>
+    <small><%=dt @record.set_at %></small>
+    <h2><%= @record.human_time %></h2>
+    <div class="puzzle pos<%= @puzzle.css_position %>">
+      <div class="kind pos<%= @puzzle.kind.css_position %>"><%= @puzzle.combined %></div>
+    </div>
+  </header>
+
+  <table id="singles">
+    <thead>
+      <tr>
+        <th>Solve</th>
+        <th>Time</th>
+        <th>Scramble</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @record.singles.each_with_index do |single, i| %>
+        <tr class="<%= cycle 'even', 'odd' %>">
+          <td><%= i + 1 %></td>
+          <td><strong><%= single.human_time %></strong></td>
+          <td><%= single.scramble  %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</article>

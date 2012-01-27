@@ -1,0 +1,29 @@
+#record header {
+  padding-top: 3px;
+  position: relative;
+  margin-bottom: 1.5em;
+  small {
+    display: block;
+  }
+  h2, small {
+    margin-left: 70px;
+  }
+  .puzzle {
+    @include puzzle-image;
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+  .kind {
+    @include kind-image;
+    text-indent: -9999px;
+  }
+}
+
+#singles {
+  margin-left: 0;
+  width: 100%;
+  td {
+  padding: 0.5em;
+  }
+}
