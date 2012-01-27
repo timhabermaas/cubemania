@@ -13,3 +13,8 @@ $darkblue: #517397;
   display: block;
   clear: both;
 }
+
+@mixin dnf {
+  color: #83a1bf;
+  text-decoration: line-through;
+}

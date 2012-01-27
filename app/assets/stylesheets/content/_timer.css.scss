@@ -87,8 +87,7 @@
         }
         margin-bottom: 0.4em;
         .time.dnf {
-          text-decoration: line-through;
-          color: #83A1BF;
+          @include dnf;
         }
         .time.plus2:after {
           content: "+";
