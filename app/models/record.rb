@@ -32,6 +32,10 @@ class Record < ActiveRecord::Base
     record.destroy if record
   end
 
+  def comment
+    singles.map(&:comment).uniq.reject(&:blank?).join("; ")
+  end
+
   private
   def has_as_many_singles_as_amount
     errors.add(:singles, "must have #{amount} items, but has #{singles.size}") if singles && singles.size != amount
