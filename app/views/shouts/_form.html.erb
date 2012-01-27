@@ -1,12 +1,9 @@
 <%= semantic_form_for [@puzzle, @competition, @shout ||= Shout.new], :remote => true do |form| %>
   <%= form.inputs do %>
-    <div class="top_left"><div class="top_right"><div class="bottom_left"><div class="bottom_right">
-      <%= form.input :content, :input_html => { :rows => 4 } %>
-    </div></div></div></div>
+    <%= form.input :content, :as => :text, :label => false, :input_html => { :rows => 4, :cols => 40 } %>
   <% end %>
+  <div class="flag"></div>
   <%= form.buttons do %>
-    <div class="flag">
-      <%= form.commit_button 'Shout!' %>
-    </div>
+    <%= form.commit_button 'Shout!', :button_html => { :disable_with => "Shout!" } %>
   <% end %>
 <% end %>
