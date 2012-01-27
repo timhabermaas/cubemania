@@ -71,20 +71,9 @@ p.tabs {
     background-color: $darkblue;
   }
   .puzzle {
-    margin: 0.25em 0;
-    width: 50px;
-    height: 50px;
-    position: relative;
-    background-image: image-url("puzzles.png");
-    background-repeat: no-repeat;
+    @include puzzle-image;
   }
   .kind {
-    width: 25px;
-    height: 25px;
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    background-image: image-url("kinds.png");
-    background-repeat: no-repeat;
+    @include kind-image;
   }
 }
