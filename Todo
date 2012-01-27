@@ -11,6 +11,7 @@ Chart Types (different page):
   Punch Card (http://code.google.com/apis/chart/image/docs/user_submitted_gallery.html)
 Timer:
   allow to stop timer with all keys
+  don't display destroy links for singles which belong to a competition
 User's profile:
   Rowe spent <strong>4 days 12 hours 21 minutes and 3 seconds</strong> cubing!
 Facebook:

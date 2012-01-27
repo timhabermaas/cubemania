@@ -51,8 +51,12 @@ class TimersController < ApplicationController
 
   def destroy
     @single = current_user.singles.find params[:id]
-    @single.destroy
-    UpdateRecords.send_later :for, current_user, @puzzle
+    if @single.destroy
+      UpdateRecords.send_later :for, current_user, @puzzle
+    else
+      flash[:alert] = "Couldn't remove single, because it belongs to a competition."
+    end
+
     respond_to do |format|
       format.html { redirect_to puzzle_timers_path(@puzzle) }
       format.js
