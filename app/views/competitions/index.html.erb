@@ -1,4 +1,4 @@
-<%= render 'layouts/admin' %>
+<%= render 'layouts/admin' if can? :create, Competition.new %>
 
 <%= render 'tabs' %>
 
