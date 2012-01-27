@@ -1,0 +1,30 @@
+#shouts {
+  margin-top: 2em;
+  li {
+    text-align: center;
+    margin-bottom: 1em;
+    cite {
+      margin-right: 50px;
+    }
+    q {
+      padding: 8px;
+      display: inline-block;
+      background-color: $lightblue;
+      border-radius: 10px;
+      position: relative;
+    }
+    q:before {
+      content: "";
+      position: absolute;
+      display: block;
+      left: -40px;
+      top: 8px;
+      bottom: auto;
+      width: 0;
+      /*background-color: red;*/
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-right: 40px solid $lightblue;
+    }
+  }
+}
