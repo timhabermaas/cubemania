@@ -31,6 +31,12 @@
   </table>
 </article>
 
+<% if can? :share, @record %>
 <p class="suggestion">
   <%= link_to "Post on Facebook!", share_puzzle_record_path(@puzzle, @record), :method => :post %>
 </p>
+<% else %>
+<p class="challenge">
+  <%= link_to "Try to beat #{@user.name}!", puzzle_timers_path(@puzzle) %>
+</p>
+<% end %>
