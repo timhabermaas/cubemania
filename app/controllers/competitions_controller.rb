@@ -28,6 +28,7 @@ class CompetitionsController < ApplicationController
     @puzzle = Puzzle.find params[:puzzle_id]
     @competition = object
     @competition.update_attributes params[:competition]
+    redirect_to [@puzzle, @competition]
   end
 
   def show
