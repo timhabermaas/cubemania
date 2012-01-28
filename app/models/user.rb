@@ -81,7 +81,7 @@ class User < ActiveRecord::Base
     singles.order(:created_at).for(puzzle).find_each do |single|
       current_average << single
       if current_average < result
-        result = current_average.dup
+        result = CubingAverage.new(current_average.singles.clone) # TODO use CubingAverage's initialize_copy
       end
     end
 
