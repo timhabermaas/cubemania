@@ -27,7 +27,7 @@
   <% end %>
   <section id="shouts">
     <%= render :partial => "shouts/shouts" %>
-    <%= render :partial => "shouts/form" %>
+    <%= render :partial => "shouts/form" unless @competition.old?(@date) %>
   </section>
 </section>
 
