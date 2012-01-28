@@ -32,7 +32,7 @@ class TimersController < ApplicationController
   def dnf
     @single = current_user.singles.find params[:id]
     @single.toggle_dnf!
-    UpdateRecords.delay.for current_user, @puzzle
+    enqueue_record_job current_user, @puzzle
     respond_to do |format|
       format.html { redirect_to puzzle_timers_path(@puzzle) }
       format.js { render :penalty }
@@ -42,7 +42,7 @@ class TimersController < ApplicationController
   def plus2
     @single = current_user.singles.find params[:id]
     @single.toggle_plus2!
-    UpdateRecords.delay.for current_user, @puzzle
+    enqueue_record_job current_user, @puzzle
     respond_to do |format|
       format.html { redirect_to puzzle_timers_path(@puzzle) }
       format.js { render :penalty }
@@ -52,7 +52,7 @@ class TimersController < ApplicationController
   def destroy
     @single = current_user.singles.find params[:id]
     if @single.destroy
-      UpdateRecords.delay.for current_user, @puzzle
+      enqueue_record_job current_user, @puzzle
     else
       flash[:alert] = "Couldn't remove single, because it belongs to a competition."
     end
@@ -95,5 +95,10 @@ private
     if @records[1] && @records[1].singles.include?(@single)
       flash[:notice] = "You have a new single record with #{view_context.ft(@single.time)}! #{view_context.link_to 'Share', root_path}".html_safe
     end
+  end
+
+  def enqueue_record_job(user, puzzle)
+    job = RecordCalculationJob.new(user.id, puzzle.id)
+    Delayed::Job.enqueue job unless job.exists?
   end
 end
