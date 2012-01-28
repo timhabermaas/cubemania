@@ -29,6 +29,9 @@
   margin-bottom: 1em;
   width: 100%;
   td {
-  padding: 0.5em;
+    padding: 0.5em;
+    small {
+      white-space: normal;
+    }
   }
 }
