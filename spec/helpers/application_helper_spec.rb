@@ -8,4 +8,14 @@ describe ApplicationHelper do
       helper.s(0).should == "0"
     end
   end
+
+  describe "#possessive" do
+    it "adds an 's to Peter" do
+      helper.possessive("Peter").should == "Peter's"
+    end
+
+    it "only adds an ' to Klaus" do
+      helper.possessive("Klaus").should == "Klaus'"
+    end
+  end
 end
