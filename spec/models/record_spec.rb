@@ -37,12 +37,18 @@ describe Record do
   describe "#comment" do
     let(:single_1) { create :single, :comment => "foo" }
     let(:single_2) { create :single, :comment => "muh" }
+    let(:single_3) { create :single, :comment => "too long"*100 }
     let(:record) { create :record, :singles => create_list(:single, 3) + [single_1] + [single_2] }
 
     subject { record.comment }
 
-    it "concatenate comments from singles" do
+    it "concatenates comments from singles" do
       should == "foo; muh"
+    end
+
+    it "cuts off too long comments without failing comment validation" do
+      record = create :record, :singles => create_list(:single, 4) + [single_3]
+      record.comment.size.should == 255
     end
   end
 

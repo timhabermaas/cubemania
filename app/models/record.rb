@@ -6,9 +6,10 @@ class Record < ActiveRecord::Base
   validates_presence_of :user_id, :puzzle_id, :time, :amount, :singles, :set_at
   validates_uniqueness_of :user_id, :scope => [:puzzle_id, :amount], :message => "can't have more than one record per puzzle and amount"
   validates_inclusion_of :amount, :in => [1, 5, 12]
+  validates_length_of :comment, :maximum => 255
   validate :has_as_many_singles_as_amount
 
-  before_validation :set_set_at
+  before_validation :set_set_at, :set_comments_from_singles
 
   humanize :time => :time
 
@@ -32,10 +33,6 @@ class Record < ActiveRecord::Base
     record.destroy if record
   end
 
-  def comment
-    singles.map(&:comment).uniq.reject(&:blank?).join("; ")
-  end
-
   private
   def has_as_many_singles_as_amount
     errors.add(:singles, "must have #{amount} items, but has #{singles.size}") if singles && singles.size != amount
@@ -45,5 +42,9 @@ class Record < ActiveRecord::Base
     unless singles.empty?
       self.set_at = singles.last.created_at || Time.now
     end
+  end
+
+  def set_comments_from_singles
+    self.comment = singles.map(&:comment).uniq.reject(&:blank?).join("; ")[0..254]
   end
 end
