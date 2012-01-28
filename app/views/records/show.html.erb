@@ -1,4 +1,4 @@
-<h1><%= RecordPresenter.new(@record).record_format %></h1>
+<h1><%= RecordPresenter.new(@record).record_type %> Record</h1>
 
 <article id="record">
   <header>
@@ -28,3 +28,5 @@
     </tbody>
   </table>
 </article>
+
+<%= link_to "Post on Facebook!", shares_path(:record_id => @record.id), :method => :post %>

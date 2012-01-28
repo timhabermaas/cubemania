@@ -3,13 +3,13 @@ class RecordPresenter
     @record = record
   end
 
-  def record_format
+  def record_type
     amount = @record.amount
     case amount
     when 1
-      "Single Record"
+      "Single"
     else
-      "Average of #{amount} Record"
+      "Average of #{amount}"
     end
   end
 end
