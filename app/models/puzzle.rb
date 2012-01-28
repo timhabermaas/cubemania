@@ -5,6 +5,8 @@ class Puzzle < ActiveRecord::Base
 
   friendly_id :combined, :use => :slugged
 
+  after_save :compose_fb_image
+
   belongs_to :kind
   has_many :competitions, :dependent => :destroy
   has_many :matches, :dependent => :destroy
@@ -35,6 +37,14 @@ class Puzzle < ActiveRecord::Base
     "#{name} #{kind.short_name}"
   end
 
+  def combined_file_name
+    "#{slug}.png"
+  end
+
+  def combined_url(bucket = Rails.application.config.s3_bucket)
+    "http://s3.amazonaws.com/#{bucket}/puzzles/#{combined_file_name}"
+  end
+
   def scramble
     case name.downcase
       when '2x2x2'
@@ -60,5 +70,16 @@ class Puzzle < ActiveRecord::Base
     	else
     	  ''
     end.html_safe
+  end
+
+  private
+  def compose_fb_image
+    unless Rails.env.test?
+      temp_file = Tempfile.new("temp.png")
+      puzzles_path = Rails.root.join("app", "assets", "images", "puzzles.png")
+      kinds_path = Rails.root.join("app", "assets", "images", "kinds.png")
+      `convert \\( #{puzzles_path} -crop 50x50+#{css_position*50}+0  \\) \\( #{kinds_path} -crop 25x25+#{kind.css_position*25}+0 \\) -gravity SouthEast -composite #{temp_file.path}`
+      AWS::S3::S3Object.store("puzzles/#{combined_file_name}", open(temp_file.path), Rails.application.config.s3_bucket)
+    end
   end
 end

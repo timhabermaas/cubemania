@@ -35,4 +35,6 @@ Cubemania::Application.configure do
 
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
+
+  config.s3_bucket = "images.cubemania.test"
 end

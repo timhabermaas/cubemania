@@ -36,4 +36,6 @@ Cubemania::Application.configure do
 
   # Expands the lines which load the assets
   config.assets.debug = true
+
+  config.s3_bucket = "images.cubemania.development"
 end
