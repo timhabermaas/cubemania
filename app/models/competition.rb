@@ -2,7 +2,7 @@ class Competition < ActiveRecord::Base
   REPEATS = %w{once daily weekly monthly}
   SKILLS  = %w{all beginner intermediate expert}
 
-  attr_accessible :name, :description, :repeat, :skill, :sticky # TODO remove sticky from attributes
+  attr_accessible :name, :description, :repeat, :skill, :sticky
 
   belongs_to :puzzle
   belongs_to :user

@@ -23,6 +23,8 @@ Facebook:
 Code:
   extract puzzle divs into helper
   extract single display into helper (for dnf stuff) (<%= single(single, 'li') do %>)
+Security:
+  remove competition.sticky from attributes hash with before_filter
 
 
 Sharing:
