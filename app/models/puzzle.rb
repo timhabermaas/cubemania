@@ -79,7 +79,10 @@ class Puzzle < ActiveRecord::Base
       puzzles_path = Rails.root.join("app", "assets", "images", "puzzles.png")
       kinds_path = Rails.root.join("app", "assets", "images", "kinds.png")
       `convert \\( #{puzzles_path} -crop 50x50+#{css_position*50}+0  \\) \\( #{kinds_path} -crop 25x25+#{kind.css_position*25}+0 \\) -gravity SouthEast -composite #{temp_file.path}`
-      AWS::S3::S3Object.store("puzzles/#{combined_file_name}", open(temp_file.path), Rails.application.config.s3_bucket)
+      AWS::S3::S3Object.store("puzzles/#{combined_file_name}",
+                              open(temp_file.path),
+                              Rails.application.config.s3_bucket,
+                              :access => :public_read)
     end
   end
 end
