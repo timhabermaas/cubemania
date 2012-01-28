@@ -1,7 +1,7 @@
 require "spec_helper"
 
-describe SharesController do
-  describe "#create" do
+describe RecordsController do
+  describe "#share" do
     let(:user) { create :user }
     let(:record) { create :record, :user => user, :amount => 5 }
 
@@ -18,14 +18,14 @@ describe SharesController do
         me = stub
         FbGraph::User.should_receive(:me).with("foo_token").and_return(me)
         me.should_receive(:feed!).with(hash_including(:link => "http://test.host/puzzles/#{record.puzzle.slug}/records/#{record.id}", :name => "Average of 5"))
-        post :create, :record_id => record.id
+        post :share, :id => record.id
       end
     end
 
     context "user is not authorized" do
       it "redirects to /auth/facebook" do
         FbGraph::User.should_not_receive(:me)
-        post :create, :record_id => record.id
+        post :share, :id => record.id
         response.should redirect_to("/auth/facebook")
       end
     end
@@ -36,7 +36,7 @@ describe SharesController do
       end
 
       it "redirects to /auth/facebook" do
-        post :create, :record_id => record.id
+        post :share, :id => record.id
         response.should redirect_to("/auth/facebook")
       end
     end

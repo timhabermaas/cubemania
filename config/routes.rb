@@ -33,7 +33,9 @@ Cubemania::Application.routes.draw do
     end
     resources :scrambles
 
-    resources :records
+    resources :records do
+      post :share, :on => :member
+    end
     #match 'competitions/:id/:date' => 'competitions#show', :as => 'competition_date'
   end
 
@@ -45,7 +47,6 @@ Cubemania::Application.routes.draw do
   match '/auth/facebook/callback' => 'authorizations#create'
   match '/auth/developer/callback' => 'authorizations#create'
   match '/auth/failure' => 'authorizations#failure'
-  resources :shares
 
   resource :reset_password
 
