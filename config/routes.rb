@@ -40,7 +40,6 @@ Cubemania::Application.routes.draw do
   end
 
   resources :kinds
-  resources :items
 
   resources :authorizations
   match '/auth/twitter/callback' => 'authorizations#create'
