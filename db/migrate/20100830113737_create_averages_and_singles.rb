@@ -19,25 +19,36 @@ class CreateAveragesAndSingles < ActiveRecord::Migration
 
       t.timestamps
     end
+    Average.reset_column_information
 
     say_with_time "Create competition averages from clocks" do
       ActiveRecord::Base.record_timestamps = false
 
-      Clock.where(:type => "Average").where("competition_id IS NOT NULL").find_each do |clock|
-        Average.create!(:time => clock.time,
-                        :dnf => clock.dnf,
-                        :user_id => clock.user_id,
-                        :puzzle_id => clock.puzzle_id,
-                        :competition_id => clock.competition_id,
-                        :comment => clock.comment,
-                        :created_at => clock.created_at, :updated_at => clock.created_at)
+      Clock.where(:type => "Average").where("competition_id IS NOT NULL").find_each do |average| # total behämmert!
+        a = Average.create!(:time => average.time,
+                            :dnf => average.dnf,
+                            :user_id => average.user_id,
+                            :puzzle_id => average.puzzle_id,
+                            :competition_id => average.competition_id,
+                            :comment => average.comment,
+                            :created_at => average.created_at, :updated_at => average.created_at)
+        Clock.where(:type => "Single", :average_id => average.id).each do |single|
+          single.update_attribute :average_id, a.id
+        end
       end
 
       ActiveRecord::Base.record_timestamps = true
     end
 
     say_with_time "Rescuing average comments for non-competitions over to singles" do
-      execute "UPDATE clocks SET comment = c2.comment FROM clocks c2 WHERE clocks.type='Single' AND clocks.competition_id IS NULL AND clocks.average_id=c2.id"
+      execute "CREATE TABLE comments_temp AS SELECT id, comment FROM clocks WHERE type='Average' AND competition_id IS NULL"
+      execute "CREATE INDEX temp_index ON comments_temp (id)"
+      execute "UPDATE clocks SET comment = (SELECT comment FROM comments_temp WHERE comments_temp.id=clocks.average_id) WHERE type='Single' AND competition_id IS NULL"
+      execute "DROP TABLE comments_temp"
+    end
+
+    say_with_time "Set all average_ids to NULL for singles" do
+      Clock.where(:type => "Single").where("competition_id IS NULL").update_all("average_id = NULL")
     end
 
     say_with_time "Get rid of all old averages in clocks" do
@@ -48,15 +59,14 @@ class CreateAveragesAndSingles < ActiveRecord::Migration
     remove_column :clocks, :record
     remove_column :clocks, :position
     remove_column :clocks, :competition_id
+
     rename_table :clocks, :singles
     add_column :singles, :updated_at, :datetime, :null => false, :default => 0
 
     Single.reset_column_information
-    ActiveRecord::Base.record_timestamps = false
     say_with_time "setting singles#updated_at to singles#created_at" do
       Single.update_all("updated_at = created_at")
     end
-    ActiveRecord::Base.record_timestamps = true
     change_column :singles, :updated_at, :datetime, :null => false
   end
 
