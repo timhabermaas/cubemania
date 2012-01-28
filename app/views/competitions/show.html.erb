@@ -11,9 +11,15 @@
     </div>
   </div>
   <% if @results.empty? %>
-    <p class="challenge">
-      Be the first to compete!
-    </p>
+    <% if @competition.old?(@date) %>
+      <p class="challenge">
+        No one competed. :(
+      </p>
+    <% else %>
+      <p class="challenge">
+        Be the first to compete!
+      </p>
+    <% end %>
   <% else %>
     <table id="results">
       <%= render :partial => "result", :collection => @results %>
@@ -24,9 +30,27 @@
     <%= render :partial => "shouts/form" %>
   </section>
 </section>
+
 <section id="average">
   <% unless @competition.old? @date %>
-    <%= render "compete_form" %>
+    <% if logged_in? %>
+      <% if @competition.participated?(@date, current_user) %>
+        <p class="suggestion">
+          <% if current_user.ignored? %>
+            Get out of here!
+          <% else %>
+            See your ranking on the left.
+          <% end %>
+        </p>
+      <% else %>
+        <%= render "compete_form" %>
+      <% end %>
+    <% else %>
+      <p class="suggestion">
+        Please <%= link_to 'login', login_path(:return_to => request.path) %> or
+        <%= link_to 'register', register_path(:return_to => request.path) %> to compete.
+      </p>
+    <% end %>
   <% else %>
     <p class="suggestion">
       This competition ended on <%=dt @competition.ended_at(@date).in_time_zone %>.
