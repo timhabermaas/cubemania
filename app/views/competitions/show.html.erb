@@ -44,3 +44,10 @@
   <% end %>
 </section>
 <div class="clear"></div>
+<% unless @competition.once? %>
+  <div class="pagination">
+    <%= @competition.previous?(@date) ? link_to('&laquo; Previous'.html_safe, date_puzzle_competition_path(@puzzle, @competition, d(@competition.previous_date(@date)))) : '<span class="disabled">&laquo; Previous</span>'.html_safe %> &middot;
+    <%= link_to 'Current', puzzle_competition_path(@puzzle, @competition) %> &middot;
+    <%= @competition.next?(@date) ? link_to('Next &raquo;'.html_safe, date_puzzle_competition_path(@puzzle, @competition, d(@competition.next_date(@date)))) : '<span class="disabled">Next &raquo;</span>'.html_safe %>
+  </div>
+<% end %>

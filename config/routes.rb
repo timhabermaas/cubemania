@@ -28,7 +28,10 @@ Cubemania::Application.routes.draw do
     end
 
     resources :competitions do
-      post :compete, :on => :member
+      member do
+        post :compete
+        get "/:date" => "competitions#show", :as => "date"
+      end
       resources :shouts
     end
     resources :scrambles
@@ -36,7 +39,6 @@ Cubemania::Application.routes.draw do
     resources :records do
       post :share, :on => :member
     end
-    #match 'competitions/:id/:date' => 'competitions#show', :as => 'competition_date'
   end
 
   resources :kinds
