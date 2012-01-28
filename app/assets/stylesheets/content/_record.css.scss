@@ -1,9 +1,13 @@
 #record header {
   padding-top: 3px;
   position: relative;
-  margin-bottom: 1.5em;
+  margin-bottom: 2em;
   small {
     display: block;
+  }
+  h2 {
+    margin-bottom: 0;
+    padding-bottom: 0;
   }
   h2, small {
     margin-left: 70px;
@@ -22,6 +26,7 @@
 
 #singles {
   margin-left: 0;
+  margin-bottom: 1em;
   width: 100%;
   td {
   padding: 0.5em;
