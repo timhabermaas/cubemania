@@ -14,6 +14,6 @@ class RecordsController < ApplicationController
 
   def show
     @puzzle = Puzzle.find params[:puzzle_id]
-    @record = @puzzle.records.find params[:id]
+    @record = @puzzle.records.find params[:id], :include => [:singles]
   end
 end
