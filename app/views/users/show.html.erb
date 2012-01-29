@@ -1,7 +1,7 @@
 <%= render "layouts/admin" if can? :edit, @user %>
 
 <div id="user">
-  <%= link_to('Sponsor', 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=donate%40cubemania%2eorg&item_name=Cubemania&no_shipping=1&return=http%3a%2f%2fwww%2ecubemania%2eorg&cancel_return=http%3a%2f%2fwww%2ecubemania%2eorg&cn=Comment&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8', :class => 'sponsor') if @user.sponsor? %>
+  <%= link_to('Sponsor', root_path, :class => 'sponsor') if @user.sponsor? %>
   <h1><%= @user.name %></h1>
 
   <% if @user.wca.blank? and self? %>
