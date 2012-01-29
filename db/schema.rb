@@ -131,14 +131,14 @@ ActiveRecord::Schema.define(:version => 20120129022734) do
   end
 
   create_table "singles", :force => true do |t|
-    t.integer  "time",                                      :null => false
-    t.integer  "puzzle_id",                                 :null => false
+    t.integer  "time",                                                          :null => false
+    t.integer  "puzzle_id",                                                     :null => false
     t.datetime "created_at"
-    t.integer  "user_id",                    :default => 0, :null => false
+    t.integer  "user_id",                    :default => 0,                     :null => false
     t.string   "scramble",   :limit => 1024
     t.integer  "average_id"
     t.string   "comment"
-    t.datetime "updated_at",                                :null => false
+    t.datetime "updated_at",                 :default => '2012-01-29 02:48:47', :null => false
     t.string   "penalty",    :limit => 8
   end
 

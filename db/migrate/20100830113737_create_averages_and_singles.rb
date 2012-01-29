@@ -61,7 +61,7 @@ class CreateAveragesAndSingles < ActiveRecord::Migration
     remove_column :clocks, :competition_id
 
     rename_table :clocks, :singles
-    add_column :singles, :updated_at, :datetime, :null => false, :default => 0
+    add_column :singles, :updated_at, :datetime, :null => false, :default => DateTime.now
 
     Single.reset_column_information
     say_with_time "setting singles#updated_at to singles#created_at" do
