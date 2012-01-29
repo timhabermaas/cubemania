@@ -2,9 +2,9 @@ root = exports ? this
 
 root.formatTime = (time) ->
   return "-:--.--" unless time
-  seconds = (time / 1000).toFixed(2);
+  seconds = Math.round(time / 10) / 100;
   if seconds < 60
-    "#{seconds}s"
+    "#{seconds.toFixed(2)}s"
   else
     minutes = Math.floor(seconds / 60)
     seconds = seconds - minutes * 60
