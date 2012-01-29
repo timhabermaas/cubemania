@@ -12,4 +12,8 @@ class RecordPresenter
       "Average of #{amount}"
     end
   end
+
+  def flash_message
+    "You have a new #{record_type.downcase} record: <strong>#{@record.human_time}</strong>!"
+  end
 end
