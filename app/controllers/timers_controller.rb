@@ -93,7 +93,7 @@ private
 
   def set_flash
     if @records[1] && @records[1].singles.include?(@single)
-      flash[:notice] = "You have a new single record with #{view_context.ft(@single.time)}! #{view_context.link_to 'Share', root_path}".html_safe
+      flash[:notice] = "You have a new single record with #{view_context.ft(@single.time)}! #{view_context.link_to 'Share', puzzle_record_path(@puzzle, @records[1])}".html_safe
     end
   end
 
