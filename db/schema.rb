@@ -138,7 +138,7 @@ ActiveRecord::Schema.define(:version => 20120129022734) do
     t.string   "scramble",   :limit => 1024
     t.integer  "average_id"
     t.string   "comment"
-    t.datetime "updated_at",                 :default => '2012-01-29 02:48:47', :null => false
+    t.datetime "updated_at",                 :default => '2010-01-01 00:00:00', :null => false
     t.string   "penalty",    :limit => 8
   end
 
