@@ -2,3 +2,5 @@ new_singles = $("<%=j render :partial => 'timers/single', :collection => @single
 $("#singles ol").append(new_singles);
 new_singles.fadeIn("slow");
 $("#singles .load-more a").attr("href", "<%= more_puzzle_timers_path(@puzzle, :page => params[:page].to_i + 1) %>");
+
+updateStatistics();
