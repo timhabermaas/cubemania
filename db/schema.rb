@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120128181826) do
+ActiveRecord::Schema.define(:version => 20120129022734) do
 
   create_table "authorizations", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -113,6 +113,8 @@ ActiveRecord::Schema.define(:version => 20120128181826) do
     t.integer "record_id", :null => false
     t.integer "single_id", :null => false
   end
+
+  add_index "records_singles", ["record_id", "single_id"], :name => "index_records_singles_on_record_id_and_single_id"
 
   create_table "scrambles", :force => true do |t|
     t.string   "scramble",       :limit => 1024, :null => false
