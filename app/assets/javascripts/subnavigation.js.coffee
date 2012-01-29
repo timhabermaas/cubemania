@@ -4,17 +4,22 @@ root.checkKind = (index) ->
   $("#kinds ul").children("li").removeClass("checked").eq(index).addClass("checked")
   $("#puzzles > ul").animate {left: -100 * index + "%"}, "normal"
 
+intervalId = null
+
 hideSubnavigation = () ->
   $("#subnavigation #puzzles").slideUp("slow")
+  clearTimeout(intervalId)
+  intervalId = null
 
 showSubnavigation = () ->
   $("#subnavigation #puzzles").slideDown("slow")
+  clearTimeout(intervalId)
+  intervalId = setTimeout(hideSubnavigation, 7000)
 
 jQuery ->
   if $("#timer").length
-    $("#subnavigation #puzzles").hide();
-    $("#subnavigation").hoverIntent(
-      over: showSubnavigation
-      timeout: 1000
-      out: hideSubnavigation
-    )
+    showSubnavigation()
+
+    $("#subnavigation #kinds a").bind "click", (event) ->
+      showSubnavigation()
+
