@@ -98,7 +98,7 @@ private
           view_context.link_to('Share it', puzzle_record_path(@puzzle, @records[amount]))
       end
     end.compact
-    flash[:notice] = messages.join("<br />") unless messages.empty?
+    flash[:notice] = messages.join("<br />").html_safe unless messages.empty?
   end
 
   def enqueue_record_job(user, puzzle)

@@ -66,7 +66,7 @@ describe "Timer" do
       within "div.flash" do
         page.should have_content "single record"
         page.should have_content "13.37"
-        page.should have_link "Share"
+        page.should have_link "Share it"
       end
     end
   end
