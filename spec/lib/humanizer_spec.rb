@@ -35,11 +35,20 @@ describe Humanizer do
     end
 
     context "when passed a spacer" do
-      subject { dummy.human_blub('_#') }
+      subject { dummy.human_blub(:spacer => '_#') }
 
       it "should return 10.21_#s for 10210" do
         dummy.blub = 10210
         should == "10.21_#s"
+      end
+    end
+
+    context "when unit set to false" do
+      subject { dummy.human_blub(:unit => false) }
+
+      it "should'nt display 's' for 10210" do
+        dummy.blub = 10210
+        should == "10.21"
       end
     end
   end
