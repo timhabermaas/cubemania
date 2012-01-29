@@ -92,9 +92,17 @@ private
   end
 
   def set_flash
+    messages = []
     if @records[1] && @records[1].singles.include?(@single)
-      flash[:notice] = "You have a new single record with #{view_context.ft(@single.time)}! #{view_context.link_to 'Share', puzzle_record_path(@puzzle, @records[1])}".html_safe
+      messages << "You have a new single record: <strong>#{view_context.ft(@records[1].time)}</strong>! #{view_context.link_to 'Share', puzzle_record_path(@puzzle, @records[1])}".html_safe
     end
+    if @records[5] && @records[5].singles.include?(@single)
+      messages << "You have a new average of 5 record: <strong>#{view_context.ft(@records[5].time)}</strong>! #{view_context.link_to 'Share', puzzle_record_path(@puzzle, @records[5])}".html_safe
+    end
+    if @records[12] && @records[12].singles.include?(@single)
+      messages << "You have a new average of 12 record: <strong>#{view_context.ft(@records[12].time)}</strong>! #{view_context.link_to 'Share', puzzle_record_path(@puzzle, @records[12])}".html_safe
+    end
+    flash[:notice] = messages.join("<br />") unless messages.empty?
   end
 
   def enqueue_record_job(user, puzzle)

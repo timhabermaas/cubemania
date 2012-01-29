@@ -16,4 +16,8 @@ if (chart.series[0].length > 200) {
   chart.redraw();
 }
 
+<% if flash[:notice].blank? %>
+$(".flash.notice").slideUp("fast");
+<% end %>
+
 updateStatistics();
