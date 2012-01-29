@@ -17,6 +17,7 @@ class RecordsController < ApplicationController
     @puzzle = Puzzle.find params[:puzzle_id]
     @record = @puzzle.records.find params[:id], :include => [:singles]
     @user = @record.user
+    @singles = @record.singles.ordered
   end
 
   def share

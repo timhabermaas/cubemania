@@ -1,7 +1,11 @@
 class Record < ActiveRecord::Base
   belongs_to :puzzle
   belongs_to :user
-  has_and_belongs_to_many :singles, :order => "created_at"
+  has_and_belongs_to_many :singles do
+    def ordered
+      order("singles.created_at")
+    end
+  end
 
   validates_presence_of :user_id, :puzzle_id, :time, :amount, :singles, :set_at
   validates_uniqueness_of :user_id, :scope => [:puzzle_id, :amount], :message => "can't have more than one record per puzzle and amount"

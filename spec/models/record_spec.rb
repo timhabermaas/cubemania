@@ -32,6 +32,20 @@ describe Record do
     it "defaults to an empty array" do
       subject.singles.should == []
     end
+
+    it "orders them by singles.created_at" do
+      single_old = single_new = nil
+      Timecop.freeze(DateTime.new(2010, 1, 2)) do
+        single_old = create :single
+      end
+      Timecop.freeze(DateTime.new(2011, 1, 2)) do
+        single_new = create :single
+      end
+      single_today = create :single
+      record = create :record, :singles => [single_new] + [single_today] * 3 + [single_old]
+      record.singles.ordered.last.should == single_today
+      record.singles.ordered.first.should == single_old
+    end
   end
 
   describe "#comment" do

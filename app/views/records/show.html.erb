@@ -19,12 +19,12 @@
       </tr>
     </thead>
     <tbody>
-      <% @record.singles.each_with_index do |single, i| %>
+      <% @singles.each_with_index do |single, i| %>
         <tr class="<%= cycle 'even', 'odd' %>">
           <td><%= i + 1 %></td>
           <td><strong class="time<%= ' dnf' if single.dnf? %>"><%= single.human_time %></strong></td>
           <td><small><%= single.scramble %><small></td>
-          <td><%= single.comment %></td>
+          <td><%=m single.comment %></td>
         </tr>
       <% end %>
     </tbody>
