@@ -95,5 +95,8 @@ jQuery ->
       cur12 = average(singles, 12)
       $("#stats .current strong.avg5").text(formatTime(cur5));
       $("#stats .current strong.avg12").text(formatTime(cur12))
+      singles.removeClass("best").removeClass("worst")
+      best(singles).addClass("best")
+      worst(singles).addClass("worst")
 
     updateStatistics();

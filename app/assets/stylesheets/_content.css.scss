@@ -78,7 +78,17 @@
 
   .time.dnf {
     color: #83a1bf;
+    color: rgba(255, 255, 255, 0.3);
     text-decoration: line-through;
+  }
+  .time.best {
+    color: rgba(0, 255, 0, 0.6);
+  }
+  .time.worst {
+    color: rgba(255, 0, 0, 0.7);
+  }
+  .time.worst.dnf {
+    color: rgba(255, 0, 0, 0.3);
   }
 
   @import "content/home";

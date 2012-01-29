@@ -82,10 +82,9 @@
       list-style-position: outside;
       padding-left: 2em;
       li {
+        margin-bottom: 0.4em;
         .fu {
           text-align: right;
-        }
-        margin-bottom: 0.4em;
         }
         .time.plus2:after {
           content: "+";
