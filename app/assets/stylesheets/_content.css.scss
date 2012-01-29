@@ -76,6 +76,11 @@
     }
   }
 
+  .time.dnf {
+    color: #83a1bf;
+    text-decoration: line-through;
+  }
+
   @import "content/home";
   @import "content/users";
   @import "content/user";

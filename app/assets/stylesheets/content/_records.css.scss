@@ -27,9 +27,6 @@ p.tabs {
     text-transform: capitalize;
     white-space: nowrap;
   }
-  .dnf strong {
-    @include dnf;
-  }
   .rank1, .rank2, .rank3 {
     margin-bottom: 1em;
     th {

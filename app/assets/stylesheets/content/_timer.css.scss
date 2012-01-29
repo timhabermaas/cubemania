@@ -86,8 +86,6 @@
           text-align: right;
         }
         margin-bottom: 0.4em;
-        .time.dnf {
-          @include dnf;
         }
         .time.plus2:after {
           content: "+";
