@@ -51,9 +51,11 @@ FactoryGirl.define do
     association :puzzle
     association :user
   end
-
   factory :dnf_single, :parent => :single do
     penalty "dnf"
+  end
+  factory :plus2_single, :parent => :single do
+    penalty "plus2"
   end
 
   factory :average do

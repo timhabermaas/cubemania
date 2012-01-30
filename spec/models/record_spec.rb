@@ -66,6 +66,15 @@ describe Record do
     end
   end
 
+  describe "#cubing_average" do
+    let(:record) { create :record }
+    it "returns an instance of CubingAverage filled with proper stuff" do
+      average = record.cubing_average
+      average.should be_instance_of CubingAverage
+      average.singles.should == record.singles
+    end
+  end
+
   describe ".update_with" do
     let(:singles) { create_list(:single, 5) }
 

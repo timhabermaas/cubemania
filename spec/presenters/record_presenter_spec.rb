@@ -1,8 +1,6 @@
-require "app/presenters/record_presenter"
+require "spec_helper"
 
 describe RecordPresenter do
-  let(:record_presenter)
-
   describe "#record_type" do
     it "returns 'Single' if amount is 1" do
       r = RecordPresenter.new(stub(:amount => 1))
@@ -24,6 +22,27 @@ describe RecordPresenter do
     it "returns 'You have a new average of 12 record: 32.12s'" do
       r = RecordPresenter.new(stub(:amount => 12, :human_time => "32.12s"))
       r.flash_message.should == 'You have a new average of 12 record: <strong>32.12s</strong>!'
+    end
+  end
+
+  describe "#singles_as_text" do
+    let(:single_1) { create :single, :time => 12320 }
+    let(:single_2) { create :dnf_single, :time => 9000 }
+    let(:single_3) { create :single, :time => 12440 }
+    let(:single_4) { create :single, :time => 20000 }
+    let(:single_5) { create :single, :time => 13370 }
+    let(:single_with_penalty) { create :plus2_single, :time => 14210 }
+    let(:record) { create :record, :singles => [single_1, single_2, single_3, single_4, single_5], :amount => 5 }
+    let(:record_2) { create :record, :singles => [single_1, single_2, single_3, single_4, single_with_penalty], :amount => 5 }
+
+    it "returns '(12.32) (DNF) 12.44 20.00 13.37'" do
+      text = RecordPresenter.new(record).singles_as_text
+      text.should == "(12.32) (DNF) 12.44 20.00 13.37"
+    end
+
+    it "adds a '+' to singles with penalty" do
+      text = RecordPresenter.new(record_2).singles_as_text
+      text.should == "(12.32) (DNF) 12.44 20.00 14.21+"
     end
   end
 end

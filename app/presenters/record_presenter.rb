@@ -16,4 +16,24 @@ class RecordPresenter
   def flash_message
     "You have a new #{record_type.downcase} record: <strong>#{@record.human_time}</strong>!"
   end
+
+  def singles_as_text
+    average = @record.cubing_average
+    best = average.best
+    worst = average.worst
+
+    average.singles.map do |s|
+      time = if s.dnf?
+        "DNF"
+      else
+        s.human_time(:unit => false) + (s.plus2? ? "+" : "")
+      end
+
+      if [best, worst].include? s
+        "(#{time})"
+      else
+        time
+      end
+    end.join " "
+  end
 end

@@ -37,6 +37,10 @@ class Record < ActiveRecord::Base
     record.destroy if record
   end
 
+  def cubing_average
+    CubingAverage.new singles, time
+  end
+
   private
   def has_as_many_singles_as_amount
     errors.add(:singles, "must have #{amount} items, but has #{singles.size}") if singles && singles.size != amount
