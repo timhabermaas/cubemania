@@ -26,8 +26,9 @@ class RecordsController < ApplicationController
     if token
       begin
         me = FbGraph::User.me(token)
-        me.feed! :message => "test",
-                 :name => RecordPresenter.new(@record).record_type,
+        presenter = RecordPresenter.new(@record)
+        me.feed! :message => presenter.singles_as_text,
+                 :name => presenter.record_type + " PB",
                  :picture => @record.puzzle.combined_url,
                  :link => puzzle_record_url(@record.puzzle, @record)
         redirect_to root_path, :notice => "Successfully shared."

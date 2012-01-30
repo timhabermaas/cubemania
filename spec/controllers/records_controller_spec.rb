@@ -17,7 +17,8 @@ describe RecordsController do
       it "posts on fb wall" do
         me = stub
         FbGraph::User.should_receive(:me).with("foo_token").and_return(me)
-        me.should_receive(:feed!).with(hash_including(:link => "http://test.host/puzzles/#{record.puzzle.slug}/records/#{record.id}", :name => "Average of 5"))
+        me.should_receive(:feed!).with(hash_including(:link => puzzle_record_url(record.puzzle, record),
+                                                      :name => "Average of 5 PB"))
         post :share, :id => record.id
       end
     end
