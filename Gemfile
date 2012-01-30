@@ -27,7 +27,7 @@ gem 'formtastic'
 gem 'friendly_id', '~> 4.0.0'
 gem 'omniauth-twitter'
 gem 'omniauth-facebook'
-gem 'rack', :git => 'https://github.com/rack/rack.git', :ref =>'e20baec005238f9876281c0d083fe5a4e01aa034' # FIXME https://github.com/intridea/omniauth/issues/562
+gem 'rack', '~> 1.4.1'
 gem 'fb_graph'
 
 gem 'aws-s3', :require => 'aws/s3'
