@@ -12,30 +12,20 @@ class CubingAverage
     @time = nil
   end
 
-  def <=>(other)
+  def <=>(other) # TODO this logic could be probably moved into a module and shared with Single, Average and Record
     if not self.dnf? and not other.dnf?
       self.time <=> other.time
     elsif self.dnf? and not other.dnf?
       1
     elsif other.dnf? and not self.dnf?
       -1
+    else # both dnf
+      0
     end
   end
 
-  def <(other)
-    if self.dnf? and other.dnf?
-      false
-    else
-      (self <=> other) == -1
-    end
   end
 
-  def >(other)
-    if self.dnf? and other.dnf?
-      false
-    else
-      (self <=> other) == 1
-    end
   end
 
   def time
