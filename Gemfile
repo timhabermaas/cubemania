@@ -12,13 +12,11 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
-gem 'mysql'
-
 gem 'jquery-rails'
 
 gem 'json'
 
-gem 'pg', :group => :production
+gem 'pg'
 gem 'sqlite3', :group => [:development, :test]
 
 gem 'RedCloth'
