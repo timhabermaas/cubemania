@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120129022734) do
+ActiveRecord::Schema.define(:version => 20120130025501) do
 
   create_table "authorizations", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -109,6 +109,8 @@ ActiveRecord::Schema.define(:version => 20120129022734) do
     t.string   "comment"
   end
 
+  add_index "records", ["puzzle_id", "amount", "time"], :name => "index_records_on_puzzle_id_and_amount_and_time"
+
   create_table "records_singles", :id => false, :force => true do |t|
     t.integer "record_id", :null => false
     t.integer "single_id", :null => false
@@ -141,6 +143,8 @@ ActiveRecord::Schema.define(:version => 20120129022734) do
     t.datetime "updated_at",                 :default => '2010-01-01 00:00:00', :null => false
     t.string   "penalty",    :limit => 8
   end
+
+  add_index "singles", ["user_id", "puzzle_id", "created_at"], :name => "index_singles_on_user_id_and_puzzle_id_and_created_at"
 
   create_table "users", :force => true do |t|
     t.string   "name",               :limit => 32,                      :null => false
