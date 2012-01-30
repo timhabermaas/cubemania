@@ -6,8 +6,8 @@
   </div>
   <div class="best">
     <h4>Best</h4>
-    Single: <strong class="single"><%=ft @records[1].try(:time) %></strong> <small><%= link_to "Details", puzzle_record_path(@puzzle, @records[1]) %></small><br />
-    Average of 5: <strong class="avg5"><%=ft @records[5].try(:time) %></strong> <small><%= link_to "Details", puzzle_record_path(@puzzle, @records[5]) %></small><br />
-    Average of 12: <strong class="avg12"><%=ft @records[12].try(:time) %></strong> <small><%= link_to "Details", puzzle_record_path(@puzzle, @records[12]) %></small>
+    Single: <strong class="single"><%=ft @records[1].try(:time) %></strong> <small><%= link_to_if @records[1], "Details", puzzle_record_path(@puzzle, @records[1]) %></small><br />
+    Average of 5: <strong class="avg5"><%=ft @records[5].try(:time) %></strong> <small><%= link_to_if @records[5], "Details", puzzle_record_path(@puzzle, @records[5]) %></small><br />
+    Average of 12: <strong class="avg12"><%=ft @records[12].try(:time) %></strong> <small><%= link_to_if @records[12], "Details", puzzle_record_path(@puzzle, @records[12]) %></small>
   </div>
 </section>
