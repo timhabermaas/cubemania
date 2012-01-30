@@ -6,6 +6,10 @@ describe CubingAverage do
     CubingAverage.new(singles).singles.should == singles
   end
 
+  it "accepts time as second attribute for .new, and caches it" do
+    CubingAverage.new([stub], 40).time.should == 40
+  end
+
   it "defaults to an empty single array" do
     CubingAverage.new.singles.should == []
   end
@@ -26,7 +30,7 @@ describe CubingAverage do
     average.singles.should == [single]
   end
 
-  context "#time" do
+  describe "#time" do
     let(:single_5) { stub :time => 5, :dnf? => false }
     let(:single_6) { stub :time => 6, :dnf? => false }
     let(:single_7) { stub :time => 7, :dnf? => false }
@@ -79,11 +83,42 @@ describe CubingAverage do
     end
   end
 
-  context "#dnf?" do
+  describe "#dnf?" do
     it "returns true if time is nil" do
       average = CubingAverage.new
       average.stub(:time => nil)
       average.should be_dnf
+    end
+  end
+
+  describe "best, worst" do
+    let(:single_1) { stub :dnf? => false, :time => 40 }
+    let(:single_2) { stub :dnf? => false, :time => 13 }
+    let(:single_3) { stub :dnf? => false, :time => 23 }
+    let(:single_dnf) { stub :dnf? => true, :time => 9 }
+
+    describe "#best" do
+      it "returns the single with fastest time if everything's solved" do
+        CubingAverage.new([single_1, single_2, single_3]).best.should == single_2
+      end
+
+      it "takes notice of dnf singles and ignores them" do
+        CubingAverage.new([single_1, single_dnf]).best.should == single_1
+      end
+
+      it "chooses any single if all are dnf" do
+        CubingAverage.new([single_dnf, single_dnf]).best.should == single_dnf
+      end
+    end
+
+    describe "#worst" do
+      it "returns the single with worst time if everything's solved" do
+        CubingAverage.new([single_2, single_1, single_3]).worst.should == single_1
+      end
+
+      it "instantly chooses a dnf solve if there is any" do
+        CubingAverage.new([single_1, single_dnf]).worst.should == single_dnf
+      end
     end
   end
 

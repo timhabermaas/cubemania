@@ -3,13 +3,15 @@ class CubingAverage
 
   attr_reader :singles
 
-  def initialize(singles = [])
+  def initialize(singles = [], time = nil)
     @singles = singles.dup
+    @time = time
   end
 
   def <<(single)
     @singles << single
     @time = nil
+    @solved_singles = nil
   end
 
   def <=>(other) # TODO this logic could be probably moved into a module and shared with Single, Average and Record
@@ -24,8 +26,15 @@ class CubingAverage
     end
   end
 
+  def best
+    return @singles.first if solved_singles.empty?
+    solved_singles.sort_by(&:time).first
   end
 
+  def worst
+    dnf = @singles.detect(&:dnf?)
+    return dnf if dnf
+    @singles.sort_by(&:time).last
   end
 
   def time
@@ -36,21 +45,25 @@ class CubingAverage
         return @singles.first.dnf? ? nil : @singles.first.time
       end
 
-      cleaned_up_singles = @singles.reject(&:dnf?)
-      dnfs = @singles.size - cleaned_up_singles.size
+      dnfs = @singles.size - solved_singles.size
 
       return nil if dnfs > 1
 
-      cleaned_up_singles = cleaned_up_singles.sort_by(&:time)
+      sorted_singles = solved_singles.sort_by(&:time)
 
       if dnfs == 0
-        cleaned_up_singles[1..-2].map(&:time).inject(:+) / (cleaned_up_singles.size - 2).to_f
+        sorted_singles[1..-2].map(&:time).inject(:+) / (sorted_singles.size - 2).to_f
       else
-        cleaned_up_singles[1..-1].map(&:time).inject(:+) / (cleaned_up_singles.size - 1).to_f
+        sorted_singles[1..-1].map(&:time).inject(:+) / (sorted_singles.size - 1).to_f
       end)
   end
 
   def dnf?
     time.nil?
+  end
+
+  private
+  def solved_singles
+    @solved_singles ||= singles.reject(&:dnf?)
   end
 end
