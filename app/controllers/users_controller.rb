@@ -7,7 +7,8 @@ class UsersController < ApplicationController
 
   def index
     @max_singles_count = User.max_singles_count
-    @users = User.order('singles_count desc').where('name LIKE ?', "%#{params[:q]}%").paginate(:page => params[:page], :per_page => 100)
+    @users = User.order('singles_count desc').paginate(:page => params[:page], :per_page => 100)
+    @users = @users.where('lower(name) LIKE ?', "%#{params[:q].downcase}%") if params[:q]
 
     respond_to do |format|
       format.html
