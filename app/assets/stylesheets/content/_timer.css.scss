@@ -67,9 +67,16 @@
 
 }
 #times {
-  #chart {
+  #chart-container {
+    #chart {
+      margin-bottom: 2em;
+    }
     width: 602px;
     float: left;
+    ul {
+      margin: 0 auto;
+      width: 50%;
+    }
   }
   #singles {
     width: 290px;

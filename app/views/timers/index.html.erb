@@ -18,7 +18,9 @@
 </div>
 
 <div id="times">
-  <div id="chart" data-user-id="<%= current_user.id %>" data-puzzle-id="<%= @puzzle.id %>" data-user-name="<%= current_user.name %>" data-puzzle-name="<%= @puzzle.name %> <%= @puzzle.kind.short_name %>" data-url="<%= chart_puzzle_timers_path(@puzzle) %>">
+  <div id="chart-container">
+    <div id="chart" data-user-id="<%= current_user.id %>" data-user-name="<%= current_user.name %>" data-puzzle-id="<%= @puzzle.id %>" data-puzzle-name="<%= @puzzle.name %> <%= @puzzle.kind.short_name %>" data-url="<%= chart_puzzle_timers_path(@puzzle) %>"></div>
+    <%= text_field_tag "user-tokens" %>
   </div>
   <aside id="singles">
     <ol>

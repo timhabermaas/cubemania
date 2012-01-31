@@ -1,18 +1,12 @@
-$ ->
-  $("#user_tokens").tokenInput "/users.json", {
+jQuery ->
+  $("#user-tokens").tokenInput "/users.json", {
     crossDomain: false
     theme: "facebook"
     preventDuplicates: true
-    prePopulate: [{id: $("#timer").data("user-id"), name: $("#timer").data("name")}]
-    hintText: "Type a User Name"
-    onResult: (results) ->
-      #({id: item.user.id, name: item.user.name} for index, item in data)
-      $.each results, (index, value) ->
-        value.id = value.user.id
-        value.name = value.user.name
-      results
+    prePopulate: [{id: $("#chart").data("user-id"), name: $("#chart").data("user-name")}]
+    hintText: "Compare with..."
     onAdd: (item) ->
-      addUserToChart item.id, item.name, $("#timer").data("puzzle-id")
+      addUserToChart item.id, item.name
     onDelete: (item) ->
-      chart.get(item.id).remove()
+      removeUserFromChart(item.id)
   }

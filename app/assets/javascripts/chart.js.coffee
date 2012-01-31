@@ -27,7 +27,19 @@ jQuery ->
             formatter: ->
               formatTime(this.value)
         series: [
+          id: $("#chart").data("user-id")
           name: $("#chart").data("user-name")
           data: singles
         ]
       )
+
+    root.addUserToChart = (id, name) ->
+      url = "/puzzles/#{$('#chart').data('puzzle-id')}/timer/chart?user_id=#{id}"
+      $.getJSON url, (singles) ->
+        chart.addSeries
+          id: id
+          name: name
+          data: singles
+
+    root.removeUserFromChart = (id) ->
+      chart.get(id).remove()
