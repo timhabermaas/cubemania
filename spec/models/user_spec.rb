@@ -145,4 +145,19 @@ describe User do
       end
     end
   end
+
+  describe "#wasted_time" do
+    let(:user) { create :user }
+
+    before :each do
+      create :single, :time => 23, :user => user
+      create :single, :time => 42, :user => user
+      create :dnf_single, :time => 24, :user => user
+      create :single
+    end
+
+    it "adds all non-dnf singles for the user" do
+      user.wasted_time.should == 65
+    end
+  end
 end

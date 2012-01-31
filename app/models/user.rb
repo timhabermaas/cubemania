@@ -136,7 +136,7 @@ class User < ActiveRecord::Base
   end
 
   def wasted_time
-    singles.where('singles.dnf' => false).sum('singles.time')
+    singles.not_dnf.sum('singles.time')
   end
 
   def rank

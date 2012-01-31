@@ -2,7 +2,7 @@
 
 <div id="user">
   <%= link_to('Sponsor', root_path, :class => 'sponsor') if @user.sponsor? %>
-  <h1><%= @user.name %></h1>
+  <h1><%= @user.name %><small> has spent <%= time_ago_in_words (@user.wasted_time / 1000).seconds.from_now, true %> solving puzzles.</small></h1>
 
   <% if @user.wca.blank? and self? %>
   <div id="wca">

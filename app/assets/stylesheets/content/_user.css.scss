@@ -1,20 +1,27 @@
-#wca {
-  margin: 3em 0;
-  text-align: center;
-}
-#wca a.logo {
-  padding: 15px 25px;
-  margin-right: 1em;
-  background: transparent image-url("wca.gif") center no-repeat;
-}
-#wca a {
-  font-size: 1.25em;
-}
+#user {
+  h1 small {
+    font-size: 40%;
+    margin-left: 0.5em;
+  }
 
-.sponsor {
-  float: right;
-  height: 52px;
-  width: 168px;
-  background: image-url("sponsor.gif") center right no-repeat;
-  text-indent: -9999px;
+  #wca {
+    margin: 3em 0;
+    text-align: center;
+  }
+  #wca a.logo {
+    padding: 15px 25px;
+    margin-right: 1em;
+    background: transparent image-url("wca.gif") center no-repeat;
+  }
+  #wca a {
+    font-size: 1.25em;
+  }
+
+  .sponsor {
+    float: right;
+    height: 52px;
+    width: 168px;
+    background: image-url("sponsor.gif") center right no-repeat;
+    text-indent: -9999px;
+  }
 }
