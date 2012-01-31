@@ -2,7 +2,9 @@
   <%= form.inputs do %>
     <%= form.input :name %>
     <%= form.input :email %>
-    <%= form.input :bot_email %>
+    <div class="bot">
+      <%= form.input :bot_email %>
+    </div>
     <%= form.input :wca, :label => 'WCA ID (optional)' %>
     <%= form.input :time_zone, :as => :time_zone %>
     <%= form.input :wants_emails, :label => 'Receive Emails' %>
