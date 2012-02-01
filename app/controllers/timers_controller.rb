@@ -6,7 +6,7 @@ class TimersController < ApplicationController
 
   def index
     @scramble = @puzzle.scramble
-    @singles = current_user.singles.for(@puzzle).paginate :page => params[:page], :per_page => 12
+    @singles = current_user.singles.for(@puzzle).last_24_hours
     fetch_records
   end
 
@@ -64,7 +64,11 @@ class TimersController < ApplicationController
   end
 
   def more
-    @singles = current_user.singles.for(@puzzle).paginate :page => params[:page], :per_page => 12
+    @singles = current_user.singles.for(@puzzle).limit(12)
+    if params[:after]
+      last = DateTime.parse params[:after]
+      @singles = @singles.where "singles.created_at < ?", last
+    end
     respond_to do |format|
       format.html { redirect_to puzzle_timers_path(@puzzle, :page => params[:page]) }
       format.js

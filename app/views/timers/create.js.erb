@@ -2,6 +2,9 @@ $("#singles ol").prepend($("<%=j render :partial =>'single', :object => @single 
 if ($("#singles li").length > 12) {
   $("#singles li:last-child").remove();
 }
+$("#singles .suggestion").remove();
+$("#singles .load-more a").text("Load more");
+
 $("#timer form")[0].reset();
 $("#timer .scramble").text("<%=j @scramble %>");
 $("#timer form #single_scramble").val("<%=j @scramble %>");

@@ -23,12 +23,16 @@
     <%= text_field_tag "user-tokens" %>
   </div>
   <aside id="singles">
+    <% if @singles.empty? %>
+      <p class="suggestion">
+        You haven't solved any cubes in the last 24 hours. :(
+      </p>
+    <% end %>
     <ol>
       <%= render :partial => "single", :collection => @singles %>
     </ol>
     <section class="load-more">
-      <%= link_to "Load more", more_puzzle_timers_path(@puzzle, :page => (params[:page] || 1).to_i + 1), :remote => true %>
+      <%= link_to @singles.empty? ? "Whatever, load my last 12 solves!" : "Load more", more_puzzle_timers_path(@puzzle, :after => @singles.last.try(:created_at).to_param), :remote => true %>
     </section>
-    <%= will_paginate @singles %>
   </aside>
 </div>

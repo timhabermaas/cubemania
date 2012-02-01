@@ -15,6 +15,7 @@ class Single < ActiveRecord::Base
   scope :not_dnf, where("penalty IS NULL OR penalty NOT LIKE 'dnf'")
   scope :recent, lambda { |amount| order("created_at desc").limit(amount) }
   scope :for_user_and_puzzle, lambda { |user, puzzle| where(:user_id => user.id, :puzzle_id => puzzle.id) }
+  scope :last_24_hours, lambda { where "created_at > ?", 24.hours.ago }
 
   humanize :time => :time
 
