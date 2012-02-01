@@ -29,7 +29,7 @@ class RecordPresenter
         s.human_time(:unit => false) + (s.plus2? ? "+" : "")
       end
 
-      if [best, worst].include? s
+      if @record.amount > 1 and [best, worst].include? s
         "(#{time})"
       else
         time

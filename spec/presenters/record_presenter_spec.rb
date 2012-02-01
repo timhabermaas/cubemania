@@ -34,6 +34,7 @@ describe RecordPresenter do
     let(:single_with_penalty) { create :plus2_single, :time => 14210 }
     let(:record) { create :record, :singles => [single_1, single_2, single_3, single_4, single_5], :amount => 5 }
     let(:record_2) { create :record, :singles => [single_1, single_2, single_3, single_4, single_with_penalty], :amount => 5 }
+    let(:single_record) { create :record, :singles => [single_1], :amount => 1 }
 
     it "returns '(12.32) (DNF) 12.44 20.00 13.37'" do
       text = RecordPresenter.new(record).singles_as_text
@@ -43,6 +44,11 @@ describe RecordPresenter do
     it "adds a '+' to singles with penalty" do
       text = RecordPresenter.new(record_2).singles_as_text
       text.should == "(12.32) (DNF) 12.44 20.00 14.21+"
+    end
+
+    it "doesn't put parentheses around single records" do
+      text = RecordPresenter.new(single_record).singles_as_text
+      text.should == "12.32"
     end
   end
 end
