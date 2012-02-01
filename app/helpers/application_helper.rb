@@ -169,4 +169,12 @@ module ApplicationHelper
   def possessive(name)
     name + ('s' == name[-1,1] ? "'" : "'s")
   end
+
+  def raffael_path
+    if u = User.find_by_slug("raffael")
+      user_path u
+    else
+      root_path
+    end
+  end
 end
