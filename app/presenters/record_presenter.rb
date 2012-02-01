@@ -1,4 +1,7 @@
 class RecordPresenter
+  attr_reader :record
+  delegate :human_time, :to => :record
+
   def initialize(record)
     @record = record
   end

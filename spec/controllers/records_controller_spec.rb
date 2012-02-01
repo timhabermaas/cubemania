@@ -3,7 +3,7 @@ require "spec_helper"
 describe RecordsController do
   describe "#share" do
     let(:user) { create :user }
-    let(:record) { create :record, :user => user, :amount => 5 }
+    let(:record) { create :record, :user => user, :amount => 5, :time => 12420 }
 
     before :each do
       controller.stub!(:current_user) { user }
@@ -15,10 +15,11 @@ describe RecordsController do
       end
 
       it "posts on fb wall" do
-        me = stub
-        FbGraph::User.should_receive(:me).with("foo_token").and_return(me)
+        me = stub :first_name => "Rowe"
+        blub = stub :fetch => me
+        FbGraph::User.should_receive(:me).with("foo_token").and_return(blub)
         me.should_receive(:feed!).with(hash_including(:link => puzzle_record_url(record.puzzle, record),
-                                                      :name => "Average of 5 PB"))
+                                                      :name => "Rowe has a new Average of 5 Record: 12.42s"))
         post :share, :id => record.id
       end
     end

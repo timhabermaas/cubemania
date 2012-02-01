@@ -25,13 +25,13 @@ class RecordsController < ApplicationController
     token = current_user.authorizations.find_by_provider("facebook").try(:token)
     if token
       begin
-        me = FbGraph::User.me(token)
+        me = FbGraph::User.me(token).fetch
         presenter = RecordPresenter.new(@record)
-        me.feed! :message => presenter.singles_as_text,
-                 :name => presenter.record_type + " PB",
+        me.feed! :name => me.first_name + " has a new " + presenter.record_type + " Record: " + presenter.human_time,
                  :picture => @record.puzzle.combined_url,
-                 :link => puzzle_record_url(@record.puzzle, @record)
-        redirect_to root_path, :notice => "Successfully shared."
+                 :link => puzzle_record_url(@record.puzzle, @record),
+                 :description => presenter.singles_as_text
+        redirect_to puzzle_timers_path(@record.puzzle), :notice => "Successfully shared."
       rescue FbGraph::InvalidToken
         redirect_to "/auth/facebook"
       end
