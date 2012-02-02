@@ -1,7 +1,5 @@
 $("#singles ol").prepend($("<%=j render :partial =>'single', :object => @single %>").fadeIn('slow'));
-if ($("#singles li").length > 12) {
-  $("#singles li:last-child").remove();
-}
+
 $("#singles .suggestion").remove();
 $("#singles .load-more a").text("Load more");
 
