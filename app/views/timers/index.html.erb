@@ -1,6 +1,6 @@
 <div id="porno">
   <section id="timer">
-    <small class="scramble"><%= @scramble %></small>
+    <small class="scramble"><%=replace_newlines_with_br @scramble %></small>
     <div class="time"><%=ft 0 %></div>
     <%= semantic_form_for Single.new, :url => puzzle_timers_path(@puzzle), :remote => true do |form| %>
       <%= form.inputs do %>
