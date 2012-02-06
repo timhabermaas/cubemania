@@ -4,7 +4,7 @@ $("#singles .suggestion").remove();
 $("#singles .load-more a").text("Load more");
 
 $("#timer form")[0].reset();
-$("#timer .scramble").text("<%=j @scramble %>");
+$("#timer .scramble").html("<%=j replace_newlines_with_br(@scramble) %>");
 $("#timer form #single_scramble").val("<%=j @scramble %>");
 $("#stats").replaceWith("<%=j render 'stats' %>");
 <% if params[:single][:human_time].present? %>
