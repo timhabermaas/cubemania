@@ -23,7 +23,7 @@
         <tr class="<%= cycle 'even', 'odd' %>">
           <td><%= i + 1 %></td>
           <td><strong class="time<%= ' dnf' if single.dnf? %>"><%= single.human_time %></strong></td>
-          <td><small><%= single.scramble %><small></td>
+          <td><small><%=fs single.scramble %><small></td>
           <td><%=m single.comment %></td>
         </tr>
       <% end %>

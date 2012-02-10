@@ -126,9 +126,10 @@ module ApplicationHelper
     RedCloth::new(text).to_html.html_safe unless text.nil?
   end
 
-  def replace_newlines_with_br(text)
-    text.gsub("\n", '<br />').html_safe
+  def format_scramble(text)
+    text.present? ? text.gsub("\n", '<br />').html_safe : ""
   end
+  alias_method :fs, :format_scramble
 
   def s(number)
     number > 0 ? "+#{number}" : number.to_s
