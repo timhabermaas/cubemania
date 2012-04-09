@@ -10,10 +10,7 @@ class UsersController < ApplicationController
     @users = User.order('singles_count desc').paginate(:page => params[:page], :per_page => 100)
     @users = @users.where('lower(name) LIKE ?', "%#{params[:q].downcase}%") if params[:q]
 
-    respond_to do |format|
-      format.html
-      format.json { render :json => @users }
-    end
+    respond_with @users
   end
 
   def show

@@ -31,7 +31,7 @@
     <%= render "layouts/subnavigation" if controller? :timers, :records, :competitions %>
     <%= render "layouts/notice" %>
     <section id="content">
-      <div class="center">
+      <div id="inner-content" class="center">
         <%= yield %>
       </div>
     </section>
