@@ -1,46 +1,5 @@
-<%= render "layouts/admin" if can? :edit, @user %>
-
-<div id="user">
-  <%= link_to('Sponsor', root_path, :class => 'sponsor') if @user.sponsor? %>
-  <h1><%= @user.name %><small> has spent <%= time_ago_in_words (@user.wasted_time / 1000).seconds.from_now, true %> solving puzzles.</small></h1>
-
-  <% if @user.wca.blank? and self? %>
-  <div id="wca">
-    <%= link_to '&nbsp;'.html_safe, 'http://www.worldcubeassociation.org', :class => 'logo' %>
-    <%= link_to_function 'Link your World Cube Association profile!', "$('.admin a.toggle').click(); $('#user_wca').focus()" %>
+<%= content_tag "div", :id => "backbone-container", :data => {:user => @user} do %>
+  <div id="user">
+    <h1><%= @user.name %></h1>
   </div>
-  <% elsif not @user.wca.blank? %>
-  <div id="wca">
-    <%= link_to '&nbsp;'.html_safe, 'http://www.worldcubeassociation.org', :class => 'logo' %>
-    <%= link_to "#{@user.name}'s World Cube Association Profile", wca(@user.wca) %>
-  </div>
-  <% end %>
-
-  <% if @records.empty? %>
-  <p class="challenge">
-  <% if self? %>
-    How fast do you solve the cube?<br/>
-    <%= link_to 'Stop your times and get the record!', puzzle_timers_path %>
-  <% else %>
-    <%= @user.name %> has no personal records yet. <%= link_to 'Do you?', puzzle_timers_path if logged_in? %>
-  <% end %>
-  </p>
-  <% else %>
-  <table id="records">
-    <thead>
-      <tr>
-        <th></th>
-        <th>Puzzle</th>
-        <th colspan="2">Single</th>
-        <th colspan="2">Average of 5</th>
-      </tr>
-    </thead>
-    <tbody>
-    <% for puzzle, records in @records %>
-      <%= render :partial => 'record', :locals => { :records => records, :puzzle => puzzle } %>
-    <% end %>
-    </tbody>
-  </table>
-  <% end %>
-
-</div>
+<% end %>

@@ -13,6 +13,6 @@ class Cubemania.Routers.Users extends Backbone.Router
 
   show: (id) ->
     model = new Cubemania.Models.User(id: id)
-    model.fetch()
+    model.fetch(async:false)
     view = new Cubemania.Views.UsersShow(model: model)
     $("#backbone-container").html(view.render().el)

@@ -16,7 +16,10 @@ class UsersController < ApplicationController
     @user = object
     #grouped_by_puzzles = @user.records.group_by { |r| r.puzzle }
     #@records = grouped_by_puzzles.merge(grouped_by_puzzles) { |k, v| v = v.group_by { |r| r.amount }; v.merge(v) { |k, v| v.try(:first) } }
-    render :json => @user.to_json(:include => :records)
+    respond_to do |format|
+      format.html
+      format.json { render :json => @user.to_json(:include => :records) }
+    end
   end
 
   def object(options = nil)

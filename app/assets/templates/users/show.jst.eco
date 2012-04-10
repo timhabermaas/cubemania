@@ -1,1 +1,19 @@
-<%= @user.get("name") %>
+<div id="user">
+  <h1><%= @user.get("name") %><small> has spent ? hours solving puzzles.</small></h1>
+
+  <% if not @user.get("wca"): %>
+    <div id="wca">
+      <a href="http://www.worldcubeassociation.org" class="logo">&nbsp;</a>
+    </div>
+  <% else if @user.get("wca")?: %>
+    <div id="wca">
+      <a href="http://www.worldcubeassociation.org" class="logo">&nbsp;</a>
+      <%- @wcaLink %>
+    </div>
+  <% end %>
+  </div>
+
+  <% for record in @records: %>
+    <%= record.get("time") %>
+  <% end %>
+</div>
