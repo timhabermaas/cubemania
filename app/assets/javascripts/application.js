@@ -6,6 +6,7 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require date
 //= require highcharts
 //= require jquery.tokeninput
 //= require underscore

@@ -11,6 +11,11 @@ class RecordsController < ApplicationController
       else
         @puzzle.records.amount(5)
       end.paginate(:page => params[:page], :per_page => 50)
+
+    respond_to do |format|
+      format.html
+      format.json { render :json => @records.to_json(:include => :user) }
+    end
   end
 
   def show

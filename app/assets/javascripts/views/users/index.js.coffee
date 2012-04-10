@@ -1,6 +1,6 @@
 class Cubemania.Views.UsersIndex extends Backbone.View
 
-  template: JST['users/index']
+  template: JST["users/index"]
 
   initialize: ->
     @collection.on("reset", @render, this)

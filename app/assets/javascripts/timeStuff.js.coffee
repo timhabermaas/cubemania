@@ -1,7 +1,7 @@
 root = exports ? this
 
 root.formatTime = (time) ->
-  return "-:--.--" unless time
+  return "-:--.--" unless time?
   seconds = Math.round(time / 10) / 100;
   if seconds < 60
     "#{seconds.toFixed(2)}s"
@@ -10,6 +10,10 @@ root.formatTime = (time) ->
     seconds = seconds - minutes * 60
     s = if seconds < 10 then "0" else ""
     "#{minutes}:#{s}#{seconds.toFixed(2)}min"
+
+root.formatDate = (date) ->
+  d = new Date(date)
+  "#{d.getMonthName()} #{d.getDate()}, #{d.getFullYear()}" # March 8, 2010
 
 root.average = (singles, size) ->
   singles = singles[0...size]

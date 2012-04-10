@@ -1,0 +1,8 @@
+<p class="tabs">
+  <a href="#" class="single">Single</a>
+  <a href="#" class="avg5 selected">Average of 5</a>
+  <a href="#" class="avg12">Average of 12</a>
+</p>
+
+<table id="records">
+</table>
