@@ -1,3 +1,7 @@
+<form accept-charset="UTF-8" action="/users" id="users-search" method="get">
+  <input autosave="users-search" id="q" name="q" placeholder="Search" results="5" type="search">
+</form>
+
 <ul id="users">
 <% for user in @users.models: %>
   <li style="font-size: <%= user.activity(@max_singles) * 1 + 1 %>em">

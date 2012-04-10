@@ -1,13 +1,1 @@
-<%= form_tag users_path, :method => 'get', :id => "users-search" do %>
-  <%= search_field_tag :q, params[:q], :placeholder => "Search", :results => "5", :autosave => "users-search" %>
-<% end %>
-<ul id="users">
-<% for user in @users %>
-  <li style="font-size: <%= user.activity(@max_singles_count) * 1 + 1 %>em">
-    <%= link_to user.name, user %>
-    <small><%= user.singles_count %></small>
-  </li>
-<% end %>
-</ul>
-
-<%= will_paginate @users %>
+<%= content_tag "div", "Loading...", :id => "backbone-container", :data => { :users => @users } %>
