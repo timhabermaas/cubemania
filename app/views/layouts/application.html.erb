@@ -32,7 +32,9 @@
     <%= render "layouts/notice" %>
     <section id="content">
       <div class="center">
-        <%= yield %>
+        <div id="backbone-container">
+          <%= yield %>
+        </div>
       </div>
     </section>
     <%= render "layouts/footer" %>

@@ -3,12 +3,10 @@ class Cubemania.Routers.Users extends Backbone.Router
     "users": "index"
     "users/:id": "show"
 
-  initialize: ->
-    @collection = new Cubemania.Collections.Users()
-    @collection.reset($("#backbone-container").data("users"))
-
   index: ->
-    view = new Cubemania.Views.UsersIndex(collection: @collection)
+    collection = new Cubemania.Collections.Users()
+    collection.fetch()
+    view = new Cubemania.Views.UsersIndex(collection: collection)
     $("#backbone-container").html(view.render().el)
 
   show: (id) ->
