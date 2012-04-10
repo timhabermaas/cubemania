@@ -1,4 +1,4 @@
-class Cubemania.Routers.Users extends Backbone.Router
+class Cubemania.Routers.Router extends Backbone.Router
   routes:
     "users": "index"
     "users/:id": "show"

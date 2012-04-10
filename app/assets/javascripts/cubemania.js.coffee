@@ -4,7 +4,7 @@ window.Cubemania =
   Views: {}
   Routers: {}
   init: ->
-    new Cubemania.Routers.Users()
+    new Cubemania.Routers.Router()
     Backbone.history.start(pushState: true)
 
     # fetch all links and use backbone to navigate
