@@ -8,19 +8,11 @@ class Cubemania.Views.RecordsIndex extends Backbone.View
     "click .tabs .avg12": "clickAvg12"
 
   initialize: ->
-    @collection.on("reset", @initTableView, this)
-    @collection.on("reset", @renderTable, this)
-
-  initTableView: ->
     @tableView = new Cubemania.Views.RecordsTable(collection: @collection)
 
   render: ->
-    $(@el).html(@template(records: @collection))
-    @renderTable()
-    this
-
-  renderTable: ->
-    @$("#records").html(@tableView.render().el) if @tableView
+    $(@el).html(@template())
+    @$("#records").html(@tableView.el)
     this
 
   clickSingle: (event) ->
