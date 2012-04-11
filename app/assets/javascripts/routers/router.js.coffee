@@ -1,8 +1,14 @@
 class Cubemania.Routers.Router extends Backbone.Router
   routes:
+    "": ""
+    "puzzles/:puzzle/timer": "timerIndex"
     "puzzles/:puzzle/records": "recordsIndex"
     "users": "usersIndex"
     "users/:id": "usersShow"
+
+  home: ->
+
+  timerIndex: (puzzle) ->
 
   recordsIndex: (puzzle) ->
     collection = new Cubemania.Collections.Records(puzzle)
