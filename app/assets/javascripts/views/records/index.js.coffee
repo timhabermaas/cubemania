@@ -23,19 +23,22 @@ class Cubemania.Views.RecordsIndex extends Backbone.View
     @$("#records").html(@tableView.render().el) if @tableView
     this
 
-  clickSingle: ->
+  clickSingle: (event) ->
+    event.preventDefault()
     @collection.type = "single"
     @collection.fetch()
     $(".tabs a").removeClass("selected")
     $(".tabs a.single").addClass("selected")
 
-  clickAvg5: ->
+  clickAvg5: (event) ->
+    event.preventDefault()
     @collection.type = "avg5"
     @collection.fetch()
     $(".tabs a").removeClass("selected")
     $(".tabs a.avg5").addClass("selected")
 
-  clickAvg12: ->
+  clickAvg12: (event) ->
+    event.preventDefault()
     @collection.type = "avg12"
     @collection.fetch()
     $(".tabs a").removeClass("selected")
