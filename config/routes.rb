@@ -36,6 +36,8 @@ Cubemania::Application.routes.draw do
     end
     resources :scrambles
 
+    resources :singles
+
     resources :records do
       post :share, :on => :member
     end

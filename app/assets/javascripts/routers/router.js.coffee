@@ -9,6 +9,10 @@ class Cubemania.Routers.Router extends Backbone.Router
   home: ->
 
   timerIndex: (puzzle_id) ->
+    singles = new Cubemania.Collections.Singles(puzzle_id)
+    singles.fetch(data: $.param({user_id: "tim"}))
+    view = new Cubemania.Views.TimerIndex(collection: singles)
+    $("#backbone-container").html(view.render().el)
 
   recordsIndex: (puzzle_id) ->
     records = new Cubemania.Collections.Records(puzzle_id)

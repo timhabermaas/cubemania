@@ -1,0 +1,8 @@
+<div class="fu">
+  <span class="time <%= @single.get('penalty') %>"><%=formatTime @single.get("time") %></span>
+  <div class="edit">
+    <a href="#" class="dnf">DNF</a>
+    <a href="#" class="plus2">+2</a>
+    <a href="#" class="delete">X</a>
+  </div>
+</div>
