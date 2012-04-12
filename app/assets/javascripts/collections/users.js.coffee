@@ -1,6 +1,6 @@
 class Cubemania.Collections.Users extends Backbone.Collection
-  url: "/users"
   model: Cubemania.Models.User
+  url: "/users"
 
   maxSinglesCount: ->
     user = _.max(this.models, (u) -> u.get("singles_count"))

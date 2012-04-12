@@ -8,18 +8,18 @@ class Cubemania.Routers.Router extends Backbone.Router
 
   home: ->
 
-  timerIndex: (puzzle) ->
+  timerIndex: (puzzle_id) ->
 
-  recordsIndex: (puzzle) ->
-    collection = new Cubemania.Collections.Records(puzzle)
-    collection.fetch()
-    view = new Cubemania.Views.RecordsIndex(collection: collection)
+  recordsIndex: (puzzle_id) ->
+    records = new Cubemania.Collections.Records(puzzle_id)
+    records.fetch()
+    view = new Cubemania.Views.RecordsIndex(collection: records)
     $("#backbone-container").html(view.render().el)
 
   usersIndex: ->
-    collection = new Cubemania.Collections.Users()
-    collection.fetch()
-    view = new Cubemania.Views.UsersIndex(collection: collection)
+    users = new Cubemania.Collections.Users()
+    users.fetch()
+    view = new Cubemania.Views.UsersIndex(collection: users)
     $("#backbone-container").html(view.render().el)
 
   usersShow: (id) ->

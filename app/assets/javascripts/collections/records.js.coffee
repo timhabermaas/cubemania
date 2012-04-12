@@ -1,4 +1,6 @@
 class Cubemania.Collections.Records extends Backbone.Collection
+  model: Cubemania.Models.Record
+
   url: ->
     "/puzzles/" + @puzzle + "/records?type=" + @type
 
@@ -6,4 +8,4 @@ class Cubemania.Collections.Records extends Backbone.Collection
     @puzzle = puzzle
     @type = type || "avg5"
 
-  model: Cubemania.Models.Record
+
