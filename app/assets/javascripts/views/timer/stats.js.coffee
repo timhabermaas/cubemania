@@ -11,6 +11,7 @@ class Cubemania.Views.Stats extends Backbone.View
     @records.on("change", @render, this)
 
   render: ->
-    console.log "render stats"
-    $(@el).html(@template())
+    avg5 = @singles.currentAverage(5)
+    avg12 = @singles.currentAverage(12)
+    $(@el).html(@template(avg5: avg5, avg12: avg12))
     this
