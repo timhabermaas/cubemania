@@ -1,5 +1,11 @@
 class Cubemania.Models.Single extends Backbone.Model
 
+  urlRoot: ->
+    "/puzzles/" + @puzzle + "/singles"
+
+  initialize: (puzzle) ->
+    @puzzle = puzzle
+
   togglePlus2: ->
     if @plus2()
       @set("penalty", null)

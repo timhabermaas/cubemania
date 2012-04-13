@@ -7,6 +7,12 @@ class Cubemania.Collections.Singles extends Backbone.Collection
   initialize: (puzzle) ->
     @puzzle = puzzle
 
+  addSingle: (attributes) ->
+    s = new Cubemania.Models.Single(@puzzle)
+    s.set(attributes)
+    s.save()
+    @unshift(s)
+
   currentAverage: (size) ->
     lastSingles = @models[0..size]
     dnfs = _.filter(lastSingles, (s) -> s.dnf())

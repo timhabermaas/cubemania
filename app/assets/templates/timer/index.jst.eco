@@ -1,4 +1,28 @@
 <div id="porno">
+  <section id="timer">
+    <small class="scramble"></small>
+    <div class="time">0.00s</div>
+    <form accept-charset="UTF-8" class="formtastic single" id="new_single">
+      <fieldset class="inputs">
+        <ol>
+          <li class="string input optional stringish" id="single_human_time_input"><label class=" label" for="single_human_time">Time</label><input autocomplete="off" id="single_human_time" name="single[human_time]" type="text" value="" />
+          </li>
+          <li class="hidden input required" id="single_time_input"><input id="single_time" name="single[time]" type="hidden" />
+          </li>
+
+          </li>
+        </ol>
+      </fieldset>
+      <fieldset class="buttons">
+        <ol>
+          <li class="commit button">
+            <input class="create" name="commit" type="submit" value="Submit" />
+          </li>
+        </ol>
+      </fieldset>
+    </form>
+    <a href="#" class="toggle">Set times manually</a>
+  </section>
 </div>
 
 <div id="times">

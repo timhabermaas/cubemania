@@ -6,7 +6,9 @@ class Cubemania.Views.Stats extends Backbone.View
 
   initialize: (options) ->
     @singles = options["singles"]
-    @singles.on("change", @render, this) # TODO use extra backbone view for singles/records
+    @singles.on("change", @render, this)
+    @singles.on("add", @render, this)
+    @singles.on("destroy", @render, this) # TODO use extra backbone view for singles/records
     @records = options["records"]
     @records.on("change", @render, this)
 
