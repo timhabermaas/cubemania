@@ -3,11 +3,7 @@
 <form accept-charset="UTF-8" class="formtastic single" id="new_single">
   <fieldset class="inputs">
     <ol>
-      <li class="string input optional stringish" id="single_human_time_input"><label class=" label" for="single_human_time">Time</label><input autocomplete="off" id="single_human_time" name="single[human_time]" type="text" value="" />
-      </li>
-      <li class="hidden input required" id="single_time_input"><input id="single_time" name="single[time]" type="hidden" />
-      </li>
-
+      <li class="string input stringish" id="single_human_time_input"><label class="label" for="single_human_time">Time</label><input autocomplete="off" id="single_human_time" name="single[human_time]" type="text" value="" />
       </li>
     </ol>
   </fieldset>

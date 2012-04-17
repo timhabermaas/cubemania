@@ -7,7 +7,7 @@ class Cubemania.Views.Timer extends Backbone.View
     "focus input[type=text]": "disableTimer"
     "blur textarea": "enableTimer"
     "blur input[type=text]": "enableTimer"
-    #"submit #new_single": "createSingle" # richtig hier?
+    "submit #new_single": "submitSingle"
 
   initialize: ->
     @timer = new Cubemania.Timer()
@@ -60,6 +60,11 @@ class Cubemania.Views.Timer extends Backbone.View
 
   disableTimer: () ->
     @timerEnabled = false
+
+  submitSingle: (event) =>
+    event.preventDefault()
+    @collection.addSingle({human_time: $("#single_human_time").val()})
+    @$("form")[0].reset()
 
   createSingle: (time) ->
     @collection.addSingle({time: time})
