@@ -13,21 +13,32 @@ class SinglesController < ApplicationController
     if single.save
       UpdateRecentRecords.for(current_user, puzzle)
     end
-    puts single.inspect
     respond_to do |format|
       format.json { render :json => single } # TODO why does respond_with not work?
     end
   end
 
   def destroy
+    puzzle = Puzzle.find params[:puzzle_id]
     single = current_user.singles.find params[:id]
-    single.destroy
+    if single.destroy
+      enqueue_record_job current_user, puzzle
+    end
     respond_with single
   end
 
   def update
+    puzzle = Puzzle.find params[:puzzle_id]
     single = current_user.singles.find params[:id]
-    single.update_attributes params[:single]
+    if single.update_attributes params[:single]
+      enqueue_record_job current_user, puzzle # TODO only enqueue if penalty attribute is changed
+    end
     respond_with single
+  end
+
+private
+  def enqueue_record_job(user, puzzle)
+    job = RecordCalculationJob.new(user.id, puzzle.id)
+    Delayed::Job.enqueue job unless job.exists?
   end
 end
