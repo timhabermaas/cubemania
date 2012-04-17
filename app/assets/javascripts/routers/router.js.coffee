@@ -6,9 +6,17 @@ class Cubemania.Routers.Router extends Backbone.Router
     "users": "usersIndex"
     "users/:id": "usersShow"
 
+  initialize: ->
+    @bind "all", (router, route) ->
+      unless router[6..-1] == "timerIndex"
+        $(document).unbind("keydown")
+        $(document).unbind("keyup")
+
   home: ->
 
   timerIndex: (puzzle_id) ->
+    $(document).unbind("keydown")
+    $(document).unbind("keyup")
     singles = new Cubemania.Collections.Singles(puzzle_id)
     singles.fetch(data: $.param({user_id: "tim"}))
     view = new Cubemania.Views.TimerIndex(collection: singles)
