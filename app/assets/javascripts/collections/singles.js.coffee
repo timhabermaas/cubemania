@@ -8,8 +8,9 @@ class Cubemania.Collections.Singles extends Backbone.Collection
     @puzzle = puzzle
 
   addSingle: (attributes) ->
-    s = new Cubemania.Models.Single(@puzzle)
+    s = new Cubemania.Models.Single()
     s.set(attributes)
+    s.set("puzzle_id", @puzzle)
     s.save()
     @unshift(s) # TODO order automatically
 
