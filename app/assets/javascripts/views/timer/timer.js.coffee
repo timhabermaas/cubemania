@@ -47,7 +47,7 @@ class Cubemania.Views.Timer extends Backbone.View
   toggleManual: (event) ->
     event.preventDefault()
     $("#new_single").toggle()
-    $(".time").toggle()
+    @$(".time").toggle()
     ct = event.currentTarget
     $(ct).toggleText("Changed your mind?", "Set times manually")
     if $(ct).text() == "Changed your mind?"
