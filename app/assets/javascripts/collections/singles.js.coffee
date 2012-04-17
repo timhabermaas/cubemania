@@ -11,7 +11,7 @@ class Cubemania.Collections.Singles extends Backbone.Collection
     s = new Cubemania.Models.Single(@puzzle)
     s.set(attributes)
     s.save()
-    @unshift(s)
+    @unshift(s) # TODO order automatically
 
   currentAverage: (size) ->
     lastSingles = @models[0..size]

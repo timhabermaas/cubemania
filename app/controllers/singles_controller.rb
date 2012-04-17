@@ -13,7 +13,10 @@ class SinglesController < ApplicationController
     if single.save
       UpdateRecentRecords.for(current_user, puzzle)
     end
-    respond_with single
+    puts single.inspect
+    respond_to do |format|
+      format.json { render :json => single } # TODO why does respond_with not work?
+    end
   end
 
   def destroy
