@@ -3,6 +3,9 @@ window.Cubemania =
   Collections: {}
   Views: {}
   Routers: {}
+  currentUserId: ->
+    parseInt $("#user-profile").data("user-id")
+
   init: ->
     new Cubemania.Routers.Router()
     Backbone.history.start(pushState: true)
