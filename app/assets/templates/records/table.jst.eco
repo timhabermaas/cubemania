@@ -4,7 +4,7 @@
     <tr class="record rank<%= counter + offset + 1 %>">
       <th><span><%= counter + offset + 1 %></span></th>
       <td><strong><%=formatTime record.get("time") %></strong></td>
-      <td><cite><a rel="backbone" href="/users/<%= record.get('user').slug %>"><%= record.get("user").name %></a></cite></td>
+      <td><cite><a rel="routing" href="/users/<%= record.get('user').slug %>"><%= record.get("user").name %></a></cite></td>
       <td><small><%=formatDate record.get("set_at") %></small></td>
       <td><blockquote><%= record.get("comment") %></blockquote></td>
     </tr>

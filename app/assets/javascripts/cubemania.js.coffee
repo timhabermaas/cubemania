@@ -14,7 +14,7 @@ window.Cubemania =
 
     # fetch all links and use backbone to navigate
     if Backbone.history && Backbone.history._hasPushState
-      $("a[rel=backbone]").live "click", (event) ->
+      $("a[rel=routing]").live "click", (event) ->
         href = $(this).attr("href")
         protocol = this.protocol + "//"
 

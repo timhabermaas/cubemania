@@ -6,7 +6,7 @@
         <ul>
         <% for puzzle in kind.puzzles %>
           <li class="<%= 'checked' if current_puzzle? puzzle %>">
-            <a href="<%= subnavigation_path(puzzle) %>" rel="backbone">
+            <a href="<%= subnavigation_path(puzzle) %>" rel="routing">
               <span class="puzzle pos<%= puzzle.css_position %>">
                 <span class="kind pos<%= kind.css_position %>"></span>
               </span>
