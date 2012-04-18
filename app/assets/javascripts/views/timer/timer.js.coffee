@@ -11,11 +11,15 @@ class Cubemania.Views.Timer extends Backbone.View
 
   initialize: ->
     @timer = new Cubemania.Timer()
-    @scramble = "adsa"
     @timerEnabled = true
+    @updateScramble()
 
   updateDisplay: =>
     @$(".time").html(formatTime(@timer.currentTime()))
+
+  updateScramble: ->
+    @scramble = Cubemania.scrambler.scramble("3x3x3")
+    @$(".scramble").html(@scramble)
 
   render: ->
     $(@el).html(@template(currentTime: @timer.currentTime(), scramble: @scramble))
@@ -55,16 +59,18 @@ class Cubemania.Views.Timer extends Backbone.View
     else
       $("#single_human_time").blur()
 
-  enableTimer: () ->
+  enableTimer: ->
     @timerEnabled = true
 
-  disableTimer: () ->
+  disableTimer: ->
     @timerEnabled = false
 
   submitSingle: (event) =>
     event.preventDefault()
-    @collection.addSingle({human_time: $("#single_human_time").val()})
+    @collection.addSingle({human_time: $("#single_human_time").val(), scramble: @scramble})
+    @updateScramble()
     @$("form")[0].reset()
 
   createSingle: (time) ->
-    @collection.addSingle({time: time})
+    @collection.addSingle({time: time, scramble: @scramble})
+    @updateScramble() # TODO duplication

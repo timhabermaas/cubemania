@@ -7,6 +7,8 @@ window.Cubemania =
     parseInt $("#user-profile").data("user-id")
 
   init: ->
+    Cubemania.scrambler = new Cubemania.Scrambler()
+
     new Cubemania.Routers.Router()
     Backbone.history.start(pushState: true)
 
