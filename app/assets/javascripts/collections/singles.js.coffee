@@ -10,7 +10,6 @@ class Cubemania.Collections.Singles extends Backbone.Collection
   addSingle: (attributes) ->
     s = new Cubemania.Models.Single()
     s.set(attributes)
-    s.set("puzzle_id", @puzzle)
     s.save()
     @unshift(s) # TODO order automatically
 
