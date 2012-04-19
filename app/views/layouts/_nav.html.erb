@@ -1,7 +1,7 @@
 <nav class="main">
   <ul>
     <% navigation.each do |item| %>
-    <li<%= ' class="selected"'.html_safe if current_item?(item) %>><%= link_to item[:name], item[:path], :rel => "routing" %></li>
+    <li<%= ' class="selected"'.html_safe if current_item?(item) %>><%= link_to item[:name], item[:path], :rel => (item[:backbone] ? "routing" : "") %></li>
     <% end %>
     <% if logged_in? %>
     <li class="session"><%= link_to "Logout", logout_path %></li>

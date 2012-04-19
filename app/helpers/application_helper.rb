@@ -27,10 +27,10 @@ module ApplicationHelper
     @navigation ||=
       [
         { :name => "Home", :path => root_path, :controller => "homes" },
-        { :name => "Timer", :path => puzzle_timers_path(Puzzle.default), :controller => "timers" },
-        { :name => "Competitions", :path => puzzle_competitions_path(Puzzle.default), :controller => "competitions" },
-        { :name => "Users", :path => users_path, :controller => "users" },
-        { :name => "Records", :path => puzzle_records_path(Puzzle.default), :controller => "records" } # TODO add default flag to puzzle
+        { :name => "Timer", :path => puzzle_timers_path(Puzzle.default), :controller => "timers", :backbone => true },
+        { :name => "Competitions", :path => puzzle_competitions_path(Puzzle.default), :controller => "competitions", :backbone => true },
+        { :name => "Users", :path => users_path, :controller => "users", :backbone => true },
+        { :name => "Records", :path => puzzle_records_path(Puzzle.default), :controller => "records", :backbone => true } # TODO add default flag to puzzle
       ]
   end
 
