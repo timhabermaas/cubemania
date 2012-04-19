@@ -17,7 +17,7 @@ class Cubemania.Views.Subnavigation extends Backbone.View
     $("#puzzles ul.puzzles li").filter("[data-id=#{puzzle.get("id")}]").addClass("checked")
 
     kindIndex = $("#kinds ul li").filter("[data-id=#{puzzle.get("kind_id")}]").data("index")
-    checkKind kindIndex
+    @checkKind kindIndex
 
   puzzleClicked: (event) ->
     event.preventDefault()
@@ -29,7 +29,7 @@ class Cubemania.Views.Subnavigation extends Backbone.View
     event.preventDefault()
     index = $(event.currentTarget).parent().data("index")
 
-    checkKind index
+    @checkKind index
 
   checkKind: (index) ->
     $("#kinds ul").children("li").removeClass("checked").eq(index).addClass("checked")
@@ -40,3 +40,22 @@ class Cubemania.Views.Subnavigation extends Backbone.View
 
   show: ->
     $(@el).show()
+
+###
+TODO make subnavigation hideable
+hideSubnavigation = () ->
+  $("#subnavigation #puzzles").slideUp("slow")
+  clearTimeout(intervalId)
+  intervalId = null
+
+showSubnavigation = () ->
+  $("#subnavigation #puzzles").slideDown("slow")
+  clearTimeout(intervalId)
+  intervalId = setTimeout(hideSubnavigation, 7000)
+
+jQuery ->
+  if $("#timer").length
+    showSubnavigation()
+
+    $("#subnavigation #kinds a").bind "click", (event) ->
+      showSubnavigation()
