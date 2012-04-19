@@ -68,6 +68,7 @@ class Cubemania.Views.Timer extends Backbone.View
 
   submitSingle: (event) =>
     event.preventDefault()
+    # TODO let client do the conversion, leads to delay/flickering (average has to wait for server response)
     @collection.create({human_time: $("#single_human_time").val(), scramble: @scramble})
     @updateScramble()
     @$("form")[0].reset()
