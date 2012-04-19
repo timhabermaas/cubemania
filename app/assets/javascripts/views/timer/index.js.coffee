@@ -16,16 +16,12 @@ class Cubemania.Views.TimerIndex extends Backbone.View
     @timerView.setElement($("#timer")).render()
     @statsView.setElement($("#stats")).render()
 
-    @collection.each(@appendSingle)
+    @collection.each(@prependSingle)
     this
 
   prependSingle: (single) ->
     view = new Cubemania.Views.Single(model: single)
     @$("#singles ol").prepend(view.render().el)
-
-  appendSingle: (single) ->
-    view = new Cubemania.Views.Single(model: single)
-    @$("#singles ol").append(view.render().el)
 
   refetchSingles: (puzzle) ->
     @collection.setPuzzleId(puzzle.get("id"))

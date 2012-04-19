@@ -68,10 +68,10 @@ class Cubemania.Views.Timer extends Backbone.View
 
   submitSingle: (event) =>
     event.preventDefault()
-    @collection.addSingle({human_time: $("#single_human_time").val(), scramble: @scramble})
+    @collection.create({human_time: $("#single_human_time").val(), scramble: @scramble})
     @updateScramble()
     @$("form")[0].reset()
 
   createSingle: (time) ->
-    @collection.addSingle({time: time, scramble: @scramble})
+    @collection.create({time: time, scramble: @scramble})
     @updateScramble() # TODO duplication

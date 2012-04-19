@@ -4,18 +4,14 @@ class Cubemania.Collections.Singles extends Backbone.Collection
   url: ->
     "/puzzles/" + @puzzleId + "/singles"
 
+  comparator: (single) ->
+    single.get("created_at")
+
   initialize: (puzzleId) ->
     @setPuzzleId(puzzleId)
 
   setPuzzleId: (puzzleId) ->
     @puzzleId = puzzleId
-
-  addSingle: (attributes) ->
-    s = new Cubemania.Models.Single()
-    s.set(attributes)
-    s.set("puzzle_id", @puzzleId)
-    s.save()
-    @unshift(s) # TODO order automatically
 
   currentAverage: (size) ->
     lastSingles = @models[0..size]
