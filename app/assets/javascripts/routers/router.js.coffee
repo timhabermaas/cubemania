@@ -13,7 +13,7 @@ class Cubemania.Routers.Router extends Backbone.Router
   home: ->
 
   timerIndex: (puzzle_id) ->
-    Cubemania.currentPuzzle.off("change")
+    #Cubemania.currentPuzzle.off("change")
     Cubemania.currentPuzzle.on("change", @updateRoute, this)
     Cubemania.currentPuzzle.set(Cubemania.puzzles.findByIdOrSlug(puzzle_id))
     $(document).unbind("keydown")
@@ -24,7 +24,7 @@ class Cubemania.Routers.Router extends Backbone.Router
     $("#backbone-container").html(view.render().el)
 
   recordsIndex: (puzzle_id) ->
-    Cubemania.currentPuzzle.off("change")
+    #Cubemania.currentPuzzle.off("change")
     Cubemania.currentPuzzle.on("change", @updateRoute, this)
     Cubemania.currentPuzzle.set(Cubemania.puzzles.findByIdOrSlug(puzzle_id))
     records = new Cubemania.Collections.Records(puzzle_id)
