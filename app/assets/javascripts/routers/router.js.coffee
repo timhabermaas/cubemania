@@ -14,6 +14,7 @@ class Cubemania.Routers.Router extends Backbone.Router
 
   timerIndex: (puzzle_id) ->
     Cubemania.currentPuzzle.off("change")
+    Cubemania.currentPuzzle.on("change", @updateRoute, this)
     Cubemania.currentPuzzle.set(Cubemania.puzzles.findByIdOrSlug(puzzle_id))
     $(document).unbind("keydown")
     $(document).unbind("keyup")
@@ -24,6 +25,7 @@ class Cubemania.Routers.Router extends Backbone.Router
 
   recordsIndex: (puzzle_id) ->
     Cubemania.currentPuzzle.off("change")
+    Cubemania.currentPuzzle.on("change", @updateRoute, this)
     Cubemania.currentPuzzle.set(Cubemania.puzzles.findByIdOrSlug(puzzle_id))
     records = new Cubemania.Collections.Records(puzzle_id)
     records.fetch()
@@ -53,3 +55,9 @@ class Cubemania.Routers.Router extends Backbone.Router
         Cubemania.subnavigationView.show()
       else
         Cubemania.subnavigationView.hide()
+
+  updateRoute: (puzzle) ->
+    route = Backbone.history.fragment
+    if Backbone.history.fragment[0..6] == "puzzles"
+      route = route.replace(/puzzles\/[^/]*\//,"puzzles/#{puzzle.get("slug")}/")
+      Backbone.history.navigate(route)
