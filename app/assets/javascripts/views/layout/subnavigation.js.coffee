@@ -12,8 +12,10 @@ class Cubemania.Views.Subnavigation extends Backbone.View
   checkPuzzle: (event) ->
     event.preventDefault()
     $("#puzzles ul.puzzles li").removeClass("checked")
-    $(event.currentTarget).parent().addClass("checked")
-    # TODO trigger event
+    parent = $(event.currentTarget).parent()
+    parent.addClass("checked") # TODO set currentPuzzle and wait for triggered event
+    id = parent.data("id")
+    Cubemania.currentPuzzle.set(Cubemania.puzzles.findByIdOrSlug(id))
 
   checkKind: (event) ->
     event.preventDefault()

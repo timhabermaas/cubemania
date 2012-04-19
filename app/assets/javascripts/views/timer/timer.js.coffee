@@ -10,6 +10,7 @@ class Cubemania.Views.Timer extends Backbone.View
     "submit #new_single": "submitSingle"
 
   initialize: ->
+    Cubemania.currentPuzzle.on("change", @updateScramble, this)
     @timer = new Cubemania.Timer()
     @timerEnabled = true
     @updateScramble()
@@ -18,7 +19,7 @@ class Cubemania.Views.Timer extends Backbone.View
     @$(".time").html(formatTime(@timer.currentTime()))
 
   updateScramble: ->
-    @scramble = Cubemania.scrambler.scramble("3x3x3")
+    @scramble = Cubemania.scrambler.scramble(Cubemania.currentPuzzle.name)
     @$(".scramble").html(@scramble)
 
   render: ->

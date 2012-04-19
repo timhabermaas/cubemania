@@ -9,6 +9,7 @@ class Cubemania.Views.RecordsIndex extends Backbone.View
 
   initialize: ->
     @recordsTable = new Cubemania.Views.RecordsTable(collection: @collection)
+    Cubemania.currentPuzzle.on("change", @refetchRecords, this)
 
   render: ->
     $(@el).html(@template())
@@ -35,3 +36,7 @@ class Cubemania.Views.RecordsIndex extends Backbone.View
     @collection.fetch()
     $(".tabs a").removeClass("selected")
     $(".tabs a.avg12").addClass("selected")
+
+  refetchRecords: (puzzle) ->
+    @collection.setPuzzleId puzzle.get("id")
+    @collection.fetch()

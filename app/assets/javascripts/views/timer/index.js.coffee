@@ -4,6 +4,7 @@ class Cubemania.Views.TimerIndex extends Backbone.View
   initialize: ->
     @collection.on("reset", @render, this)
     @collection.on("add", @prependSingle, this)
+    Cubemania.currentPuzzle.on("change", @refetchSingles, this)
     @statsView = new Cubemania.Views.Stats(singles: @collection, records: new Cubemania.Collections.Records())
     @timerView = new Cubemania.Views.Timer(collection: @collection)
     $(document).keydown(@timerView.stopTimer)
@@ -25,3 +26,7 @@ class Cubemania.Views.TimerIndex extends Backbone.View
   appendSingle: (single) ->
     view = new Cubemania.Views.Single(model: single)
     @$("#singles ol").append(view.render().el)
+
+  refetchSingles: (puzzle) ->
+    @collection.setPuzzleId(puzzle.get("id"))
+    @collection.fetch(data: {user_id: Cubemania.currentUserId})

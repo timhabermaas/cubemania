@@ -11,7 +11,7 @@ window.Cubemania =
     Cubemania.kinds = new Cubemania.Collections.Kinds($("#subnavigation").data("kinds"))
     Cubemania.puzzles = Cubemania.kinds.puzzles()
 
-    Cubemania.currentPuzzle = null # we only need it when switching to puzzle-subview
+    Cubemania.currentPuzzle = new Cubemania.Models.CurrentPuzzle()
     Cubemania.subnavigationView = new Cubemania.Views.Subnavigation(collection: Cubemania.kinds)
     Cubemania.subnavigationView.setElement($("#subnavigation")).render()
 

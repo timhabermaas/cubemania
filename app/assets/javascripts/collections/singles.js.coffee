@@ -2,14 +2,18 @@ class Cubemania.Collections.Singles extends Backbone.Collection
   model: Cubemania.Models.Single
 
   url: ->
-      "/puzzles/" + @puzzle + "/singles"
+    "/puzzles/" + @puzzleId + "/singles"
 
-  initialize: (puzzle) ->
-    @puzzle = puzzle
+  initialize: (puzzleId) ->
+    @setPuzzleId(puzzleId)
+
+  setPuzzleId: (puzzleId) ->
+    @puzzleId = puzzleId
 
   addSingle: (attributes) ->
     s = new Cubemania.Models.Single()
     s.set(attributes)
+    s.set("puzzle_id", @puzzleId)
     s.save()
     @unshift(s) # TODO order automatically
 
