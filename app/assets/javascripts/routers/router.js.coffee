@@ -58,6 +58,6 @@ class Cubemania.Routers.Router extends Backbone.Router
 
   updateRoute: (puzzle) ->
     route = Backbone.history.fragment
-    if route[0..6] == "puzzles"
+    if route[0..6] == "puzzles" or route[0..7] == "/puzzles"
       route = route.replace(/puzzles\/[^/]*\//,"puzzles/#{puzzle.get("slug")}/")
       Backbone.history.navigate(route)
