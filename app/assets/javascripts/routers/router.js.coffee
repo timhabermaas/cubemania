@@ -1,20 +1,19 @@
 class Cubemania.Routers.Router extends Backbone.Router
   routes:
-    "": ""
-    "puzzles/:puzzle/timer": "timerIndex"
-    "puzzles/:puzzle/records": "recordsIndex"
+    "": "home"
+    "puzzles/:puzzle_id/timer": "timerIndex"
+    "puzzles/:puzzle_id/records": "recordsIndex"
     "users": "usersIndex"
     "users/:id": "usersShow"
 
   initialize: ->
-    @bind "all", (router, route) ->
-      unless router[6..-1] == "timerIndex"
-        $(document).unbind("keydown")
-        $(document).unbind("keyup")
+    @bind "all", @cleanupKeybindings
+    @bind "all", @showOrHideSubnavigation
 
   home: ->
 
   timerIndex: (puzzle_id) ->
+    Cubemania.currentPuzzle = Cubemania.puzzles.findByIdOrSlug(puzzle_id)
     $(document).unbind("keydown")
     $(document).unbind("keyup")
     singles = new Cubemania.Collections.Singles(puzzle_id)
@@ -39,3 +38,15 @@ class Cubemania.Routers.Router extends Backbone.Router
     model.fetch(async:false)
     view = new Cubemania.Views.UsersShow(model: model)
     $("#backbone-container").html(view.render().el)
+
+  cleanupKeybindings: (router, route) ->
+    unless router[6..-1] == "timerIndex"
+      $(document).unbind("keydown")
+      $(document).unbind("keyup")
+
+  showOrHideSubnavigation: (router, route) ->
+    switch router[6..-1]
+      when "timerIndex", "recordsIndex"
+        Cubemania.subnavigationView.show()
+      else
+        Cubemania.subnavigationView.hide()

@@ -1,0 +1,30 @@
+<div id="puzzles">
+  <ul style="width: <%= @kinds.length * 100 %>%">
+  <% for kind in @kinds.models: %>
+    <li style="width: <%= 100 / @kinds.length %>%">
+      <ul class="puzzles">
+      <% for puzzle in kind.puzzles.models: %>
+        <li class="<%= 'checked' if current_puzzle? puzzle %>" data-id="<%= puzzle.get("id") %>">
+          <a href="#">
+            <span class="puzzle pos<%= puzzle.get("css_position") %>">
+              <span class="kind pos<%= kind.get("css_position") %>"></span>
+            </span>
+            <span class="name"><%= puzzle.get("name") %></span>
+          </a>
+        </li>
+      <% end %>
+      </ul>
+    </li>
+  <% end %>
+  </ul>
+</div>
+<div id="kinds">
+  <ul class="center">
+  <% for kind, index in @kinds.models: %>
+    <li style="width: <%= 100 / @kinds.length %>%">
+      <a href="#" data-index="<%= index %>"><%= kind.get("name") %></a>
+      <%= javascript_tag "checkKind(#{index})" if current_kind? kind %>
+    </li>
+  <% end %>
+  </ul>
+</div>

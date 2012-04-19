@@ -8,6 +8,12 @@ window.Cubemania =
 
   init: ->
     Cubemania.scrambler = new Cubemania.Scrambler()
+    Cubemania.kinds = new Cubemania.Collections.Kinds($("#subnavigation").data("kinds"))
+    Cubemania.puzzles = Cubemania.kinds.puzzles()
+
+    Cubemania.currentPuzzle = null # we only need it when switching to puzzle-subview
+    Cubemania.subnavigationView = new Cubemania.Views.Subnavigation(collection: Cubemania.kinds)
+    Cubemania.subnavigationView.setElement($("#subnavigation")).render()
 
     new Cubemania.Routers.Router()
     Backbone.history.start(pushState: true)
