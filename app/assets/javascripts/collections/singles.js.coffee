@@ -14,7 +14,7 @@ class Cubemania.Collections.Singles extends Backbone.Collection
     @puzzleId = puzzleId
 
   currentAverage: (size) ->
-    lastSingles = @models[0..size]
+    lastSingles = @models[-size..-1]
     dnfs = _.filter(lastSingles, (s) -> s.dnf())
     return null if dnfs.length > 1 or lastSingles.length < size
 
