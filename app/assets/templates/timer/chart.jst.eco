@@ -1,0 +1,2 @@
+<div id="chart"></div>
+<input id="user-tokens" name="user-tokens" type="text" />

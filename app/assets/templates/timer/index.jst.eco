@@ -7,8 +7,6 @@
 
 <div id="times">
   <div id="chart-container">
-    <div id="chart"></div>
-    <input id="user-tokens" name="user-tokens" type="text" />
   </div>
   <aside id="singles">
     <% if @singles.models.length == 0: %>

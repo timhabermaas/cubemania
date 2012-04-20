@@ -7,6 +7,7 @@ class Cubemania.Views.TimerIndex extends Backbone.View
     Cubemania.currentPuzzle.on("change", @refetchSingles, this)
     @statsView = new Cubemania.Views.Stats(singles: @collection, records: new Cubemania.Collections.Records())
     @timerView = new Cubemania.Views.Timer(collection: @collection)
+    @chartView = new Cubemania.Views.Chart(collection: @collection)
     $(document).keydown(@timerView.stopTimer)
     $(document).keyup(@timerView.startTimer)
 
@@ -15,6 +16,7 @@ class Cubemania.Views.TimerIndex extends Backbone.View
 
     @timerView.setElement($("#timer")).render()
     @statsView.setElement($("#stats")).render()
+    @chartView.setElement($("#chart-container")).render()
 
     @collection.each(@prependSingle)
     this
