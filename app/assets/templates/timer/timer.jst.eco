@@ -1,4 +1,4 @@
-<small class="scramble"><%= @scramble %></small>
+<small class="scramble"><%-formatScramble @scramble %></small>
 <div class="time"><%=formatTime @currentTime %></div>
 <form accept-charset="UTF-8" class="formtastic single" id="new_single">
   <fieldset class="inputs">

@@ -7,6 +7,7 @@ class Cubemania.Scrambler
       when "5x5x5" then cube [["R", "L", "Rw", "Lw"], ["F", "B", "Fw", "Bw"], ["D", "U", "Dw", "Uw"]], 60
       when "6x6x6" then cube [["R", "L", "2R", "2L", "3R", "3L"], ["F", "B", "2F", "2B", "3F", "3B"], ["D", "U", "2D", "2U", "3D", "3U"]], 80
       when "7x7x7" then cube [["R", "L", "2R", "2L", "3R", "3L"], ["F", "B", "2F", "2B", "3F", "3B"], ["D", "U", "2D", "2U", "3D", "3U"]], 100
+      when "megaminx" then megaminx(7, 10)
       when "pyraminx" then pyraminx(25)
       when "clock" then clock(25)
       else ""
@@ -20,6 +21,17 @@ class Cubemania.Scrambler
         turns[axis].sample() + variants.sample()
       ) for x in [1..length]
     ).join " "
+
+  megaminx = (lines, columns) ->
+    turns = ["R", "D"]
+    variants = ["--", "++"]
+    variantsForU = ["'", ""]
+
+    ((
+      row = (turns[column % 2] + variants.sample() for column in [0..(columns - 1)])
+      row.push("U#{variantsForU.sample()}")
+      row.join " "
+    ) for line in [1..lines]).join "\n"
 
   pyraminx = (length) ->
     turns = ["U", "L", "R", "B"]

@@ -15,6 +15,9 @@ root.formatDate = (date) ->
   d = new Date(date)
   "#{d.getMonthName()} #{d.getDate()}, #{d.getFullYear()}" # March 8, 2010
 
+root.formatScramble = (text) ->
+  text.replace /\n/g, "<br />" if text?
+
 root.average = (singles, size) ->
   singles = singles[0...size]
   dnfs = (single for single in singles when $(single).hasClass("dnf"))
