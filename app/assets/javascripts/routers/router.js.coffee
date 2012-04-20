@@ -19,7 +19,7 @@ class Cubemania.Routers.Router extends Backbone.Router
     $(document).unbind("keydown")
     $(document).unbind("keyup")
     singles = new Cubemania.Collections.Singles(puzzle_id)
-    singles.fetch(data: $.param({user_id: Cubemania.currentUserId()}))
+    singles.fetch(data: $.param({user_id: Cubemania.currentUser.id}))
     view = new Cubemania.Views.TimerIndex(collection: singles)
     $("#backbone-container").html(view.render().el)
 

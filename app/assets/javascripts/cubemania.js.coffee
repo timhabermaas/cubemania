@@ -3,8 +3,6 @@ window.Cubemania =
   Collections: {}
   Views: {}
   Routers: {}
-  currentUserId: ->
-    parseInt $("#user-profile").data("user-id")
 
   init: ->
     Cubemania.scrambler = new Cubemania.Scrambler()
@@ -12,6 +10,8 @@ window.Cubemania =
     Cubemania.puzzles = Cubemania.kinds.puzzles()
 
     Cubemania.currentPuzzle = new Cubemania.Models.CurrentPuzzle()
+    Cubemania.currentUser = $("#user-profile").data("user-data")
+
     Cubemania.subnavigationView = new Cubemania.Views.Subnavigation(collection: Cubemania.kinds)
     Cubemania.subnavigationView.setElement($("#subnavigation")).render()
 

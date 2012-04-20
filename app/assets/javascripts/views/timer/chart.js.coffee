@@ -26,8 +26,8 @@ class Cubemania.Views.Chart extends Backbone.View
           formatter: ->
             formatTime(this.value)
       series: [
-        id: 1
-        name: ""
+        id: Cubemania.currentUser.id
+        name: Cubemania.currentUser.name
         data: _.map(@collection.models, (s) -> {y: s.get("time"), id: s.get("id")})
       ]
     )
