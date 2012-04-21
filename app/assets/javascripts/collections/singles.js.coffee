@@ -25,4 +25,4 @@ class Cubemania.Collections.Singles extends Backbone.Collection
     if dnfs.length == 0
       (sum - _.min(times) - _.max(times)) / (size - 2)
     else
-      (sum - _.min(times)) / (size - 1)
+      (sum - _.min(times)) / (size - 2)
