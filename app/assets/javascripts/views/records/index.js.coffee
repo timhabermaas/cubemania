@@ -20,22 +20,22 @@ class Cubemania.Views.RecordsIndex extends Backbone.View
     event.preventDefault()
     @collection.type = "single"
     @collection.fetch()
-    $(".tabs a").removeClass("selected")
-    $(".tabs a.single").addClass("selected")
+    @$(".tabs a").removeClass("selected")
+    @$(".tabs a.single").addClass("selected")
 
   clickAvg5: (event) ->
     event.preventDefault()
     @collection.type = "avg5"
     @collection.fetch()
-    $(".tabs a").removeClass("selected")
-    $(".tabs a.avg5").addClass("selected")
+    @$(".tabs a").removeClass("selected")
+    @$(".tabs a.avg5").addClass("selected")
 
   clickAvg12: (event) ->
     event.preventDefault()
     @collection.type = "avg12"
     @collection.fetch()
-    $(".tabs a").removeClass("selected")
-    $(".tabs a.avg12").addClass("selected")
+    @$(".tabs a").removeClass("selected")
+    @$(".tabs a.avg12").addClass("selected")
 
   refetchRecords: (puzzle) ->
     @collection.setPuzzleId puzzle.get("id")

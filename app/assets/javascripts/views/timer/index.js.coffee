@@ -14,9 +14,9 @@ class Cubemania.Views.TimerIndex extends Backbone.View
   render: ->
     $(@el).html(@template(singles: @collection))
 
-    @timerView.setElement($("#timer")).render()
-    @statsView.setElement($("#stats")).render()
-    @chartView.setElement($("#chart-container")).render()
+    @timerView.setElement(@$("#timer")).render()
+    @statsView.setElement(@$("#stats")).render()
+    @chartView.setElement(@$("#chart-container")).render()
 
     @collection.each(@prependSingle)
     this

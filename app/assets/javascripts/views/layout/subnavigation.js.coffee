@@ -13,10 +13,10 @@ class Cubemania.Views.Subnavigation extends Backbone.View
     this
 
   checkPuzzleAndKind: (puzzle) ->
-    $("#puzzles ul.puzzles li").removeClass("checked")
-    $("#puzzles ul.puzzles li").filter("[data-id=#{puzzle.get("id")}]").addClass("checked")
+    @$("#puzzles ul.puzzles li").removeClass("checked")
+    @$("#puzzles ul.puzzles li").filter("[data-id=#{puzzle.get("id")}]").addClass("checked")
 
-    kindIndex = $("#kinds ul li").filter("[data-id=#{puzzle.get("kind_id")}]").data("index")
+    kindIndex = @$("#kinds ul li").filter("[data-id=#{puzzle.get("kind_id")}]").data("index")
     @checkKind kindIndex
 
   puzzleClicked: (event) ->
@@ -32,8 +32,8 @@ class Cubemania.Views.Subnavigation extends Backbone.View
     @checkKind index
 
   checkKind: (index) ->
-    $("#kinds ul").children("li").removeClass("checked").eq(index).addClass("checked")
-    $("#puzzles > ul").animate {left: -100 * index + "%"}, "normal"
+    @$("#kinds ul").children("li").removeClass("checked").eq(index).addClass("checked")
+    @$("#puzzles > ul").animate {left: -100 * index + "%"}, "normal"
 
   hide: ->
     $(@el).hide()

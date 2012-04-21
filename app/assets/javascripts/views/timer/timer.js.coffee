@@ -51,14 +51,14 @@ class Cubemania.Views.Timer extends Backbone.View
 
   toggleManual: (event) ->
     event.preventDefault()
-    $("#new_single").toggle()
+    @$("#new_single").toggle()
     @$(".time").toggle()
     ct = event.currentTarget
-    $(ct).toggleText("Changed your mind?", "Set times manually")
-    if $(ct).text() == "Changed your mind?"
-      $("#single_human_time").focus()
+    @$(ct).toggleText("Changed your mind?", "Set times manually")
+    if @$(ct).text() == "Changed your mind?"
+      @$("#single_human_time").focus()
     else
-      $("#single_human_time").blur()
+      @$("#single_human_time").blur()
 
   enableTimer: ->
     @timerEnabled = true
@@ -69,7 +69,7 @@ class Cubemania.Views.Timer extends Backbone.View
   submitSingle: (event) =>
     event.preventDefault()
     # TODO let client do the conversion, leads to delay/flickering (average has to wait for server response)
-    @collection.create({human_time: $("#single_human_time").val(), scramble: @scramble})
+    @collection.create({human_time: @$("#single_human_time").val(), scramble: @scramble})
     @updateScramble()
     @$("form")[0].reset()
 
