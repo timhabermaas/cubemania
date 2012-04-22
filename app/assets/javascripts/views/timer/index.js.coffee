@@ -27,4 +27,4 @@ class Cubemania.Views.TimerIndex extends Backbone.View
 
   refetchSingles: (puzzle) ->
     @collection.setPuzzleId(puzzle.get("id"))
-    @collection.fetch(data: {user_id: Cubemania.currentUser.id}) # TODO use Cubemania.currentUser.fetchSingles instead?
+    @collection.fetch(data: {user_id: Cubemania.currentUser.get("id")}) # TODO use Cubemania.currentUser.fetchSingles instead?
