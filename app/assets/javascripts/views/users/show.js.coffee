@@ -1,6 +1,7 @@
 class Cubemania.Views.UsersShow extends Backbone.View
 
   template: JST["users/show"]
+  id: "user"
 
   initialize: ->
     @model.on("change", @render, this)
