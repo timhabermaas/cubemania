@@ -28,15 +28,15 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
       series: [
         id: Cubemania.currentUser.get("id")
         name: Cubemania.currentUser.get("name")
-        data: _.map(@collection.models, (s) -> {y: s.get("time"), id: s.get("id")})
+        data: _.map(@collection.models, (s) -> {id: s.cid, y: s.get("time")})
       ]
     )
     this
 
   addSingleToChart: (single) ->
-    @chart.series[0].addPoint(id: single.get("id"), y: single.get("time"))
+    @chart.series[0].addPoint(id: single.cid, y: single.get("time"))
 
   removeSingleFromChart: (single) ->
-    p = _.find(@chart.series[0].data, (s) -> s.id == single.id)
+    p = _.find(@chart.series[0].data, (s) -> s.id == single.cid)
     p.remove()
 
