@@ -12,6 +12,8 @@ window.Cubemania =
     Cubemania.currentPuzzle = new Cubemania.Models.CurrentPuzzle()
     Cubemania.currentUser = new Cubemania.Models.User($("#user-profile").data("user-data"))
 
+    Cubemania.viewManager = new Cubemania.ViewManager()
+
     Cubemania.subnavigationView = new Cubemania.Views.Subnavigation(collection: Cubemania.kinds)
     Cubemania.subnavigationView.setElement($("#subnavigation")).render()
 

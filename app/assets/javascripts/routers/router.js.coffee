@@ -13,35 +13,41 @@ class Cubemania.Routers.Router extends Backbone.Router
   home: ->
 
   timerIndex: (puzzle_id) ->
-    #Cubemania.currentPuzzle.off("change")
+    singles = new Cubemania.Collections.Singles(puzzle_id)
+    singles.fetch(data: $.param({user_id: Cubemania.currentUser.get("id")}))
+    view = new Cubemania.Views.TimerIndex(collection: singles)
+    Cubemania.viewManager.changeView(view)
+
     Cubemania.currentPuzzle.on("change", @updateRoute, this)
     Cubemania.currentPuzzle.set(Cubemania.puzzles.findByIdOrSlug(puzzle_id))
     $(document).unbind("keydown")
     $(document).unbind("keyup")
-    singles = new Cubemania.Collections.Singles(puzzle_id)
-    singles.fetch(data: $.param({user_id: Cubemania.currentUser.get("id")}))
-    view = new Cubemania.Views.TimerIndex(collection: singles)
+
     $("#backbone-container").html(view.render().el)
 
   recordsIndex: (puzzle_id) ->
-    #Cubemania.currentPuzzle.off("change")
-    Cubemania.currentPuzzle.on("change", @updateRoute, this)
-    Cubemania.currentPuzzle.set(Cubemania.puzzles.findByIdOrSlug(puzzle_id))
     records = new Cubemania.Collections.Records(puzzle_id)
     records.fetch()
     view = new Cubemania.Views.RecordsIndex(collection: records)
+    Cubemania.viewManager.changeView(view)
+
+    Cubemania.currentPuzzle.on("change", @updateRoute, this)
+    Cubemania.currentPuzzle.set(Cubemania.puzzles.findByIdOrSlug(puzzle_id))
+
     $("#backbone-container").html(view.render().el)
 
   usersIndex: ->
     users = new Cubemania.Collections.Users()
     users.fetch()
     view = new Cubemania.Views.UsersIndex(collection: users)
+    Cubemania.viewManager.changeView(view)
     $("#backbone-container").html(view.render().el)
 
   usersShow: (id) ->
     model = new Cubemania.Models.User(id: id)
     model.fetch(async:false)
     view = new Cubemania.Views.UsersShow(model: model)
+    Cubemania.viewManager.changeView(view)
     $("#backbone-container").html(view.render().el)
 
   cleanupKeybindings: (router, route) ->
