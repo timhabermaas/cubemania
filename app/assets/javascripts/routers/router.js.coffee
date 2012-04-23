@@ -15,13 +15,13 @@ class Cubemania.Routers.Router extends Backbone.Router
   timerIndex: (puzzle_id) ->
     singles = new Cubemania.Collections.Singles(puzzle_id)
     singles.fetch(data: $.param({user_id: Cubemania.currentUser.get("id")}))
+    $(document).unbind("keydown")
+    $(document).unbind("keyup")
     view = new Cubemania.Views.TimerIndex(collection: singles)
     Cubemania.viewManager.changeView(view)
 
     Cubemania.currentPuzzle.on("change", @updateRoute, this)
     Cubemania.currentPuzzle.set(Cubemania.puzzles.findByIdOrSlug(puzzle_id))
-    $(document).unbind("keydown")
-    $(document).unbind("keyup")
 
     $("#backbone-container").html(view.render().el)
 
