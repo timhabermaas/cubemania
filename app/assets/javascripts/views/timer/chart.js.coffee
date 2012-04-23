@@ -30,7 +30,7 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
       series: [
         id: Cubemania.currentUser.get("id")
         name: Cubemania.currentUser.get("name")
-        data: (@chartDataFromSingle(s) for s in @collection.models)
+        data: @chartDataFromSingle(s) for s in @collection.models
       ]
     )
     this
