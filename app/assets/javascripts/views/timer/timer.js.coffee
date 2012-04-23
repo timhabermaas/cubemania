@@ -8,12 +8,16 @@ class Cubemania.Views.Timer extends Cubemania.BaseView
     "blur textarea": "enableTimer"
     "blur input[type=text]": "enableTimer"
     "submit #new_single": "submitSingle"
+    "touchstart": "stopTimer"
+    "touchend": "startTimer"
 
   initialize: ->
     @bindTo Cubemania.currentPuzzle, "change", @updateScramble, this
     @timer = new Cubemania.Timer()
     @timerEnabled = true
     @scramble = Cubemania.scrambler.scramble(Cubemania.currentPuzzle.getName())
+    $(document).keydown(@stopTimer)
+    $(document).keyup(@startTimer)
 
   updateDisplay: =>
     @$(".time").html(formatTime(@timer.currentTime()))
@@ -27,7 +31,7 @@ class Cubemania.Views.Timer extends Cubemania.BaseView
     this
 
   startTimer: (event) =>
-    if event.keyCode == 32 and !@timer.isRunning() and @timerEnabled
+    if (event.type == "touchend" or event.keyCode == 32) and !@timer.isRunning() and @timerEnabled
       if @justStopped
         @justStopped = false
       else
@@ -37,7 +41,7 @@ class Cubemania.Views.Timer extends Cubemania.BaseView
       event.preventDefault()
 
   stopTimer: (event) =>
-    if event.keyCode == 32 and @timerEnabled
+    if (event.type == "touchstart" or event.keyCode == 32) and @timerEnabled
       if @timer.isRunning()
         @timer.stop()
         @justStopped = true
