@@ -3,10 +3,4 @@
 </form>
 
 <ul id="users">
-<% for user in @users.models: %>
-  <li style="font-size: <%= user.activity(@max_singles) * 1 + 1 %>em">
-    <a href="/users/<%= user.get('slug') %>" rel="routing"><%= user.get("name") %></a>
-    <small><%= user.get("singles_count") %></small>
-  </li>
-<% end %>
 </ul>

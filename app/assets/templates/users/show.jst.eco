@@ -1,5 +1,4 @@
 <h1><%= @user.get("name") %><small> has spent ? hours solving puzzles.</small></h1>
-<% console.log Cubemania.currentUser %>
 <% if @user.get("wca") == null and @user.get("name") == Cubemania.currentUser.get("name"): %>
   <div id="wca">
     <a href="http://www.worldcubeassociation.org" class="logo">&nbsp;</a>

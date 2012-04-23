@@ -2,9 +2,17 @@ class Cubemania.Views.UsersIndex extends Backbone.View
 
   template: JST["users/index"]
 
+  events:
+    "submit #users-search": "search"
+
   initialize: ->
-    @collection.on("reset", @render, this)
+    @usersView = new Cubemania.Views.Users(collection: @collection)
 
   render: ->
     $(@el).html(@template(users: @collection, max_singles: @collection.maxSinglesCount()))
+    @usersView.setElement(@$("#users")).render()
     this
+
+  search: (event) ->
+    event.preventDefault()
+    @collection.fetch({data: {q: @$("#q").val()}})
