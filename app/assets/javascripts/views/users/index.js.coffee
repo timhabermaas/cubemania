@@ -1,4 +1,4 @@
-class Cubemania.Views.UsersIndex extends Backbone.View
+class Cubemania.Views.UsersIndex extends Cubemania.BaseView
 
   template: JST["users/index"]
 

@@ -1,4 +1,4 @@
-class Cubemania.Views.Subnavigation extends Backbone.View
+class Cubemania.Views.Subnavigation extends Cubemania.BaseView
   template: JST["layout/subnavigation"]
 
   events:
@@ -6,7 +6,7 @@ class Cubemania.Views.Subnavigation extends Backbone.View
     "click #kinds a": "kindClicked"
 
   initialize: ->
-    Cubemania.currentPuzzle.on("change", @checkPuzzleAndKind, this)
+    @bindTo Cubemania.currentPuzzle, "change", @checkPuzzleAndKind, this
 
   render: ->
     $(@el).html(@template(kinds: @collection))

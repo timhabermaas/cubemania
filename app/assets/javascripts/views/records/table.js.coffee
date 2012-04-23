@@ -1,4 +1,4 @@
-class Cubemania.Views.RecordsTable extends Backbone.View
+class Cubemania.Views.RecordsTable extends Cubemania.BaseView
 
   template: JST["records/table"]
 
@@ -6,7 +6,7 @@ class Cubemania.Views.RecordsTable extends Backbone.View
   id: "records"
 
   initialize: ->
-    @collection.on("reset", @render, this)
+    @bindTo @collection, "reset", @render, this
 
   render: ->
     $(@el).html(@template(records: @collection))

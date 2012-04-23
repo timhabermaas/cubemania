@@ -1,10 +1,10 @@
-class Cubemania.Views.TimerIndex extends Backbone.View
+class Cubemania.Views.TimerIndex extends Cubemania.BaseView
   template: JST["timer/index"]
 
   initialize: ->
-    @collection.on("reset", @render, this)
-    @collection.on("add", @prependSingle, this)
-    Cubemania.currentPuzzle.on("change", @refetchSingles, this)
+    @bindTo @collection, "reset", @render, this
+    @bindTo @collection, "add", @prependSingle, this
+    @bindTo Cubemania.currentPuzzle, "change", @refetchSingles, this
     @statsView = new Cubemania.Views.Stats(singles: @collection, records: new Cubemania.Collections.Records())
     @timerView = new Cubemania.Views.Timer(collection: @collection)
     @chartView = new Cubemania.Views.Chart(collection: @collection)

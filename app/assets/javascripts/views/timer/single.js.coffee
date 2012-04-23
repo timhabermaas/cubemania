@@ -1,4 +1,4 @@
-class Cubemania.Views.Single extends Backbone.View
+class Cubemania.Views.Single extends Cubemania.BaseView
   template: JST["timer/single"]
 
   tagName: "li"

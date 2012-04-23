@@ -1,10 +1,10 @@
-class Cubemania.Views.UsersShow extends Backbone.View
+class Cubemania.Views.UsersShow extends Cubemania.BaseView
 
   template: JST["users/show"]
   id: "user"
 
   initialize: ->
-    @model.on("change", @render, this)
+    @bindTo @model, "change", @render, this
 
   wcaLink: ->
     '<a href="http://www.worldcubeassociation.org/results/p.php?i=' + @model.get('wca') + '">' + @model.get("name") + '\'s World Cube Association Profile</a>'

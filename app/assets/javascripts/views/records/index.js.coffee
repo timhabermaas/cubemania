@@ -1,4 +1,4 @@
-class Cubemania.Views.RecordsIndex extends Backbone.View
+class Cubemania.Views.RecordsIndex extends Cubemania.BaseView
 
   template: JST["records/index"]
 
@@ -9,7 +9,7 @@ class Cubemania.Views.RecordsIndex extends Backbone.View
 
   initialize: ->
     @recordsTable = new Cubemania.Views.RecordsTable(collection: @collection)
-    Cubemania.currentPuzzle.on("change", @refetchRecords, this)
+    @bindTo Cubemania.currentPuzzle, "change", @refetchRecords, this
 
   render: ->
     $(@el).html(@template())

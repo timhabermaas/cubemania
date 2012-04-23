@@ -13,6 +13,7 @@
 //= require backbone
 //
 //= require .//cubemania
+//= require .//base_view
 //
 //= require_tree ../templates/
 //= require_tree .//models

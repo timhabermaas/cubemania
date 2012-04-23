@@ -1,4 +1,4 @@
-class Cubemania.Views.Timer extends Backbone.View
+class Cubemania.Views.Timer extends Cubemania.BaseView
   template: JST["timer/timer"]
 
   events:
@@ -10,7 +10,7 @@ class Cubemania.Views.Timer extends Backbone.View
     "submit #new_single": "submitSingle"
 
   initialize: ->
-    Cubemania.currentPuzzle.on("change", @updateScramble, this)
+    @bindTo Cubemania.currentPuzzle, "change", @updateScramble, this
     @timer = new Cubemania.Timer()
     @timerEnabled = true
     @updateScramble()

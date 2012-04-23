@@ -1,10 +1,10 @@
-class Cubemania.Views.Chart extends Backbone.View
+class Cubemania.Views.Chart extends Cubemania.BaseView
   template: JST["timer/chart"]
 
   initialize: ->
-    @collection.on "reset", @render, this
-    @collection.on "add", @addSingleToChart, this
-    @collection.on "remove", @removeSingleFromChart, this
+    @bindTo @collection, "reset", @render, this
+    @bindTo @collection, "add", @addSingleToChart, this
+    @bindTo @collection, "remove", @removeSingleFromChart, this
 
   render: ->
     $(@el).html(@template())

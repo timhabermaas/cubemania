@@ -1,8 +1,8 @@
-class Cubemania.Views.Users extends Backbone.View
+class Cubemania.Views.Users extends Cubemania.BaseView
   template: JST["users/users"]
 
   initialize: ->
-    @collection.on("reset", @render, this)
+    @bindTo @collection, "reset", @render, this
 
   render: ->
     $(@el).html(@template(users: @collection, maxSingles: @collection.maxSinglesCount()))
