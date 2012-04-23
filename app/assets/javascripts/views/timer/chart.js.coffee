@@ -5,6 +5,7 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
     @bindTo @collection, "reset", @render, this
     @bindTo @collection, "add", @addSingleToChart, this
     @bindTo @collection, "remove", @removeSingleFromChart, this
+    @bindTo @collection, "change", @updateSingleOnChart, this
 
   render: ->
     $(@el).html(@template())
@@ -12,6 +13,7 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
     @chart = new Highcharts.Chart(
       chart:
         renderTo: @$("#chart")[0]
+        type: "scatter"
       rangeSelector:
         selected: 1
       title:
@@ -28,17 +30,29 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
       series: [
         id: Cubemania.currentUser.get("id")
         name: Cubemania.currentUser.get("name")
-        data: _.map(@collection.models, (s) -> {id: s.cid, y: s.get("time")})
+        data: (@chartDataFromSingle(s) for s in @collection.models)
       ]
     )
     this
 
+  chartDataFromSingle: (single) ->
+    {
+      id: single.cid
+      y: single.get("time")
+      fillColor: if single.dnf() then "rgba(69, 114, 167, 0.5)" else "rgba(69, 114, 167, 1)"
+    }
+
   addSingleToChart: (single) ->
-    @chart.series[0].addPoint(id: single.cid, y: single.get("time"))
+    @chart.series[0].addPoint(@chartDataFromSingle(single))
 
   removeSingleFromChart: (single) ->
-    p = _.find(@chart.series[0].data, (s) -> s.id == single.cid)
-    p.remove()
+    @findPoint(single).remove()
+
+  updateSingleOnChart: (single) ->
+    @findPoint(single).update @chartDataFromSingle(single)
+
+  findPoint: (single) ->
+    _.find(@chart.series[0].data, (s) -> s.id == single.cid)
 
   onDispose: ->
     @chart.destroy()
