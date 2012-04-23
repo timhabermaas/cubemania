@@ -4,9 +4,12 @@ class Cubemania.Models.CurrentPuzzle
     @name = null
     _.extend(this, Backbone.Events)
 
-  set: (puzzle) ->
+  getName: ->
+    @puzzle.get("name") if @puzzle?
+
+  set: (puzzle, trigger = true) ->
     # only trigger event if puzzle has changed or is null
-    if @puzzle == null or @puzzle.get("id") != puzzle.get("id")
-      @puzzle = puzzle
-      @name = @puzzle.get("name")
-      @trigger("change", @puzzle)
+    if trigger and (@puzzle == null or @puzzle.get("id") != puzzle.get("id"))
+      @trigger("change", puzzle)
+
+    @puzzle = puzzle
