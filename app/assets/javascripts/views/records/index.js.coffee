@@ -8,7 +8,7 @@ class Cubemania.Views.RecordsIndex extends Cubemania.BaseView
     "click .tabs .avg12": "clickAvg12"
 
   initialize: ->
-    @recordsTable = new Cubemania.Views.RecordsTable(collection: @collection)
+    @recordsTable = @addSubview new Cubemania.Views.RecordsTable(collection: @collection)
     @bindTo Cubemania.currentPuzzle, "change", @refetchRecords, this
 
   render: ->

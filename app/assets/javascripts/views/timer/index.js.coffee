@@ -5,9 +5,9 @@ class Cubemania.Views.TimerIndex extends Cubemania.BaseView
     @bindTo @collection, "reset", @render, this
     @bindTo @collection, "add", @prependSingle, this
     @bindTo Cubemania.currentPuzzle, "change", @refetchSingles, this
-    @statsView = new Cubemania.Views.Stats(singles: @collection, records: new Cubemania.Collections.Records())
-    @timerView = new Cubemania.Views.Timer(collection: @collection)
-    @chartView = new Cubemania.Views.Chart(collection: @collection)
+    @statsView = @addSubview new Cubemania.Views.Stats(singles: @collection, records: new Cubemania.Collections.Records())
+    @timerView = @addSubview new Cubemania.Views.Timer(collection: @collection)
+    @chartView = @addSubview new Cubemania.Views.Chart(collection: @collection)
     $(document).keydown(@timerView.stopTimer)
     $(document).keyup(@timerView.startTimer)
 

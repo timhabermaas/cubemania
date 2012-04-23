@@ -6,7 +6,7 @@ class Cubemania.Views.UsersIndex extends Cubemania.BaseView
     "submit #users-search": "search"
 
   initialize: ->
-    @usersView = new Cubemania.Views.Users(collection: @collection)
+    @usersView = @addSubview new Cubemania.Views.Users(collection: @collection)
 
   render: ->
     $(@el).html(@template(users: @collection, max_singles: @collection.maxSinglesCount()))

@@ -40,3 +40,5 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
     p = _.find(@chart.series[0].data, (s) -> s.id == single.cid)
     p.remove()
 
+  onDispose: ->
+    @chart.destroy()
