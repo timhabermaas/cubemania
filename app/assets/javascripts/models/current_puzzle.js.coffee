@@ -9,7 +9,7 @@ class Cubemania.Models.CurrentPuzzle
 
   set: (puzzle, trigger = true) ->
     # only trigger event if puzzle has changed or is null
-    if trigger and (@puzzle == null or @puzzle.get("id") != puzzle.get("id"))
-      @trigger("change", puzzle)
-
+    oldPuzzle = @puzzle
     @puzzle = puzzle
+    if trigger and (oldPuzzle == null or oldPuzzle.get("id") != puzzle.get("id"))
+      @trigger("change", puzzle)
