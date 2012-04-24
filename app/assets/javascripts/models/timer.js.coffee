@@ -1,7 +1,7 @@
 class Cubemania.Timer
   constructor: ->
-    @startTime = new Date().getTime()
-    @stopTime = @startTime
+    @startTime = 0
+    @stopTime = 0
     @running = false
 
   isRunning: ->
@@ -9,7 +9,6 @@ class Cubemania.Timer
 
   start: ->
     @startTime = new Date().getTime()
-    @stopTime = null
     @running = true
 
   stop: ->
