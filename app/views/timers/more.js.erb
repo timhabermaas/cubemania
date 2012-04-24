@@ -1,7 +1,0 @@
-$("#singles ol").append("<%=j render :partial => 'timers/single', :collection => @singles %>");
-$("#singles li").slice(-<%= @singles.size %>).hide().fadeIn("slow");
-$("#singles .load-more a").attr("href", "<%= more_puzzle_timers_path(@puzzle, :after => @singles.last.try(:created_at).to_param) %>");
-$("#singles .load-more a").text("Load more");
-$("#singles .suggestion").remove();
-
-updateStatistics();
