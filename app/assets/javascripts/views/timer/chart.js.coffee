@@ -62,13 +62,13 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
       }
 
   addSingleToChart: (single) ->
-    @chart.series[0].addPoint(@chartDataFromSingle(single))
+    @chart.series[0].addPoint(@chartDataFromSingle(single, true))
 
   removeSingleFromChart: (single) ->
     @findPoint(single).remove()
 
   updateSingleOnChart: (single) ->
-    @findPoint(single).update @chartDataFromSingle(single)
+    @findPoint(single).update @chartDataFromSingle(single, true)
 
   addUserToChart: (id, name) ->
     singles = new Cubemania.Collections.Singles(Cubemania.currentPuzzle.puzzle.get("id"))
