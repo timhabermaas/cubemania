@@ -72,7 +72,7 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
 
   addUserToChart: (id, name) ->
     singles = new Cubemania.Collections.Singles(Cubemania.currentPuzzle.puzzle.get("id"))
-    singles.fetch({data: {user_id: id}, async: false})
+    singles.fetch({data: {user_id: id}, async: false}) # TODO make asynchronous by and add singles on success callback
     @chart.addSeries
       id: id
       name: name
