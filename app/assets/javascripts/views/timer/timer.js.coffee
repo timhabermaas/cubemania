@@ -36,7 +36,7 @@ class Cubemania.Views.Timer extends Cubemania.BaseView
         @justStopped = false
       else
         @$(".time").removeClass("starting")
-        @timer.start() # if timeSinceStopped() > 2000
+        @timer.start() if @timer.timeSinceStopped() > 2000
         @intervalId = setInterval(@updateDisplay, 23)
       event.preventDefault()
 
@@ -47,8 +47,8 @@ class Cubemania.Views.Timer extends Cubemania.BaseView
         @justStopped = true
         @updateDisplay()
         clearInterval(@intervalId)
-        @createSingle(@timer.currentTime())
         intervalId = null
+        @createSingle(@timer.currentTime())
       else
         @$(".time").addClass("starting")
       event.preventDefault()

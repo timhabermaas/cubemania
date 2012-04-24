@@ -23,7 +23,7 @@ class Cubemania.Timer
       @stopTime - @startTime
 
   timeSinceStopped: ->
-    new Date().getTime() - stopTime
+    new Date().getTime() - @stopTime
 
 ###
 
