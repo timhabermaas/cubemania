@@ -1,14 +1,8 @@
 <script type="text/javascript">
-  var uservoiceJsHost = ("https:" == document.location.protocol) ? "https://uservoice.com" : "http://cdn.uservoice.com";
-  document.write(unescape("%3Cscript src='" + uservoiceJsHost + "/javascripts/widgets/tab.js' type='text/javascript'%3E%3C/script%3E"))
+  var uvOptions = {};
+  (function() {
+    var uv = document.createElement('script'); uv.type = 'text/javascript'; uv.async = true;
+    uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/XmjQy7dHIjHW3AR0O50Cyw.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);
+  })();
 </script>
-<script type="text/javascript">
-UserVoice.Popin.setup({
-  key: 'cubemania',
-  host: 'cubemania.uservoice.com',
-  forum: 'general',
-  lang: 'en'
-})
-</script>
-
-<a id="feedback" href="http://cubemania.uservoice.com/pages/30379" onclick="UserVoice.Popin.show(); return false;">Feedback</a>
