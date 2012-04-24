@@ -9,6 +9,7 @@ class Cubemania.Routers.Router extends Backbone.Router
   initialize: ->
     @bind "all", @cleanupKeybindings
     @bind "all", @showOrHideSubnavigation
+    @bind "all", @_trackPageview
 
   home: ->
 
@@ -70,3 +71,7 @@ class Cubemania.Routers.Router extends Backbone.Router
     if route[0..6] == "puzzles" or route[0..7] == "/puzzles"
       route = route.replace(/puzzles\/[^/]*\//,"puzzles/#{puzzle.get("slug")}/")
       Backbone.history.navigate(route)
+
+  _trackPageview: ->
+    url = Backbone.history.fragment
+    _gaq.push(["_trackPageview", "/#{url}"])
