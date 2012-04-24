@@ -14,6 +14,9 @@ window.Cubemania =
 
     Cubemania.viewManager = new Cubemania.ViewManager()
 
+    Cubemania.navigationView = new Cubemania.Views.Navigation()
+    Cubemania.navigationView.setElement($("nav.main")).render()
+
     Cubemania.subnavigationView = new Cubemania.Views.Subnavigation(collection: Cubemania.kinds)
     Cubemania.subnavigationView.setElement($("#subnavigation")).render()
 
