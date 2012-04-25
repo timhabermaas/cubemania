@@ -19,12 +19,10 @@ describe Record do
   describe "#set_at" do
     it "is set to date of last single" do
       last_single = nil
-      Timecop.freeze(DateTime.new(2010, 1, 2)) do
-        last_single = create :single
-      end
+      last_single = create :single
       record = Record.new :amount => 5, :singles => ([create :single] * 4) + [last_single]
       record.save
-      record.set_at.should == DateTime.new(2010, 1, 2)
+      record.set_at.should == last_single.created_at
     end
   end
 
