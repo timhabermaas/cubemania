@@ -22,7 +22,42 @@
     <% end %>
   </p>
 <% else: %>
-  <% for record in @records: %>
-    <%= record.get("time") %>
-  <% end %>
+  <table id="records">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Puzzle</th>
+        <th colspan="2">Single</th>
+        <th colspan="2">
+          <span class="tabs">
+            <a href="#" class="avg5 selected">Average of 5</a>
+            <a href="#" class="avg12">Average of 12</a>
+          </span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for record, i in @records: %>
+      <tr class="record <%= if i % 2 == 0 then "even" else "odd" %>">
+        <th>
+          <div class="puzzle pos<%= record.puzzle.css_position %>">
+            <div class="kind pos<%= record.puzzle.kind.css_position %>"></div>
+          </div>
+        </th>
+        <td>
+          <cite>
+            <%= record.puzzle.name %>
+            <small>(<%= record.puzzle.kind.name %>)</small><!-- TODO make names shorter -->
+          </cite>
+        </td>
+        <td><strong><%=formatTime record.single.get("time") %></strong></td>
+        <td><small><%=formatDate record.single.get("set_at") %></small></td>
+        <td class="avg5"><strong><%= if record.avg5? then formatTime(record.avg5.get("time")) else "none" %></strong></td>
+        <td class="avg5"><small><%=formatDate record.avg5.get("set_at") if record.avg5? %></small></td>
+        <td class="avg12"><strong><%= if record.avg12? then formatTime(record.avg12.get("time")) else "none" %></strong></td>
+        <td class="avg12"><small><%=formatDate record.avg12.get("set_at") if record.avg12? %></small></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
 <% end %>

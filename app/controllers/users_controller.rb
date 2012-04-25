@@ -18,7 +18,8 @@ class UsersController < ApplicationController
     #@records = grouped_by_puzzles.merge(grouped_by_puzzles) { |k, v| v = v.group_by { |r| r.amount }; v.merge(v) { |k, v| v.try(:first) } }
     respond_to do |format|
       format.html
-      format.json { render :json => @user.to_json(:include => :records) }
+      # TODO better use record.puzzle_name (model)
+      format.json { render :json => @user.to_json(:include => {:records => {:include => {:puzzle => {:include => :kind}}}}) }
     end
   end
 
