@@ -7,53 +7,18 @@ describe "Authorizations" do
 
   describe "GET /authorizations" do
     it "displays all connected accounts" do
-      create :authorization, :user => @user, :provider => "twitter"
       create :authorization, :user => @user, :provider => "facebook"
       visit authorizations_path
-      page.should have_content("Twitter")
       page.should have_content("Facebook")
     end
   end
 
   describe "POST /authorizations" do
     before :each do
-      OmniAuth.config.mock_auth[:twitter] = { :provider => "twitter",
-                                              :uid => "12345",
-                                              :credentials => { :token => "afdsaf32412", :secret => "ads41s" } }
       OmniAuth.config.mock_auth[:facebook] = { :provider => "facebook",
                                                :uid => "54321",
                                                :credentials => { :token => "agsasfa", :secret => "addsafasers41s" } }
     end
-    describe "Twitter" do
-
-
-      it "connects user with Twitter" do
-        visit "/auth/twitter"
-        page.should have_content "Successfully connected to Twitter."
-        @user.authorizations.first.provider.should == "twitter"
-        @user.authorizations.first.uid.should == "12345"
-      end
-
-      it "updates uid if user connects again" do
-        create :authorization, :user => @user, :uid => "32411012", :provider => "twitter"
-        visit "/auth/twitter"
-        @user.reload.authorizations.should have(1).item
-        @user.reload.authorizations.first.uid.should == "12345"
-      end
-
-      it "displays error if some information is missing" do
-        OmniAuth.config.mock_auth[:twitter] = { :provider => "twitter", :uid => nil }
-        visit "/auth/twitter"
-        page.should have_content "Couldn\'t connect accounts."
-      end
-
-      it "displays error message if authorization doesn't work" do
-        OmniAuth.config.mock_auth[:twitter] = :invalid_credentials
-        visit "/auth/twitter"
-        page.should have_content 'Couldn\'t connect accounts. Error: "Invalid credentials"'
-      end
-    end
-
     describe "Facebook" do
       it "connects user with Facebook" do
         visit "/auth/facebook"
@@ -81,21 +46,14 @@ describe "Authorizations" do
         page.should have_content 'Couldn\'t connect accounts. Error: "Invalid credentials"'
       end
     end
-
-    it "user can haz two connections" do
-      visit "auth/facebook"
-      visit "auth/twitter"
-      page.should have_content "Facebook"
-      page.should have_content "Twitter"
-    end
   end
 
   describe "DELETE /authorizations/:id" do#, :javascript => true do
     it "removes connection to provider" do
-      authorization = create :authorization, :provider => "Twitter", :user => @user
+      authorization = create :authorization, :provider => "Facebook", :user => @user
       visit authorizations_path
       click_on "Disconnect"
-      page.should have_content "Successfully disconnected from Twitter."
+      page.should have_content "Successfully disconnected from Facebook."
       @user.reload.authorizations.should == []
     end
   end

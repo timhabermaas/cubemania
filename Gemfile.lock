@@ -128,7 +128,6 @@ GEM
     multipart-post (1.1.4)
     newrelic_rpm (3.3.1)
     nokogiri (1.5.0)
-    oauth (0.4.5)
     oauth2 (0.5.2)
       faraday (~> 0.7)
       multi_json (~> 1.0)
@@ -137,14 +136,9 @@ GEM
       rack
     omniauth-facebook (1.2.0)
       omniauth-oauth2 (~> 1.0.0)
-    omniauth-oauth (1.0.0)
-      oauth
-      omniauth (~> 1.0)
     omniauth-oauth2 (1.0.0)
       oauth2 (~> 0.5.0)
       omniauth (~> 1.0)
-    omniauth-twitter (0.0.7)
-      omniauth-oauth (~> 1.0)
     pg (0.12.2)
     polyglot (0.3.3)
     rack (1.4.1)
@@ -265,7 +259,6 @@ DEPENDENCIES
   launchy
   newrelic_rpm
   omniauth-facebook
-  omniauth-twitter
   pg
   rack (~> 1.4.1)
   rails (= 3.2.0)

@@ -23,7 +23,7 @@ FactoryGirl.define do
   end
 
   factory :authorization do
-    provider "twitter"
+    provider "facebook"
     uid "12325141asda"
     token "afaslga9airadsfa12111"
     user
