@@ -18,6 +18,7 @@ class SinglesController < ApplicationController
     end
   end
 
+  # TODO add case for failed destruction (e.g. when single is part of competition)
   def destroy
     puzzle = Puzzle.find params[:puzzle_id]
     single = current_user.singles.find params[:id]
