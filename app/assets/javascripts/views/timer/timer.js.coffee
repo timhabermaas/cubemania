@@ -80,3 +80,7 @@ class Cubemania.Views.Timer extends Cubemania.BaseView
   createSingle: (time) ->
     @collection.create({time: time, scramble: @scramble})
     @updateScramble() # TODO duplication
+
+  onDispose: ->
+    $(document).unbind("keydown")
+    $(document).unbind("keyup")
