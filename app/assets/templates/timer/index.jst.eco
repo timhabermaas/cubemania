@@ -9,17 +9,5 @@
   <div id="chart-container">
   </div>
   <aside id="singles">
-    <% if @singles.models.length == 0: %>
-      <p class="suggestion">
-        You haven't solved any cubes in the last 24 hours. :(
-      </p>
-    <% else: %>
-      <ol>
-
-      </ol>
-    <% end %>
-    <section class="load-more">
-      <a href="/puzzles/3x3x3/timer/more" data-remote="true">Whatever, load my last 12 solves!</a>
-    </section>
   </aside>
 </div>
