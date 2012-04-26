@@ -48,7 +48,7 @@ class Cubemania.Routers.Router extends Backbone.Router
 
   usersShow: (id) ->
     model = new Cubemania.Models.User(id: id)
-    model.fetch(async:false)
+    model.fetch(async: false) # TODO async: false is only there to avoid blinking
     view = new Cubemania.Views.UsersShow(model: model)
     Cubemania.viewManager.changeView(view)
     $("#backbone-container").html(view.render().el)
