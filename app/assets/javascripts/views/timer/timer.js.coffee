@@ -3,10 +3,6 @@ class Cubemania.Views.Timer extends Cubemania.BaseView
 
   events:
     "click a.toggle": "toggleManual"
-    "focus textarea": "disableTimer"
-    "focus input[type=text]": "disableTimer"
-    "blur textarea": "enableTimer"
-    "blur input[type=text]": "enableTimer"
     "submit #new_single": "submitSingle"
     "touchstart": "stopTimer"
     "touchend": "startTimer"
@@ -57,6 +53,7 @@ class Cubemania.Views.Timer extends Cubemania.BaseView
     event.preventDefault()
     @$("#new_single").toggle()
     @$(".time").toggle()
+    @timerEnabled = !@timerEnabled
     ct = event.currentTarget
     @$(ct).toggleText("Changed your mind?", "Set times manually")
     if @$(ct).text() == "Changed your mind?"
