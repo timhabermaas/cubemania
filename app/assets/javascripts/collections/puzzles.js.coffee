@@ -2,4 +2,4 @@ class Cubemania.Collections.Puzzles extends Backbone.Collection
   model: Cubemania.Models.Puzzle
 
   findByIdOrSlug: (idOrSlug) ->
-    @where(id: idOrSlug)[0] || @where(slug: idOrSlug)[0]
+    _.find(@models, (p) -> p.get("slug") == idOrSlug || p.get("id") == parseInt(idOrSlug))
