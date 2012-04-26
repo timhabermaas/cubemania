@@ -61,6 +61,7 @@ GEM
       execjs
     coffee-script-source (1.2.0)
     daemons (1.1.6)
+    dalli (2.0.3)
     delayed_job (3.0.1)
       activesupport (~> 3.0)
     delayed_job_active_record (0.3.2)
@@ -250,6 +251,7 @@ DEPENDENCIES
   cancan
   capybara
   coffee-rails (~> 3.2.1)
+  dalli
   delayed_job_active_record
   delayed_job_web
   factory_girl_rails

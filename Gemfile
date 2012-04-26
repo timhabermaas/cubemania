@@ -20,6 +20,8 @@ gem 'json'
 gem 'pg'
 gem 'sqlite3', :group => [:development, :test]
 
+gem 'dalli', :group => :production
+
 gem 'RedCloth'
 gem 'will_paginate'
 gem 'formtastic'

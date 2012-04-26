@@ -15,8 +15,6 @@ class User < ActiveRecord::Base
   attr_accessible :name, :email, :time_zone, :password, :password_confirmation, :wca, :bot_email, :wants_emails, :ignored, :as => :moderator
   attr_accessible :name, :email, :time_zone, :password, :password_confirmation, :wca, :bot_email, :wants_emails, :ignored, :role, :sponsor, :as => :admin
 
-  humanize :wasted_time => :time
-
   has_many :authorizations, :dependent => :destroy
   has_many :posts, :dependent => :nullify
   has_many :comments, :dependent => :nullify
@@ -40,7 +38,6 @@ class User < ActiveRecord::Base
       find_by_puzzle_id_and_amount puzzle.id, amount
     end
   end
-
 
   scope :active, where('singles_count > 0')
 
@@ -135,9 +132,10 @@ class User < ActiveRecord::Base
     end
   end
 
-  # TODO cache in database
   def wasted_time
-    singles.not_dnf.sum('singles.time')
+    Rails.cache.fetch(slug + ".wasted_time", :expires_in => 1.day) do
+      singles.not_dnf.sum("singles.time")
+    end
   end
 
   def rank
