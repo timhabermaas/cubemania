@@ -135,6 +135,7 @@ class User < ActiveRecord::Base
     end
   end
 
+  # TODO cache in database
   def wasted_time
     singles.not_dnf.sum('singles.time')
   end

@@ -1,6 +1,4 @@
 class UsersController < ApplicationController
-  respond_to :html, :json
-
   skip_login :only => [:new, :create]
   logout :only => [:new, :create]
   #protect [:role, :sponsor, :ignored], :but => :admin, :only => [:create, :update]
@@ -9,22 +7,18 @@ class UsersController < ApplicationController
     @users = User.order('singles_count desc').paginate(:page => params[:page], :per_page => 100)
     @users = @users.where('lower(name) LIKE ?', "%#{params[:q].downcase}%") if params[:q]
 
-    respond_with @users
+    respond_to do |format|
+      format.html
+      format.json
+    end
   end
 
   def show
     @user = object
-    #grouped_by_puzzles = @user.records.group_by { |r| r.puzzle }
-    #@records = grouped_by_puzzles.merge(grouped_by_puzzles) { |k, v| v = v.group_by { |r| r.amount }; v.merge(v) { |k, v| v.try(:first) } }
     respond_to do |format|
       format.html
-      # TODO better use record.puzzle_name (model)
-      format.json { render :json => @user.to_json(:include => {:records => {:include => {:puzzle => {:include => :kind}}}}) }
+      format.json
     end
-  end
-
-  def object(options = nil)
-    User.find params[:id], options
   end
 
   def create
@@ -58,5 +52,10 @@ class UsersController < ApplicationController
     end
 
     redirect_to root_path
+  end
+
+private
+  def object(options = nil)
+    User.find params[:id], options
   end
 end

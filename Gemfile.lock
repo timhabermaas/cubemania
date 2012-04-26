@@ -141,6 +141,9 @@ GEM
       omniauth (~> 1.0)
     pg (0.12.2)
     polyglot (0.3.3)
+    rabl (0.6.10)
+      activesupport (>= 2.3.14)
+      multi_json (~> 1.0)
     rack (1.4.1)
     rack-cache (1.2)
       rack (>= 0.4)
@@ -260,6 +263,7 @@ DEPENDENCIES
   newrelic_rpm
   omniauth-facebook
   pg
+  rabl
   rack (~> 1.4.1)
   rails (= 3.2.3)
   rspec-rails

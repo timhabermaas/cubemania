@@ -39,6 +39,8 @@ gem 'delayed_job_web'
 
 gem 'grape'
 
+gem 'rabl'
+
 gem 'thin'
 
 gem 'newrelic_rpm'
