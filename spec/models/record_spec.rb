@@ -76,19 +76,31 @@ describe Record do
   describe ".update_with" do
     let(:singles) { create_list(:single, 5) }
 
-    context "existing record" do
+    context "when record exists" do
       let!(:record) { create :record, :time => 10, :amount => 5, :singles => singles }
       let(:user) { record.user }
       let(:puzzle) { record.puzzle }
 
-      it "updates the existing record with faster time" do
-        Record.update_with!(user, puzzle, 5, 9, singles)
-        record.reload.time.should == 9
+      context "and the new time is faster" do
+        it "updates the existing record" do
+          Record.update_with!(user, puzzle, 5, 9, singles)
+          record.reload.time.should == 9
+        end
+
+        it "returns trueish value" do
+          Record.update_with!(user, puzzle, 5, 9, singles).should be_true
+        end
       end
 
-      it "doesn't update the existing record if the time is not faster" do
-        Record.update_with!(user, puzzle, 5, 11, singles)
-        record.reload.time.should == 10
+      context "and the new time isn't faster" do
+        it "doesn't update the record" do
+          Record.update_with!(user, puzzle, 5, 11, singles)
+          record.reload.time.should == 10
+        end
+
+        it "returns falseish value" do
+          Record.update_with!(user, puzzle, 5, 11, singles).should be_false
+        end
       end
 
       context "force writing of record" do
@@ -96,10 +108,14 @@ describe Record do
           Record.update_with!(user, puzzle, 5, 11, singles, true)
           record.reload.time.should == 11
         end
+
+        it "returns trueish value" do
+          Record.update_with!(user, puzzle, 5, 11, singles, true).should be_true
+        end
       end
     end
 
-    context "no existing record" do
+    context "when no record exists" do
       it "creates a new record" do
         user = stub(:id => 4)
         puzzle = stub(:id => 4)

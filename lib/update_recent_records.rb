@@ -1,8 +1,8 @@
 class UpdateRecentRecords
   def self.for(user, puzzle)
-    [1, 5, 12].each do |amount|
+    [1, 5, 12].map do |amount|
       for_amount(user, puzzle, amount)
-    end
+    end.any? { |e| e }
   end
 
   def self.for_amount(user, puzzle, amount)

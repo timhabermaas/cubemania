@@ -11,7 +11,9 @@ class SinglesController < ApplicationController
     puzzle = Puzzle.find params[:puzzle_id]
     single = current_user.singles.build(params[:single].merge(:puzzle_id => puzzle.id))
     if single.save
-      UpdateRecentRecords.for(current_user, puzzle)
+      if UpdateRecentRecords.for(current_user, puzzle)
+        response.headers["X-NewRecord"] = "true"
+      end
     end
     respond_to do |format|
       format.json { render :json => single } # TODO why does respond_with not work?
