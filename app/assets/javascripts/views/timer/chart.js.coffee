@@ -71,7 +71,7 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
     @findPoint(single).update @chartDataFromSingle(single, true)
 
   addUserToChart: (id, name) ->
-    singles = new Cubemania.Collections.Singles(Cubemania.currentPuzzle.puzzle.get("id"))
+    singles = new Cubemania.Collections.Singles([], puzzleId: Cubemania.currentPuzzle.puzzle.get("id"))
     singles.fetch({data: {user_id: id}, async: false}) # TODO make asynchronous by and add singles on success callback
     @chart.addSeries
       id: id

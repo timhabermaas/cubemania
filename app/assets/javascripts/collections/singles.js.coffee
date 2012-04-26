@@ -7,8 +7,8 @@ class Cubemania.Collections.Singles extends Backbone.Collection
   comparator: (single) ->
     single.get("created_at")
 
-  initialize: (puzzleId) ->
-    @setPuzzleId(puzzleId)
+  initialize: (models, options) ->
+    @setPuzzleId(options.puzzleId)
 
   setPuzzleId: (puzzleId) ->
     @puzzleId = puzzleId

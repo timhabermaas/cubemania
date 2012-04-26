@@ -16,7 +16,7 @@ class Cubemania.Routers.Router extends Backbone.Router
   timerIndex: (puzzle_id) ->
     Cubemania.currentPuzzle.set(Cubemania.puzzles.findByIdOrSlug(puzzle_id), false)
 
-    singles = new Cubemania.Collections.Singles(puzzle_id)
+    singles = new Cubemania.Collections.Singles([], puzzleId: puzzle_id)
     singles.fetch(data: $.param({user_id: Cubemania.currentUser.get("id")}))
     $(document).unbind("keydown")
     $(document).unbind("keyup")
