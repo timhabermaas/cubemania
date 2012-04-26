@@ -1,5 +1,6 @@
 window.Cubemania =
   Models: {}
+  Presenters: {}
   Collections: {}
   Views: {}
   Routers: {}
@@ -19,6 +20,10 @@ window.Cubemania =
 
     Cubemania.subnavigationView = new Cubemania.Views.Subnavigation(collection: Cubemania.kinds)
     Cubemania.subnavigationView.setElement($("#subnavigation")).render()
+
+    $("#subnavigation").after('<div id="flash" class="flash"></div>')
+    Cubemania.flashView = new Cubemania.Views.Flash()
+    Cubemania.flashView.setElement($("#flash")).render()
 
     new Cubemania.Routers.Router()
     Backbone.history.start(pushState: true)

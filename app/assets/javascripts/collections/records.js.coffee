@@ -10,13 +10,13 @@ class Cubemania.Collections.Records extends Backbone.Collection
   setPuzzleId: (puzzleId) ->
     @puzzleId = puzzleId
 
-  getSingle: ->
+  getSingleRecord: ->
     @getByAmount(1)
 
-  getAvg5: ->
+  getAvg5Record: ->
     @getByAmount(5)
 
-  getAvg12: ->
+  getAvg12Record: ->
     @getByAmount(12)
 
   getByAmount: (amount) ->

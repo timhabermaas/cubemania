@@ -32,3 +32,6 @@ class Cubemania.Collections.Singles extends Backbone.Collection
 
   worst: ->
     _.max(@models, (s) -> s.get("time"))
+
+  lastSingle: ->
+    @models[-1..-1][0]

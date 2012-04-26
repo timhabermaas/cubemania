@@ -17,10 +17,8 @@ class Cubemania.Views.Stats extends Cubemania.BaseView
     avg5 = @singles.currentAverage(5)
     avg12 = @singles.currentAverage(12)
 
-    recordObject =
-      single: @records.getSingle()
-      avg5:   @records.getAvg5()
-      avg12:  @records.getAvg12()
+    records = for i in [1, 5, 12] # TODO move to records collection?
+      @records.getByAmount(i)
 
-    $(@el).html(@template(avg5: avg5, avg12: avg12, records: recordObject))
+    $(@el).html(@template(avg5: avg5, avg12: avg12, records: records))
     this
