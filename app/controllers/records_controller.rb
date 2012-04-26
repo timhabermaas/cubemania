@@ -1,9 +1,14 @@
 class RecordsController < ApplicationController
   def index
-    params[:type] ||= "avg5"
-
     @puzzle = Puzzle.find params[:puzzle_id]
+
     @records =
+    if params[:user_id]
+      user = User.find params[:user_id]
+      user.records.where(:puzzle_id => @puzzle.id)
+    else
+      params[:type] ||= "avg5"
+
       if params[:type] == "single"
         @puzzle.records.amount(1)
       elsif params[:type] == "avg12"
@@ -11,10 +16,11 @@ class RecordsController < ApplicationController
       else
         @puzzle.records.amount(5)
       end.paginate(:page => params[:page], :per_page => 50)
+    end
 
     respond_to do |format|
       format.html
-      format.json { render :json => @records.to_json(:include => :user) }
+      format.json
     end
   end
 
