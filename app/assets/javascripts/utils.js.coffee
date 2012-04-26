@@ -29,6 +29,43 @@ root.calculateDst = ->
   else
     1
 
+# code from https://github.com/rmm5t/jquery-timeago
+root.timeInWords = (distanceMillis) ->
+  l =
+    seconds: "less than a minute"
+    minute: "about a minute"
+    minutes: "%d minutes"
+    hour: "about an hour"
+    hours: "about %d hours"
+    day: "a day"
+    days: "%d days"
+    month: "about a month"
+    months: "%d months"
+    year: "about a year"
+    years: "%d years"
+    wordSeparator: " "
+
+  seconds = Math.abs(distanceMillis) / 1000
+  minutes = seconds / 60
+  hours = minutes / 60
+  days = hours / 24
+  years = days / 365
+
+  substitute = (string, value) ->
+    string.replace(/%d/i, value)
+
+  words = seconds < 45 && substitute(l.seconds, Math.round(seconds)) ||
+    seconds < 90 && substitute(l.minute, 1) ||
+    minutes < 45 && substitute(l.minutes, Math.round(minutes)) ||
+    minutes < 90 && substitute(l.hour, 1) ||
+    hours < 24 && substitute(l.hours, Math.round(hours)) ||
+    hours < 42 && substitute(l.day, 1) ||
+    days < 30 && substitute(l.days, Math.round(days)) ||
+    days < 45 && substitute(l.month, 1) ||
+    days < 365 && substitute(l.months, Math.round(days / 30)) ||
+    years < 1.5 && substitute(l.year, 1) ||
+    substitute(l.years, Math.round(years))
+
 tooltip = ->
   xOffset = 10
   yOffset = 20
