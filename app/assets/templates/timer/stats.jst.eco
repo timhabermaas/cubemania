@@ -3,3 +3,9 @@
   Average of 5: <strong class="avg5"><%=formatTime @avg5 %></strong><br />
   Average of 12: <strong class="avg12"><%=formatTime @avg12 %></strong></small>
 </div>
+<div class="best">
+  <h4>Best</h4>
+  Single: <strong class="single"><%=formatTime if @records.single? then @records.single.get("time") else undefined %></strong> <small><a>Details</a></small><br />
+  Average of 5: <strong class="avg5"><%=formatTime if @records.avg5? then @records.avg5.get("time") else undefined %></strong> <small><a>Details</a></small><br />
+  Average of 12: <strong class="avg12"><%=formatTime if @records.avg12? then @records.avg12.get("time") else undefined %></strong> <small><a>Details</a></small>
+</div>

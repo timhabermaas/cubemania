@@ -1,10 +1,11 @@
 class Cubemania.Views.TimerIndex extends Cubemania.BaseView
   template: JST["timer/index"]
 
-  initialize: ->
+  initialize: (options) ->
+    @records = options.records
     @bindTo @collection, "reset", @render, this
     @bindTo Cubemania.currentPuzzle, "change", @refetchSingles, this
-    @statsView = @addSubview new Cubemania.Views.Stats(singles: @collection, records: new Cubemania.Collections.Records())
+    @statsView = @addSubview new Cubemania.Views.Stats(singles: @collection, records: @records)
     @timerView = @addSubview new Cubemania.Views.Timer(collection: @collection)
     @chartView = @addSubview new Cubemania.Views.Chart(collection: @collection)
     @singlesView = @addSubview new Cubemania.Views.Singles(collection: @collection)

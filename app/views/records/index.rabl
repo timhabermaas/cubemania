@@ -1,5 +1,5 @@
 collection @records
-attributes :time, :set_at, :comment
+attributes :time, :set_at, :comment, :amount
 
 if params[:user_id]
   child :singles do

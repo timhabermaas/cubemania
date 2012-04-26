@@ -18,22 +18,19 @@ class Cubemania.Views.RecordsIndex extends Cubemania.BaseView
 
   clickSingle: (event) ->
     event.preventDefault()
-    @collection.type = "single"
-    @collection.fetch()
+    @collection.fetch(data: $.param(type: "single"))
     @$(".tabs a").removeClass("selected")
     @$(".tabs a.single").addClass("selected")
 
   clickAvg5: (event) ->
     event.preventDefault()
-    @collection.type = "avg5"
-    @collection.fetch()
+    @collection.fetch(data: $.param(type: "avg5"))
     @$(".tabs a").removeClass("selected")
     @$(".tabs a.avg5").addClass("selected")
 
   clickAvg12: (event) ->
     event.preventDefault()
-    @collection.type = "avg12"
-    @collection.fetch()
+    @collection.fetch(data: $.param(type: "avg12"))
     @$(".tabs a").removeClass("selected")
     @$(".tabs a.avg12").addClass("selected")
 

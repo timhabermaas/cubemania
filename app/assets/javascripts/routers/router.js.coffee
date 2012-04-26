@@ -17,8 +17,10 @@ class Cubemania.Routers.Router extends Backbone.Router
     Cubemania.currentPuzzle.set(Cubemania.puzzles.findByIdOrSlug(puzzle_id), false)
 
     singles = new Cubemania.Collections.Singles([], puzzleId: puzzle_id)
-    singles.fetch(data: $.param({user_id: Cubemania.currentUser.get("id")}))
-    view = new Cubemania.Views.TimerIndex(collection: singles)
+    singles.fetch(data: $.param(user_id: Cubemania.currentUser.get("id")))
+    records = new Cubemania.Collections.Records([], puzzleId: puzzle_id)
+    records.fetch(data: $.param(user_id: Cubemania.currentUser.get("id")))
+    view = new Cubemania.Views.TimerIndex(collection: singles, records: records)
     Cubemania.viewManager.changeView(view)
 
     Cubemania.currentPuzzle.on("change", @updateRoute, this)
@@ -28,7 +30,7 @@ class Cubemania.Routers.Router extends Backbone.Router
   recordsIndex: (puzzle_id) ->
     Cubemania.currentPuzzle.set(Cubemania.puzzles.findByIdOrSlug(puzzle_id), false)
 
-    records = new Cubemania.Collections.Records(puzzle_id)
+    records = new Cubemania.Collections.Records([], puzzleId: puzzle_id)
     records.fetch()
     view = new Cubemania.Views.RecordsIndex(collection: records)
     Cubemania.viewManager.changeView(view)
