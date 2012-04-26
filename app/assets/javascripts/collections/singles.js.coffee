@@ -26,3 +26,9 @@ class Cubemania.Collections.Singles extends Backbone.Collection
       (sum - _.min(times) - _.max(times)) / (size - 2)
     else
       (sum - _.min(times)) / (size - 2)
+
+  best: ->
+    _.min(@models, (s) -> s.get("time"))
+
+  worst: ->
+    _.max(@models, (s) -> s.get("time"))
