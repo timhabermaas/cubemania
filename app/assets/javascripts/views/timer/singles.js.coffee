@@ -9,6 +9,6 @@ class Cubemania.Views.Singles extends Cubemania.BaseView
     @collection.each(@prependSingle)
     this
 
-  prependSingle: (single) ->
+  prependSingle: (single) =>
     view = new Cubemania.Views.Single(model: single)
     @$("ol").prepend(view.render().el)
