@@ -45,10 +45,10 @@
           </div>
         </th>
         <td>
-          <cite>
+          <span>
             <%= record.puzzle.name %>
-            <small>(<%= record.puzzle.kind.name %>)</small><!-- TODO make names shorter -->
-          </cite>
+            <small><%= record.puzzle.kind.short_name %></small>
+          </span>
         </td>
         <td><strong><%=formatTime record.single.get("time") %></strong></td>
         <td><small><%=formatDate record.single.get("set_at") %></small></td>

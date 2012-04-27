@@ -6,7 +6,7 @@ child :records do
   child :puzzle do
     attributes :id, :name, :css_position
     child :kind do
-      attributes :id, :name, :css_position
+      attributes :id, :name, :short_name, :css_position
     end
   end
 end
