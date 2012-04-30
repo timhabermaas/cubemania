@@ -6,6 +6,7 @@ class Cubemania.Views.Stats extends Cubemania.BaseView
 
   initialize: (options) ->
     @singles = options.singles
+    @bindTo @singles, "reset", @render, this
     @bindTo @singles, "change", @render, this
     @bindTo @singles, "add", @render, this
     @bindTo @singles, "destroy", @render, this # TODO use extra backbone view for singles/records

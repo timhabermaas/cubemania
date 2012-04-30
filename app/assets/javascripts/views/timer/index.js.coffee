@@ -3,7 +3,6 @@ class Cubemania.Views.TimerIndex extends Cubemania.BaseView
 
   initialize: (options) ->
     @records = options.records
-    @bindTo @collection, "reset", @render, this
     @bindTo Cubemania.currentPuzzle, "change", @refetchSingles, this
     @bindTo Cubemania.currentPuzzle, "change", @refetchRecords, this
     @statsView = @addSubview new Cubemania.Views.Stats(singles: @collection, records: @records)
@@ -13,7 +12,7 @@ class Cubemania.Views.TimerIndex extends Cubemania.BaseView
     $(document).ajaxComplete(@checkForNewRecord)
 
   render: ->
-    $(@el).html(@template(singles: @collection))
+    $(@el).html(@template())
 
     @timerView.setElement(@$("#timer")).render()
     @statsView.setElement(@$("#stats")).render()
