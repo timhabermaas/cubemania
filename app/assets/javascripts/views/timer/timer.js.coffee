@@ -9,6 +9,7 @@ class Cubemania.Views.Timer extends Cubemania.BaseView
 
   initialize: ->
     @bindTo Cubemania.currentPuzzle, "change", @updateScramble, this
+    @bindTo Cubemania.currentPuzzle, "change", @resetTime, this
     @timer = new Cubemania.Timer()
     @timerEnabled = true
     @scramble = Cubemania.scrambler.scramble(Cubemania.currentPuzzle.getName())
@@ -21,6 +22,10 @@ class Cubemania.Views.Timer extends Cubemania.BaseView
   updateScramble: ->
     @scramble = Cubemania.scrambler.scramble(Cubemania.currentPuzzle.getName())
     @$(".scramble").html(formatScramble @scramble)
+
+  resetTime: ->
+    @timer.reset()
+    @updateDisplay()
 
   render: ->
     $(@el).html(@template(currentTime: @timer.currentTime(), scramble: @scramble))
