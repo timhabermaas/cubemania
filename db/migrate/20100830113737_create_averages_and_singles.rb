@@ -47,7 +47,7 @@ class CreateAveragesAndSingles < ActiveRecord::Migration
       execute "DROP TABLE comments_temp"
     end
 
-    say_with_time "Set all average_ids to NULL for singles" do
+    say_with_time "Set all average_ids to NULL for singles which don't belong to a competition" do
       Clock.where(:type => "Single").where("competition_id IS NULL").update_all("average_id = NULL")
     end
 
