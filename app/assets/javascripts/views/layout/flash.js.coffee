@@ -15,10 +15,14 @@ class Cubemania.Views.Flash extends Cubemania.BaseView
   hide: ->
     @message = ""
     $(@el).hide()
+
+  slideDown: (message) ->
+    @message = message
+    $(@el).slideDown("fast")
     @render()
 
   slideUp: ->
-    $(@el).slideUp("fast");
+    $(@el).slideUp("fast")
 
   render: ->
     $(@el).html("<p>#{@message}</p><a class='close'>Close</a>")

@@ -37,7 +37,9 @@ class Cubemania.Views.Timer extends Cubemania.BaseView
         @justStopped = false
       else
         @$(".time").removeClass("starting")
-        @timer.start() if @timer.timeSinceStopped() > 2000
+        if @timer.timeSinceStopped() > 2000
+          @timer.start()
+          Cubemania.flashView.slideUp()
         @intervalId = setInterval(@updateDisplay, 23)
       event.preventDefault()
 

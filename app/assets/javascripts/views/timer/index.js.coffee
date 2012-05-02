@@ -36,7 +36,7 @@ class Cubemania.Views.TimerIndex extends Cubemania.BaseView
 
   newRecordsArrived: (records) ->
     r = new Cubemania.Presenters.RecordsPresenter(records)
-    Cubemania.flashView.show r.flashMessage(@collection.lastSingle())
+    Cubemania.flashView.slideDown r.flashMessage(@collection.lastSingle())
     @records.off("reset", @newRecordsArrived)
 
   onDispose: ->
