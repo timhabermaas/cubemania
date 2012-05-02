@@ -1,9 +1,10 @@
 class Cubemania.Routers.Router extends Backbone.Router
   routes:
-    "": "home"
+    "": "dontRenderAnything"
     "puzzles/:puzzle_id/timer": "timerIndex"
     "puzzles/:puzzle_id/records": "recordsIndex"
     "users": "usersIndex"
+    "users/new": "dontRenderAnything"
     "users/:id": "usersShow"
 
   initialize: ->
@@ -11,7 +12,7 @@ class Cubemania.Routers.Router extends Backbone.Router
     @bind "all", @showOrHideSubnavigation
     @bind "all", @_trackPageview
 
-  home: ->
+  dontRenderAnything: ->
 
   timerIndex: (puzzle_id) ->
     Cubemania.currentPuzzle.set(Cubemania.puzzles.findByIdOrSlug(puzzle_id), false)
