@@ -11,6 +11,7 @@ class Cubemania.Routers.Router extends Backbone.Router
     @bind "all", @cleanupKeybindings
     @bind "all", @showOrHideSubnavigation
     @bind "all", @_trackPageview
+    @bind "all", @hideFlashMessage
 
   dontRenderAnything: ->
 
@@ -66,6 +67,9 @@ class Cubemania.Routers.Router extends Backbone.Router
         Cubemania.subnavigationView.checkPuzzleAndKind(Cubemania.currentPuzzle.puzzle)
       else
         Cubemania.subnavigationView.hide()
+
+  hideFlashMessage: (router, route) ->
+    Cubemania.flashView.hide()
 
   updateRoute: (puzzle) ->
     route = Backbone.history.fragment
