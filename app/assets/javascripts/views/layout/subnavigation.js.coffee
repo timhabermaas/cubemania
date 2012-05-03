@@ -7,6 +7,7 @@ class Cubemania.Views.Subnavigation extends Cubemania.BaseView
 
   initialize: ->
     @bindTo Cubemania.currentPuzzle, "change", @checkPuzzleAndKind, this
+    @intervalId = null
 
   render: ->
     $(@el).html(@template(kinds: @collection))
@@ -25,37 +26,41 @@ class Cubemania.Views.Subnavigation extends Cubemania.BaseView
     id = parent.data("id")
     Cubemania.currentPuzzle.set(Cubemania.puzzles.findByIdOrSlug(id))
 
+    @resetTimerAndReshowPuzzles()
+
   kindClicked: (event) ->
     event.preventDefault()
     index = $(event.currentTarget).parent().data("index")
 
     @checkKind index
 
+    @resetTimerAndReshowPuzzles()
+
   checkKind: (index) ->
     @$("#kinds ul").children("li").removeClass("checked").eq(index).addClass("checked")
     @$("#puzzles > ul").animate {left: -100 * index + "%"}, "normal"
+
+  makeAutoHideable: ->
+    @intervalId = setTimeout(@slidePuzzlesUp, 7000)
+
+  unmakeAutoHideable: ->
+    clearTimeout(@intervalId)
+    @intervalId = null
+
+  resetTimerAndReshowPuzzles: ->
+    clearTimeout(@intervalId)
+    @intervalId = setTimeout(@slidePuzzlesUp, 7000) if @intervalId?
+    @slidePuzzlesDown()
 
   hide: ->
     $(@el).hide()
 
   show: ->
     $(@el).show()
+    @$("#puzzles").show()
 
-###
-TODO make subnavigation hideable
-hideSubnavigation = () ->
-  $("#subnavigation #puzzles").slideUp("slow")
-  clearTimeout(intervalId)
-  intervalId = null
+  slidePuzzlesUp: ->
+    @$("#puzzles").slideUp("slow")
 
-showSubnavigation = () ->
-  $("#subnavigation #puzzles").slideDown("slow")
-  clearTimeout(intervalId)
-  intervalId = setTimeout(hideSubnavigation, 7000)
-
-jQuery ->
-  if $("#timer").length
-    showSubnavigation()
-
-    $("#subnavigation #kinds a").bind "click", (event) ->
-      showSubnavigation()
+  slidePuzzlesDown: ->
+    @$("#puzzles").slideDown("slow")

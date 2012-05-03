@@ -62,9 +62,14 @@ class Cubemania.Routers.Router extends Backbone.Router
 
   showOrHideSubnavigation: (router, route) ->
     switch router[6..-1]
-      when "timerIndex", "recordsIndex"
+      when "timerIndex"
         Cubemania.subnavigationView.show()
         Cubemania.subnavigationView.checkPuzzleAndKind(Cubemania.currentPuzzle.puzzle)
+        Cubemania.subnavigationView.makeAutoHideable()
+      when "recordsIndex"
+        Cubemania.subnavigationView.show()
+        Cubemania.subnavigationView.checkPuzzleAndKind(Cubemania.currentPuzzle.puzzle)
+        Cubemania.subnavigationView.unmakeAutoHideable()
       else
         Cubemania.subnavigationView.hide()
 
