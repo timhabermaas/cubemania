@@ -17,7 +17,7 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
       rangeSelector:
         selected: 1
       title:
-        text: Cubemania.currentPuzzle.getName()
+        text: Cubemania.currentPuzzle.getFullName()
       xAxis:
         title:
           text: "Singles"
