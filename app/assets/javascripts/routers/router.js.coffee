@@ -50,10 +50,10 @@ class Cubemania.Routers.Router extends Backbone.Router
 
   usersShow: (id) ->
     model = new Cubemania.Models.User(id: id)
-    model.fetch(async: false) # TODO async: false is only there to avoid blinking
+    model.fetch()
     view = new Cubemania.Views.UsersShow(model: model)
     Cubemania.viewManager.changeView(view)
-    $("#backbone-container").html(view.render().el)
+    $("#backbone-container").html(view.el)
 
   cleanupKeybindings: (router, route) ->
     unless router[6..-1] == "timerIndex"
