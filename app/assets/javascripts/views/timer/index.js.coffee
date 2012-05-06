@@ -10,6 +10,7 @@ class Cubemania.Views.TimerIndex extends Cubemania.BaseView
     @chartView = @addSubview new Cubemania.Views.Chart(collection: @collection)
     @singlesView = @addSubview new Cubemania.Views.Singles(collection: @collection)
     $(document).ajaxComplete(@checkForNewRecord)
+    @refetchSinglesIntervalId = setInterval(@refetchRecords, 600000) # refetch records every 10 minutes
 
   render: ->
     $(@el).html(@template())
@@ -25,7 +26,7 @@ class Cubemania.Views.TimerIndex extends Cubemania.BaseView
     @collection.setPuzzleId(puzzle.get("id"))
     @collection.fetch(data: {user_id: Cubemania.currentUser.get("id")}) # TODO use Cubemania.currentUser.fetchSingles instead?
 
-  refetchRecords: (puzzle) ->
+  refetchRecords: (puzzle = Cubemania.currentPuzzle.puzzle) =>
     @records.setPuzzleId(puzzle.get("id"))
     @records.fetch(data: {user_id: Cubemania.currentUser.get("id")})
 
@@ -41,3 +42,4 @@ class Cubemania.Views.TimerIndex extends Cubemania.BaseView
 
   onDispose: ->
     $(document).unbind("ajaxComplete")
+    clearInterval(@refetchSinglesIntervalId)
