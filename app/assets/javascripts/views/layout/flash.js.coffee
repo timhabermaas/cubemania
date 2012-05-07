@@ -18,8 +18,8 @@ class Cubemania.Views.Flash extends Cubemania.BaseView
 
   slideDown: (message) ->
     @message = message
-    $(@el).slideDown("fast")
     @render()
+    $(@el).slideDown("fast")
 
   slideUp: ->
     $(@el).slideUp("fast")
