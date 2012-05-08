@@ -14,3 +14,9 @@ class Cubemania.Models.User extends Backbone.Model
       1
     else
       @get("singles_count") / max
+
+  isAdmin: ->
+    @get("role") == "admin"
+
+  isModerator: ->
+    @get("role") == "moderator"

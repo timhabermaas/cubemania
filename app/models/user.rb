@@ -170,15 +170,15 @@ class User < ActiveRecord::Base
     Match.for(self)
   end
 
-  def as_json(options = {})
+  def as_json(options = {}) # TODO make sure that's never called directly (currently for determining current user)
     options ||= {}
-    options[:except] = (options[:except] || []) + [:encrypted_password, :salt, :ignored, :email, :created_at, :role, :sponsor, :wants_emails]
+    options[:except] = (options[:except] || []) + [:encrypted_password, :salt, :ignored, :email, :created_at, :sponsor, :wants_emails]
     super(options)
   end
 
   def to_xml(options = {})
     options ||= {}
-    options[:except] = (options[:except] || []) + [:encrypted_password, :salt, :ignored, :email, :created_at, :role, :sponsor, :wants_emails]
+    options[:except] = (options[:except] || []) + [:encrypted_password, :salt, :ignored, :email, :created_at, :sponsor, :wants_emails]
     super(options)
   end
 
