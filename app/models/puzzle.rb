@@ -64,11 +64,11 @@ class Puzzle < ActiveRecord::Base
       when 'pyraminx'
         Scrambler::Pyraminx.new.scramble(scramble_length)
       when 'square-1'
-      	Scrambler::Square1.new.scramble(scramble_length)
+        Scrambler::Square1.new.scramble(scramble_length)
       when 'clock'
-      	Scrambler::Clock.new.scramble(scramble_length)
-    	else
-    	  ''
+        Scrambler::Clock.new.scramble(scramble_length)
+      else
+        ''
     end.html_safe
   end
 
