@@ -6,10 +6,12 @@ Array.max = (array) ->
 Array.min = (array) ->
   Math.min.apply(Math, array)
 
-Array.sum = (array) ->
+Array.sum = (array) -> # TODO write like ::remove
   total = 0
   total += item for item in array
   total
+
+Array::remove = (v) -> x for x in @ when x!=v
 
 $.fn.toggleText = (open, close) ->
   $(this).text(if $(this).text() is open then close else open)
