@@ -14,7 +14,7 @@ class Cubemania.Collections.Singles extends Backbone.Collection
     @puzzleId = puzzleId
 
   currentAverage: (size) ->
-    lastSingles = @models[-size..-1]
+    lastSingles = @recent(size)
     dnfs = _.filter(lastSingles, (s) -> s.dnf())
     return null if dnfs.length > 1 or lastSingles.length < size
 
@@ -26,6 +26,14 @@ class Cubemania.Collections.Singles extends Backbone.Collection
       (sum - _.min(times) - _.max(times)) / (size - 2)
     else
       (sum - _.min(times)) / (size - 2)
+
+  recent: (amount) =>
+    @models[-amount..-1]
+
+  today: =>
+    today = new Date()
+    today.setDate(today.getDate() - 1)
+    _.filter(@models, (s) -> new Date(s.get("created_at")) > today)
 
   best: ->
     _.min(@models, (s) -> s.get("time"))
