@@ -11,8 +11,6 @@ Array.sum = (array) -> # TODO write like ::remove
   total += item for item in array
   total
 
-Array::remove = (v) -> x for x in @ when x!=v
-
 $.fn.toggleText = (open, close) ->
   $(this).text(if $(this).text() is open then close else open)
 
