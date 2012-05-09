@@ -4,7 +4,6 @@ class Cubemania.Routers.Router extends Backbone.Router
     "puzzles/:puzzle_id/timer": "timerIndex"
     "puzzles/:puzzle_id/records": "recordsIndex"
     "users": "usersIndex"
-    "users/new": "dontRenderAnything"
     "users/:id": "usersShow"
 
   initialize: ->
