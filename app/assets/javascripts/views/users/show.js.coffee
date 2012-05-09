@@ -35,8 +35,8 @@ class Cubemania.Views.UsersShow extends Cubemania.BaseView
         puzzle: value[0].get("puzzle")
       } # TODO sort by name?
 
-    timerLink = $("nav.main li:nth-child(2) a").attr("href")
+    timerPath = $("nav.main li:nth-child(2) a").attr("href")
 
-    $(@el).html(@template(user: @model, wcaLink: @wcaLink(), records: records, timerLink: timerLink))
+    $(@el).html(@template(user: @model, wcaLink: @wcaLink(), records: records, timerPath: timerPath))
     @$("td.avg12").hide()
     this
