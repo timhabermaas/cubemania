@@ -1,5 +1,5 @@
 begin
-  default_puzzle = Puzzle.default.id
+  default_puzzle = Puzzle.default.slug
 rescue # if there's no database yet, it shouldn't crash creating one
   default_puzzle = 1
 end
