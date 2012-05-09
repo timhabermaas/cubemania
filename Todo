@@ -33,7 +33,6 @@ Sharing:
   FbGraph::User.new("invalid_token").fetch raises FbGraph::Unauthorized. If this happens -> redirect
 
 General:
-  Puzzle#destroy is missing
   Add Faqs page
     How to delete your account?
 
