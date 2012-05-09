@@ -36,7 +36,7 @@ module Authentication
   protected
     def login
       unless logged_in?
-        flash[:notice] = 'Please login or <a href="/register">register</a> to continue'.html_safe
+        flash[:notice] = 'Please login or <a href="/register">register</a> to continue.'.html_safe
         store_location
         redirect_to login_path
       end
@@ -44,7 +44,7 @@ module Authentication
 
     def logout
       if logged_in?
-        flash[:notice] = 'You must logout before you can login or register'
+        flash[:notice] = 'You must logout before you can login or register.'
         redirect_to root_url
       end
     end
