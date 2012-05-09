@@ -28,6 +28,7 @@ class Ability
       can :destroy, [Comment, Shout] do |comment|
         comment.user_id == user.id
       end
+      cannot :read, Puzzle
     end
   end
 end

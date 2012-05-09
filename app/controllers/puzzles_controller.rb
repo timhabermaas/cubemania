@@ -1,20 +1,10 @@
 class PuzzlesController < ApplicationController
+  def index
+    @puzzles = Puzzle.order('kind_id, name').includes(:kind)
+  end
 
   def new
     @puzzle = Puzzle.new
-  end
-
-  def edit
-    @puzzle = Puzzle.find params[:id]
-  end
-
-  def update
-    @puzzle = Puzzle.find params[:id]
-    if @puzzle.update_attributes params[:puzzle]
-      redirect_to puzzles_path
-    else
-      render :edit
-    end
   end
 
   def create
@@ -26,10 +16,25 @@ class PuzzlesController < ApplicationController
     end
   end
 
-  def index
-    @puzzles = Puzzle.order('kind_id, name').includes(:kind)
+  def edit
+    @puzzle = object
   end
 
+  def update
+    @puzzle = object
+    if @puzzle.update_attributes params[:puzzle]
+      redirect_to puzzles_path
+    else
+      render :edit
+    end
+  end
+
+  def destroy
+    object.destroy
+    redirect_to puzzles_path
+  end
+
+private
   def object
     @puzzle = Puzzle.find params[:id]
   end
