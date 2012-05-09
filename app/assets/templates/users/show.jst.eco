@@ -1,6 +1,6 @@
 <div class="admin">
   <% if Cubemania.currentUser.get("id") == @user.get("id") or Cubemania.currentUser.isAdmin(): %>
-    <a href="/users/<%= @user.get("slug") %>/edit">Edit Profile</a>
+    <a href="/profiles/<%= @user.get("slug") %>/edit">Edit Profile</a>
   <% end %>
 </div>
 <h1><%= @user.get("name") %><small> has spent <%= timeInWords @user.get("wasted_time") %> solving puzzles.</small></h1>

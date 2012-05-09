@@ -1,4 +1,4 @@
-<%= semantic_form_for @user do |form| %>
+<%= semantic_form_for @user, :url => profile_path(@user) do |form| %>
   <%= form.inputs do %>
     <%= form.input :name %>
     <%= form.input :email %>
