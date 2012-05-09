@@ -1,7 +1,7 @@
 class Cubemania.Models.Single extends Backbone.Model
 
   defaults: ->
-    "created_at": new Date().toISOString()
+    "created_at": new Date().toISOString() # TODO replace with format("isoDateTime")?
     "updated_at": new Date().toISOString()
 
   togglePlus2: ->

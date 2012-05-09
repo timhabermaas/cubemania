@@ -13,7 +13,11 @@ root.formatTime = (time) ->
 
 root.formatDate = (date) ->
   d = new Date(date)
-  "#{d.getMonthName()} #{d.getDate()}, #{d.getFullYear()}" # March 8, 2010
+  d.format("mmmm dd, yyyy")
+
+root.formatDateTime = (date) ->
+  d = new Date(date)
+  d.format("mmmm dd, yyyy 'at' h:mm tt")
 
 root.formatScramble = (text) ->
   text.replace /\n/g, "<br />" if text?

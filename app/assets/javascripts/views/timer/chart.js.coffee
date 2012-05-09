@@ -18,6 +18,10 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
         selected: 1
       title:
         text: Cubemania.currentPuzzle.getFullName()
+      tooltip:
+        formatter: ->
+          single = this.point.single
+          "<b>#{formatTime(single.get("time"))}</b><br /><i>#{formatDateTime(single.get("created_at"))}</i>"
       xAxis:
         title:
           text: "Singles"
@@ -54,11 +58,13 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
         id: single.cid
         y: single.get("time")
         fillColor: if single.dnf() then "rgba(69, 114, 167, 0.5)" else "rgba(69, 114, 167, 1)"
+        single: single # TODO memory?
       }
     else
       {
         id: single.cid
         y: single.get("time")
+        single: single
       }
 
   addSingleToChart: (single) ->
