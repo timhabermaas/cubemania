@@ -37,13 +37,16 @@ class ProfilesController < ApplicationController
 
   def destroy
     @user = object
-    @user.destroy
 
-    if self.current_user == @user
-      self.current_user = nil
+    if @user.destroy
+      if self.current_user == @user
+        self.current_user = nil
+      end
+
+      redirect_to root_path, :notice => "Your profile has been successfully deleted."
+    else
+      redirect_to root_path, :notice => "We couldn't delete your profile."
     end
-
-    redirect_to root_path
   end
 
 private
