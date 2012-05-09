@@ -21,9 +21,9 @@
   <p class="challenge">
     <% if @user.get("name") == Cubemania.currentUser.get("name"): %>
       How fast do you solve the cube?<br/>
-      <a href="/timer">Stop your times and get the record!</a>
+      <a href="<%= @timerLink %>">Stop your times and get the record!</a>
     <% else: %>
-      <%= @user.get("name") %> has no personal records yet. <a href="/timer">Do you?</a>
+      <%= @user.get("name") %> has no personal records yet. <a href="<%= @timerLink %>">Do you?</a>
     <% end %>
   </p>
 <% else: %>
