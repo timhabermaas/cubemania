@@ -7,21 +7,12 @@ Redesign:
 Chart:
   Small chart for scrolling and zooming
   Threshold at where your best x averages lie below
-  Mark DNF Singles
 Chart Types (different page):
   Time Distribution (http://www.facebook.com/album.php?aid=85369&id=1376617312)
   Punch Card (http://code.google.com/apis/chart/image/docs/user_submitted_gallery.html)
 Timer:
   allow to stop timer with all keys
   don't display destroy links for singles which belong to a competition
-User's profile:
-  Rowe spent <strong>4 days 12 hours 21 minutes and 3 seconds</strong> cubing!
-Facebook:
- facebook_access_token.post("/me/feed", :picture => @puzzle.image.url(:facebook),
-                                        :name => @puzzle.name + ' ' + @puzzle.kind.name,
-                                        :description => 'Keep track of your times and join Cubemania',
-                                        :link => user_url(@average.user_id, :host => "cubemania.org"),
-                                        :message => render_to_string('tweet.text', :layout => false))# if Rails.env.production?
 Code:
   extract puzzle divs into helper
   extract single display into helper (for dnf stuff) (<%= single(single, 'li') do %>)

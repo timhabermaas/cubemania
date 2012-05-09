@@ -33,21 +33,17 @@ class RecordsController < ApplicationController
 
   def share
     @record = current_user.records.find params[:id]
-    token = current_user.authorizations.find_by_provider("facebook").try(:token)
-    if token
-      begin
-        me = FbGraph::User.me(token).fetch
-        presenter = RecordPresenter.new(@record)
-        me.feed! :name => me.first_name + " has a new " + presenter.record_type + " Record: " + presenter.human_time,
-                 :picture => @record.puzzle.combined_url,
-                 :link => puzzle_record_url(@record.puzzle, @record),
-                 :description => presenter.singles_as_text
-        redirect_to puzzle_timers_path(@record.puzzle), :notice => "Successfully shared."
-      rescue FbGraph::InvalidToken
-        redirect_to "/auth/facebook"
-      end
-    else
-      redirect_to "/auth/facebook"
-    end
+    presenter = RecordPresenter.new(@record)
+
+    options = { :app_id => ENV["FACEBOOK_APP_KEY"],
+                :link => puzzle_record_url(@record.puzzle, @record),
+                :picture => @record.puzzle.combined_url,
+                :name => "I have a new " + presenter.record_type + " Record: " + presenter.human_time,
+                :caption => "Keep track of your times and join Cubemania!",
+                :description => presenter.singles_as_text,
+                :redirect_uri => puzzle_record_url(@record) }
+
+    url = "http://www.facebook.com/dialog/feed?" + URI.encode(options.collect { |k, v| "#{k}=#{v}"}.join("&"))
+    redirect_to url
   end
 end
