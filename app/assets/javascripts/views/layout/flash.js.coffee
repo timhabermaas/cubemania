@@ -25,5 +25,5 @@ class Cubemania.Views.Flash extends Cubemania.BaseView
     $(@el).slideUp("fast")
 
   render: ->
-    $(@el).html("<p>#{@message}</p><a class='close'>Close</a>")
+    $(@el).html("<p>#{@message}</p><a href='#' class='close'>Close</a>")
     this
