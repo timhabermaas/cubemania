@@ -19,13 +19,13 @@ Cubemania::Application.routes.draw do
   resources :puzzles, :defaults => { :puzzle_id => default_puzzle } do
     resources :timers, :path => "timer"
 
-    resources :competitions do
-      member do
-        post :compete
-        get "/:date" => "competitions#show", :as => "date"
-      end
-      resources :shouts
-    end
+    # resources :competitions do
+    #   member do
+    #     post :compete
+    #     get "/:date" => "competitions#show", :as => "date"
+    #   end
+    #   resources :shouts
+    # end
 
     resources :singles
 
