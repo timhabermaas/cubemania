@@ -16,9 +16,10 @@ class Cubemania.Routers.Router extends Backbone.Router
   timerIndex: (puzzle_id) ->
     Cubemania.currentPuzzle.set(Cubemania.puzzles.findByIdOrSlug(puzzle_id), false)
 
-    singles = new Cubemania.Collections.Singles([], puzzleId: puzzle_id)
+    singles = new Cubemania.Collections.Singles([], puzzleId: puzzle_id, useLocalStorage: !Cubemania.currentUser.present())
     singles.fetch(data: $.param(user_id: Cubemania.currentUser.get("id")))
-    records = new Cubemania.Collections.Records([], puzzleId: puzzle_id)
+
+    records = new Cubemania.Collections.Records([], puzzleId: puzzle_id, useLocalStorage: !Cubemania.currentUser.present())
     records.fetch(data: $.param(user_id: Cubemania.currentUser.get("id")))
     view = new Cubemania.Views.TimerIndex(collection: singles, records: records)
     Cubemania.viewManager.changeView(view)

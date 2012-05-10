@@ -9,6 +9,9 @@ class Cubemania.Models.User extends Backbone.Model
   setupRecords: ->
     @records = new Cubemania.Collections.Records(@get("records") || [])
 
+  present: ->
+    @get("id")?
+
   activity: (max) ->
     if max == 0
       1

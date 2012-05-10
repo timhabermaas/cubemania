@@ -5,7 +5,9 @@ class Cubemania.Collections.Records extends Backbone.Collection
     "/puzzles/" + @puzzleId + "/records"
 
   initialize: (models, options) ->
-    @puzzleId = options.puzzleId if options?
+    if options?
+      @puzzleId = options.puzzleId
+      @localStorage = new Backbone.LocalStorage("records-#{options.puzzleId}") if options.useLocalStorage
 
   setPuzzleId: (puzzleId) ->
     @puzzleId = puzzleId

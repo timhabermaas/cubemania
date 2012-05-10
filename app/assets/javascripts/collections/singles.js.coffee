@@ -9,9 +9,11 @@ class Cubemania.Collections.Singles extends Backbone.Collection
 
   initialize: (models, options) ->
     @setPuzzleId(options.puzzleId)
+    @localStorage = new Backbone.LocalStorage("singles-#{options.puzzleId}") if options.useLocalStorage
 
   setPuzzleId: (puzzleId) ->
     @puzzleId = puzzleId
+    @localStorage = new Backbone.LocalStorage("singles-#{puzzleId}") if @localStorage?
 
   currentAverage: (size) ->
     lastSingles = @recent(size)
