@@ -1,6 +1,9 @@
 Backbone:
   TimeZone?
 
+Human Time:
+  move code to Backbone; add tests
+
 Redesign:
   inaktive user anzeigen überflüssig mit neuem system :)
   Import for cct session?
@@ -19,9 +22,6 @@ Code:
 Security:
   remove competition.sticky from attributes hash with before_filter
 
-
-Sharing:
-  FbGraph::User.new("invalid_token").fetch raises FbGraph::Unauthorized. If this happens -> redirect
 
 General:
   Add Faqs page
