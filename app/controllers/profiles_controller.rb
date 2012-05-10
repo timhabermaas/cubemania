@@ -28,10 +28,9 @@ class ProfilesController < ApplicationController
     @user = object
 
     if @user.update_attributes params[:user], :as => current_user.role.to_sym
-      flash[:notice] = "Profile successfully updated."
-      redirect_to root_path
+      redirect_to @user, :notice => "Profile successfully updated."
     else
-      redirect_to edit_user_path(@user)
+      render :edit
     end
   end
 
