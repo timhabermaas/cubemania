@@ -46,5 +46,5 @@ Cubemania::Application.routes.draw do
   resource :session
   match 'login' => 'sessions#new', :as => 'login'
   match 'logout' => 'sessions#destroy', :as => 'logout'
-  match 'register' => 'users#new', :as => 'register'
+  match 'register' => 'profiles#new', :as => 'register'
 end
