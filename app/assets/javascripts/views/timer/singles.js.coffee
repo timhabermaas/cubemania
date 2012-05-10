@@ -10,11 +10,11 @@ class Cubemania.Views.Singles extends Cubemania.BaseView
 
     @bindTo @collection, "add", @hideOrShowSuggestion, this
     @bindTo @collection, "remove", @hideOrShowSuggestion, this
-    @bindTo @collection, "reset", @hideOrShowSuggestion, this
 
   render: ->
     $(@el).html(@template(singles: @collection))
     _.each(@recentSingles(), @prependSingle)
+    @hideOrShowSuggestion()
     this
 
   prependSingle: (single) =>
