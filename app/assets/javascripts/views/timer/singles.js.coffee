@@ -22,6 +22,7 @@ class Cubemania.Views.Singles extends Cubemania.BaseView
     @$("ol").prepend(view.render().el)
 
   loadMore: (event) ->
+    event.preventDefault()
     @recent = true
     @render()
     @hideOrShowSuggestion()

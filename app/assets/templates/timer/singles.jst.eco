@@ -4,5 +4,5 @@
 <ol>
 </ol>
 <section class="load-more">
-  <a href="#" data-remote="true">Show my last 12 solves</a>
+  <a href="#">Show my last 12 solves</a>
 </section>
