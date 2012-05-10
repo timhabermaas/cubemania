@@ -1,5 +1,5 @@
 object @user
-attributes :id, :name, :wasted_time, :slug
+attributes :id, :name, :wasted_time, :slug, :wca
 
 child :records do
   attributes :time, :amount, :set_at, :puzzle_id, :comment
