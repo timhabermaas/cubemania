@@ -240,6 +240,7 @@ GEM
     xml-simple (1.1.1)
     xpath (0.1.4)
       nokogiri (~> 1.3)
+    yajl-ruby (1.1.0)
 
 PLATFORMS
   ruby
@@ -260,7 +261,6 @@ DEPENDENCIES
   friendly_id (~> 4.0.0)
   grape
   jquery-rails
-  json
   launchy
   newrelic_rpm
   omniauth-facebook
@@ -279,3 +279,4 @@ DEPENDENCIES
   turn
   uglifier (>= 1.0.3)
   will_paginate
+  yajl-ruby

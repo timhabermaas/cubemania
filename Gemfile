@@ -15,7 +15,7 @@ end
 gem 'jquery-rails'
 gem 'backbone-on-rails'
 
-gem 'json'
+gem 'yajl-ruby', :require => 'yajl'
 
 gem 'pg'
 gem 'sqlite3', :group => [:development, :test]
