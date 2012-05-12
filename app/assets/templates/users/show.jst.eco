@@ -9,7 +9,7 @@
     <a href="http://www.worldcubeassociation.org" class="logo">&nbsp;</a>
     <a href="#">Link your World Cube Association profile!</a>
   </div>
-<% else if @user.get("wca")?: %>
+<% else if @user.get("wca")? and @user.get("wca") != "": %>
   <div id="wca">
     <a href="http://www.worldcubeassociation.org" class="logo">&nbsp;</a>
     <%- @wcaLink %>
