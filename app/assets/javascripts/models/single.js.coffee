@@ -4,6 +4,10 @@ class Cubemania.Models.Single extends Backbone.Model
     "created_at": new Date().toISOString() # TODO replace with format("isoDateTime")?
     "updated_at": new Date().toISOString()
 
+  validate: (attributes) ->
+    if not attributes.time? or isNaN(attributes.time)
+      return "time is not valid"
+
   initialize: (model, options) ->
     @setTimeFromHumanTime(model.human_time) if model.human_time?
 
