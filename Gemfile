@@ -57,4 +57,7 @@ group :development, :test do
   gem 'factory_girl_rails'
   gem 'spork', '~> 0.9.0.rc'
   gem 'timecop'
+  gem 'jasmine'
+  gem 'guard'
+  gem 'guard-coffeescript'
 end

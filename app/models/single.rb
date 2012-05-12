@@ -4,7 +4,7 @@ class Single < ActiveRecord::Base
   belongs_to :average
   has_and_belongs_to_many :records
 
-  attr_accessible :time, :human_time, :puzzle_id, :scramble, :penalty
+  attr_accessible :time, :puzzle_id, :scramble, :penalty
 
   validates_presence_of :user_id, :puzzle_id, :time
   validates_inclusion_of :penalty, :in => %w( plus2 dnf ), :allow_nil => true
@@ -18,17 +18,6 @@ class Single < ActiveRecord::Base
   scope :last_24_hours, lambda { where "created_at > ?", 24.hours.ago }
 
   humanize :time => :time
-
-  # TODO check for correct format. option 1: validates_format_of + before_save, option 2: don't know, option 3: don't care at all
-  def human_time=(ht)
-    @human_time = ht
-    set_time unless @human_time.blank?
-  end
-
-  def time=(t)
-    return if @human_time.present? and t.blank? and not t.nil? # FIXME whut?
-    write_attribute :time, t
-  end
 
   def toggle_dnf!
     if self.dnf?
@@ -61,11 +50,6 @@ class Single < ActiveRecord::Base
   end
 
 private
-  def set_time
-    seconds, minutes, hours = @human_time.split(':').reverse
-    self.time = (hours.to_i * 3600 + minutes.to_i * 60) * 1000 + (seconds.to_f * 1000).to_i
-  end
-
   def set_blank_penalty_to_nil
     self.penalty = nil if self.penalty.blank?
   end

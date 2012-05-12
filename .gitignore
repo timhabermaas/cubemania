@@ -10,5 +10,9 @@ db/*.sqlite3
 # Ignore compiled assets
 /public/assets
 
+# Ignore compiled javascript for Jasmine
+/public/javascripts/compiled
+/spec/javascripts/compiled
+
 config/database.yml
 /public/system
