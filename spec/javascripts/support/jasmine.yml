@@ -56,5 +56,4 @@ helpers:
 #
 spec_dir: spec/javascripts/compiled
 spec_files:
-  #- '**/*[sS]pec.js'
-  - single_spec.js
+  - '**/*[sS]pec.js'
