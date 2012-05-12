@@ -10,7 +10,7 @@ nav.main {
       a {
         display: block;
         padding: 1em;
-        color: #4e4e4e;
+        color: #535353;
         text-transform: uppercase;
       }
     }
@@ -18,7 +18,7 @@ nav.main {
       float: right;
     }
     li a:hover, li.selected a {
-      color: #2f2f2f;
+      color: #202020;
       background: $yellow image-url("item.gif") repeat-x bottom;
     }
     li.session.selected a, li.session a:hover {
