@@ -30,7 +30,7 @@ Cubemania::Application.routes.draw do
     resources :singles
 
     resources :records do
-      post :share, :on => :member
+      get :share, :on => :member
     end
   end
 
