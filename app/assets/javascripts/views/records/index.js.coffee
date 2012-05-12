@@ -9,7 +9,8 @@ class Cubemania.Views.RecordsIndex extends Cubemania.BaseView
 
   initialize: ->
     @recordsTable = @addSubview new Cubemania.Views.RecordsTable(collection: @collection)
-    @bindTo Cubemania.currentPuzzle, "change", @refetchRecords, this
+    @bindTo Cubemania.currentPuzzle, "change", @puzzleChanged, this
+    @selectedType = "avg5"
 
   render: ->
     $(@el).html(@template())
@@ -18,22 +19,29 @@ class Cubemania.Views.RecordsIndex extends Cubemania.BaseView
 
   clickSingle: (event) ->
     event.preventDefault()
-    @collection.fetch(data: $.param(type: "single"))
     @$(".tabs a").removeClass("selected")
     @$(".tabs a.single").addClass("selected")
+    @selectedType = "single"
+    @refetchRecords()
+
 
   clickAvg5: (event) ->
     event.preventDefault()
-    @collection.fetch(data: $.param(type: "avg5"))
     @$(".tabs a").removeClass("selected")
     @$(".tabs a.avg5").addClass("selected")
+    @selectedType = "avg5"
+    @refetchRecords()
 
   clickAvg12: (event) ->
     event.preventDefault()
-    @collection.fetch(data: $.param(type: "avg12"))
     @$(".tabs a").removeClass("selected")
     @$(".tabs a.avg12").addClass("selected")
+    @selectedType = "avg12"
+    @refetchRecords()
 
-  refetchRecords: (puzzle) ->
+  puzzleChanged: (puzzle) ->
     @collection.setPuzzleId puzzle.get("id")
-    @collection.fetch()
+    @refetchRecords()
+
+  refetchRecords: ->
+    @collection.fetch(data: $.param(type: @selectedType))
