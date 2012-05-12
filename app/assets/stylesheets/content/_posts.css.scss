@@ -10,6 +10,9 @@ article.post {
 #comments {
   background-color: $darkblue;
   padding: 1em;
+  ol.comments li {
+    margin-bottom: 1em;
+  }
   .comment cite {
     display: block;
     font-size: 1.25em;
