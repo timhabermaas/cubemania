@@ -1,11 +1,11 @@
 <% unless @announcement.nil? %>
-<section class="announcement">
+<article class="announcement">
   <strong><%= @announcement.title %></strong>
   <%= m(@announcement.content).html_safe %>
   <%= link_to post_path(@announcement, :anchor => 'comments') do %>
     <%= pluralize @announcement.comments.size, 'Comment' %> &raquo;
   <% end %>
-</section>
+</article>
 <% end %>
 <p class="introduction">
   You want to keep track of your times, compare yourself with others and become the best?
