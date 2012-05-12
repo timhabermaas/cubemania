@@ -13,7 +13,8 @@ group :assets do
 end
 
 gem 'jquery-rails'
-gem 'backbone-on-rails'
+gem 'ejs', '~> 1.0.0'
+gem 'eco', '~> 1.0.0'
 
 gem 'yajl-ruby', :require => 'yajl'
 
