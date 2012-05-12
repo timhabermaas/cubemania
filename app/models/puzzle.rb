@@ -42,7 +42,7 @@ class Puzzle < ActiveRecord::Base
   end
 
   def combined_url(bucket = Rails.application.config.s3_bucket)
-    "http://s3.amazonaws.com/#{bucket}/puzzles/#{combined_file_name}"
+    "http://s3.amazonaws.com/#{bucket}/puzzles/#{combined_file_name}?#{updated_at.to_i}"
   end
 
   def scramble

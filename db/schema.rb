@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120130025501) do
+ActiveRecord::Schema.define(:version => 20120512110005) do
 
   create_table "authorizations", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -43,9 +43,9 @@ ActiveRecord::Schema.define(:version => 20120130025501) do
   create_table "competitions", :force => true do |t|
     t.string   "name",           :limit => 64,                     :null => false
     t.string   "description"
-    t.integer  "user_id"
-    t.datetime "created_at",                                       :null => false
-    t.datetime "updated_at",                                       :null => false
+    t.integer  "user_id",                                          :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "puzzle_id",                                        :null => false
     t.string   "repeat",         :limit => 32, :default => "once", :null => false
     t.boolean  "sticky",                       :default => false,  :null => false
@@ -78,22 +78,26 @@ ActiveRecord::Schema.define(:version => 20120130025501) do
     t.string   "title"
     t.text     "content"
     t.integer  "user_id"
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "comments_count", :default => 0, :null => false
   end
 
+  add_index "posts", ["created_at"], :name => "index_posts_on_created_at"
+
   create_table "puzzles", :force => true do |t|
-    t.string  "name",            :limit => 64,                        :null => false
-    t.integer "kind_id",                                              :null => false
-    t.integer "scramble_length"
-    t.integer "record_id"
-    t.integer "attempt_count",                 :default => 1,         :null => false
-    t.integer "countdown",                     :default => 15,        :null => false
-    t.string  "average_format",                :default => "average", :null => false
-    t.integer "version",                       :default => 0
-    t.integer "css_position",                  :default => 0,         :null => false
-    t.string  "slug"
+    t.string   "name",            :limit => 64,                        :null => false
+    t.integer  "kind_id",                                              :null => false
+    t.integer  "scramble_length"
+    t.integer  "record_id"
+    t.integer  "attempt_count",                 :default => 1,         :null => false
+    t.integer  "countdown",                     :default => 15,        :null => false
+    t.string   "average_format",                :default => "average", :null => false
+    t.integer  "version",                       :default => 0
+    t.integer  "css_position",                  :default => 0,         :null => false
+    t.string   "slug"
+    t.datetime "created_at",                                           :null => false
+    t.datetime "updated_at",                                           :null => false
   end
 
   add_index "puzzles", ["slug"], :name => "index_puzzles_on_slug", :unique => true
@@ -125,6 +129,8 @@ ActiveRecord::Schema.define(:version => 20120130025501) do
     t.datetime "created_at"
   end
 
+  add_index "scrambles", ["competition_id", "created_at", "position"], :name => "index_scrambles_on_competition_id_and_created_at_and_position"
+
   create_table "shouts", :force => true do |t|
     t.string   "content",        :null => false
     t.integer  "competition_id", :null => false
@@ -133,14 +139,14 @@ ActiveRecord::Schema.define(:version => 20120130025501) do
   end
 
   create_table "singles", :force => true do |t|
-    t.integer  "time",                                                          :null => false
-    t.integer  "puzzle_id",                                                     :null => false
+    t.integer  "time",                                      :null => false
+    t.integer  "puzzle_id",                                 :null => false
     t.datetime "created_at"
-    t.integer  "user_id",                    :default => 0,                     :null => false
+    t.integer  "user_id",                    :default => 0, :null => false
     t.string   "scramble",   :limit => 1024
     t.integer  "average_id"
     t.string   "comment"
-    t.datetime "updated_at",                 :default => '2010-01-01 00:00:00', :null => false
+    t.datetime "updated_at",                                :null => false
     t.string   "penalty",    :limit => 8
   end
 
@@ -148,11 +154,12 @@ ActiveRecord::Schema.define(:version => 20120130025501) do
 
   create_table "users", :force => true do |t|
     t.string   "name",               :limit => 32,                      :null => false
-    t.string   "email",              :limit => 64,                      :null => false
+    t.string   "email",              :limit => 64
     t.string   "salt",               :limit => 8,                       :null => false
     t.string   "encrypted_password",                                    :null => false
     t.datetime "created_at"
     t.string   "role",               :limit => 16,  :default => "user"
+    t.integer  "averages_count",                    :default => 0,      :null => false
     t.string   "wca"
     t.boolean  "sponsor",                           :default => false,  :null => false
     t.string   "time_zone",          :limit => 100, :default => "UTC"
@@ -163,6 +170,9 @@ ActiveRecord::Schema.define(:version => 20120130025501) do
     t.string   "slug"
   end
 
+  add_index "users", ["email"], :name => "index_users_on_email", :unique => true
+  add_index "users", ["name", "encrypted_password"], :name => "index_users_on_name_and_encrypted_password", :unique => true
+  add_index "users", ["singles_count"], :name => "index_users_on_singles_count"
   add_index "users", ["slug"], :name => "index_users_on_slug"
 
 end
