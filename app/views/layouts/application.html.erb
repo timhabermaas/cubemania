@@ -6,6 +6,9 @@
     <title><%= page_title %> &middot; Cubemania</title>
     <%= stylesheet_link_tag "application" %>
     <%= javascript_include_tag "application" %>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 
     <%= csrf_meta_tag %>
     <script type="text/javascript">
