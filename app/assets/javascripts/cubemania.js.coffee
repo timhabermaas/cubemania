@@ -36,6 +36,3 @@ window.Cubemania =
         if href.slice(protocol.length) != protocol
           event.preventDefault()
           Backbone.history.navigate(href, true)
-
-$(document).ready ->
-  Cubemania.init()
