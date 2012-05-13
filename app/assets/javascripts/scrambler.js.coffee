@@ -1,7 +1,7 @@
 class Cubemania.Scrambler
   scramble: (puzzle) ->
     switch puzzle.toLowerCase()
-      when "2x2x2" then cube [["R", "L"], ["F", "B"], ["U", "D"]], 25 # TODO get scramble length from actual puzzle?
+      when "2x2x2" then cube [["R"], ["F"], ["U"]], 15 # TODO get scramble length from actual puzzle?
       when "3x3x3" then cube [["R", "L"], ["F", "B"], ["U", "D"]], 25
       when "4x4x4" then cube [["R", "L", "Rw", "Lw"], ["F", "B", "Fw", "Bw"], ["D", "U", "Dw", "Uw"]], 40
       when "5x5x5" then cube [["R", "L", "Rw", "Lw"], ["F", "B", "Fw", "Bw"], ["D", "U", "Dw", "Uw"]], 60
