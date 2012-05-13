@@ -7,6 +7,7 @@ class Cubemania.Views.RecordsTable extends Cubemania.BaseView
 
   initialize: ->
     @bindTo @collection, "reset", @render, this
+    @bindTo @collection, "remove", @render, this
 
   render: ->
     $(@el).html(@template(records: @collection, timerPath: "/puzzles/#{Cubemania.currentPuzzle.puzzle.get("slug")}/timer"))

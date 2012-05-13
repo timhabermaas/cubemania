@@ -13,7 +13,9 @@ Cubemania::Application.routes.draw do
     resources :comments
   end
 
-  resources :users
+  resources :users do
+    post :block, :on => :member
+  end
   resources :profiles
 
   resources :puzzles, :defaults => { :puzzle_id => default_puzzle } do

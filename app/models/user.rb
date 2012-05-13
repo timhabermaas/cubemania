@@ -101,6 +101,14 @@ class User < ActiveRecord::Base
     new_password
   end
 
+  def block!
+    update_attribute :ignored, true
+  end
+
+  def unblock!
+    update_attribute :ignored, false
+  end
+
   def role?(required_role, request_id, object)
     if admin?
       true

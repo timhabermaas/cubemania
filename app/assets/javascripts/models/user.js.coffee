@@ -23,3 +23,15 @@ class Cubemania.Models.User extends Backbone.Model
 
   isModerator: ->
     @get("role") == "moderator"
+
+  isAdminOrModerator: ->
+    @isAdmin() || @isModerator()
+
+  block: ->
+    console.log this.url()
+    (@sync || Backbone.sync).call this, "block", this,
+      url: @url() + "/block"
+      type: "POST"
+      data: null
+      complete: =>
+        console.log "completed"

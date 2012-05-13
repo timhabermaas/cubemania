@@ -13,9 +13,19 @@ class UsersController < ApplicationController
 
   def show
     @user = object
+
     respond_to do |format|
       format.html
       format.json
+    end
+  end
+
+  def block
+    @user = object
+    @user.block!
+
+    respond_to do |format|
+      format.json { render :json => {} }
     end
   end
 
