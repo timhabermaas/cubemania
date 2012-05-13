@@ -122,7 +122,7 @@ module ApplicationHelper
   end
 
   def m(text)
-    RedCloth::new(text).to_html[3..-5].gsub("</p>\n<p>", "<br />").html_safe unless text.nil?
+    RedCloth::new(text).to_html[3..-5].gsub("</p>\n<p>", "<br />").html_safe if text.present?
   end
 
   def format_scramble(text)
