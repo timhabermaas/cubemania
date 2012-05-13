@@ -33,5 +33,3 @@ class Cubemania.Models.User extends Backbone.Model
       url: @url() + "/block"
       type: "POST"
       data: null
-      complete: =>
-        console.log "completed"

@@ -30,5 +30,9 @@ class Ability
       end
       cannot :read, Puzzle
     end
+
+    if user && user.moderator?
+      can :block, User
+    end
   end
 end
