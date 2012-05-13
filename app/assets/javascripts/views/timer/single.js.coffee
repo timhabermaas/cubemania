@@ -4,13 +4,13 @@ class Cubemania.Views.Single extends Cubemania.BaseView
   tagName: "li"
 
   events:
-    "click .edit .delete": "clickDelete"
-    "click .edit .plus2": "clickPlus2"
-    "click .edit .dnf": "clickDnf"
+    "click .delete": "clickDelete"
+    "click .plus2": "clickPlus2"
+    "click .dnf": "clickDnf"
 
   initialize: ->
-    @model.bind("change", @render, this);
-    @model.bind("destroy", @remove, this);
+    @bindTo @model, "change", @render, this
+    @bindTo @model, "destroy", @remove, this
 
   render: ->
     $(@el).html(@template(single: @model))
