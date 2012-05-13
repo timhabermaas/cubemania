@@ -12,7 +12,7 @@ class ResetPasswordsController < ApplicationController
       UserMailer.reset_password(user, user.reset_password!).deliver
       redirect_to root_path, :notice => "Email sent successfully."
     else
-      flash.now.alert = "Email does not exist."
+      flash.now.notice = "Email does not exist."
       render :new
     end
   end
