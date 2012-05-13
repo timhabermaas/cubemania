@@ -11,6 +11,7 @@ class Cubemania.Views.TimerIndex extends Cubemania.BaseView
     @singlesView = @addSubview new Cubemania.Views.Singles(collection: @collection)
     $(document).ajaxComplete(@checkForNewRecord)
     @refetchSinglesIntervalId = setInterval(@refetchRecords, 600000) # refetch records every 10 minutes
+    @bindTo @collection, "destroy", @displayRecordBackgroundJobHint, this
 
   render: ->
     $(@el).html(@template())
@@ -39,6 +40,9 @@ class Cubemania.Views.TimerIndex extends Cubemania.BaseView
     r = new Cubemania.Presenters.RecordsPresenter(records)
     Cubemania.flashView.slideDown r.flashMessage(@collection.lastSingle())
     @records.off("reset", @newRecordsArrived)
+
+  displayRecordBackgroundJobHint: (single) ->
+    Cubemania.flashView.slideDown "Your records are currently being recalculated. This might take up to <strong>ten minutes</strong>."
 
   onDispose: ->
     $(document).unbind("ajaxComplete")
