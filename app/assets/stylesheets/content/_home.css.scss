@@ -2,6 +2,9 @@ article.announcement {
   background-color: $darkblue;
   padding: 0.5em;
   margin-bottom: 2em;
+  em {
+    font-style: italic;
+  }
 }
 
 p.introduction {
