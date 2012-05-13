@@ -38,7 +38,7 @@ class RecordsController < ApplicationController
     options = { :app_id => ENV["FACEBOOK_APP_KEY"],
                 :link => puzzle_record_url(@record.puzzle, @record),
                 :picture => @record.puzzle.combined_url,
-                :name => "I have a new " + presenter.record_type + " Record: " + presenter.human_time,
+                :name => "#{current_user.name.capitalize} has a new " + presenter.record_type + " Record: " + presenter.human_time,
                 :caption => "Keep track of your times and join Cubemania!",
                 :description => presenter.singles_as_text,
                 :redirect_uri => puzzle_record_url(@record) }
