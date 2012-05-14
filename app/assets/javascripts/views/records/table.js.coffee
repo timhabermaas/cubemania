@@ -5,6 +5,7 @@ class Cubemania.Views.RecordsTable extends Cubemania.BaseView
   initialize: ->
     @bindTo @collection, "reset", @render, this
     @bindTo @collection, "remove", @render, this
+    @bindTo @collection, "add", @recordAdded, this
 
   render: ->
     $(@el).html(@template(records: @collection, timerPath: "/puzzles/#{Cubemania.currentPuzzle.puzzle.get("slug")}/timer"))
@@ -14,3 +15,6 @@ class Cubemania.Views.RecordsTable extends Cubemania.BaseView
   appendRecord: (record, index) ->
     view = new Cubemania.Views.Record(model: record, index: index)
     @$("#records tbody").append(view.render().el)
+
+  recordAdded: (record, records, options) ->
+    @appendRecord(record, options.index)

@@ -6,6 +6,7 @@ class Cubemania.Views.RecordsIndex extends Cubemania.BaseView
     "click .tabs .single": "clickSingle"
     "click .tabs .avg5": "clickAvg5"
     "click .tabs .avg12": "clickAvg12"
+    "click .pagination .load-more": "loadMore"
 
   initialize: ->
     @recordsTable = @addSubview new Cubemania.Views.RecordsTable(collection: @collection)
@@ -44,3 +45,7 @@ class Cubemania.Views.RecordsIndex extends Cubemania.BaseView
 
   refetchRecords: ->
     @collection.fetch(data: $.param(type: @selectedType))
+
+  loadMore: (event) ->
+    event.preventDefault()
+    @collection.loadMore()
