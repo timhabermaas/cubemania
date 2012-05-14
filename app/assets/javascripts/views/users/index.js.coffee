@@ -1,9 +1,9 @@
 class Cubemania.Views.UsersIndex extends Cubemania.BaseView
-
   template: JST["users/index"]
 
   events:
     "submit #users-search": "search"
+    "click a.load-more": "loadMore"
 
   initialize: ->
     @usersView = @addSubview new Cubemania.Views.Users(collection: @collection)
@@ -15,4 +15,8 @@ class Cubemania.Views.UsersIndex extends Cubemania.BaseView
 
   search: (event) ->
     event.preventDefault()
-    @collection.fetch({data: {q: @$("#q").val()}})
+    @collection.search(@$("#q").val())
+
+  loadMore: (event) ->
+    event.preventDefault()
+    @collection.loadMore()

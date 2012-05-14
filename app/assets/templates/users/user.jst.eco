@@ -1,0 +1,6 @@
+<a href="/users/<%= @user.get('slug') %>" rel="routing">
+  <%= @user.get("name") %>
+</a>
+<small>
+  <%= @user.get("singles_count") %>
+</small>

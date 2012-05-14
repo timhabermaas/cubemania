@@ -12,7 +12,7 @@ class Cubemania.Models.User extends Backbone.Model
   present: ->
     @get("id")?
 
-  activity: (max) ->
+  activity: (max) -> # TODO get max from collection
     if max == 0
       1
     else
@@ -28,7 +28,6 @@ class Cubemania.Models.User extends Backbone.Model
     @isAdmin() || @isModerator()
 
   block: ->
-    console.log this.url()
     (@sync || Backbone.sync).call this, "block", this,
       url: @url() + "/block"
       type: "POST"

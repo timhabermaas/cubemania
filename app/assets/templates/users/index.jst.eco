@@ -4,3 +4,7 @@
 
 <ul id="users">
 </ul>
+
+<div class="pagination">
+  <a href="#" class="load-more">Load more</a>
+</div>
