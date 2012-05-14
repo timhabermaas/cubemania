@@ -3,6 +3,8 @@
     Be the first: <a href="<%= @timerPath %>">Get the record!</a>
   </p>
 <% else: %>
-  <tbody>
-  </tbody>
+  <table id="records">
+    <tbody>
+    </tbody>
+  </table>
 <% end %>

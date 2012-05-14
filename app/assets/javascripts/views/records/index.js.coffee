@@ -14,7 +14,7 @@ class Cubemania.Views.RecordsIndex extends Cubemania.BaseView
 
   render: ->
     $(@el).html(@template())
-    $(@el).append(@recordsTable.el)
+    @recordsTable.setElement(@$("div.table")).render()
     this
 
   clickSingle: (event) ->
@@ -23,7 +23,6 @@ class Cubemania.Views.RecordsIndex extends Cubemania.BaseView
     @$(".tabs a.single").addClass("selected")
     @selectedType = "single"
     @refetchRecords()
-
 
   clickAvg5: (event) ->
     event.preventDefault()

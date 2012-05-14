@@ -2,9 +2,6 @@ class Cubemania.Views.RecordsTable extends Cubemania.BaseView
 
   template: JST["records/table"]
 
-  tagName: "table"
-  id: "records"
-
   initialize: ->
     @bindTo @collection, "reset", @render, this
     @bindTo @collection, "remove", @render, this
@@ -16,4 +13,4 @@ class Cubemania.Views.RecordsTable extends Cubemania.BaseView
 
   appendRecord: (record, index) ->
     view = new Cubemania.Views.Record(model: record, index: index)
-    @$("tbody").append(view.render().el)
+    @$("#records tbody").append(view.render().el)

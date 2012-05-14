@@ -17,6 +17,6 @@ class Cubemania.Views.UsersIndex extends Cubemania.BaseView
     event.preventDefault()
     @collection.search(@$("#q").val())
 
-  loadMore: (event) ->
+  loadMore: (event) -> # TODO replace link with spinning ball
     event.preventDefault()
     @collection.loadMore()
