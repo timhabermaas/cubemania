@@ -1,4 +1,4 @@
-<% if @records.length == 0: %>
+<% if @records.length == 0 and @displayChallenge: %>
   <p class="challenge">
     Be the first: <a href="<%= @timerPath %>">Get the record!</a>
   </p>
