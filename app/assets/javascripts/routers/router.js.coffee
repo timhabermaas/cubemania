@@ -1,8 +1,7 @@
 class Cubemania.Routers.Router extends Backbone.Router
   routes:
-    "": "dontRenderAnything"
     "puzzles/:puzzle_id/timer": "timerIndex"
-    "puzzles/:puzzle_id/records": "recordsIndex"
+    "puzzles/:puzzle_id/records": "recordsIndex" # TODO add type in url in order to not lose it when changing puzzles
     "users": "usersIndex"
     "users/:id": "usersShow"
 
@@ -10,21 +9,18 @@ class Cubemania.Routers.Router extends Backbone.Router
     @bind "all", @cleanupKeybindings
     @bind "all", @showOrHideSubnavigation
     @bind "all", @_trackPageview
-
-  dontRenderAnything: ->
+    Cubemania.currentPuzzle.on("change", @updateRoute, this)
 
   timerIndex: (puzzle_id) ->
     Cubemania.currentPuzzle.set(Cubemania.puzzles.findByIdOrSlug(puzzle_id), false)
 
     singles = new Cubemania.Collections.Singles([], puzzleId: puzzle_id, useLocalStorage: !Cubemania.currentUser.present())
     singles.fetch(data: $.param(user_id: Cubemania.currentUser.get("id")))
-
     records = new Cubemania.Collections.Records([], puzzleId: puzzle_id, useLocalStorage: !Cubemania.currentUser.present())
     records.fetch(data: $.param(user_id: Cubemania.currentUser.get("id")))
+
     view = new Cubemania.Views.TimerIndex(collection: singles, records: records)
     Cubemania.viewManager.changeView(view)
-
-    Cubemania.currentPuzzle.on("change", @updateRoute, this)
 
     unless Cubemania.currentUser.present()
       Cubemania.flashView.show("You're currently not logged in!<br /> <a href='/login'>Login</a> or <a href='/register'>register</a> to save your times permanently.")
@@ -38,8 +34,6 @@ class Cubemania.Routers.Router extends Backbone.Router
     records.fetch()
     view = new Cubemania.Views.RecordsIndex(collection: records)
     Cubemania.viewManager.changeView(view)
-
-    Cubemania.currentPuzzle.on("change", @updateRoute, this)
 
     $("#backbone-container").html(view.render().el)
 
@@ -79,7 +73,7 @@ class Cubemania.Routers.Router extends Backbone.Router
     route = Backbone.history.fragment
     if route[0..6] == "puzzles" or route[0..7] == "/puzzles"
       route = route.replace(/puzzles\/[^/]*\//,"puzzles/#{puzzle.get("slug")}/")
-      Backbone.history.navigate(route)
+      Backbone.history.navigate(route, true)
 
   _trackPageview: ->
     url = Backbone.history.fragment

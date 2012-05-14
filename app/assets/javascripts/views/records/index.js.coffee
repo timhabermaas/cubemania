@@ -10,7 +10,6 @@ class Cubemania.Views.RecordsIndex extends Cubemania.BaseView
 
   initialize: ->
     @recordsTable = @addSubview new Cubemania.Views.RecordsTable(collection: @collection)
-    @bindTo Cubemania.currentPuzzle, "change", @puzzleChanged, this
     @selectedType = "avg5"
 
   render: ->
@@ -37,10 +36,6 @@ class Cubemania.Views.RecordsIndex extends Cubemania.BaseView
     @$(".tabs a").removeClass("selected")
     @$(".tabs a.avg12").addClass("selected")
     @selectedType = "avg12"
-    @refetchRecords()
-
-  puzzleChanged: (puzzle) ->
-    @collection.setPuzzleId puzzle.get("id")
     @refetchRecords()
 
   refetchRecords: ->
