@@ -1,16 +1,15 @@
 class ProfilesController < ApplicationController
   skip_load_and_authorize_resource # TODO use cancan's helper
+  load_and_authorize_resource :user, :parent => false
   skip_login :only => [:new, :create]
   logout :only => [:new, :create]
 
   def new
     @user = User.new
-    authorize! :new, @user
   end
 
   def create
     @user = User.new params[:user]
-    authorize! :create, @user
 
     if @user.save
       UserMailer.welcome(@user).deliver
@@ -24,12 +23,10 @@ class ProfilesController < ApplicationController
 
   def edit
     @user = object
-    authorize! :edit, @user
   end
 
   def update
     @user = object
-    authorize! :update, @user
 
     if @user.update_attributes params[:user], :as => current_user.role.to_sym
       redirect_to @user, :notice => "Profile successfully updated."
@@ -40,7 +37,6 @@ class ProfilesController < ApplicationController
 
   def destroy
     @user = object
-    authorize! :destroy, @user
 
     if @user.destroy
       if self.current_user == @user
