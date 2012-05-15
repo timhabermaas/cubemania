@@ -20,8 +20,8 @@ class User < ActiveRecord::Base
   has_many :comments, :dependent => :nullify
   has_many :competitions, :dependent => :nullify
   has_many :shouts, :dependent => :nullify
-  has_many :home_matches, :foreign_key => 'user_id', :class_name => 'Match', :dependent => :delete_all
-  has_many :guest_matches, :foreign_key => 'opponent_id', :class_name => 'Match', :dependent => :delete_all
+  #has_many :home_matches, :foreign_key => 'user_id', :class_name => 'Match', :dependent => :delete_all
+  #has_many :guest_matches, :foreign_key => 'opponent_id', :class_name => 'Match', :dependent => :delete_all
   def participances
     cols = %w(id name puzzle_id created_at repeat).map { |c| "competitions.#{c}"}.join(', ')
     Competition.joins(:averages).select("#{cols}, clocks.created_at as date").where(:user_id => self.id).group("#{cols}, clocks.created_at").all
