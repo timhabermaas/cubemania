@@ -18,8 +18,7 @@ class Cubemania.Routers.Router extends Backbone.Router
     records = new Cubemania.Collections.Records([], puzzleId: puzzle_id, useLocalStorage: !Cubemania.currentUser.present())
     records.fetch(data: $.param(user_id: Cubemania.currentUser.get("id")))
 
-    view = new Cubemania.Views.TimerIndex(collection: singles, records: records)
-    Cubemania.viewManager.changeView(view)
+    view = Cubemania.viewManager.newView(Cubemania.Views.TimerIndex, {collection: singles, records: records})
 
     unless Cubemania.currentUser.present()
       Cubemania.flashView.show("You're currently not logged in!<br /> <a href='/login'>Login</a> or <a href='/register'>register</a> to save your times permanently.")
@@ -31,23 +30,24 @@ class Cubemania.Routers.Router extends Backbone.Router
 
     records = new Cubemania.Collections.Records([], puzzleId: puzzle_id)
     records.fetch()
-    view = new Cubemania.Views.RecordsIndex(collection: records)
-    Cubemania.viewManager.changeView(view)
+
+    view = Cubemania.viewManager.newView(Cubemania.Views.RecordsIndex, {collection: records})
 
     $("#backbone-container").html(view.render().el)
 
   usersIndex: ->
     users = new Cubemania.Collections.Users()
     users.fetch()
-    view = new Cubemania.Views.UsersIndex(collection: users)
-    Cubemania.viewManager.changeView(view)
+
+    view = Cubemania.viewManager.newView(Cubemania.Views.UsersIndex, collection: users)
+
     $("#backbone-container").html(view.render().el)
 
   usersShow: (id) ->
     model = new Cubemania.Models.User(id: id)
     model.fetch()
-    view = new Cubemania.Views.UsersShow(model: model)
-    Cubemania.viewManager.changeView(view)
+
+    view = Cubemania.viewManager.newView(Cubemania.Views.UsersShow, model: model)
     $("#backbone-container").html(view.el)
 
   showOrHideSubnavigation: (router, route) ->

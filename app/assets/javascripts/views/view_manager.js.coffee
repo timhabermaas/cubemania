@@ -2,6 +2,6 @@ class Cubemania.ViewManager
   constructor: ->
     @currentView = null
 
-  changeView: (view) ->
+  newView: (klass, options) ->
     @currentView.dispose() if @currentView?
-    @currentView = view
+    @currentView = new klass(options)
