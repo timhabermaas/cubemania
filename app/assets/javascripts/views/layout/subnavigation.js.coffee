@@ -6,7 +6,6 @@ class Cubemania.Views.Subnavigation extends Cubemania.BaseView
     "click #kinds a": "kindClicked"
 
   initialize: ->
-    @bindTo Cubemania.currentPuzzle, "change", @checkPuzzleAndKind, this
     @intervalId = null
 
   render: ->
@@ -41,6 +40,7 @@ class Cubemania.Views.Subnavigation extends Cubemania.BaseView
     @$("#puzzles > ul").animate {left: -100 * index + "%"}, "normal"
 
   makeAutoHideable: ->
+    clearTimeout(@intervalId)
     @intervalId = setTimeout(@slidePuzzlesUp, 7000)
 
   unmakeAutoHideable: ->
