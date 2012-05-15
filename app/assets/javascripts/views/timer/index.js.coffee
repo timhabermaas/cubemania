@@ -8,7 +8,7 @@ class Cubemania.Views.TimerIndex extends Cubemania.BaseView
     @chartView = @addSubview new Cubemania.Views.Chart(collection: @collection)
     @singlesView = @addSubview new Cubemania.Views.Singles(collection: @collection)
     $(document).ajaxComplete(@checkForNewRecord)
-    @refetchSinglesIntervalId = setInterval(@refetchRecords, 600000) # refetch records every 10 minutes
+    @refetchRecordsIntervalId = setInterval(@refetchRecords, 600000) # refetch records every 10 minutes
     @bindTo @collection, "destroy", @displayRecordBackgroundJobHint, this
 
   render: ->
@@ -26,6 +26,10 @@ class Cubemania.Views.TimerIndex extends Cubemania.BaseView
       @records.on("reset", @newRecordsArrived, this)
       @records.fetch(data: $.param(user_id: Cubemania.currentUser.get("id")))
 
+  refetchRecords: =>
+    @records.setPuzzleId(Cubemania.currentPuzzle.puzzle.get("id"))
+    @records.fetch(data: {user_id: Cubemania.currentUser.get("id")})
+
   newRecordsArrived: (records) ->
     r = new Cubemania.Presenters.RecordsPresenter(records)
     Cubemania.flashView.slideDown r.flashMessage(@collection.lastSingle())
@@ -36,4 +40,4 @@ class Cubemania.Views.TimerIndex extends Cubemania.BaseView
 
   onDispose: ->
     $(document).unbind("ajaxComplete")
-    clearInterval(@refetchSinglesIntervalId)
+    clearInterval(@refetchRecordsIntervalId)
