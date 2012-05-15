@@ -6,7 +6,6 @@ class Cubemania.Routers.Router extends Backbone.Router
     "users/:id": "usersShow"
 
   initialize: ->
-    @bind "all", @cleanupKeybindings
     @bind "all", @showOrHideSubnavigation
     @bind "all", @_trackPageview
     Cubemania.currentPuzzle.on("change", @updateRoute, this)
@@ -50,11 +49,6 @@ class Cubemania.Routers.Router extends Backbone.Router
     view = new Cubemania.Views.UsersShow(model: model)
     Cubemania.viewManager.changeView(view)
     $("#backbone-container").html(view.el)
-
-  cleanupKeybindings: (router, route) ->
-    unless router[6..-1] == "timerIndex"
-      $(document).unbind("keydown") # TODO move to detach() ?
-      $(document).unbind("keyup")
 
   showOrHideSubnavigation: (router, route) ->
     switch router[6..-1]

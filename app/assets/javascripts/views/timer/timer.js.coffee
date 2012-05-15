@@ -13,8 +13,6 @@ class Cubemania.Views.Timer extends Cubemania.BaseView
     @timer = new Cubemania.Timer()
     @timerEnabled = true
     @scramble = Cubemania.scrambler.scramble(Cubemania.currentPuzzle.getName())
-    $(document).keydown(@stopTimer)
-    $(document).keyup(@startTimer)
 
   updateDisplay: =>
     @$(".time").html(formatTime(@timer.currentTime()))
@@ -28,6 +26,8 @@ class Cubemania.Views.Timer extends Cubemania.BaseView
     @updateDisplay()
 
   render: ->
+    $(document).keydown(@stopTimer) # TODO hack to avoid unbinding events right after initializing
+    $(document).keyup(@startTimer)  #      due to the way ViewManager works
     $(@el).html(@template(currentTime: @timer.currentTime(), scramble: @scramble))
     this
 
