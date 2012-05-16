@@ -22,27 +22,13 @@ div.flash {
   a.close {
     display: block;
     position: absolute;
-    right: 50px;
-    top: 7px;
-
-    background:         radial-gradient(5px -9px, circle, white 8%, red 26px);
-    background:    -moz-radial-gradient(5px -9px, circle, white 8%, red 26px);
-    background:     -ms-radial-gradient(5px -9px, circle, white 8%, red 26px);
-    background:      -o-radial-gradient(5px -9px, circle, white 8%, red 26px);
-    background: -webkit-radial-gradient(5px -9px, circle, white 8%, red 26px);
-    background-color: red;
-
-    border: 2px solid white;
-    border-radius: 12px;
-    box-shadow: 1px 1px 1px black;
-
-    color: white;
-    font: bold 15px/13px Helvetica, Verdana, Tahoma;
-    height: 16px;
-    padding: 4px 3px 0 3px;
-    text-align: center;
-    min-width: 14px;
-    text-decoration: none;
+    width: 21px;
+    height: 21px;
+    right: 75px;
+    top: 50%;
+    margin-top: -10px;
+    text-indent: -9999px;
+    background: $yellow image-url("close_button.gif") center no-repeat;
   }
   a.close:hover {
     background-color: red;
