@@ -47,7 +47,7 @@ describe User do
 
   describe "to_json" do
     let(:forbidden_attributes) do
-      [:encrypted_password, :ignored, :role, :salt, :email, :created_at, :sponsor]
+      [:encrypted_password, :ignored, :salt, :email, :created_at, :sponsor]
     end
 
     let(:necessary_attributes) do
