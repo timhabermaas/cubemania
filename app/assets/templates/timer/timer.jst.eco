@@ -21,7 +21,7 @@
     <form accept-charset="UTF-8" id="add_comment" class="comment">
       <ol>
         <li>
-          <textarea name="comment" cols="50" rows="3"></textarea>
+          <textarea name="comment" cols="40" rows="4"></textarea>
         </li>
         <li>
           <input type="submit" value="Submit" />
