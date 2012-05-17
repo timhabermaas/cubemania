@@ -24,7 +24,7 @@
           <textarea name="comment" cols="50" rows="3"></textarea>
         </li>
         <li>
-          <input type="submit" />
+          <input type="submit" value="Submit" />
         </li>
       </ol>
     </form>
