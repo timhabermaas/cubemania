@@ -1,7 +1,7 @@
 class Cubemania.Views.Flash extends Cubemania.BaseView
 
   events:
-    "click .close": "slideUp"
+    "click .close": "clickClose"
 
   initialize: ->
     @message = ""
@@ -23,6 +23,10 @@ class Cubemania.Views.Flash extends Cubemania.BaseView
 
   slideUp: ->
     $(@el).slideUp("fast")
+
+  clickClose: (event) ->
+    event.preventDefault()
+    @slideUp()
 
   render: ->
     $(@el).html("<p>#{@message}</p><a href='#' class='close'>Close</a>")
