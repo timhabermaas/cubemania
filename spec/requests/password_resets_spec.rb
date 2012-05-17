@@ -19,4 +19,12 @@ describe "PasswordResets" do
     current_path.should == reset_password_path
     page.should have_content("Email does not exist.")
   end
+
+  it "finds email even if it doesn't match casewise" do
+    user = create :user, :email => "muh@Cow.com"
+    visit new_reset_password_path
+    fill_in "Email", :with => "muh@cow.com"
+    click_button "Reset"
+    page.should have_content "Email sent successfully"
+  end
 end

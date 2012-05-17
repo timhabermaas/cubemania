@@ -7,7 +7,7 @@ class ResetPasswordsController < ApplicationController
   end
 
   def create
-    user = User.find_by_email(params[:reset_password][:email])
+    user = User.where("lower(email) = ?", params[:reset_password][:email].downcase).first
     if user
       UserMailer.reset_password(user, user.reset_password!).deliver
       redirect_to root_path, :notice => "Email sent successfully."
