@@ -109,6 +109,8 @@ class Cubemania.Views.Timer extends Cubemania.BaseView
 
   hideAddCommentBubble: ->
     @$("div.add_comment").slideUp()
+    @$("div.add_comment form").hide()
+    @$("div.add_comment a").show()
 
   onDispose: ->
     $(document).unbind("keydown")
