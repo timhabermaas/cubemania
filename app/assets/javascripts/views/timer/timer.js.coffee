@@ -99,8 +99,9 @@ class Cubemania.Views.Timer extends Cubemania.BaseView
 
   addComment: (event) ->
     event.preventDefault()
-    @collection.models[0].set "comment", @$("#add_comment [name='comment']").val()
-    @collection.models[0].save()
+    lastSingle = @collection.models[@collection.length - 1]
+    lastSingle.set "comment", @$("#add_comment [name='comment']").val()
+    lastSingle.save()
     @toggleComment()
     @hideAddCommentBubble()
 
