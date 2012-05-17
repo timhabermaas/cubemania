@@ -39,6 +39,25 @@ describe Single do
     average.singles.count.should == 5
   end
 
+  describe "updating comments" do
+    let(:record) { double :record }
+
+    it "triggers comment updating when changing comment" do
+      single = create :single
+
+      single.stub(:records) { [record, record] }
+      record.should_receive(:update_comment!).twice
+      single.update_attributes(:comment => "OMG! Awesome solve!")
+    end
+
+    it "doesn't trigger comment updating when comment didn't change" do
+      single = create :single
+      single.stub(:records) { [record] }
+      record.should_not_receive(:update_comment!)
+      single.update_attributes(:penalty => "dnf")
+    end
+  end
+
   describe "#toggle_dnf" do
     subject { single.dnf? }
 

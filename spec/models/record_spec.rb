@@ -46,7 +46,7 @@ describe Record do
     end
   end
 
-  describe "#comment" do
+  describe "comments" do
     let(:single_1) { create :single, :comment => "foo" }
     let(:single_2) { create :single, :comment => "muh" }
     let(:single_3) { create :single, :comment => "too long"*100 }
@@ -61,6 +61,18 @@ describe Record do
     it "cuts off too long comments without failing comment validation" do
       record = create :record, :singles => create_list(:single, 4) + [single_3]
       record.comment.size.should == 255
+    end
+
+    describe "#update_comment!" do
+      let(:singles) { create_list :single, 5 }
+
+      it "fetches comments from singles and updates record object" do
+        record = create :record, :singles => singles
+        singles[0].should_receive(:comment).at_least(:once) { "bar" }
+        singles[1].should_receive(:comment).at_least(:once) { "foo" }
+        record.should_receive(:update_attributes).with(:comment => "bar; foo")
+        record.update_comment!
+      end
     end
   end
 

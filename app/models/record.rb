@@ -41,6 +41,10 @@ class Record < ActiveRecord::Base
     CubingAverage.new singles, time
   end
 
+  def update_comment!
+    update_attributes :comment => comments_from_singles
+  end
+
   private
   def has_as_many_singles_as_amount
     errors.add(:singles, "must have #{amount} items, but has #{singles.size}") if singles && singles.size != amount
@@ -52,7 +56,11 @@ class Record < ActiveRecord::Base
     end
   end
 
+  def comments_from_singles
+    singles.map(&:comment).uniq.reject(&:blank?).join("; ")[0..254]
+  end
+
   def set_comments_from_singles
-    self.comment = singles.map(&:comment).uniq.reject(&:blank?).join("; ")[0..254]
+    self.comment = comments_from_singles
   end
 end

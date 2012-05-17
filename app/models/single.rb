@@ -4,13 +4,14 @@ class Single < ActiveRecord::Base
   belongs_to :average
   has_and_belongs_to_many :records
 
-  attr_accessible :time, :puzzle_id, :scramble, :penalty
+  attr_accessible :time, :puzzle_id, :scramble, :penalty, :comment
 
   validates_presence_of :user_id, :puzzle_id, :time
   validates_inclusion_of :penalty, :in => %w( plus2 dnf ), :allow_nil => true
 
   before_validation :set_blank_penalty_to_nil
   before_destroy :destroyable_unless_belongs_to_average
+  after_update :reset_cached_record_comments
 
   scope :not_dnf, where("penalty IS NULL OR penalty NOT LIKE 'dnf'")
   scope :recent, lambda { |amount| order("created_at desc").limit(amount) }
@@ -56,5 +57,9 @@ private
 
   def destroyable_unless_belongs_to_average
     false if self.belongs_to_average?
+  end
+
+  def reset_cached_record_comments
+    records.each(&:update_comment!) if comment_changed?
   end
 end
