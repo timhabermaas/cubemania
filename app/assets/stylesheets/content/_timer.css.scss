@@ -42,6 +42,9 @@
         a {
           color: $grey;
         }
+        a:hover {
+          text-decoration: underline;
+        }
       }
       div.bubble:after {
         content: "";
