@@ -16,7 +16,7 @@ gem 'jquery-rails'
 gem 'ejs', '~> 1.0.0'
 gem 'eco', '~> 1.0.0'
 
-gem 'yajl-ruby', :require => 'yajl'
+gem 'oj'
 
 gem 'pg'
 gem 'sqlite3', :group => [:development, :test]
