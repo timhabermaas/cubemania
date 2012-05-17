@@ -1,22 +1,26 @@
 class Cubemania.Timer
   constructor: ->
+    _.extend(this, Backbone.Events)
     @reset()
 
   isRunning: ->
     @running
 
-  start: ->
+  start: (trigger = true) ->
     @startTime = new Date().getTime()
     @running = true
+    @trigger("started", this)
 
-  stop: ->
+  stop: (trigger = false) ->
     @stopTime = new Date().getTime()
     @running = false
+    @trigger("stopped", this)
 
   reset: ->
     @startTime = 0
     @stopTime = 0
     @running = false
+    @trigger("reset", this)
 
   currentTime: ->
     if @isRunning()
