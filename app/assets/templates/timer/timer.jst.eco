@@ -15,4 +15,20 @@
     </ol>
   </fieldset>
 </form>
+<div class="add_comment">
+  <div class="bubble">
+    <a href="#" class="add_comment">Add Comment</a>
+    <form accept-charset="UTF-8" id="add_comment" class="comment">
+      <ol>
+        <li>
+          <textarea name="comment" cols="50" rows="3"></textarea>
+        </li>
+        <li>
+          <input type="submit" />
+        </li>
+      </ol>
+    </form>
+  </div>
+</div>
+
 <a href="#" class="toggle">Set times manually</a>

@@ -6,11 +6,17 @@ class Cubemania.Views.Timer extends Cubemania.BaseView
     "submit #new_single": "submitSingle"
     "touchstart": "stopTimer"
     "touchend": "startTimer"
+    "submit #add_comment": "addComment"
+    "click a.add_comment": "toggleComment"
+    "focus div.add_comment textarea": "disableTimer"
+    "blur div.add_comment textarea": "enableTimer"
 
   initialize: ->
     @bindTo Cubemania.currentPuzzle, "change", @updateScramble, this
     @bindTo Cubemania.currentPuzzle, "change", @resetTime, this
     @timer = new Cubemania.Timer()
+    @bindTo @timer, "stopped", @displayAddCommentBubble, this
+    @bindTo @timer, "started", @hideAddCommentBubble, this
     @timerEnabled = true
     @scramble = Cubemania.scrambler.scramble(Cubemania.currentPuzzle.getName())
     $(document).keydown(@stopTimer)
@@ -68,6 +74,12 @@ class Cubemania.Views.Timer extends Cubemania.BaseView
     else
       @$("#single_human_time").blur()
 
+  toggleComment: (event) ->
+    event.preventDefault() if event?
+    @$("div.add_comment form").toggle()
+    @$("div.add_comment a").toggle()
+    @$("div.add_comment form")[0].reset()
+
   enableTimer: ->
     @timerEnabled = true
 
@@ -84,6 +96,19 @@ class Cubemania.Views.Timer extends Cubemania.BaseView
   createSingle: (time) ->
     @collection.create({time: time, scramble: @scramble})
     @updateScramble() # TODO duplication
+
+  addComment: (event) ->
+    event.preventDefault()
+    @collection.models[0].set "comment", @$("#add_comment [name='comment']").val()
+    @collection.models[0].save()
+    @toggleComment()
+    @hideAddCommentBubble()
+
+  displayAddCommentBubble: ->
+    @$("div.add_comment").slideDown()
+
+  hideAddCommentBubble: ->
+    @$("div.add_comment").slideUp()
 
   onDispose: ->
     $(document).unbind("keydown")

@@ -11,7 +11,7 @@
     padding: 8px 16px 24px 16px;
 
     #new_single {
-      display: none
+      display: none;
     }
     .scramble {
       text-align: center;
@@ -25,6 +25,39 @@
     .time.starting {
       color: #44d944;
     }
+    div.add_comment {
+      margin-bottom: 1em;
+      display: none;
+      div.bubble {
+        display: inline-block;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        padding-right: 6px;
+        padding-left: 6px;
+        border-radius: 5px;
+        margin: 0 auto;
+        background-color: $yellow;
+        position: relative;
+        a {
+          color: $grey;
+        }
+      }
+      div.bubble:after {
+        content: "";
+        position: absolute;
+        top: -8px;
+        left: 50%;
+        margin-left: -8px;
+        width: 0;
+        border-width: 0 8px 8px;
+        border-style: solid;
+        border-color: $yellow transparent;
+      }
+      form {
+        display: none;
+      }
+    }
+
     form {
       margin-top: 1em;
       margin-bottom: 1em;
