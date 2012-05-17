@@ -33,8 +33,11 @@ class SinglesController < ApplicationController
   def update
     puzzle = Puzzle.find params[:puzzle_id]
     single = current_user.singles.find params[:id]
-    if single.update_attributes params[:single]
-      enqueue_record_job current_user, puzzle # TODO only enqueue if penalty attribute is changed
+    single.attributes = params[:single]
+    enqueue_record_job(current_user, puzzle) if single.penalty_changed?
+    if single.save
+    else
+      # TODO handle error case
     end
     respond_with single
   end
