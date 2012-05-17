@@ -9,18 +9,18 @@ class Cubemania.Timer
   start: (trigger = true) ->
     @startTime = new Date().getTime()
     @running = true
-    @trigger("started", this)
+    @trigger("started", this) if trigger
 
-  stop: (trigger = false) ->
+  stop: (trigger = true) ->
     @stopTime = new Date().getTime()
     @running = false
-    @trigger("stopped", this)
+    @trigger("stopped", this) if trigger
 
-  reset: ->
+  reset: (trigger = true) ->
     @startTime = 0
     @stopTime = 0
     @running = false
-    @trigger("reset", this)
+    @trigger("reset", this) if trigger
 
   currentTime: ->
     if @isRunning()
