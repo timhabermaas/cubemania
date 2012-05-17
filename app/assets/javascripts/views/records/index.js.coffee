@@ -39,7 +39,8 @@ class Cubemania.Views.RecordsIndex extends Cubemania.BaseView
     @refetchRecords()
 
   refetchRecords: ->
-    @collection.fetch(data: $.param(type: @selectedType))
+    @collection.setType @selectedType
+    @collection.fetch()
 
   loadMore: (event) ->
     event.preventDefault()
