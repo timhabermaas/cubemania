@@ -21,7 +21,10 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
       tooltip:
         formatter: ->
           single = this.point.single
-          "<b>#{formatTime(single.get("time"))}</b><br /><i>#{formatDateTime(single.get("created_at"))}</i>"
+          comment = single.get("comment") || ""
+          comment = "#{comment}<br />" if comment.length > 0
+
+          "<b>#{formatTime(single.get("time"))}</b><br />#{comment}<i>#{formatDateTime(single.get("created_at"))}</i>"
       xAxis:
         title:
           text: "Singles" # TODO xAxis is messed up for less than 5 solves
