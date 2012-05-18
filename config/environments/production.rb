@@ -66,6 +66,9 @@ Cubemania::Application.configure do
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
 
+  config.logger = Logger.new(STDOUT)
+  config.logger.level = Logger.const_get(ENV['LOG_LEVEL'] ? ENV['LOG_LEVEL'].upcase : 'INFO')
+
   config.action_mailer.default_url_options = { :host => "cubemania.org" }
 
   config.s3_bucket = "images.cubemania"

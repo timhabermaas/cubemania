@@ -40,7 +40,7 @@ gem 'delayed_job_web'
 
 gem 'rabl'
 
-gem 'thin'
+gem 'unicorn'
 
 gem 'newrelic_rpm'
 
