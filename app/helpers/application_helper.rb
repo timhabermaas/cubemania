@@ -33,6 +33,10 @@ module ApplicationHelper
       ]
   end
 
+  def using_backbone?
+    controller? :timers, :users, :records, :homes
+  end
+
   def current_item
     navigation.find { |item| current_item? item }
   end

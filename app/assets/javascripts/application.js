@@ -26,5 +26,7 @@
 document.cookie = 'tz_offset=' + ((new Date()).getTimezoneOffset() + calculateDst() * 6);
 
 $(document).ready(function() {
-  Cubemania.init();
+  if ($("body").data("using-backbone")) { // TODO make this unnecessary by moving more stuff to backbone/changing routes
+    Cubemania.init();
+  }
 });
