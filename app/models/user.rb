@@ -15,7 +15,6 @@ class User < ActiveRecord::Base
   attr_accessible :name, :email, :time_zone, :password, :password_confirmation, :wca, :bot_email, :wants_emails, :ignored, :as => :moderator
   attr_accessible :name, :email, :time_zone, :password, :password_confirmation, :wca, :bot_email, :wants_emails, :ignored, :role, :sponsor, :as => :admin
 
-  has_many :authorizations, :dependent => :destroy
   has_many :posts, :dependent => :nullify
   has_many :comments, :dependent => :nullify
   has_many :competitions, :dependent => :nullify
