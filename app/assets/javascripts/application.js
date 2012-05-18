@@ -12,6 +12,8 @@
 //= require underscore
 //= require backbone
 //= require backbone.localStorage
+//= require scramble_pyraminx
+//= require scramble_2x2x2
 //
 //= require .//cubemania
 //
