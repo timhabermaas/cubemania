@@ -27,9 +27,7 @@ gem 'RedCloth'
 gem 'will_paginate'
 gem 'formtastic'
 gem 'friendly_id', '~> 4.0.0'
-gem 'omniauth-facebook'
 gem 'rack', '~> 1.4.1'
-gem 'fb_graph'
 
 gem 'aws-s3', :require => 'aws/s3'
 
@@ -39,8 +37,6 @@ gem 'cancan'
 
 gem 'delayed_job_active_record'
 gem 'delayed_job_web'
-
-gem 'grape'
 
 gem 'rabl'
 
