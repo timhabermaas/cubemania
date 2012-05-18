@@ -10,16 +10,16 @@ Cubemania::Application.routes.draw do
   match "/delayed_job" => DelayedJobWeb, :anchor => false
 
   resources :posts do
-    resources :comments
+    resources :comments, :only => [:create, :destroy]
   end
 
-  resources :users do
+  resources :users, :only => [:show, :index] do
     post :block, :on => :member
   end
   resources :profiles
 
   resources :puzzles, :defaults => { :puzzle_id => default_puzzle } do
-    resources :timers, :path => "timer"
+    resources :timers, :path => "timer", :only => :index
 
     # resources :competitions do
     #   member do
@@ -31,19 +31,14 @@ Cubemania::Application.routes.draw do
 
     resources :singles
 
-    resources :records do
+    resources :records, :only => [:show, :index] do
       get :share, :on => :member
     end
   end
 
   resources :kinds
 
-  resources :authorizations
-  match '/auth/facebook/callback' => 'authorizations#create'
-  match '/auth/developer/callback' => 'authorizations#create'
-  match '/auth/failure' => 'authorizations#failure'
-
-  resource :reset_password
+  resource :reset_password, :only => [:new, :create]
 
   resource :session
   match 'login' => 'sessions#new', :as => 'login'
