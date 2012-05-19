@@ -24,6 +24,8 @@ window.Cubemania =
     Cubemania.flashView = new Cubemania.Views.Flash()
     Cubemania.flashView.setElement($("#flash"))
 
+    Cubemania.loadingView = new Cubemania.Views.LoadingIndicator()
+
     new Cubemania.Routers.Router()
     Backbone.history.start(pushState: true)
 
