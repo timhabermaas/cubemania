@@ -18,14 +18,20 @@ class Cubemania.Views.Single extends Cubemania.BaseView
 
   clickDelete: (event) ->
     event.preventDefault()
+    @displayRecordBackgroundJobHint()
     @model.destroy()
 
   clickPlus2: (event) ->
     event.preventDefault()
+    @displayRecordBackgroundJobHint()
     @model.togglePlus2()
     @model.save()
 
   clickDnf: (event) ->
     event.preventDefault()
+    @displayRecordBackgroundJobHint()
     @model.toggleDnf()
     @model.save()
+
+  displayRecordBackgroundJobHint: (single) ->
+    Cubemania.flashView.slideDown "Your records are currently being recalculated. This might take up to <strong>ten minutes</strong>."
