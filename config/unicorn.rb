@@ -1,4 +1,4 @@
-worker_processes ENV["WORKER_PROCESSES"].to_i || 1
+worker_processes ENV["WORKER_PROCESSES"] ? ENV["WORKER_PROCESSES"].to_i : 1
 timeout 30
 preload_app true
 
