@@ -8,5 +8,5 @@ class Cubemania.Views.User extends Cubemania.BaseView
 
   render: ->
     $(@el).html(@template(user: @model, maxSinglesCount: @maxSinglesCount))
-    $(@el).css("font-size", "#{@model.activity(@maxSinglesCount) + 1}em")
+    $(@el).css("font-size", "#{@model.activity(@maxSinglesCount) * 1.4 + 0.6}em")
     this
