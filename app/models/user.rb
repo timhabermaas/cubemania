@@ -19,8 +19,6 @@ class User < ActiveRecord::Base
   has_many :comments, :dependent => :nullify
   has_many :competitions, :dependent => :nullify
   has_many :shouts, :dependent => :nullify
-  #has_many :home_matches, :foreign_key => 'user_id', :class_name => 'Match', :dependent => :delete_all
-  #has_many :guest_matches, :foreign_key => 'opponent_id', :class_name => 'Match', :dependent => :delete_all
   def participances
     cols = %w(id name puzzle_id created_at repeat).map { |c| "competitions.#{c}"}.join(', ')
     Competition.joins(:averages).select("#{cols}, clocks.created_at as date").where(:user_id => self.id).group("#{cols}, clocks.created_at").all
@@ -61,13 +59,6 @@ class User < ActiveRecord::Base
 
   def self.max_singles_count
     maximum("singles_count")
-  end
-
-  def self.all_with_ranking
-    User.all(:select => 'u1.id, u1.name, u1.points, u1.averages_count, COUNT(DISTINCT u2.points) AS rank',
-             :from => 'users u1 JOIN users u2 ON (u1.points <= u2.points)',
-             :group => 'u1.id',
-             :order => 'rank')
   end
 
   def best_average(puzzle, amount)
@@ -143,38 +134,6 @@ class User < ActiveRecord::Base
     Rails.cache.fetch(slug + ".wasted_time", :expires_in => 1.day) do
       singles.not_dnf.sum("singles.time")
     end
-  end
-
-  def rank
-    User.count(:all, :conditions => ['points > ?', self.points]) + 1
-  end
-
-  def streak
-    _matches = matches.finished
-    return 0 if _matches.empty? or _matches.first.winner.nil?
-    result = (self == _matches.first.winner) ? 1 : -1
-    for match in _matches.all.from 1
-      break if match.winner.nil? or (result > 0 and match.winner != self) or (result < 0 and match.loser != self)
-      result += 1 if result > 0 and match.winner == self
-      result -= 1 if result < 0 and match.loser == self
-    end
-    result
-  end
-
-  def wins
-    matches.finished.all.select do |match|
-      match.winner == self
-    end.size
-  end
-
-  def losses
-    matches.finished.all.select do |match|
-      match.loser == self
-    end.size
-  end
-
-  def matches
-    Match.for(self)
   end
 
   def as_json(options = {}) # TODO make sure that's never called directly (currently for determining current user)

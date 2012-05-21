@@ -2,19 +2,19 @@ require "spec_helper"
 
 describe RecordPresenter do
   describe "#record_type" do
-    it "returns 'Single' if amount is 1" do
+    it "returns 'single' if amount is 1" do
       r = RecordPresenter.new(stub(:amount => 1))
-      r.record_type.should == "Single"
+      r.record_type.should == "single"
     end
 
-    it "returns 'Average of 5' if amount is 5" do
+    it "returns 'average of 5' if amount is 5" do
       r = RecordPresenter.new(stub(:amount => 5))
-      r.record_type.should == "Average of 5"
+      r.record_type.should == "average of 5"
     end
 
-    it "returns 'Average of 12' if amount is 12" do
+    it "returns 'average of 12' if amount is 12" do
       r = RecordPresenter.new(stub(:amount => 12))
-      r.record_type.should == "Average of 12"
+      r.record_type.should == "average of 12"
     end
   end
 

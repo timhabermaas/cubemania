@@ -1,3 +1,4 @@
+=begin
 require "spec_helper"
 
 describe "Competitions" do
@@ -38,3 +39,4 @@ describe "Competitions" do
     end
   end
 end
+=end

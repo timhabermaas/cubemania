@@ -22,32 +22,6 @@ class Competition < ActiveRecord::Base
     end
   end
 
-=begin
-  belongs_to :puzzle
-  belongs_to :user; attr_protected :user_id, :user
-  has_many :averages, :include => :user, :order => 'penalty, time', :dependent => :nullify do
-    def for(competition, date, ignore = true)
-      if ignore
-        find :all, :conditions => { 'clocks.created_at' => competition.range(date), 'users.ignored' => false }, :include => :user
-      else
-        find :all, :conditions => { 'clocks.created_at' => competition.range(date) }, :include => :user
-      end
-    end
-  end
-  has_many :singles, :dependent => :nullify
-  has_many :scrambles, :as => :matchable, :order => 'created_at desc, position', :dependent => :delete_all do
-    def for(competition, date)
-      find :all, :conditions => { :created_at => competition.range(date) }
-    end
-  end
-  has_many :shouts, :as => :matchable, :order => 'created_at', :dependent => :delete_all do
-    def for(competition, date)
-      find :all, :conditions => { :created_at => competition.range(date) }, :include => :user
-    end
-  end
-
-=end
-
   validates_presence_of :name, :repeat, :skill, :user_id, :puzzle_id
   validates_length_of :name, :in => 2..64
   validates_length_of :description, :maximum => 256, :allow_nil => true

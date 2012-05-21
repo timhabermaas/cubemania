@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe "Users" do
-  describe "POST /users" do
+describe "Profiles" do
+  describe "POST /profiles" do
     it "creates a new user" do
-      visit new_user_path
+      visit new_profile_path
       fill_in "Name", :with => "rowe"
       fill_in "Email", :with => "rowe@awesome.com"
       fill_in "Password", :with => "password"
@@ -17,21 +17,10 @@ describe "Users" do
     end
   end
 
-  describe "GET /users" do
-    it "lists users" do
-      create :user, :name => "ryan"
-      create :user, :name => "rowe"
-      visit users_path
-
-      page.should have_content "ryan"
-      page.should have_content "rowe"
-    end
-  end
-
   describe "PUT /users" do
     it "updates users's name" do
       user = login
-      visit user_path(user)
+      visit edit_profile_path(user)
       fill_in "Name", :with => "Peter"
       click_button "Update"
 

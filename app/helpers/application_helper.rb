@@ -134,21 +134,6 @@ module ApplicationHelper
   end
   alias_method :fs, :format_scramble
 
-  def s(number)
-    number > 0 ? "+#{number}" : number.to_s
-  end
-
-  def result_tag(result, tag='cite')
-    ("<#{tag} class=" +
-    if result < 0
-      '"negative">' + s(result)
-    elsif result > 0
-      '"positive">' + s(result)
-    else
-      '"neutral">0'
-    end + "</#{tag}>").html_safe
-  end
-
   def wca(id)
     'http://www.worldcubeassociation.org/results/p.php?i=' + id
   end
