@@ -4,7 +4,8 @@ class Cubemania.Models.Record extends Backbone.Model
     _.any(@get("singles"), (s) -> s.id == single.get("id"))
 
   getHtmlUrl: ->
-    "/puzzles/#{@get('puzzle_id')}/records/#{@get('id')}"
+    puzzle = Cubemania.puzzles.get(@get("puzzle_id"))
+    "/puzzles/#{puzzle.get("slug")}/records/#{@get('id')}"
 
   title: -> # TODO move to RecordPresenter?
     if @get("amount") == 1
