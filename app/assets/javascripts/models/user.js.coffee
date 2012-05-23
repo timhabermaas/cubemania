@@ -1,6 +1,6 @@
 class Cubemania.Models.User extends Backbone.Model
 
-  urlRoot: "/users"
+  urlRoot: "/api/users"
 
   initialize: ->
     this.records = new Cubemania.Collections.Records()

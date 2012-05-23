@@ -34,7 +34,7 @@ module ApplicationHelper
   end
 
   def using_backbone?
-    controller?(:timers, :users, :homes) or (controller?(:records) and not action?(:show))
+    controller?(:timers, :users, :homes, :backbones) or (controller?(:records) and not action?(:show))
   end
 
   def current_item

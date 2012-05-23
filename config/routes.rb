@@ -9,29 +9,24 @@ Cubemania::Application.routes.draw do
 
   match "/delayed_job" => DelayedJobWeb, :anchor => false
 
+  namespace :api do
+    resources :users
+    resources :puzzles do
+      resources :singles
+      resources :records
+    end
+  end
+
   resources :posts do
     resources :comments, :only => [:create, :destroy]
   end
 
-  resources :users, :only => [:show, :index] do
-    post :block, :on => :member
-  end
   resources :profiles
 
   resources :puzzles, :defaults => { :puzzle_id => default_puzzle } do
     resources :timers, :path => "timer", :only => :index
 
-    # resources :competitions do
-    #   member do
-    #     post :compete
-    #     get "/:date" => "competitions#show", :as => "date"
-    #   end
-    #   resources :shouts
-    # end
-
-    resources :singles
-
-    resources :records, :only => [:show, :index] do
+    resources :records, :only => [:show] do
       get :share, :on => :member
     end
   end
@@ -44,4 +39,6 @@ Cubemania::Application.routes.draw do
   match 'login' => 'sessions#new', :as => 'login'
   match 'logout' => 'sessions#destroy', :as => 'logout'
   match 'register' => 'profiles#new', :as => 'register'
+
+  match '*path' => 'backbones#show'
 end

@@ -2,7 +2,7 @@ class Cubemania.Collections.Singles extends Backbone.Collection
   model: Cubemania.Models.Single
 
   url: ->
-    "/puzzles/" + @puzzleId + "/singles"
+    "/api/puzzles/" + @puzzleId + "/singles"
 
   comparator: (single) ->
     single.get("created_at")

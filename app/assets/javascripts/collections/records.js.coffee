@@ -2,7 +2,7 @@ class Cubemania.Collections.Records extends Backbone.Collection
   model: Cubemania.Models.Record
 
   url: ->
-    "/puzzles/" + @puzzleId + "/records?page=#{@currentPage()}&type=#{@getType()}"
+    "/api/puzzles/" + @puzzleId + "/records?page=#{@currentPage()}&type=#{@getType()}"
 
   initialize: (models, options) ->
     if options?

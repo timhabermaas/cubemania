@@ -21,18 +21,10 @@ class Ability
       can :update, Competition do |competition|
         competition.user_id == user.id
       end
-      can :create, Single
-      can [:destroy, :dnf, :plus2], Single do |single|
-        single.user_id == user.id
-      end
       can :destroy, [Comment, Shout] do |comment|
         comment.user_id == user.id
       end
       cannot :read, Puzzle
-    end
-
-    if user && user.moderator?
-      can :block, User
     end
   end
 end

@@ -2,9 +2,9 @@ class Cubemania.Collections.Users extends Backbone.Collection
   model: Cubemania.Models.User
   url: ->
     if @q?
-      "/users?page=#{@currentPage()}&q=#{@q}"
+      "/api/users?page=#{@currentPage()}&q=#{@q}"
     else
-      "/users?page=#{@currentPage()}"
+      "/api/users?page=#{@currentPage()}"
 
   initialize: (models, options = {}) ->
     @page = options.page
