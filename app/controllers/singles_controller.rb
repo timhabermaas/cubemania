@@ -4,7 +4,7 @@ class SinglesController < ApplicationController
   def index
     user = User.find params[:user_id]
     puzzle = Puzzle.find params[:puzzle_id]
-    @singles = user.singles.for(puzzle).limit(params[:limit] || 200)
+    @singles = user.singles.for(puzzle).limit(params[:limit] || 150)
     respond_to do |format|
       format.json
     end
