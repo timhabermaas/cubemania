@@ -1,8 +1,10 @@
 <nav class="main">
   <ul>
-    <% navigation.each do |item| %>
-    <li<%= ' class="selected"'.html_safe if current_item?(item) %>><%= link_to item[:name], item[:path], :rel => (item[:backbone] ? "routing" : "") %></li>
-    <% end %>
+    <li class="selected"><a href="/" rel="">Home</a></li>
+    <li><a href="/puzzles/3x3x3/timer" rel="routing">Timer</a></li>
+    <li><a href="/users" rel="routing">Users</a></li>
+    <li><a href="/puzzles/3x3x3/records" rel="routing">Records</a></li>
+
     <% if logged_in? %>
     <li class="session"><%= link_to "Logout", logout_path %></li>
     <li class="session"><%= link_to "#{current_user.name}'s Profile", current_user, :rel => "routing", :data => { :user_data => current_user.to_json }, :id => "user-profile" %></li>

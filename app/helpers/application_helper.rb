@@ -1,6 +1,6 @@
 module ApplicationHelper
   def page_title
-    current_item.nil? ? params[:controller].titleize : current_item[:name]
+    params[:controller].titleize
   end
 
   def action_label(new = 'Create', edit = 'Update')
@@ -23,22 +23,8 @@ module ApplicationHelper
     end.+ " #{params[:controller].singularize.titleize}"
   end
 
-  def navigation
-    @navigation ||=
-      [
-        { :name => "Home", :path => root_path, :controller => "homes" },
-        { :name => "Timer", :path => puzzle_timers_path(Puzzle.default), :controller => "timers", :backbone => true },
-        { :name => "Users", :path => users_path, :controller => "users", :backbone => true },
-        { :name => "Records", :path => puzzle_records_path(Puzzle.default), :controller => "records", :backbone => true } # TODO add default flag to puzzle
-      ]
-  end
-
   def using_backbone?
-    controller?(:timers, :users, :homes, :backbones) or (controller?(:records) and not action?(:show))
-  end
-
-  def current_item
-    navigation.find { |item| current_item? item }
+    controller?(:homes, :backbones)
   end
 
   def kinds
