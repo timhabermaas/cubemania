@@ -1,13 +1,13 @@
 <nav class="main">
   <ul>
-    <li class="selected"><a href="/" rel="">Home</a></li>
-    <li><a href="/puzzles/3x3x3/timer" rel="routing">Timer</a></li>
-    <li><a href="/users" rel="routing">Users</a></li>
-    <li><a href="/puzzles/3x3x3/records" rel="routing">Records</a></li>
+    <li class="selected"><%= link_to "Home", root_path %></li>
+    <li><%= link_to "Timer", puzzle_timers_path, :rel => "routing" %></li>
+    <li><%= link_to "Users", users_path, :rel => "routing" %></li>
+    <li><%= link_to "Records", puzzle_records_path, :rel => "routing" %></li>
 
     <% if logged_in? %>
     <li class="session"><%= link_to "Logout", logout_path %></li>
-    <li class="session"><%= link_to "#{current_user.name}'s Profile", current_user, :rel => "routing", :data => { :user_data => current_user.to_json }, :id => "user-profile" %></li>
+    <li class="session"><%= link_to "#{current_user.name}'s Profile", user_path(current_user), :rel => "routing", :data => { :user_data => current_user.to_json }, :id => "user-profile" %></li>
     <% else %>
     <li class="session<%= ' selected' if controller? :logins %>"><%= link_to "Login", login_path %></li>
     <% end %>
