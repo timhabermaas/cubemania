@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Single do
-  let(:single) { Factory.build(:single, :user => user, :puzzle => puzzle, :time => 20000) }
+  let(:single) { build(:single, :user => user, :puzzle => puzzle, :time => 20000) }
   let(:user) { Factory(:user) }
   let(:puzzle) { Factory(:puzzle) }
 

@@ -4,7 +4,7 @@ describe User do
 
   describe "validations" do
 
-    subject { Factory.build(:user) }
+    subject { build(:user) }
 
     it { should be_valid }
 
@@ -33,13 +33,13 @@ describe User do
     end
 
     it "should have a unique email" do
-      user2 = Factory.create(:user, :email => subject.email)
+      user2 = create(:user, :email => subject.email)
       subject.should_not be_valid
       subject.should have(1).error_on(:email)
     end
 
     it "should have a unique name" do
-      user2 = Factory.create(:user, :name => subject.name)
+      user2 = create(:user, :name => subject.name)
       subject.should_not be_valid
       subject.should have(1).error_on(:name)
     end
@@ -163,7 +163,7 @@ describe User do
 
   describe ".authorize" do
     let!(:user) { create :user, :name => "charlie", :password => "password",
-                                                     :password_confirmation => "password" }
+                                                    :password_confirmation => "password" }
     it "returns user if name and password match" do
       User.authorize("charlie", "password").should == user
     end

@@ -20,7 +20,7 @@ describe Record do
     it "is set to date of last single" do
       last_single = nil
       last_single = create :single
-      record = Record.new :amount => 5, :singles => ([create :single] * 4) + [last_single]
+      record = Record.new :amount => 5, :singles => ([create(:single)] * 4) + [last_single]
       record.save
       record.set_at.should == last_single.created_at
     end
