@@ -160,4 +160,20 @@ describe User do
       user.wasted_time.should == 65
     end
   end
+
+  describe ".authorize" do
+    let!(:user) { create :user, :name => "charlie", :password => "password",
+                                                     :password_confirmation => "password" }
+    it "returns user if name and password match" do
+      User.authorize("charlie", "password").should == user
+    end
+
+    it "returns nil if there's no match" do
+      User.authorize("charlie", "test").should be_nil
+    end
+
+    it "ignores case" do
+      User.authorize("Charlie", "password").should == user
+    end
+  end
 end
