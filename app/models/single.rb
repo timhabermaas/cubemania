@@ -8,6 +8,7 @@ class Single < ActiveRecord::Base
 
   validates_presence_of :user_id, :puzzle_id, :time
   validates_inclusion_of :penalty, :in => %w( plus2 dnf ), :allow_nil => true
+  validates_length_of :comment, :maximum => 255
 
   before_validation :set_blank_penalty_to_nil
   before_destroy :destroyable_unless_belongs_to_average

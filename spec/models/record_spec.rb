@@ -49,7 +49,7 @@ describe Record do
   describe "comments" do
     let(:single_1) { create :single, :comment => "foo" }
     let(:single_2) { create :single, :comment => "muh" }
-    let(:single_3) { create :single, :comment => "too long"*100 }
+    let(:single_3) { create :single, :comment => "too long"*30 }
     let(:record) { create :record, :singles => create_list(:single, 3) + [single_1] + [single_2] }
 
     subject { record.comment }
@@ -59,8 +59,8 @@ describe Record do
     end
 
     it "cuts off too long comments without failing comment validation" do
-      record = create :record, :singles => create_list(:single, 4) + [single_3]
-      record.comment.size.should == 255
+      record = create :record, :singles => [single_1, single_2, single_3, single_1, single_2]
+      record.comment.size.should be <= 255
     end
 
     describe "#update_comment!" do
