@@ -15,7 +15,7 @@ class ProfilesController < ApplicationController
       UserMailer.welcome(@user).deliver
       flash[:notice] = "Hello #{@user.name}, you are now registered."
       self.current_user = @user
-      redirect_to @user
+      redirect_to "/users/#{@user.slug}"
     else
       render :new
     end
@@ -29,7 +29,7 @@ class ProfilesController < ApplicationController
     @user = object
 
     if @user.update_attributes params[:user], :as => current_user.role.to_sym
-      redirect_to @user, :notice => "Profile successfully updated."
+      redirect_to "/users/#{@user.slug}", :notice => "Profile successfully updated."
     else
       render :edit
     end

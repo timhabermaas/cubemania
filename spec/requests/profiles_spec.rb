@@ -24,9 +24,7 @@ describe "Profiles" do
       fill_in "Name", :with => "Peter"
       click_button "Update"
 
-      within("#user") do
-        page.should have_content "Peter"
-      end
+      expect(user.reload.name).to eq("Peter")
     end
   end
 end
