@@ -55,7 +55,7 @@ describe User do
     end
 
     let(:user) do
-      Factory(:user, :name => 'peter', :email => 'peter@doc.com', :wca => '2007JDAE01')
+      create(:user, :name => 'peter', :email => 'peter@doc.com', :wca => '2007JDAE01')
     end
 
     let(:user_hash) do
@@ -83,7 +83,7 @@ describe User do
 
   describe "password" do
     let(:user) do
-      Factory(:user)
+      create(:user)
     end
 
     it "should flash the password after save" do
@@ -99,16 +99,16 @@ describe User do
   end
 
   describe "#singles.best" do
-    let(:user) { Factory(:user) }
-    let(:puzzle) { Factory(:puzzle) }
+    let(:user) { create(:user) }
+    let(:puzzle) { create(:puzzle) }
 
     subject { user.singles.best(puzzle).time }
 
     before do
-      Factory(:single, :time => 20, :user => user, :puzzle => puzzle)
-      Factory(:single, :time => 9, :user => user, :puzzle => puzzle, :penalty => "dnf")
-      Factory(:single, :time => 10, :user => user, :puzzle => puzzle)
-      Factory(:single, :time => 30, :user => user, :puzzle => puzzle)
+      create(:single, :time => 20, :user => user, :puzzle => puzzle)
+      create(:single, :time => 9, :user => user, :puzzle => puzzle, :penalty => "dnf")
+      create(:single, :time => 10, :user => user, :puzzle => puzzle)
+      create(:single, :time => 30, :user => user, :puzzle => puzzle)
     end
 
     it { should == 10 }
@@ -116,8 +116,8 @@ describe User do
 
 
   describe "#best_average" do
-    let(:user) { Factory(:user) }
-    let(:puzzle) { Factory(:puzzle) }
+    let(:user) { create(:user) }
+    let(:puzzle) { create(:puzzle) }
 
     context "given [10, 3, 15, 4, 6, 8, 7]" do
       before :each do

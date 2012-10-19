@@ -2,8 +2,8 @@ require "spec_helper"
 
 describe Single do
   let(:single) { build(:single, :user => user, :puzzle => puzzle, :time => 20000) }
-  let(:user) { Factory(:user) }
-  let(:puzzle) { Factory(:puzzle) }
+  let(:user) { create(:user) }
+  let(:puzzle) { create(:puzzle) }
 
   subject { single }
 
