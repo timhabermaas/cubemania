@@ -41,7 +41,7 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
       ]
     )
 
-    @$("#user-tokens").tokenInput "/users.json",
+    @$("#user-tokens").tokenInput "/api/users.json",
       crossDomain: false
       theme: "facebook"
       preventDuplicates: true

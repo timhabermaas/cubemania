@@ -2,7 +2,7 @@
   <%= form.inputs do %>
     <%= form.input :content %>
   <% end %>
-  <%= form.buttons do %>
-    <%= form.commit_button 'Respond', :button_html => { :disable_with => 'Wait...' } %>
+  <%= form.actions do %>
+    <%= form.action :submit, :button_html => { :value => 'Respond', :disable_with => 'Wait...' } %>
   <% end %>
 <% end %>

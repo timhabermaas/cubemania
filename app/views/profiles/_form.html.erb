@@ -16,8 +16,8 @@
     <%= form.input :password %>
     <%= form.input :password_confirmation, :label => 'Confirmation' %>
   <% end %>
-  <%= form.buttons do %>
-    <%= form.commit_button action_label('Register') %>
+  <%= form.actions do %>
+    <%= form.action :submit, :button_html => { :value => action_label('Register') } %>
     <%= link_to 'Destroy', profile_path(@user), :confirm => 'Are you sure?', :method => :delete %>
   <% end %>
 <% end %>

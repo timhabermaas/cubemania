@@ -38,7 +38,7 @@ gem 'cancan'
 gem 'delayed_job_active_record'
 gem 'delayed_job_web'
 
-gem 'rabl'
+gem 'rabl', '0.6.10' # TODO there seems to be a bug with json roots and children
 
 gem 'unicorn'
 

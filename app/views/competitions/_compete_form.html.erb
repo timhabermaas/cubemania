@@ -11,7 +11,7 @@
       <input id="average_single_scramble" name="average[singles_attributes][][scramble]" step="any" type="hidden" value="<%= scramble %>">
     <% end %>
   <% end %>
-  <%= form.buttons do %>
-    <%= form.commit_button "Submit Average" %>
+  <%= form.actions do %>
+    <%= form.action :submit, :button_html => { :value => "Submit Average" } %>
   <% end %>
 <% end %>

@@ -3,7 +3,7 @@
     <%= form.input :title %>
     <%= form.input :content, :input_html => { :cols => 40 } %>
   <% end %>
-  <%= form.buttons do %>
-    <%= form.commit_button action_label %>
+  <%= form.actions do %>
+    <%= form.action :submit %>
   <% end %>
 <% end %>

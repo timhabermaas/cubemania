@@ -3,7 +3,7 @@
     <%= form.input :content, :as => :text, :label => false, :input_html => { :rows => 4, :cols => 40 } %>
   <% end %>
   <div class="flag"></div>
-  <%= form.buttons do %>
-    <%= form.commit_button 'Shout!', :button_html => { :disable_with => "Shout!" } %>
+  <%= form.actions do %>
+    <%= form.action :submit, :button_html => { :value => 'Shout!', :disable_with => "Shout!" } %>
   <% end %>
 <% end %>

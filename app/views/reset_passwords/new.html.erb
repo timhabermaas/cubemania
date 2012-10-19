@@ -4,7 +4,7 @@
   <%= form.inputs do %>
     <%= form.input :email %>
   <% end %>
-  <%= form.buttons do %>
-    <%= form.commit_button 'Reset', :button_html => { :disable_with => 'Please Wait...' } %>
+  <%= form.actions do %>
+    <%= form.action :submit, :button_html => { :value => 'Reset', :disable_with => 'Please Wait...' } %>
   <% end %>
 <% end %>

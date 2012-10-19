@@ -6,8 +6,8 @@
     <%= form.input :password %>
   <% end %>
 
-  <%= form.buttons do %>
-    <%= form.commit_button 'Login' %>
+  <%= form.actions do %>
+    <%= form.action :submit, :button_html => { :value => 'Login' } %>
   <% end %>
 <% end %>
 

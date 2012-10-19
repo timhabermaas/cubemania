@@ -12,7 +12,7 @@
     <%= form.input :password %>
     <%= form.input :password_confirmation, :label => 'Confirmation' %>
   <% end %>
-  <%= form.buttons do %>
-    <%= form.commit_button action_label('Register') %>
+  <%= form.actions do %>
+    <%= form.action :submit, :button_html => { :value => action_label('Register') } %>
   <% end %>
 <% end %>

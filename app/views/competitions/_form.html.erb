@@ -12,8 +12,8 @@
       <%= form.input :sticky %>
     <% end %>
   <% end %>
-  <%= form.buttons do %>
-    <%= form.commit_button action_label %>
+  <%= form.actions do %>
+    <%= form.action :submit %>
     <%= link_to 'Destroy', [@puzzle, @competition], :confirm => 'Are you sure?', :method => :delete if edit? %>
   <% end %>
 <% end %>

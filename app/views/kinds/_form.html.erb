@@ -4,8 +4,8 @@
     <%= form.input :short_name %>
     <%= form.input :css_position %>
   <% end %>
-  <%= form.buttons do %>
-    <%= form.commit_button action_label %>
+  <%= form.actions do %>
+    <%= form.action :submit %>
   <% end %>
   <%= image_tag "kinds.png" %>
 <% end %>
