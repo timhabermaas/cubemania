@@ -13,6 +13,7 @@ class Single < ActiveRecord::Base
   before_validation :set_blank_penalty_to_nil
   before_destroy :destroyable_unless_belongs_to_average
   after_update :reset_cached_record_comments
+  after_create :user_wastes_time
 
   scope :not_dnf, where("penalty IS NULL OR penalty NOT LIKE 'dnf'")
   scope :recent, lambda { |amount| order("created_at desc").limit(amount) }
@@ -62,5 +63,9 @@ private
 
   def reset_cached_record_comments
     records.each(&:update_comment!) if comment_changed?
+  end
+
+  def user_wastes_time
+    user.waste_time! self.time
   end
 end

@@ -130,10 +130,14 @@ class User < ActiveRecord::Base
     end
   end
 
-  def wasted_time
-    Rails.cache.fetch(slug + ".wasted_time", :expires_in => 1.day) do
-      singles.not_dnf.sum("singles.time")
-    end
+  def waste_time!(time) # HINT user.waste_time(with: single) looks awesome :)
+    self.wasted_time += time
+    self.save
+  end
+
+  def unwaste_time!(time)
+    self.wasted_time -= time
+    self.save
   end
 
   def as_json(options = {}) # TODO make sure that's never called directly (currently for determining current user)

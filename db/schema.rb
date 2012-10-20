@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120518190449) do
+ActiveRecord::Schema.define(:version => 20121020000945) do
 
   create_table "averages", :force => true do |t|
     t.integer  "time",                              :null => false
@@ -158,6 +159,7 @@ ActiveRecord::Schema.define(:version => 20120518190449) do
     t.boolean  "wants_emails",                      :default => false,  :null => false
     t.integer  "singles_count",                     :default => 0,      :null => false
     t.string   "slug"
+    t.integer  "wasted_time",                       :default => 0,      :null => false
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

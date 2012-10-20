@@ -54,6 +54,9 @@ group :development, :test do
   gem 'spork', '~> 0.9.0.rc'
   gem 'timecop'
   gem 'jasmine'
-  gem 'guard'
   gem 'guard-coffeescript'
+  gem 'guard-rspec'
+  gem 'guard-spork'
+  gem 'rb-fsevent'
+  gem 'growl'
 end
