@@ -117,24 +117,4 @@ describe Single do
       end
     end
   end
-
-  describe "creating leads to the user wasting time" do
-    let(:user) { create(:user, :wasted_time => 100) }
-
-    it "calls waste_time! on user" do
-      single = build(:single, :user => user, :time => 1337)
-      user.should_receive(:waste_time!).with(1337)
-      single.save
-    end
-  end
-
-  describe "destroying leads to the user unwasting time" do
-    let(:user) { create(:user, :wasted_time => 100) }
-
-    xit "calls unwaste_time! on user" do
-      single = create(:single, :user => user, :time => 1337)
-      User.any_instance.should_receive(:unwaste_time).with 1337
-      single.destroy
-    end
-  end
 end

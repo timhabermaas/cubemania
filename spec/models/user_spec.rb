@@ -161,22 +161,4 @@ describe User do
       User.authorize("Charlie", "password").should == user
     end
   end
-
-  describe "#waste_time!" do
-    let(:user) { create(:user, :wasted_time => 120) }
-
-    it "adds time to wasted_time" do
-      user.waste_time! 100
-      expect(user.reload.wasted_time).to eq(220)
-    end
-  end
-
-  describe "#unwaste_time!" do
-    let(:user) { create(:user, :wasted_time => 120) }
-
-    it "subtracts time from wasted_time" do
-      user.unwaste_time! 100
-      expect(user.reload.wasted_time).to eq(20)
-    end
-  end
 end

@@ -30,7 +30,7 @@ root.calculateDst = ->
     1
 
 # code from https://github.com/rmm5t/jquery-timeago
-root.timeInWords = (distanceMillis) ->
+root.timeInWords = (seconds) ->
   l =
     seconds: "less than a minute"
     minute: "about a minute"
@@ -45,7 +45,6 @@ root.timeInWords = (distanceMillis) ->
     years: "%d years"
     wordSeparator: " "
 
-  seconds = Math.abs(distanceMillis) / 1000
   minutes = seconds / 60
   hours = minutes / 60
   days = hours / 24
