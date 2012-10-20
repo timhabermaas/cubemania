@@ -1,4 +1,4 @@
-<div id="flash" class="flash notice"<%= " style='display:none'" unless flash[:notice] %>>
+<div id="flash" class="flash notice"<%= raw " style='display:none'" unless flash[:notice] %>>
   <p>
     <%= flash[:notice] %>
   </p>

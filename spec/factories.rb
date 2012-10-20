@@ -1,5 +1,6 @@
 FactoryGirl.define do
-  sequence(:name) { |n| "muh#{n}" }
+  sequence(:name)       { |n| "muh#{n}" }
+  sequence(:short_name) { |n| "muh#{n}" }
 
   factory :user do
     name
@@ -37,6 +38,7 @@ FactoryGirl.define do
 
   factory :kind do
     name
+    short_name
   end
 
   factory :puzzle do
