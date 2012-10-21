@@ -11,7 +11,7 @@
     <% for single, i in @singles: %>
       <tr class="<%= if i % 2 == 0 then "even" else "odd" %>">
         <td><%= i + 1 %>.</td>
-        <td><strong class="time<%= if single.dnf then 'dnf' else '' %>"><%=formatTime single.get("time") %></strong></td>
+        <td><strong class="time<%= if single.dnf() then " dnf" else "" %>"><%=formatTime single.get("time") %></strong></td>
         <td><small><%= single.get("scramble") %></small></td>
         <td><%= single.get("comment") %></td>
       </tr>
