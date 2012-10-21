@@ -24,7 +24,7 @@ module Api
       @user.block!
 
       respond_to do |format|
-        format.json { render :json => {} }
+        format.json { render :json => @user }
       end
     end
 
