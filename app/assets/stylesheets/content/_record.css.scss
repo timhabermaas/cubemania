@@ -24,14 +24,20 @@
   }
 }
 
-#singles {
-  margin-left: 0;
-  margin-bottom: 1em;
-  width: 100%;
+#singles, table.singles {
   td {
     padding: 0.5em;
     small {
       white-space: normal;
     }
   }
+}
+#singles {
+  width: 100%;
+  margin-bottom: 1em;
+}
+table.singles {
+  width: 900px;
+  margin-top: 1em;
+  margin-bottom: 2em;
 }
