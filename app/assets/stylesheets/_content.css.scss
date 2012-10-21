@@ -35,6 +35,14 @@
     font-size: 0.75em;
   }
 
+  a, a:visited {
+    color: $yellow;
+  }
+  a:hover, a:active {
+    color: #2F2F2F;
+    background-color: $yellow;
+  }
+
   .text p, .text blockquote, .text ul, .text ol {
     margin-bottom: 1em;
   }
