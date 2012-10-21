@@ -6,27 +6,8 @@ p.tabs {
   }
 }
 
-#records, #results, #singles {
+#records, #results {
   margin: 0 auto;
-  thead {
-    color: $yellow;
-  }
-  th, td {
-    text-align: center;
-    padding: 0.25em 1em;
-    vertical-align: middle;
-  }
-  td {
-    padding-left: 1em;
-  }
-  small {
-    font-size: 1em;
-    white-space: nowrap;
-  }
-  cite {
-    text-transform: capitalize;
-    white-space: nowrap;
-  }
   .rank1, .rank2, .rank3 {
     margin-bottom: 1em;
     th {
@@ -63,10 +44,9 @@ p.tabs {
       line-height: 1.75em;
     }
   }
+}
 
-  .odd {
-    background-color: $darkblue;
-  }
+#records {
   .puzzle {
     @include puzzle-image;
     margin: 0 auto;

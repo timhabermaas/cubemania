@@ -91,6 +91,32 @@
     color: rgba(255, 0, 0, 0.3);
   }
 
+  table {
+    .odd {
+      background-color: $darkblue;
+    }
+    small {
+      font-size: 1em;
+      white-space: nowrap;
+    }
+    cite {
+      text-transform: capitalize;
+      white-space: nowrap;
+    }
+  }
+  thead {
+    color: $yellow
+  }
+  th, td {
+    text-align: center;
+    padding: 0.25em 1em;
+    vertical-align: middle;
+  }
+  td {
+    padding-left: 1em;
+  }
+
+
   @import "content/home";
   @import "content/users";
   @import "content/user";
