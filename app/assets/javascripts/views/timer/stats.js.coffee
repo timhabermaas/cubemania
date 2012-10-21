@@ -1,8 +1,13 @@
 class Cubemania.Views.Stats extends Cubemania.BaseView
   template: JST["timer/stats"]
+  detailTemplate: JST["timer/average_detail"]
 
   tagName: "section"
   id: "stats"
+
+  events:
+    "click .avg5 .details": "avg5Details"
+    "click .avg12 .details": "avg12Details"
 
   initialize: (options) ->
     @singles = options.singles
@@ -23,3 +28,16 @@ class Cubemania.Views.Stats extends Cubemania.BaseView
 
     $(@el).html(@template(avg5: avg5, avg12: avg12, records: records))
     this
+
+  avg5Details: (event) ->
+    event.preventDefault()
+
+    html = @detailTemplate(singles: @singles.last(5))
+    $.fancybox({content: html})
+
+
+  avg12Details: (event) ->
+    event.preventDefault()
+
+    html = @detailTemplate(singles: @singles.last(12))
+    $.fancybox({content: html})

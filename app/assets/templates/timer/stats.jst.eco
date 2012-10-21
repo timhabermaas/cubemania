@@ -1,8 +1,17 @@
 <div class="current">
   <h4>Current</h4>
-  Average of 5: <strong class="avg5"><%=formatTime @avg5 %></strong><br />
-  Average of 12: <strong class="avg12"><%=formatTime @avg12 %></strong></small>
+  <div class="avg5">
+    Average of 5:
+    <strong class="avg5"><%=formatTime @avg5 %></strong>
+    <small><a href="#" class="details">Details</a></small><br />
+  </div>
+  <div class="avg12">
+    Average of 12:
+    <strong class="avg12"><%=formatTime @avg12 %></strong>
+    <small><a href="#" class="details">Details</a></small>
+  </div>
 </div>
+<!-- TODO: fix semantic of stats (table / dl) -->
 <div class="best">
   <h4>Best</h4>
   <% for r in @records: %>
