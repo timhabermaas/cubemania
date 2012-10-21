@@ -9,6 +9,7 @@
 //= require date
 //= require highcharts
 //= require jquery.tokeninput
+//= require jquery.fancybox
 //= require underscore
 //= require backbone
 //= require backbone.localStorage
