@@ -10,7 +10,7 @@ class RecordsController < ApplicationController
     @record = current_user.records.find params[:id]
     presenter = RecordPresenter.new(@record)
 
-    options = { :app_id => ENV["FACEBOOK_APP_KEY"],
+    options = { :app_id => ENV["FACEBOOK_APP_ID"],
                 :link => puzzle_record_url(@record.puzzle, @record),
                 :picture => @record.puzzle.combined_url,
                 :name => "#{current_user.name.capitalize} has a new #{presenter.full_puzzle_name} " + presenter.record_type + " record: " + presenter.human_time,
