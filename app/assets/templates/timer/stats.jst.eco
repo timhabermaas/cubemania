@@ -3,17 +3,12 @@
   <div class="avg5">
     Average of 5:
     <strong class="avg5"><%=formatTime @avg5 %></strong>
-    <% if @avg5?: %>
-      <small><a href="#" class="details">Details</a></small>
-    <% end %>
-    <br />
+    <small><a href="#" class="details">Details</a></small><br />
   </div>
   <div class="avg12">
     Average of 12:
     <strong class="avg12"><%=formatTime @avg12 %></strong>
-    <% if @avg12?: %>
-      <small><a href="#" class="details">Details</a></small>
-    <% end %>
+    <small><a href="#" class="details">Details</a></small>
   </div>
 </div>
 <!-- TODO: fix semantic of stats (table / dl) -->
