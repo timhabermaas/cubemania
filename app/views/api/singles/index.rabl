@@ -1,2 +1,2 @@
 collection @singles
-attributes :id, :time, :comment, :created_at, :penalty
+attributes :id, :time, :comment, :scramble, :created_at, :penalty
