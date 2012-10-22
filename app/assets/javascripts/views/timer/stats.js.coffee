@@ -5,10 +5,10 @@ class Cubemania.Views.Stats extends Cubemania.BaseView
   tagName: "section"
   id: "stats"
 
+  currentAverageCounts: [5, 12, 100]
+
   events:
-    "click .avg5 .details": "avg5Details"
-    "click .avg12 .details": "avg12Details"
-    "click .avg100 .details": "avg100Details"
+    "click .current .details": "currentAverageDetails"
 
   initialize: (options) ->
     @singles = options.singles
@@ -21,31 +21,18 @@ class Cubemania.Views.Stats extends Cubemania.BaseView
     @bindTo @records, "reset", @render, this
 
   render: ->
-    avg5 = @singles.currentAverage(5)
-    avg12 = @singles.currentAverage(12)
-    avg100 = @singles.currentAverage(100)
+    currentAverages = {}
+    currentAverages[n] = @singles.currentAverage(n) for n in @currentAverageCounts
 
     records = for i in [1, 5, 12] # TODO move to records collection?
       @records.getByAmount(i)
 
-    $(@el).html(@template(avg5: avg5, avg12: avg12, avg100: avg100, records: records))
+    $(@el).html(@template(currentAverages: currentAverages, records: records))
     this
 
-  avg5Details: (event) ->
+  currentAverageDetails: (event) ->
     event.preventDefault()
+    count = $(event.currentTarget).data("count")
 
-    html = @detailTemplate(singles: @singles.last(5))
-    $.fancybox({content: html})
-
-
-  avg12Details: (event) ->
-    event.preventDefault()
-
-    html = @detailTemplate(singles: @singles.last(12))
-    $.fancybox({content: html})
-
-  avg100Details: (event) ->
-    event.preventDefault()
-
-    html = @detailTemplate(singles: @singles.last(100))
+    html = @detailTemplate(singles: @singles.last(count))
     $.fancybox({content: html})

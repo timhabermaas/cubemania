@@ -1,20 +1,12 @@
 <div class="current">
   <h4>Current</h4>
-  <div class="avg5">
-    Average of 5:
-    <strong class="avg5"><%=formatTime @avg5 %></strong>
-    <small><a href="#" class="details">Details</a></small><br />
-  </div>
-  <div class="avg12">
-    Average of 12:
-    <strong class="avg12"><%=formatTime @avg12 %></strong>
-    <small><a href="#" class="details">Details</a></small>
-  </div>
-  <div class="avg100">
-    Average of 100:
-    <strong class="avg100"><%=formatTime @avg100 %></strong>
-    <small><a href="#" class="details">Details</a></small>
-  </div>
+  <% for count, time of @currentAverages: %>
+    <div class="avg<%= count %>">
+      Average of <%= count %>:
+      <strong><%=formatTime time %></strong>
+      <small><a href="#" class="details" data-count="<%= count %>">Details</a></small><br />
+    </div>
+  <% end %>
 </div>
 <!-- TODO: fix semantic of stats (table / dl) -->
 <div class="best">
