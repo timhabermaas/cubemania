@@ -10,6 +10,11 @@
     <strong class="avg12"><%=formatTime @avg12 %></strong>
     <small><a href="#" class="details">Details</a></small>
   </div>
+  <div class="avg100">
+    Average of 100:
+    <strong class="avg100"><%=formatTime @avg100 %></strong>
+    <small><a href="#" class="details">Details</a></small>
+  </div>
 </div>
 <!-- TODO: fix semantic of stats (table / dl) -->
 <div class="best">
