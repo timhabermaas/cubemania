@@ -11,6 +11,7 @@ class ApiAbility
       can :manage, :all
     else
       can :create, Single
+      can :grouped, Single
 
       can [:update, :destroy], Single do |s|
         s.user_id == user.id

@@ -11,6 +11,15 @@ module Api
       end
     end
 
+    def grouped
+      user = User.find params[:user_id]
+      puzzle = Puzzle.find params[:puzzle_id]
+      @singles = user.singles.where(:puzzle_id => puzzle.id).grouped(by: params[:by]).order("created_at desc")
+      respond_to do |format|
+        format.json
+      end
+    end
+
     def create
       puzzle = Puzzle.find params[:puzzle_id]
       single = current_user.singles.build(params[:single].merge(:puzzle_id => puzzle.id))

@@ -39,6 +39,44 @@ describe Single do
     average.singles.count.should == 5
   end
 
+  describe "scopes" do
+    describe ".grouped" do
+      let(:october_4) { DateTime.new(2012, 10, 4) }
+      let(:october_20) { DateTime.new(2012, 10, 20) }
+      let(:november_2) { DateTime.new(2012, 11, 2) }
+      let(:december_3) { DateTime.new(2012, 12, 3) }
+
+      before :each do
+        create :single, :time => 1000, :created_at => october_4
+        create :single, :time => 2000, :created_at => october_20
+        create :single, :time => 3000, :created_at => october_20
+        create :single, :time => 5000, :created_at => november_2
+      end
+
+      subject { Single.grouped(by: :month).sort_by { |s| s.created_at } }
+
+      context "by: month" do
+        it "merges singles which were done in the same month" do
+          expect(subject).to have(2).items
+          expect(subject[0].time).to eq(2000)
+          expect(subject[1].time).to eq(5000)
+        end
+
+        context "ignores dnf solves" do
+          before(:each) { create :dnf_single, :created_at => december_3 }
+
+          it { should have(2).items }
+        end
+      end
+
+      context "by: invalid_interval" do
+        it "raises ArgumentError" do
+          expect { Single.grouped(by: :invalid_interval) }.to raise_error(ArgumentError)
+        end
+      end
+    end
+  end
+
   describe "updating comments" do
     let(:record) { double :record }
 

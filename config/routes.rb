@@ -11,10 +11,12 @@ Cubemania::Application.routes.draw do
 
   namespace :api do
     resources :users do
-      post "block", :on => :member
+      post :block, :on => :member
     end
     resources :puzzles do
-      resources :singles
+      resources :singles do
+        get :grouped, :on => :collection
+      end
       resources :records
     end
   end
