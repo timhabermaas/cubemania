@@ -1,2 +1,2 @@
 collection @singles
-attributes :id, :time, :created_at
+attributes :time, :created_at, :created_at_timestamp

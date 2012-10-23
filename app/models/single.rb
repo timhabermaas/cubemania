@@ -26,6 +26,10 @@ class Single < ActiveRecord::Base
 
   humanize :time => :time
 
+  def created_at_timestamp
+    self.created_at.to_i
+  end
+
   def toggle_dnf!
     if self.dnf?
       self.update_attribute :penalty, nil
