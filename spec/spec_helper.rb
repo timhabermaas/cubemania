@@ -4,6 +4,7 @@ Spork.prefork do
   ENV["RAILS_ENV"] ||= "test"
   require File.expand_path("../../config/environment", __FILE__)
   require "rspec/rails"
+  require "rspec/autorun"
 
   Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
@@ -11,6 +12,8 @@ Spork.prefork do
     config.mock_with :rspec
 
     config.use_transactional_fixtures = true
+
+    config.order = "random"
 
     config.include FactoryGirl::Syntax::Methods
     config.include Capybara::SessionHelper
@@ -22,7 +25,4 @@ Spork.prefork do
 end
 
 Spork.each_run do
-  FactoryGirl.factories.clear
-  FactoryGirl.reload
-  load File.expand_path("../../config/routes.rb", __FILE__)
 end
