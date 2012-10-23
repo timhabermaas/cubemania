@@ -1,4 +1,4 @@
-class Cubemania.Views.Tabs extends Backbone.View
+class Cubemania.Views.Tabs extends Cubemania.BaseView
   tagName: "p"
   className: "tabs"
 
@@ -12,10 +12,10 @@ class Cubemania.Views.Tabs extends Backbone.View
     @$("a.#{clickedTab.className}").addClass("selected")
     clickedTab.callback() if clickedTab.callback
 
-  initialize: (title, tabs, selectedIndex) ->
-    @title = title
-    @tabs = tabs
-    @selectedIndex = selectedIndex
+  initialize: (options) ->
+    @title = options.title
+    @tabs = options.tabs
+    @selectedIndex = options.selectedIndex
 
   link: (tab, selected) ->
     "<a href='#' class='#{tab.className}" + (if selected then " selected" else "") + "'>#{tab.name}</a>"
@@ -25,4 +25,4 @@ class Cubemania.Views.Tabs extends Backbone.View
     $(@el).html("")
     links = (@link(tab, index == @selectedIndex) for tab, index in @tabs)
     el.append @title + " " + links.join(" ")
-    @el
+    this
