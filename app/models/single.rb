@@ -19,7 +19,7 @@ class Single < ActiveRecord::Base
   scope :for_user_and_puzzle, lambda { |user, puzzle| where(:user_id => user.id, :puzzle_id => puzzle.id) }
   scope :last_24_hours, lambda { where "created_at > ?", 24.hours.ago }
   scope :grouped, lambda { |options|
-    raise ArgumentError, "by must be :month" if options[:by].to_sym != :month
+    raise ArgumentError, "by must be either :day, :week or :month" unless [:day, :week, :month].include? options[:by].to_sym
     field = "date_trunc('#{options[:by]}', created_at)"
     not_dnf.group(field).select(field + " as created_at, AVG(time) as time")
   }

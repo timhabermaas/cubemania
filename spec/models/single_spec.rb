@@ -42,31 +42,51 @@ describe Single do
   describe "scopes" do
     describe ".grouped" do
       let(:october_4) { DateTime.new(2012, 10, 4) }
+      let(:october_5) { DateTime.new(2012, 10, 5) }
       let(:october_20) { DateTime.new(2012, 10, 20) }
       let(:november_2) { DateTime.new(2012, 11, 2) }
       let(:december_3) { DateTime.new(2012, 12, 3) }
 
       before :each do
         create :single, :time => 1000, :created_at => october_4
-        create :single, :time => 2000, :created_at => october_20
+        create :single, :time => 4000, :created_at => october_5
+        create :single, :time => 4000, :created_at => october_20
         create :single, :time => 3000, :created_at => october_20
         create :single, :time => 5000, :created_at => november_2
       end
 
-      subject { Single.grouped(by: :month).sort_by { |s| s.created_at } }
+      context "by: day" do
+        subject { Single.grouped(by: :day).sort_by { |s| s.created_at } }
+
+        it "merges singles which were done on the same day" do
+          expect(subject).to have(4).items
+          expect(subject[2].time).to eq(3500)
+        end
+      end
+
+      context "by: week" do
+        subject { Single.grouped(by: :week).sort_by { |s| s.created_at } }
+
+        it "merges singles which were done in the same week" do
+          expect(subject).to have(3).items
+        end
+      end
 
       context "by: month" do
+        subject { Single.grouped(by: :month).sort_by { |s| s.created_at } }
+
         it "merges singles which were done in the same month" do
           expect(subject).to have(2).items
-          expect(subject[0].time).to eq(2000)
+          expect(subject[0].time).to eq(3000)
           expect(subject[1].time).to eq(5000)
         end
+      end
 
-        context "ignores dnf solves" do
-          before(:each) { create :dnf_single, :created_at => december_3 }
+      describe "ignores dnf solves" do
+        subject { Single.grouped(by: :month).all }
+        before(:each) { create :dnf_single, :created_at => december_3 }
 
-          it { should have(2).items }
-        end
+        it { should have(2).items }
       end
 
       context "by: invalid_interval" do
