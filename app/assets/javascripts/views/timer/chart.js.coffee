@@ -8,6 +8,8 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
 
   # TODO reset zoom
   # TODO duplicated code
+  # TODO cancel fetching of json when user switches between intervals fast enough
+  #      or add local cache
   switchToDay: =>
     @switchTo "day"
 
