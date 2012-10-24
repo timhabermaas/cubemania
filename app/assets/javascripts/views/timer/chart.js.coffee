@@ -6,7 +6,7 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
     'rgba(81, 115, 151, 0.8)' # blue
   ]
 
-  # TODO zoom
+  # TODO reset zoom
   # TODO duplicated code
   switchToDay: =>
     @switchTo "day"
