@@ -112,7 +112,7 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
   addCurrentUserToChart: ->
     @addUserToChart Cubemania.currentUser.get("id"), Cubemania.currentUser.get("name")
 
-  addUserToChart: (id, name, color = Cubemania.Views.Chart.COLORS[0]) ->#'rgba(223, 83, 83, 0.8)') ->
+  addUserToChart: (id, name, color = Cubemania.Views.Chart.COLORS[0]) ->
     puzzleId = Cubemania.currentPuzzle.puzzle.get("id")
     $.getJSON "/api/puzzles/#{puzzleId}/singles/grouped.json?by=#{@groupBy}&user_id=#{id}", (data) =>
       data = @generateChartDataFromApiData data
