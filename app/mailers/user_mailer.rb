@@ -3,7 +3,7 @@ class UserMailer < ActionMailer::Base
 
   def welcome(user) # TODO add more text
     @user = user
-    mail :to => "#{user.name} <#{user.email}>", :subject => 'Welcome to Cubemania'
+    mail :to => "#{user.name} <#{user.email}>", :subject => 'Welcome to Cubemania!'
   end
 
   def reset_password(user, password)
