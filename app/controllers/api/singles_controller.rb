@@ -5,7 +5,7 @@ module Api
     before_filter :fetch_user, :only => [:index, :grouped]
     before_filter :fetch_puzzle
     caches_action :grouped, :cache_path => lambda { |c| c.params },
-                            :expires_in => 10.minutes
+                            :expires_in => 1.minutes
 
     def index
       @singles = @user.singles.for(@puzzle).limit(params[:limit] || 150)
