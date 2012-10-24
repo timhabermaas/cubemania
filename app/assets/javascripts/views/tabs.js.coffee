@@ -7,10 +7,12 @@ class Cubemania.Views.Tabs extends Cubemania.BaseView
 
   tabClicked: (event) =>
     event.preventDefault()
-    clickedTab =_.find @tabs, (t) -> t.className == event.currentTarget.className
-    @$("a").removeClass("selected")
-    @$("a.#{clickedTab.className}").addClass("selected")
-    clickedTab.callback() if clickedTab.callback
+    target = event.currentTarget
+    unless $(target).hasClass("selected")
+      clickedTab =_.find @tabs, (t) -> t.className == target.className
+      @$("a").removeClass("selected")
+      @$("a.#{clickedTab.className}").addClass("selected")
+      clickedTab.callback() if clickedTab.callback
 
   initialize: (options) ->
     @title = options.title
