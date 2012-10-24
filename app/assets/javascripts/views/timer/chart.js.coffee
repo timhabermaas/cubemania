@@ -54,6 +54,7 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
       chart:
         renderTo: @$("#chart")[0]
         type: "scatter"
+        zoomType: "x"
       title:
         text: "Your cubing progress in #{Cubemania.currentPuzzle.getFullName()}"
       subtitle:
