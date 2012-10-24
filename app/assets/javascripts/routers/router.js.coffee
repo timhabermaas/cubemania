@@ -20,9 +20,6 @@ class Cubemania.Routers.Router extends Backbone.Router
 
     view = Cubemania.viewManager.newView(Cubemania.Views.TimerIndex, {collection: singles, records: records})
 
-    unless Cubemania.currentUser.present()
-      Cubemania.flashView.show("You're currently not logged in!<br /> <a href='/login'>Login</a> or <a href='/register'>register</a> to save your times permanently.")
-
     $("#backbone-container").html(view.render().el)
 
   recordsIndex: (puzzle_id) ->

@@ -34,4 +34,5 @@ class Cubemania.Views.Single extends Cubemania.BaseView
     @model.save()
 
   displayRecordBackgroundJobHint: (single) ->
-    Cubemania.flashView.slideDown "Your records are currently being recalculated. This might take up to <strong>ten minutes</strong>."
+    if Cubemania.currentUser.present()
+      Cubemania.flashView.slideDown "Your records are currently being recalculated. This might take up to <strong>ten minutes</strong>."

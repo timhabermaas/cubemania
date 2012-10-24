@@ -98,7 +98,11 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
       onDelete: (item) =>
         @removeUserFromChart(item.id)
 
-    @addCurrentUserToChart()
+    if Cubemania.currentUser.present()
+      @addCurrentUserToChart()
+    else
+      $(@el).html("<p class='suggestion'>You're currently not logged in!<br /> <a href='/login'>Login</a> or <a href='/register'>register</a> to save your times permanently. </p>")
+
     this
 
   subtitle: (data = []) ->
