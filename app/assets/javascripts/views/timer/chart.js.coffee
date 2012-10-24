@@ -19,13 +19,11 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
 
   switchTo: (interval) ->
     @groupBy = interval
-    @removeAllData()
-    @addCurrentUserToChart()
+    @updateDataForUser(id, interval) for id in @userIdsInChart()
 
-  removeAllData: ->
-    @$("#user-tokens").tokenInput "clear"
-    @$("#user-tokens").blur()
-    @chart.series[0].remove()
+  userIdsInChart: ->
+    ids = _.pluck @$("#user-tokens").tokenInput("get"), "id"
+    ids.concat [Cubemania.currentUser.get("id")]
 
   initialize: ->
     @groupBy = "week"
@@ -101,6 +99,7 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
         @addUserToChart item.id, item.name, Cubemania.Views.Chart.COLORS[1] # TODO cycle colors
       onDelete: (item) =>
         @removeUserFromChart(item.id)
+
     @addCurrentUserToChart()
 
     this
@@ -116,15 +115,24 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
   addCurrentUserToChart: ->
     @addUserToChart Cubemania.currentUser.get("id"), Cubemania.currentUser.get("name")
 
+  fetchDataForChart: (puzzleId, userId, interval, callback) ->
+    $.getJSON "/api/puzzles/#{puzzleId}/singles/grouped.json?by=#{@groupBy}&user_id=#{userId}", (data) =>
+      callback(@generateChartDataFromApiData data)
+
   addUserToChart: (id, name, color = Cubemania.Views.Chart.COLORS[0]) ->
     puzzleId = Cubemania.currentPuzzle.puzzle.get("id")
-    $.getJSON "/api/puzzles/#{puzzleId}/singles/grouped.json?by=#{@groupBy}&user_id=#{id}", (data) =>
-      data = @generateChartDataFromApiData data
+    @fetchDataForChart puzzleId, id, @groupBy, (data) =>
       @chart.addSeries
         id: id
         name: name
         color: color
         data: data
+      @chart.setTitle({}, { text: @subtitle(data) }) # TODO duplication
+
+  updateDataForUser: (id, interval) ->
+    puzzleId = Cubemania.currentPuzzle.puzzle.get("id")
+    @fetchDataForChart puzzleId, id, interval, (data) =>
+      @chart.get(id).setData(data)
       @chart.setTitle({}, { text: @subtitle(data) })
       # TODO set tooltip according to groupBy
 
