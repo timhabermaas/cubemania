@@ -1,6 +1,6 @@
 module ApplicationHelper
   def page_title
-    params[:controller].titleize
+    params[:controller].titleize.singularize
   end
 
   def action_label(new = 'Create', edit = 'Update')
