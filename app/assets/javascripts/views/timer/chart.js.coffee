@@ -47,6 +47,10 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
       selectedIndex: 1
 
   render: ->
+    unless Cubemania.currentUser.present()
+      $(@el).html("<p class='suggestion'>You're currently not logged in!<br /> <a href='/login'>Login</a> or <a href='/register'>register</a> to save your times permanently. </p>")
+      return this
+
     $(@el).html(@template())
     @$("#chart").after(@tabs.render().el)
 
@@ -97,11 +101,7 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
         @addUserToChart item.id, item.name, Cubemania.Views.Chart.COLORS[1] # TODO cycle colors
       onDelete: (item) =>
         @removeUserFromChart(item.id)
-
-    if Cubemania.currentUser.present()
-      @addCurrentUserToChart()
-    else
-      $(@el).html("<p class='suggestion'>You're currently not logged in!<br /> <a href='/login'>Login</a> or <a href='/register'>register</a> to save your times permanently. </p>")
+    @addCurrentUserToChart()
 
     this
 
