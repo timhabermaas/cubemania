@@ -1,4 +1,5 @@
 # TODO move to app/abilities
+# TODO secure more; not logged in users shouldn't be able to list singles
 
 class ApiAbility
   include CanCan::Ability
