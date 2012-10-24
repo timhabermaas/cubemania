@@ -1,24 +1,26 @@
 class Cubemania.Views.Chart extends Cubemania.BaseView
   template: JST["timer/chart"]
 
+  @COLORS: [
+    'rgba(223, 83, 83, 0.8)', # red
+    'rgba(81, 115, 151, 0.8)' # blue
+  ]
+
+  # TODO zoom
   # TODO duplicated code
   switchToDay: =>
-    @groupBy = "day"
-    @removeAllData()
-    @fetchData(Cubemania.currentPuzzle.puzzle.get("id"),
-      Cubemania.currentUser.get("id"))
+    @switchTo "day"
 
   switchToWeek: =>
-    @groupBy = "week"
-    @removeAllData()
-    @fetchData(Cubemania.currentPuzzle.puzzle.get("id"),
-      Cubemania.currentUser.get("id"))
+    @switchTo "week"
 
   switchToMonth: =>
-    @groupBy = "month"
+    @switchTo "month"
+
+  switchTo: (interval) ->
+    @groupBy = interval
     @removeAllData()
-    @fetchData(Cubemania.currentPuzzle.puzzle.get("id"),
-      Cubemania.currentUser.get("id"))
+    @addCurrentUserToChart()
 
   removeAllData: ->
     @$("#user-tokens").tokenInput "clear"
@@ -44,11 +46,6 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
       ]
       selectedIndex: 1
 
-  fetchData: (puzzleId, userId) ->
-    $.getJSON "/api/puzzles/#{puzzleId}/singles/grouped.json?by=#{@groupBy}&user_id=#{userId}", (data) =>
-      data = _.map data, (single) -> [single.created_at_timestamp * 1000, single.time]
-      @addDataToChart data
-
   render: ->
     $(@el).html(@template())
     @$("#chart").after(@tabs.render().el)
@@ -67,7 +64,7 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
       plotOptions:
         scatter:
           marker:
-            radius: 5
+            radius: 7
             symbol: "circle"
             states:
               hover:
@@ -96,52 +93,38 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
         _.filter(results, (r) -> r.id != Cubemania.currentUser.get("id")) # remove self from list
       hintText: "Compare with..."
       onAdd: (item) =>
-        @addUserToChart item.id, item.name
+        @addUserToChart item.id, item.name, Cubemania.Views.Chart.COLORS[1] # TODO cycle colors
       onDelete: (item) =>
         @removeUserFromChart(item.id)
 
-
-    puzzleId = Cubemania.currentPuzzle.puzzle.get("id")
-    userId = Cubemania.currentUser.get("id")
-    @fetchData(puzzleId, userId)
+    @addCurrentUserToChart()
     this
-
-  chartDataFromSingle: (single, setColor = false) -> # TODO make color setable / cycle color
-    if setColor
-      {
-        id: single.cid
-        y: single.get("time")
-        fillColor: if single.dnf() then "rgba(69, 114, 167, 0.5)" else "rgba(69, 114, 167, 1)"
-        single: single # TODO memory?
-      }
-    else
-      {
-        id: single.cid
-        y: single.get("time")
-        single: single
-      }
 
   subtitle: (data = []) ->
     if data.length > 0
-      "from #{formatDate(new Date(data[data.length - 1][0]))} to today"
+      from = formatDate(new Date(data[data.length - 1][0]))
+      to = formatDate(new Date(data[0][0]))
+      "from #{from} to #{to}"
     else
-      "from ? to today"
+      "from ? to ?"
 
-  addDataToChart: (data) ->
-    @chart.addSeries
-      id: Cubemania.currentUser.get("id")
-      name: Cubemania.currentUser.get("name")
-      color: 'rgba(223, 83, 83, 0.8)'
-      data: data
-    @chart.setTitle({}, {text: @subtitle(data)})
+  addCurrentUserToChart: ->
+    @addUserToChart Cubemania.currentUser.get("id"), Cubemania.currentUser.get("name")
 
-  addUserToChart: (id, name) ->
-    singles = new Cubemania.Collections.Singles([], puzzleId: Cubemania.currentPuzzle.puzzle.get("id"))
-    singles.fetch({data: {user_id: id}, async: false}) # TODO make asynchronous by and add singles on success callback
-    @chart.addSeries
-      id: id
-      name: name
-      data: @chartDataFromSingle(s) for s in singles.models
+  addUserToChart: (id, name, color = Cubemania.Views.Chart.COLORS[0]) ->#'rgba(223, 83, 83, 0.8)') ->
+    puzzleId = Cubemania.currentPuzzle.puzzle.get("id")
+    $.getJSON "/api/puzzles/#{puzzleId}/singles/grouped.json?by=#{@groupBy}&user_id=#{id}", (data) =>
+      data = @generateChartDataFromApiData data
+      @chart.addSeries
+        id: id
+        name: name
+        color: color
+        data: data
+      @chart.setTitle({}, { text: @subtitle(data) })
+      # TODO set tooltip according to groupBy
+
+  generateChartDataFromApiData: (apiData) ->
+    _.map apiData, (single) -> [single.created_at_timestamp * 1000, single.time]
 
   removeUserFromChart: (id) ->
     @chart.get(id).remove()
