@@ -1,5 +1,5 @@
 module Api
-  class UsersController < BaseController
+  class UsersController < ApiController
     def index
       @users = User.order('singles_count desc').paginate(:page => params[:page], :per_page => 200)
       @users = @users.where('lower(name) LIKE ?', "%#{params[:q].downcase}%") if params[:q]

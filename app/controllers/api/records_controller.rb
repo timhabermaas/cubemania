@@ -1,5 +1,5 @@
 module Api
-  class RecordsController < BaseController
+  class RecordsController < ApiController
     def index
       @puzzle = Puzzle.find params[:puzzle_id]
 

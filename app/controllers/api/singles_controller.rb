@@ -1,5 +1,5 @@
 module Api
-  class SinglesController < BaseController
+  class SinglesController < ApiController
     respond_to :json
 
     def index
