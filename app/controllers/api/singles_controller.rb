@@ -1,8 +1,11 @@
 module Api
+  # TODO get rid of instance variables by using cached instance methods
   class SinglesController < ApiController
     respond_to :json
     before_filter :fetch_user, :only => [:index, :grouped]
     before_filter :fetch_puzzle
+    caches_action :grouped, :cache_path => lambda { |c| c.params },
+                            :expires_in => 10.minutes
 
     def index
       @singles = @user.singles.for(@puzzle).limit(params[:limit] || 150)
@@ -64,5 +67,10 @@ module Api
     def fetch_puzzle
       @puzzle = Puzzle.find params[:puzzle_id]
     end
+=begin
+    def grouped_cache_path(user, puzzle, by)
+      ["grouped", user.id, puzzle.id, by].join("/")
+    end
+=end
   end
 end
