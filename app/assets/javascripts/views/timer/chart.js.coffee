@@ -31,11 +31,11 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
       title: "Group by: "
       tabs: [
         name: "Day"
-        className: "Day"
+        className: "day"
         callback: @switchToDay
       ,
         name: "Week"
-        className: "Week"
+        className: "week"
         callback: @switchToWeek
       ,
         name: "Month"
@@ -58,12 +58,12 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
         renderTo: @$("#chart")[0]
         type: "scatter"
       title:
-        text: "Cubing progress for #{Cubemania.currentPuzzle.getFullName()}"
+        text: "Your cubing progress in #{Cubemania.currentPuzzle.getFullName()}"
       subtitle:
-        text: "#{formatDate(new Date(2010, 2, 4))} - Today"
+        text: @subtitle()
       tooltip:
         formatter: ->
-          "#{formatDate(this.x)}<br/>Average: #{formatTime(this.y)}"
+          "#{formatDate(this.x)}<br/>Mean: #{formatTime(this.y)}"
       plotOptions:
         scatter:
           marker:
@@ -121,12 +121,19 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
         single: single
       }
 
+  subtitle: (data = []) ->
+    if data.length > 0
+      "from #{formatDate(new Date(data[data.length - 1][0]))} to today"
+    else
+      "from ? to today"
+
   addDataToChart: (data) ->
     @chart.addSeries
       id: Cubemania.currentUser.get("id")
       name: Cubemania.currentUser.get("name")
       color: 'rgba(223, 83, 83, 0.8)'
       data: data
+    @chart.setTitle({}, {text: @subtitle(data)})
 
   addUserToChart: (id, name) ->
     singles = new Cubemania.Collections.Singles([], puzzleId: Cubemania.currentPuzzle.puzzle.get("id"))
