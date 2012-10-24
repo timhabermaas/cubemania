@@ -28,7 +28,7 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
     ids.concat [Cubemania.currentUser.get("id")]
 
   initialize: ->
-    @groupBy = "week"
+    @groupBy = "month"
     @tabs = @addSubview new Cubemania.Views.Tabs
       title: "Group by:"
       tabs: [
@@ -44,7 +44,7 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
         className: "month"
         callback: @switchToMonth
       ]
-      selectedIndex: 1
+      selectedIndex: 2
 
   render: ->
     unless Cubemania.currentUser.present()
