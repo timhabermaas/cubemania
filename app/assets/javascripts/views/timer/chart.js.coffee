@@ -30,7 +30,7 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
   initialize: ->
     @groupBy = "week"
     @tabs = @addSubview new Cubemania.Views.Tabs
-      title: "Group by: "
+      title: "Group by:"
       tabs: [
         name: "Day"
         className: "day"
