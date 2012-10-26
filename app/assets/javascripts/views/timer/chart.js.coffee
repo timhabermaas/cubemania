@@ -52,7 +52,7 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
       return this
 
     $(@el).html(@template())
-    @$("#chart").after(@tabs.render().el)
+    @$("p.help").after(@tabs.render().el)
 
     @chart = new Highcharts.Chart(
       chart:

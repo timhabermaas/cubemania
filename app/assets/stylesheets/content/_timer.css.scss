@@ -40,7 +40,7 @@
         position: relative;
         box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
         a {
-          color: $grey;
+          color: #212121;
         }
         a:hover {
           text-decoration: underline;
@@ -110,7 +110,7 @@
 #times {
   #chart-container {
     #chart {
-      margin-bottom: 0.5em;
+      margin-bottom: 0.25em;
     }
     width: 602px;
     float: left;

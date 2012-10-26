@@ -31,7 +31,7 @@
     font-weight: bold;
   }
   small {
-    color: #B5CADF;
+    color: $greyblue;
     font-size: 0.75em;
   }
 
@@ -56,6 +56,12 @@
   }
   .challenge {
     margin: 1em 0;
+  }
+  .help {
+    font-size: 0.75em;
+    color: $greyblue;
+    text-align: center;
+    margin-bottom: 0.75em;
   }
 
   .pagination {
