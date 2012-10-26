@@ -145,4 +145,4 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
     @chart.get(id).remove()
 
   onDispose: ->
-    @chart.destroy()
+    @chart.destroy() if @chart?
