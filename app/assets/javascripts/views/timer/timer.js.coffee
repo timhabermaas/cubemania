@@ -46,6 +46,7 @@ class Cubemania.Views.Timer extends Cubemania.BaseView
         if @timer.timeSinceStopped() > 2000
           @timer.start()
           Cubemania.flashView.slideUp()
+          @$("p.help").hide()
         @intervalId = setInterval(@updateDisplay, 23)
       event.preventDefault()
 
@@ -65,7 +66,7 @@ class Cubemania.Views.Timer extends Cubemania.BaseView
   toggleManual: (event) ->
     event.preventDefault()
     @$("#new_single").toggle()
-    @$(".time").toggle()
+    @$(".time-container").toggle()
     @timerEnabled = !@timerEnabled
     ct = event.currentTarget
     @$(ct).toggleText("Changed your mind?", "Set times manually")
