@@ -4,8 +4,8 @@ class Cubemania.Views.Timer extends Cubemania.BaseView
   events:
     "click a.toggle": "toggleManual"
     "submit #new_single": "submitSingle"
-    "touchstart": "stopTimer"
-    "touchend": "startTimer"
+    "touchstart .time-container": "stopTimer"
+    "touchend .time-container": "startTimer"
     "submit #add_comment": "addComment"
     "click a.add_comment": "toggleComment"
     "focus div.add_comment textarea": "disableTimer"
