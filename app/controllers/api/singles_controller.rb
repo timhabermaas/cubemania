@@ -2,6 +2,7 @@ module Api
   # TODO get rid of instance variables by using cached instance methods
   class SinglesController < ApiController
     respond_to :json
+
     before_filter :fetch_user, :only => [:index, :grouped]
     before_filter :fetch_puzzle
     caches_action :grouped, :cache_path => lambda { |c| c.params },
@@ -9,17 +10,12 @@ module Api
 
     def index
       @singles = @user.singles.for(@puzzle).limit(params[:limit] || 150)
-      respond_to do |format|
-        format.json
-      end
+      respond_with @singles
     end
 
     def grouped
       @singles = @user.singles.where(:puzzle_id => @puzzle.id).grouped(by: params[:by]).order("created_at desc")
-
-      respond_to do |format|
-        format.json
-      end
+      respond_with @singles
     end
 
     def create
