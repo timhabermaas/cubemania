@@ -7,9 +7,5 @@
 </ul>
 
 <div class="pagination">
-<% if params[:page] %>
-  <%= link_to "Show more", users_url(:page => params[:page].to_i + 1) %>
-<% else %>
-  <%= link_to "Show more", users_url(:page => 2) %>
-<% end %>
+<%= link_to "Show more", users_url(:page => next_page), :remote => true %>
 </div>

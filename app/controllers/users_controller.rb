@@ -7,6 +7,10 @@ class UsersController < ApplicationController
       @users = @users.where('lower(name) LIKE ?', "%#{params[:q].downcase}%")
     end
     @max_singles_count = User.order("singles_count desc").first.singles_count
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   def show

@@ -126,6 +126,10 @@ module ApplicationHelper
     object = object.paginate :page => params[:page], :per_page => per_page
   end
 
+  def next_page
+    params[:page].present? ? params[:page].to_i + 1 : 2
+  end
+
   def possessive(name)
     name + ('s' == name[-1,1] ? "'" : "'s")
   end

@@ -1,0 +1,2 @@
+$("#users").append("<%= escape_javascript render @users %>");
+$(".pagination a").attr("href", "<%= users_url(:page => next_page) %>");
