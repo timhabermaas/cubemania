@@ -1,1 +1,31 @@
-<nav id="subnavigation" data-kinds="<%= kinds.to_json(:include => :puzzles) %>"></nav>
+<nav id="subnavigation" data-kinds="<%= kinds.to_json(:include => :puzzles) %>">
+  <div id="puzzles">
+    <ul style="width: <%= kinds.length * 100 %>%">
+    <% for kind in kinds %>
+      <li style="width: <%= 100 / kinds.length %>%">
+        <ul class="puzzles">
+        <% for puzzle in kind.puzzles %>
+          <li data-id="<%= puzzle.id %>">
+            <a href="#">
+              <span class="puzzle pos<%= puzzle.css_position %>">
+                <span class="kind pos<%= kind.css_position %>"></span>
+              </span>
+              <span class="name"><%= puzzle.name %></span>
+            </a>
+          </li>
+        <% end %>
+        </ul>
+      </li>
+    <% end %>
+    </ul>
+  </div>
+  <div id="kinds">
+    <ul class="center">
+    <% for kind, index in kinds %>
+      <li style="width: <%= 100 / kinds.size %>%" data-id="<%= kind.id %>" data-index="<%= index %>">
+        <a href="#"><%= kind.name %></a>
+      </li>
+    <% end %>
+    </ul>
+  </div>
+</nav>

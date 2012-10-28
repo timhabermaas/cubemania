@@ -47,6 +47,10 @@ module ApplicationHelper
     names.include? params[:action].to_sym
   end
 
+  def profile_page?
+    current_page? user_path(current_user)
+  end
+
   def edit?
     action? :edit, :update, :show
   end
