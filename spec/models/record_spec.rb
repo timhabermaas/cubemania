@@ -46,6 +46,22 @@ describe Record do
     end
   end
 
+  describe ".grouped_by_puzzle_and_amount" do
+    let(:puzzle_1) { create :puzzle }
+    let(:puzzle_2) { create :puzzle }
+    let!(:record_1) { create :record, :amount => 5, :puzzle => puzzle_1 }
+    let!(:record_2) { create :record, :amount => 5, :puzzle => puzzle_2 }
+    let!(:record_3) { create :record, :amount => 12, :puzzle => puzzle_2 }
+
+    let(:records) { Record.grouped_by_puzzle_and_amount }
+
+    it "groups all records by puzzle and then by amount" do
+      expect(records[puzzle_1][5]).to eq(record_1)
+      expect(records[puzzle_2][5]).to eq(record_2)
+      expect(records[puzzle_2][12]).to eq(record_3)
+    end
+  end
+
   describe "comments" do
     let(:single_1) { create :single, :comment => "foo" }
     let(:single_2) { create :single, :comment => "muh" }

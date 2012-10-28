@@ -100,6 +100,7 @@ module ApplicationHelper
   end
 
   def dt(datetime)
+    return "" if datetime.nil? # TODO move to presenter class
     datetime.strftime '%B %d, %Y at %H:%M'
   end
 

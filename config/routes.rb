@@ -27,6 +27,8 @@ Cubemania::Application.routes.draw do
 
   resources :profiles
 
+  resources :users, :only => [:show]
+
   resources :puzzles, :defaults => { :puzzle_id => default_puzzle } do
     resources :records, :only => [:show] do
       get :share, :on => :member

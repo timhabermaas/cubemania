@@ -1,0 +1,47 @@
+<div id="user">
+  <h1>
+    <%= @user.name %>
+    <small>
+      has spent <%= distance_of_time_in_words @user.wasted_time %> solving puzzles.
+    </small>
+  </h1>
+
+  <table id="records">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Puzzle</th>
+        <th colspan="2">Single</th>
+        <th colspan="2">
+          <span class="tabs">
+            <a href="#" class="avg5 selected">Average of 5</a>
+            <a href="#" class="avg12">Average of 12</a>
+          </span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @user.records.grouped_by_puzzle_and_amount.each do |puzzle, records| %>
+      <tr class="record <%= cycle 'even', 'odd' %>">
+        <th>
+          <div class="puzzle pos2">
+            <div class="kind pos1"></div>
+          </div>
+        </th>
+        <td>
+          <span>
+            <%= puzzle.name %>
+            <small><%= puzzle.kind.name %></small>
+          </span>
+        </td>
+        <td class="single time"><strong><%=ft records[1].try(:time), "", "none" %></strong></td>
+        <td class="single date"><small><%=dt records[1].try(:created_at) %></small></td>
+        <td class="avg5 time"><strong><%=ft records[5].try(:time), "", "none" %></strong></td>
+        <td class="avg5 date"><small><%=dt records[5].try(:created_at) %></small></td>
+        <td class="avg12 time"><strong><%=ft records[12].try(:time), "", "none" %></strong></td>
+        <td class="avg12 date"><small><%=dt records[12].try(:created_at) %></small></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
