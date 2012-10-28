@@ -20,7 +20,9 @@ describe "Profiles" do
   describe "PUT /profiles" do
     it "updates users's name" do
       user = login
-      visit edit_profile_path(user)
+      visit user_path(user)
+      click_on "Edit Profile"
+
       fill_in "Name", :with => "Peter"
       click_button "Update"
 

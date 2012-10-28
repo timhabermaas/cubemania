@@ -24,7 +24,7 @@ module ApplicationHelper
   end
 
   def using_backbone?
-    controller?(:homes, :backbones)
+    controller?(:homes, :backbones, :users)
   end
 
   def kinds
@@ -96,6 +96,7 @@ module ApplicationHelper
   end
 
   def d(date)
+    return "" if date.nil? # TODO move to presenter class
     date.strftime '%B %d, %Y'
   end
 

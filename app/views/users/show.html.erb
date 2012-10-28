@@ -1,4 +1,9 @@
 <div id="user">
+  <div class="admin">
+    <% if current_user == @user %>
+      <%= link_to "Edit Profile", edit_profile_path(@user) %>
+    <% end %>
+  </div>
   <h1>
     <%= @user.name %>
     <small>
@@ -6,10 +11,17 @@
     </small>
   </h1>
 
-  <div id="wca">
-    <a href="http://www.worldcubeassociation.org" class="logo">&nbsp;</a>
-    <%= link_to "#{@user.name}'s World Cube Association Profile", wca(@user.wca) %>
+  <% if @user.wca.present? %>
+    <div id="wca">
+      <a href="http://www.worldcubeassociation.org" class="logo">&nbsp;</a>
+      <%= link_to "#{@user.name}'s World Cube Association Profile", wca(@user.wca) %>
     </div>
+  <% elsif self? %>
+    <div id="wca">
+      <a href="http://www.worldcubeassociation.org" class="logo">&nbsp;</a>
+      <a href="#">Link your World Cube Association profile!</a>
+    </div>
+  <% end %>
 
   <table id="records">
     <thead>
@@ -29,22 +41,22 @@
       <% @user.records.grouped_by_puzzle_and_amount.each do |puzzle, records| %>
       <tr class="record <%= cycle 'even', 'odd' %>">
         <th>
-          <div class="puzzle pos2">
-            <div class="kind pos1"></div>
+          <div class="puzzle pos<%= puzzle.css_position %>">
+            <div class="kind pos<%= puzzle.kind.css_position %>"></div>
           </div>
         </th>
-        <td>
+        <td class="name">
           <span>
             <%= puzzle.name %>
             <small><%= puzzle.kind.short_name %></small>
           </span>
         </td>
         <td class="single time"><strong><%=ft records[1].try(:time), "", "none" %></strong></td>
-        <td class="single date"><small><%=dt records[1].try(:created_at) %></small></td>
+        <td class="single date"><small><%=d records[1].try(:set_at) %></small></td>
         <td class="avg5 time"><strong><%=ft records[5].try(:time), "", "none" %></strong></td>
-        <td class="avg5 date"><small><%=dt records[5].try(:created_at) %></small></td>
+        <td class="avg5 date"><small><%=d records[5].try(:set_at) %></small></td>
         <td class="avg12 time"><strong><%=ft records[12].try(:time), "", "none" %></strong></td>
-        <td class="avg12 date"><small><%=dt records[12].try(:created_at) %></small></td>
+        <td class="avg12 date"><small><%=d records[12].try(:set_at) %></small></td>
       </tr>
       <% end %>
     </tbody>
