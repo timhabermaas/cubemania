@@ -2,7 +2,7 @@ class Cubemania.Routers.Router extends Backbone.Router
   routes:
     "puzzles/:puzzle_id/timer": "timerIndex"
     "puzzles/:puzzle_id/records": "recordsIndex" # TODO add type in url in order to not lose it when changing puzzles
-    "users": "usersIndex"
+    #"users": "usersIndex"
     #"users/:id": "usersShow"
 
   initialize: ->

@@ -1,6 +1,47 @@
 require "spec_helper"
 
 describe "Users" do
+  describe "GET /users" do
+    let!(:user_1) { create :user, :name => "rowe", :singles_count => 100 }
+    let!(:user_2) { create :user, :name => "sarah", :singles_count => 5000 }
+
+    it "displays users in a list ordered by singles" do
+      visit users_path
+
+      within("li", :text => "rowe") do
+        expect(page).to have_content "100"
+      end
+      within("li", :text => "sarah") do
+        expect(page).to have_content "5000"
+      end
+
+      expect(page.body).to match(/sarah.*rowe/m)
+    end
+
+    it "lets you filter by name" do
+      visit users_path(:q => "ro")
+
+      expect(page).to have_content "rowe"
+      expect(page).to_not have_content "sarah"
+    end
+
+    describe "pagination" do
+      let!(:lonely_user) { create :user, :name => "lonely_dude", :singles_count => 0 }
+
+      before :each do
+        create_list :user, 200, :singles_count => 2
+      end
+
+      it "redirects to a new page with more names on it" do
+        visit users_path
+
+        expect(page).to_not have_content "lonely_dude"
+        click_on "Show more"
+        expect(page).to have_content "lonely_dude"
+      end
+    end
+  end
+
   describe "GET /users/:id" do
     let(:puzzle)  { create :puzzle, :name => "3x3x3" }
     let(:puzzle2) { create :puzzle, :name => "4x4x4" }

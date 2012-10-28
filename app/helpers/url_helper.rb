@@ -10,8 +10,9 @@ module UrlHelper
   def user_path(user)
     "/users/#{user.slug}"
   end
-
+=begin TODO remove
   def users_path
     "/users"
   end
+=end
 end

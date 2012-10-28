@@ -1,0 +1,15 @@
+<form accept-charset="UTF-8" action="/users" id="users-search" method="get">
+  <input autosave="users-search" id="q" name="q" placeholder="Search" results="5" type="search">
+</form>
+
+<ul id="users">
+  <%= render @users %>
+</ul>
+
+<div class="pagination">
+<% if params[:page] %>
+  <%= link_to "Show more", users_url(:page => params[:page].to_i + 1) %>
+<% else %>
+  <%= link_to "Show more", users_url(:page => 2) %>
+<% end %>
+</div>
