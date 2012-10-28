@@ -11,7 +11,7 @@ window.Cubemania =
     Cubemania.puzzles = Cubemania.kinds.puzzles()
 
     Cubemania.currentPuzzle = new Cubemania.Models.CurrentPuzzle()
-    Cubemania.currentUser = new Cubemania.Models.User($("#user-profile").data("user-data"))
+    Cubemania.currentUser = new Cubemania.Models.User($("#backbone-container").data("user-data"))
 
     Cubemania.viewManager = new Cubemania.ViewManager()
 

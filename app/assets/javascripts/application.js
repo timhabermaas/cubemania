@@ -30,6 +30,6 @@ document.cookie = 'tz_offset=' + ((new Date()).getTimezoneOffset() + calculateDs
 
 $(document).ready(function() {
   if ($("body").data("using-backbone")) { // TODO make this unnecessary by moving more stuff to backbone/changing routes
-    //Cubemania.init();
+    Cubemania.init();
   }
 });

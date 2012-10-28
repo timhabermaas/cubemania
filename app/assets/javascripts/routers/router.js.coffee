@@ -2,8 +2,6 @@ class Cubemania.Routers.Router extends Backbone.Router
   routes:
     "puzzles/:puzzle_id/timer": "timerIndex"
     "puzzles/:puzzle_id/records": "recordsIndex" # TODO add type in url in order to not lose it when changing puzzles
-    #"users": "usersIndex"
-    #"users/:id": "usersShow"
 
   initialize: ->
     @bind "all", @showOrHideSubnavigation
@@ -31,21 +29,6 @@ class Cubemania.Routers.Router extends Backbone.Router
     view = Cubemania.viewManager.newView(Cubemania.Views.RecordsIndex, {collection: records})
 
     $("#backbone-container").html(view.render().el)
-
-  usersIndex: ->
-    users = new Cubemania.Collections.Users()
-    users.fetch()
-
-    view = Cubemania.viewManager.newView(Cubemania.Views.UsersIndex, collection: users)
-
-    $("#backbone-container").html(view.render().el)
-
-  usersShow: (id) ->
-    model = new Cubemania.Models.User(id: id)
-    model.fetch()
-
-    view = Cubemania.viewManager.newView(Cubemania.Views.UsersShow, model: model)
-    $("#backbone-container").html(view.el)
 
   showOrHideSubnavigation: (router, route) ->
     switch router[6..-1]

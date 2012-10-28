@@ -31,9 +31,9 @@
     <%= render "layouts/notice" %>
     <section id="content">
       <div class="center">
-        <div id="backbone-container">
+        <%= content_tag :div, :id => "backbone-container", :data => { :user_data => current_user.to_json } do %>
           <%= yield %>
-        </div>
+        <% end %>
       </div>
     </section>
     <%= render "layouts/footer" %>
