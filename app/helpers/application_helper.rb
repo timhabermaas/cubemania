@@ -105,14 +105,6 @@ module ApplicationHelper
     datetime.strftime '%B %d, %Y at %H:%M'
   end
 
-  def singles_as_string(average, spacer = ' ')
-    average.singles.map { |s| s.dnf? ? 'DNF' : ft(s.time, spacer) }.join ', ' if average.respond_to? :singles
-  end
-
-  def flot_dt(time)
-    time.to_i * 1000
-  end
-
   def m(text)
     RedCloth::new(text).to_html[3..-5].gsub("</p>\n<p>", "<br />").html_safe if text.present?
   end
@@ -130,21 +122,8 @@ module ApplicationHelper
     content_tag_for :li, record, *args, &block
   end
 
-  def cache_key(attribute = nil)
-    key = params.map{ |k, v| k.to_s + '/' + v.to_s}.sort
-    key << attribute.to_s if attribute
-    logger.info key.join('/')
-    key.join('/')
-  end
-
   def paginate(object, per_page = 100)
     object = object.paginate :page => params[:page], :per_page => per_page
-  end
-
-  def options_for_user_select
-    users = User.joins(:singles).where("singles.puzzle_id" => params[:puzzle_id]).group("users.id").select("users.id, users.name")
-    #users = User.find_by_sql ['SELECT u.id, u.name FROM singles r LEFT OUTER JOIN users u ON r.user_id = u.id WHERE r.puzzle_id = ? AND r.record = ? AND u.id <> ? ORDER BY u.name', params[:puzzle_id], true, current_user.id]
-    options_for_select users.collect { |u| [u.name, "/users/#{u.id}/puzzles/#{params[:puzzle_id]}/singles.json"]}.unshift(['Compare with ...']) # was user_puzzle_averages_path(u.id, params[:puzzle_id], :format => :xml)
   end
 
   def possessive(name)
