@@ -17,7 +17,7 @@ describe "Profiles" do
     end
   end
 
-  describe "PUT /users" do
+  describe "PUT /profiles" do
     it "updates users's name" do
       user = login
       visit edit_profile_path(user)
