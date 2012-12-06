@@ -21,6 +21,7 @@ gem 'oj'
 gem 'pg'
 gem 'sqlite3', :group => [:development, :test]
 
+gem 'memcachier'
 gem 'dalli', :group => :production
 
 gem 'RedCloth'
