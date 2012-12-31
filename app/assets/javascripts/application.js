@@ -29,8 +29,7 @@
 document.cookie = 'tz_offset=' + ((new Date()).getTimezoneOffset() + calculateDst() * 6);
 
 $(document).ready(function() {
-
-  if ($("#timer").length > 0) {
+  if ($("#backbone-container").length > 0) {
     Cubemania.init();
   }
 });
