@@ -3,8 +3,6 @@ class Cubemania.Routers.Router extends Backbone.Router
     "puzzles/:puzzle_id/timer": "timerIndex"
 
   initialize: ->
-    @bind "all", @showOrHideSubnavigation
-    @bind "all", @_trackPageview
     Cubemania.currentPuzzle.on("change", @updateRoute, this)
 
   timerIndex: (puzzle_id) ->
@@ -19,25 +17,8 @@ class Cubemania.Routers.Router extends Backbone.Router
 
     $("#backbone-container").html(view.render().el)
 
-  showOrHideSubnavigation: (router, route) ->
-    switch router[6..-1]
-      when "timerIndex"
-        Cubemania.subnavigationView.show()
-        Cubemania.subnavigationView.checkPuzzleAndKind(Cubemania.currentPuzzle.puzzle)
-        Cubemania.subnavigationView.makeAutoHideable()
-      when "recordsIndex"
-        Cubemania.subnavigationView.show()
-        Cubemania.subnavigationView.checkPuzzleAndKind(Cubemania.currentPuzzle.puzzle)
-        Cubemania.subnavigationView.unmakeAutoHideable()
-      else
-        Cubemania.subnavigationView.hide()
-
   updateRoute: (puzzle) ->
     route = Backbone.history.fragment
     if route[0..6] == "puzzles" or route[0..7] == "/puzzles"
       route = route.replace(/puzzles\/[^/]*\//,"puzzles/#{puzzle.get("slug")}/")
       Backbone.history.navigate(route, true)
-
-  _trackPageview: ->
-    url = Backbone.history.fragment
-    _gaq.push(["_trackPageview", "/#{url}"])

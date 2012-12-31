@@ -31,6 +31,8 @@ Cubemania::Application.routes.draw do
     resources :records, :only => [:show, :index] do
       get :share, :on => :member
     end
+
+    resource :timer
   end
 
   resources :kinds
@@ -41,6 +43,4 @@ Cubemania::Application.routes.draw do
   match 'login' => 'sessions#new', :as => 'login'
   match 'logout' => 'sessions#destroy', :as => 'logout'
   match 'register' => 'users#new', :as => 'register'
-
-  match '*path' => 'backbones#show'
 end

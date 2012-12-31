@@ -1,4 +1,4 @@
-class BackbonesController < ApplicationController
+class TimersController < ApplicationController
   skip_load_and_authorize_resource
 
   def show

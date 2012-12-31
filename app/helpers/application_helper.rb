@@ -23,10 +23,6 @@ module ApplicationHelper
     end.+ " #{params[:controller].singularize.titleize}"
   end
 
-  def using_backbone?
-    controller?(:homes, :backbones, :users)
-  end
-
   def kinds
     @kinds ||= Kind.includes(:puzzles)
   end
