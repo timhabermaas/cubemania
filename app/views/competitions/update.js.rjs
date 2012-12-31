@@ -1,5 +1,0 @@
-if @competition.errors.empty?
-  page.redirect_to [@puzzle, @competition]
-else
-  page['#form form'].replaceWith render('form.html.erb')
-end
