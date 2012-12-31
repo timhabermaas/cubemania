@@ -1,7 +1,6 @@
 class Single < ActiveRecord::Base
   belongs_to :user, :counter_cache => true
   belongs_to :puzzle
-  belongs_to :average
   has_and_belongs_to_many :records
 
   attr_accessible :time, :puzzle_id, :scramble, :penalty, :comment
@@ -11,7 +10,6 @@ class Single < ActiveRecord::Base
   validates_length_of :comment, :maximum => 255
 
   before_validation :set_blank_penalty_to_nil
-  before_destroy :destroyable_unless_belongs_to_average
   after_update :reset_cached_record_comments
 
   scope :not_dnf, where("penalty IS NULL OR penalty NOT LIKE 'dnf'")
@@ -56,17 +54,9 @@ class Single < ActiveRecord::Base
     self.penalty == "plus2"
   end
 
-  def belongs_to_average?
-    average_id.present?
-  end
-
 private
   def set_blank_penalty_to_nil
     self.penalty = nil if self.penalty.blank?
-  end
-
-  def destroyable_unless_belongs_to_average
-    false if self.belongs_to_average?
   end
 
   def reset_cached_record_comments
