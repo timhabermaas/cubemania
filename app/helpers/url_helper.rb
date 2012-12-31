@@ -3,16 +3,7 @@ module UrlHelper
     "/puzzles/#{id}/timer"
   end
 
-  def puzzle_records_path(id = "3x3x3")
-    "/puzzles/#{id}/records"
+  def puzzle_records_path(id = "3x3x3", type = "avg5")
+    "/puzzles/#{id}/records?type=#{type}"
   end
-
-  def user_path(user)
-    "/users/#{user.slug}"
-  end
-=begin TODO remove
-  def users_path
-    "/users"
-  end
-=end
 end

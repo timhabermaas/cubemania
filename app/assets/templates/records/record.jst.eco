@@ -1,9 +1,0 @@
-<% offset = 0 %>
-<th><span><%= @index + offset + 1 %></span></th>
-<td><strong><%=formatTime @record.get("time") %></strong></td>
-<td><cite><a rel="routing" href="/users/<%= @record.get('user').slug %>"><%= @record.get("user").name %></a></cite></td>
-<% if Cubemania.currentUser.isAdminOrModerator(): %>
-  <td><a href="#" class="block">Block!</td>
-<% end %>
-<td><small><%=formatDate @record.get("set_at") %></small></td>
-<td><blockquote><%= @record.get("comment") %></blockquote></td>

@@ -30,7 +30,7 @@ Cubemania::Application.routes.draw do
   resources :users, :only => [:index, :show]
 
   resources :puzzles, :defaults => { :puzzle_id => default_puzzle } do
-    resources :records, :only => [:show] do
+    resources :records, :only => [:show, :index] do
       get :share, :on => :member
     end
   end

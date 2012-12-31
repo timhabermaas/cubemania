@@ -1,7 +1,6 @@
 class Cubemania.Routers.Router extends Backbone.Router
   routes:
     "puzzles/:puzzle_id/timer": "timerIndex"
-    "puzzles/:puzzle_id/records": "recordsIndex" # TODO add type in url in order to not lose it when changing puzzles
 
   initialize: ->
     @bind "all", @showOrHideSubnavigation
@@ -17,16 +16,6 @@ class Cubemania.Routers.Router extends Backbone.Router
     records.fetch(data: $.param(user_id: Cubemania.currentUser.get("id")))
 
     view = Cubemania.viewManager.newView(Cubemania.Views.TimerIndex, {collection: singles, records: records})
-
-    $("#backbone-container").html(view.render().el)
-
-  recordsIndex: (puzzle_id) ->
-    Cubemania.currentPuzzle.set(Cubemania.puzzles.findByIdOrSlug(puzzle_id), false)
-
-    records = new Cubemania.Collections.Records([], puzzleId: puzzle_id)
-    records.fetch()
-
-    view = Cubemania.viewManager.newView(Cubemania.Views.RecordsIndex, {collection: records})
 
     $("#backbone-container").html(view.render().el)
 
