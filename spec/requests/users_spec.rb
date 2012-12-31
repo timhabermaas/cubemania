@@ -73,4 +73,34 @@ describe "Users" do
       end
     end
   end
+
+
+  describe "POST /users" do
+    it "creates a new user" do
+      visit new_user_path
+      fill_in "Name", :with => "rowe"
+      fill_in "Email", :with => "rowe@awesome.com"
+      fill_in "Password", :with => "password"
+      fill_in "Confirmation", :with => "password"
+
+      click_button "Register"
+
+      page.should have_content "rowe's Profile"
+      page.should have_content "Hello rowe, you are now registered."
+      ActionMailer::Base.deliveries.last.to.should include("rowe@awesome.com")
+    end
+  end
+
+  describe "PUT /users" do
+    it "updates users's name" do
+      user = login
+      visit user_path(user)
+      click_on "Edit Profile"
+
+      fill_in "Name", :with => "Peter"
+      click_button "Update"
+
+      expect(user.reload.name).to eq("Peter")
+    end
+  end
 end

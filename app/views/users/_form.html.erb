@@ -1,4 +1,4 @@
-<%= semantic_form_for @user, :url => profile_path(@user) do |form| %>
+<%= semantic_form_for @user do |form| %>
   <%= form.inputs do %>
     <%= form.input :name %>
     <%= form.input :email %>
@@ -18,6 +18,6 @@
   <% end %>
   <%= form.actions do %>
     <%= form.action :submit, :button_html => { :value => action_label('Register') } %>
-    <%= link_to 'Destroy', profile_path(@user), :confirm => 'Are you sure?', :method => :delete %>
+    <%= link_to 'Destroy', @user, :confirm => 'Are you sure?', :method => :delete %>
   <% end %>
 <% end %>

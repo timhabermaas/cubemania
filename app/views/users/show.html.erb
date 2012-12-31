@@ -1,7 +1,7 @@
 <div id="user">
   <div class="admin">
     <% if current_user == @user %>
-      <%= link_to "Edit Profile", edit_profile_path(@user) %>
+      <%= link_to "Edit Profile", edit_user_path(@user) %>
     <% end %>
   </div>
   <h1>
