@@ -1,4 +1,6 @@
 class RecordsController < ApplicationController
+  before_filter :set_type_default, :only => :index
+
   def index
     @puzzle = Puzzle.find params[:puzzle_id]
     amount = # TODO move into extra class (mapping of int to description)
@@ -35,5 +37,10 @@ class RecordsController < ApplicationController
 
     url = "http://www.facebook.com/dialog/feed?" + URI.encode(options.collect { |k, v| "#{k}=#{v}"}.join("&"))
     redirect_to url
+  end
+
+private
+  def set_type_default
+    params[:type] = params[:type] || "avg5"
   end
 end
