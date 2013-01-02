@@ -27,10 +27,6 @@ module ApplicationHelper
     @kinds ||= Kind.includes(:puzzles)
   end
 
-  def subnavigation_path(puzzle)
-    url_for :puzzle_id => puzzle.slug, :type => params[:type], :controller => params[:controller]
-  end
-
   def navigation_path(item)
     url_for :controller => item.controller, :action => item.action
   end
@@ -41,6 +37,11 @@ module ApplicationHelper
 
   def action?(*names)
     names.include? params[:action].to_sym
+  end
+
+  def display_subnavigation?
+    controller? :records and action? :index or
+      controller? :timers
   end
 
   def profile_page?
@@ -55,17 +56,16 @@ module ApplicationHelper
     controller? item[:controller].to_sym
   end
 
+  def current_puzzle
+    @current_puzzle ||= Puzzle.find params[:puzzle_id]
+  end
+
   def current_puzzle?(puzzle)
-    if [puzzle.id.to_s, puzzle.slug].include? params[:puzzle_id]
-      params[:kind_id] = puzzle.kind_id.to_s
-      true
-    else
-      false
-    end
+    puzzle == current_puzzle
   end
 
   def current_kind?(kind)
-    params[:kind_id] == kind.id.to_s
+    kind == current_puzzle.kind
   end
 
   def type?(type)

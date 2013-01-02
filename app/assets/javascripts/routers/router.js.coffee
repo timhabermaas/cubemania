@@ -13,6 +13,8 @@ class Cubemania.Routers.Router extends Backbone.Router
     records = new Cubemania.Collections.Records([], puzzleId: puzzle_id, useLocalStorage: !Cubemania.currentUser.present())
     records.fetch(data: $.param(user_id: Cubemania.currentUser.get("id")))
 
+    Cubemania.subnavigationView.makeAutoHideable()
+
     view = Cubemania.viewManager.newView(Cubemania.Views.TimerIndex, {collection: singles, records: records})
 
     $("#backbone-container").html(view.render().el)

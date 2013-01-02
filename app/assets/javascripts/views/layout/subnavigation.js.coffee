@@ -1,36 +1,14 @@
 class Cubemania.Views.Subnavigation extends Cubemania.BaseView
-  template: JST["layout/subnavigation"]
-
   events:
-    "click #puzzles a": "puzzleClicked"
     "click #kinds a": "kindClicked"
 
   initialize: ->
     @intervalId = null
-
-  render: ->
-    $(@el).html(@template(kinds: @collection))
-    this
-
-  checkPuzzleAndKind: (puzzle) ->
-    @$("#puzzles ul.puzzles li").removeClass("checked")
-    @$("#puzzles ul.puzzles li").filter("[data-id=#{puzzle.get("id")}]").addClass("checked")
-
-    kindIndex = @$("#kinds ul li").filter("[data-id=#{puzzle.get("kind_id")}]").data("index")
-    @checkKind kindIndex
-
-  puzzleClicked: (event) ->
-    event.preventDefault()
-    parent = $(event.currentTarget).parent()
-    id = parent.data("id")
-    Cubemania.currentPuzzle.set(Cubemania.puzzles.findByIdOrSlug(id))
-
-    @resetTimerAndReshowPuzzles()
+    @checkKind @$("#kinds li.checked").index()
 
   kindClicked: (event) ->
     event.preventDefault()
     index = $(event.currentTarget).parent().data("index")
-
     @checkKind index
 
     @resetTimerAndReshowPuzzles()

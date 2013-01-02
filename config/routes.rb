@@ -32,7 +32,7 @@ Cubemania::Application.routes.draw do
       get :share, :on => :member
     end
 
-    resource :timer
+    resources :timers, :path => "timer"
   end
 
   resources :kinds

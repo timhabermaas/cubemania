@@ -1,6 +1,6 @@
 class TimersController < ApplicationController
   skip_load_and_authorize_resource
 
-  def show
+  def index
   end
 end

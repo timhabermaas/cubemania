@@ -1,4 +1,4 @@
-window.Cubemania =
+window.Cubemania = # TODO is timer only! => Rename.
   Models: {}
   Presenters: {}
   Collections: {}
