@@ -11,7 +11,7 @@ module Capybara
 
     def login_via_rack_test
       user = create :user, :password => "muhmuh", :password_confirmation => "muhmuh"
-      post "/session", { :login => { :name => user.name, :password => "muhmuh" } }
+      page.driver.post "/session", { :login => { :name => user.name, :password => "muhmuh" } }
       user
     end
   end

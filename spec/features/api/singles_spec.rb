@@ -21,8 +21,8 @@ describe "api/puzzles/:id/singles" do
 
     describe "by month" do
       it "return" do
-        get "/api/puzzles/#{puzzle.id}/singles/grouped.json", :user_id => @user.id, :by => "month"
-        result = JSON.parse(response.body)
+        page.driver.get "/api/puzzles/#{puzzle.id}/singles/grouped.json", :user_id => @user.id, :by => "month"
+        result = JSON.parse(page.driver.response.body)
         expect(result).to have(2).items
         expect(result[0]["time"]).to eq(2500)
         expect(result[1]["time"]).to eq(15000)
