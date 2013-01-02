@@ -4,7 +4,7 @@
 
 <% if @records.empty? %>
   <p class="challenge">
-   Be the first: <%= link_to "Get the record!", puzzle_timers_path %>
+   Be the first: <%= link_to "Get the record!", puzzle_timers_path(params[:puzzle_id]) %>
   </p>
 <% else %>
   <table id="records">
