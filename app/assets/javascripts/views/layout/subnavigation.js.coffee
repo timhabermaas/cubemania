@@ -4,7 +4,6 @@ class Cubemania.Views.Subnavigation extends Cubemania.BaseView
 
   initialize: ->
     @intervalId = null
-    @checkKind @$("#kinds li.checked").index()
 
   kindClicked: (event) ->
     event.preventDefault()

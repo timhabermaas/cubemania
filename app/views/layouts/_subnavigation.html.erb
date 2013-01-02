@@ -1,7 +1,7 @@
 <% cache ["subnavigation", params[:controller], params[:puzzle_id]] do %>
   <nav id="subnavigation" data-kinds="<%= kinds.to_json(:include => :puzzles) %>">
     <div id="puzzles">
-      <ul style="width: <%= kinds.length * 100 %>%">
+      <ul style="width: <%= kinds.length * 100 %>%; left: <%= current_kind_index * -100 %>%">
       <% kinds.each do |kind| %>
         <li style="width: <%= 100 / kinds.length %>%">
           <ul class="puzzles">

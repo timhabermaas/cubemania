@@ -60,12 +60,20 @@ module ApplicationHelper
     @current_puzzle ||= Puzzle.find params[:puzzle_id]
   end
 
+  def current_kind
+    @current_kind ||= current_puzzle.kind
+  end
+
   def current_puzzle?(puzzle)
     puzzle == current_puzzle
   end
 
   def current_kind?(kind)
-    kind == current_puzzle.kind
+    kind == current_kind
+  end
+
+  def current_kind_index
+    kinds.index current_kind
   end
 
   def type?(type)
