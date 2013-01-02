@@ -8,7 +8,7 @@ class Ability
     elsif user.admin?
       can :manage, :all
     else
-      can [:destroy, :update], User do |u|
+      can [:destroy, :edit, :update], User do |u|
         u == user
       end
       can :share, Record do |record|

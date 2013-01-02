@@ -1,6 +1,6 @@
 <div id="user">
   <div class="admin">
-    <% if current_user == @user %>
+    <% if can? :edit, @user %>
       <%= link_to "Edit Profile", edit_user_path(@user) %>
     <% end %>
   </div>
@@ -16,49 +16,60 @@
       <a href="http://www.worldcubeassociation.org" class="logo">&nbsp;</a>
       <%= link_to "#{@user.name}'s World Cube Association Profile", wca(@user.wca) %>
     </div>
-  <% elsif self? %>
+  <% elsif current_user? @user %>
     <div id="wca">
       <a href="http://www.worldcubeassociation.org" class="logo">&nbsp;</a>
       <a href="#">Link your World Cube Association profile!</a>
     </div>
   <% end %>
 
-  <table id="records">
-    <thead>
-      <tr>
-        <th></th>
-        <th>Puzzle</th>
-        <th colspan="2">Single</th>
-        <th colspan="2">
-          <span class="tabs">
-            <a href="#" class="avg5 selected">Average of 5</a>
-            <a href="#" class="avg12">Average of 12</a>
-          </span>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @user.records.grouped_by_puzzle_and_amount.each do |puzzle, records| %>
-      <tr class="record <%= cycle 'even', 'odd' %>">
-        <th>
-          <div class="puzzle pos<%= puzzle.css_position %>">
-            <div class="kind pos<%= puzzle.kind.css_position %>"></div>
-          </div>
-        </th>
-        <td class="name">
-          <span>
-            <%= puzzle.name %>
-            <small><%= puzzle.kind.short_name %></small>
-          </span>
-        </td>
-        <td class="single time"><strong><%=ft records[1].try(:time), "", "none" %></strong></td>
-        <td class="single date"><small><%=d records[1].try(:set_at) %></small></td>
-        <td class="avg5 time"><strong><%=ft records[5].try(:time), "", "none" %></strong></td>
-        <td class="avg5 date"><small><%=d records[5].try(:set_at) %></small></td>
-        <td class="avg12 time"><strong><%=ft records[12].try(:time), "", "none" %></strong></td>
-        <td class="avg12 date"><small><%=d records[12].try(:set_at) %></small></td>
-      </tr>
+  <% if @records.empty? %>
+    <p class="challenge">
+      <% if current_user? @user %>
+        How fast do you solve the cube?<br/>
+        <%= link_to "Stop your times and get the record!", puzzle_timers_path %>
+      <% else %>
+        <%= @user.name %> has no personal records yet. <%= link_to "Do you?", puzzle_timers_path %>
       <% end %>
-    </tbody>
-  </table>
+    </p>
+  <% else %>
+    <table id="records">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Puzzle</th>
+          <th colspan="2">Single</th>
+          <th colspan="2">
+            <span class="tabs">
+              <a href="#" class="avg5 selected">Average of 5</a>
+              <a href="#" class="avg12">Average of 12</a>
+            </span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @records.each do |puzzle, records| %>
+        <tr class="record <%= cycle 'even', 'odd' %>">
+          <th>
+            <div class="puzzle pos<%= puzzle.css_position %>">
+              <div class="kind pos<%= puzzle.kind.css_position %>"></div>
+            </div>
+          </th>
+          <td class="name">
+            <span>
+              <%= puzzle.name %>
+              <small><%= puzzle.kind.short_name %></small>
+            </span>
+          </td>
+          <td class="single time"><strong><%=ft records[1].try(:time), "", "none" %></strong></td>
+          <td class="single date"><small><%=d records[1].try(:set_at) %></small></td>
+          <td class="avg5 time"><strong><%=ft records[5].try(:time), "", "none" %></strong></td>
+          <td class="avg5 date"><small><%=d records[5].try(:set_at) %></small></td>
+          <td class="avg12 time"><strong><%=ft records[12].try(:time), "", "none" %></strong></td>
+          <td class="avg12 date"><small><%=d records[12].try(:set_at) %></small></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
 </div>

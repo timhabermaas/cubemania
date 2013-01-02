@@ -48,6 +48,7 @@ class UsersController < ApplicationController
 
   def show
     @user = object
+    @records = @user.records.grouped_by_puzzle_and_amount
   end
 
   def destroy
