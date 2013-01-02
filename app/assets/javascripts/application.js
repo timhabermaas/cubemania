@@ -30,8 +30,7 @@ document.cookie = 'tz_offset=' + ((new Date()).getTimezoneOffset() + calculateDs
 
 $(document).ready(function() {
   if ($("#subnavigation").length > 0) {
-    var kinds = new Cubemania.Collections.Kinds($("#subnavigation").data("kinds"));
-    Cubemania.subnavigationView = new Cubemania.Views.Subnavigation({collection: kinds, el: $("#subnavigation")});
+    Cubemania.subnavigationView = new Cubemania.Views.Subnavigation({el: $("#subnavigation")});
   }
   if ($("#backbone-container").length > 0) {
     Cubemania.init();

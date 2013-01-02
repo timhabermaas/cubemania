@@ -8,7 +8,7 @@ class Cubemania.Views.Subnavigation extends Cubemania.BaseView
 
   kindClicked: (event) ->
     event.preventDefault()
-    index = $(event.currentTarget).parent().data("index")
+    index = $(event.currentTarget).parent().index()
     @checkKind index
 
     @resetTimerAndReshowPuzzles()

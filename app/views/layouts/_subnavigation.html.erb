@@ -1,11 +1,11 @@
-<nav id="subnavigation" data-kinds="<%= kinds.to_json(:include => :puzzles) %>"data-current-puzzle="<%= @puzzle.to_json %>">
+<nav id="subnavigation" data-kinds="<%= kinds.to_json(:include => :puzzles) %>">
   <div id="puzzles">
     <ul style="width: <%= kinds.length * 100 %>%">
     <% kinds.each do |kind| %>
       <li style="width: <%= 100 / kinds.length %>%">
         <ul class="puzzles">
         <% kind.puzzles.each do |puzzle| %>
-          <li data-id="<%= puzzle.id %>"<%= raw('class="checked"') if current_puzzle? puzzle %>>
+          <li<%= raw(' class="checked"') if current_puzzle? puzzle %>>
             <%= link_to subnavigation_path(puzzle) do %>
               <span class="puzzle pos<%= puzzle.css_position %>">
                 <span class="kind pos<%= kind.css_position %>"></span>
@@ -22,7 +22,7 @@
   <div id="kinds">
     <ul class="center">
     <% kinds.each_with_index do |kind, index| %>
-      <li style="width: <%= 100 / kinds.size %>%" data-id="<%= kind.id %>"  data-index="<%= index %>"<%= raw('class="checked"') if current_kind? kind %>>
+      <li style="width: <%= 100 / kinds.size %>%"<%= raw(' class="checked"') if current_kind? kind %>>
         <a href="#"><%= kind.name %></a>
       </li>
     <% end %>
