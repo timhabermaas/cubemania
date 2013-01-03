@@ -49,6 +49,9 @@ class UsersController < ApplicationController
   def show
     @user = object
     @records = @user.records.grouped_by_puzzle_and_amount
+    if logged_in? and current_user != @user
+      @own_records = current_user.records.grouped_by_puzzle_and_amount
+    end
   end
 
   def destroy

@@ -46,17 +46,32 @@
         </div>
         <div>
           <table>
+            <% if @own_records %>
+              <thead>
+                <th></th>
+                <th><%= @user.name %></th>
+                <th>Me</th>
+              </thead>
+            <% end %>
             <tbody>
               <% AverageType.all.each do |type| %>
                 <tr<%= raw(' class="last"') if type.count == 12 %>>
-                  <th><%= type.name %></th>
-                  <td>
-                    <% if records[type.count] %>
-                    <strong><%=ft records[type.count].time %></strong>
+                  <th class="type">
+                    <% if @own_records %>
+                      <%= type.short_name %>
                     <% else %>
-                    <small>None</small>
+                      <%= type.name %>
                     <% end %>
+                  </th>
+                  <td>
+                    <%= time_or_none records[type.count].try(:time) %>
                   </td>
+                  <% if @own_records %>
+                  <% my_time = @own_records[puzzle].try(:[], type.count).try(:time) %>
+                  <td class="<%= compare(my_time, records[type.count].try(:time)) %>">
+                    <%= time_or_none my_time %>
+                  </td>
+                  <% end %>
                 </tr>
               <% end %>
             </tbody>

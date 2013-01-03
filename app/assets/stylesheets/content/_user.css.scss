@@ -38,6 +38,7 @@
     .puzzle-image {
       @include puzzle-image;
       margin: 0 auto;
+      margin-bottom: 5px;
     }
     .kind-image {
       @include kind-image;
@@ -68,8 +69,14 @@
     th {
       text-align: left;
     }
-    td {
+    td, thead th {
       text-align: right;
+    }
+    td.faster strong {
+      color: #7f7;
+    }
+    td.slower strong, td.slower small {
+      color: #f66;
     }
   }
   ul.records:after {

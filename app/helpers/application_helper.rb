@@ -103,6 +103,14 @@ module ApplicationHelper
     end
   end
 
+  def time_or_none(time)
+    if time
+      "<strong>#{ft time}</strong>"
+    else
+      "<small>None</small>"
+    end.html_safe
+  end
+
   def d(date)
     return "" if date.nil? # TODO move to presenter class
     date.strftime '%B %d, %Y'
@@ -111,6 +119,22 @@ module ApplicationHelper
   def dt(datetime)
     return "" if datetime.nil? # TODO move to presenter class
     datetime.strftime '%B %d, %Y at %H:%M'
+  end
+
+  def compare(my_time, other_time)
+    if other_time.nil? and my_time.nil?
+      "equal"
+    elsif other_time.nil?
+      "faster"
+    elsif my_time.nil?
+      "slower"
+    elsif my_time < other_time
+      "faster"
+    elsif my_time > other_time
+      "slower"
+    else
+      "equal"
+    end
   end
 
   def m(text)
