@@ -62,12 +62,12 @@ describe "Users" do
       it "displays his 3x3x3 record" do
         visit user_path(user)
 
-        within("#records") do
-          within("tr", :text => "3x3x3") do
-            expect(find("td.avg5")).to have_content "14.50s"
+        within("ul.records") do
+          within("li", :text => "3x3x3") do
+            expect(page).to have_content "14.50s"
           end
-          within("tr", :text => "4x4x4") do
-            expect(find("td.avg12")).to have_content "22.30s"
+          within("li", :text => "4x4x4") do
+            expect(page).to have_content "22.30s"
           end
         end
       end
