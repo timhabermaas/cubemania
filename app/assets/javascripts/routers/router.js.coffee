@@ -12,6 +12,6 @@ class Cubemania.Routers.Router extends Backbone.Router
 
     Cubemania.subnavigationView.makeAutoHideable()
 
-    view = Cubemania.viewManager.newView(Cubemania.Views.TimerIndex, {collection: singles, records: records})
+    view = new Cubemania.Views.TimerIndex(collection: singles, records: records)
 
     $("#backbone-container").html(view.render().el)
