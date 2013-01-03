@@ -47,18 +47,18 @@
         <div>
           <table>
             <tbody>
-              <tr class="odd">
-                <th>Single</th>
-                <td><strong><%=ft records[1].time %></strong></td>
-              </tr>
-              <tr class="even">
-                <th>Average of 5</th>
-                <td><strong><%=ft records[5].try(:time), "", "none" %></strong></td>
-              </tr>
-              <tr class="odd last">
-                <th>Average of 12</th>
-                <td><strong><%=ft records[12].try(:time), "", "none" %></strong></td>
-              </tr>
+              <% AverageType.all.each do |type| %>
+                <tr<%= raw(' class="last"') if type.count == 12 %>>
+                  <th><%= type.name %></th>
+                  <td>
+                    <% if records[type.count] %>
+                    <strong><%=ft records[type.count].time %></strong>
+                    <% else %>
+                    <small>None</small>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
             </tbody>
           </table>
         </div>
