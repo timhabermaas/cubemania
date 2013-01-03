@@ -13,8 +13,6 @@ window.Cubemania = # TODO is timer only! => Rename.
     Cubemania.currentPuzzle = new Cubemania.Models.CurrentPuzzle()
     Cubemania.currentUser = new Cubemania.Models.User($("#backbone-container").data("user-data"))
 
-    Cubemania.viewManager = new Cubemania.ViewManager()
-
     Cubemania.flashView = new Cubemania.Views.Flash()
     Cubemania.flashView.setElement($("#flash"))
 
