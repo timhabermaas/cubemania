@@ -15,7 +15,7 @@
 
 /* lol */
 @for $i from 0 through 20 {
-  .puzzle.pos#{$i} {
+  .puzzle.pos#{$i}, .puzzle-image.pos#{$i} {
     background-position: $i * -50px 0px;
   }
   #puzzles .puzzle.pos#{$i} {
@@ -24,7 +24,7 @@
   #puzzles a:hover .puzzle.pos#{$i}, #puzzles li.checked a .puzzle.pos#{$i} {
     background-position: $i * -50px 0px;
   }
-  .kind.pos#{$i} {
+  .kind.pos#{$i}, .kind-image.pos#{$i} {
     background-position: $i * -25px 0px;
   }
 }

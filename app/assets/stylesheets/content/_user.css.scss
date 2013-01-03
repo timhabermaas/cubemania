@@ -1,4 +1,10 @@
 #user {
+  h1 {
+    margin-left: 10px;
+  }
+  div.admin {
+    margin-right: 10px;
+  }
   h1 small {
     font-size: 40%;
     margin-left: 0.5em;
@@ -21,7 +27,55 @@
     font-size: 1.25em;
   }
 
-  td.name small {
-    text-transform: uppercase;
+  ul.records {
+    .puzzle {
+      margin-bottom: 10px;
+    }
+    span {
+      display: block;
+      text-align: center;
+    }
+    .puzzle-image {
+      @include puzzle-image;
+      margin: 0 auto;
+    }
+    .kind-image {
+      @include kind-image;
+    }
+    //background-color: $yellow;
+    li {
+      width: 280px;
+      float: left;
+      padding: 10px;
+      margin-left: 10px;
+      margin-right: 10px;
+      margin-bottom: 20px;
+      background-color: $darkblue;
+    }
+    table {
+      width: 100%;
+    }
+    tr {
+      border-bottom: 1px solid $yellow;
+    }
+    tr.last {
+      border: none;
+    }
+    th, td {
+      padding: 0; // TODO delete default table styles?
+      padding: 4px;
+    }
+    th {
+      text-align: left;
+    }
+    td {
+      text-align: right;
+    }
+  }
+  ul.records:after {
+    content: "";
+    clear: both;
+    width: 0;
+    display: block;
   }
 }

@@ -6,7 +6,7 @@ p.tabs {
   }
 }
 
-#records, #results {
+#records {
   margin: 0 auto;
   .rank1, .rank2, .rank3 {
     margin-bottom: 1em;
@@ -43,15 +43,5 @@ p.tabs {
       font-size: 1.25em;
       line-height: 1.75em;
     }
-  }
-}
-
-#records {
-  .puzzle {
-    @include puzzle-image;
-    margin: 0 auto;
-  }
-  .kind {
-    @include kind-image;
   }
 }

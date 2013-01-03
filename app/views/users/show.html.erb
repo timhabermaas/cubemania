@@ -33,43 +33,37 @@
       <% end %>
     </p>
   <% else %>
-    <table id="records">
-      <thead>
-        <tr>
-          <th></th>
-          <th>Puzzle</th>
-          <th colspan="2">Single</th>
-          <th colspan="2">
-            <span class="tabs">
-              <a href="#" class="avg5 selected">Average of 5</a>
-              <a href="#" class="avg12">Average of 12</a>
-            </span>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @records.each do |puzzle, records| %>
-        <tr class="record <%= cycle 'even', 'odd' %>">
-          <th>
-            <div class="puzzle pos<%= puzzle.css_position %>">
-              <div class="kind pos<%= puzzle.kind.css_position %>"></div>
-            </div>
-          </th>
-          <td class="name">
-            <span>
-              <%= puzzle.name %>
-              <small><%= puzzle.kind.short_name %></small>
-            </span>
-          </td>
-          <td class="single time"><strong><%=ft records[1].try(:time), "", "none" %></strong></td>
-          <td class="single date"><small><%=d records[1].try(:set_at) %></small></td>
-          <td class="avg5 time"><strong><%=ft records[5].try(:time), "", "none" %></strong></td>
-          <td class="avg5 date"><small><%=d records[5].try(:set_at) %></small></td>
-          <td class="avg12 time"><strong><%=ft records[12].try(:time), "", "none" %></strong></td>
-          <td class="avg12 date"><small><%=d records[12].try(:set_at) %></small></td>
-        </tr>
-        <% end %>
-      </tbody>
-    </table>
+    <ul class="records">
+      <% @records.each do |puzzle, records| %>
+      <li class="record <%= cycle "even", "odd" %>">
+        <div class="puzzle">
+          <div class="puzzle-image pos<%= puzzle.css_position %>">
+            <div class="kind-image pos<%= puzzle.kind.css_position %>"></div>
+          </div>
+          <span>
+            <%= puzzle.name %> <small><%= puzzle.kind.short_name %></small>
+          </span>
+        </div>
+        <div>
+          <table>
+            <tbody>
+              <tr class="odd">
+                <th>Single</th>
+                <td><strong><%=ft records[1].time %></strong></td>
+              </tr>
+              <tr class="even">
+                <th>Average of 5</th>
+                <td><strong><%=ft records[5].try(:time), "", "none" %></strong></td>
+              </tr>
+              <tr class="odd last">
+                <th>Average of 12</th>
+                <td><strong><%=ft records[12].try(:time), "", "none" %></strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </li>
+      <% end %>
+    </ul>
   <% end %>
 </div>
