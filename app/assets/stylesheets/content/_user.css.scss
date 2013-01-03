@@ -43,7 +43,6 @@
     .kind-image {
       @include kind-image;
     }
-    //background-color: $yellow;
     li {
       width: 280px;
       float: left;
@@ -73,10 +72,10 @@
       text-align: right;
     }
     td.faster strong {
-      color: #7f7;
+      color: #6f6;
     }
     td.slower strong, td.slower small {
-      color: #f66;
+      color: #ff6060;
     }
   }
   ul.records:after {
