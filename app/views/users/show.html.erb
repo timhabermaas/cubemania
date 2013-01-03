@@ -1,0 +1,84 @@
+<div id="user">
+  <div class="admin">
+    <% if can? :edit, @user %>
+      <%= link_to "Edit Profile", edit_user_path(@user) %>
+    <% end %>
+  </div>
+  <h1>
+    <%= @user.name %>
+    <small>
+      has spent <%= distance_of_time_in_words @user.wasted_time %> solving puzzles.
+    </small>
+  </h1>
+
+  <% if @user.wca.present? %>
+    <div id="wca">
+      <a href="http://www.worldcubeassociation.org" class="logo">&nbsp;</a>
+      <%= link_to "#{@user.name}'s World Cube Association Profile", wca(@user.wca) %>
+    </div>
+  <% elsif current_user? @user %>
+    <div id="wca">
+      <a href="http://www.worldcubeassociation.org" class="logo">&nbsp;</a>
+      <a href="#">Link your World Cube Association profile!</a>
+    </div>
+  <% end %>
+
+  <% if @records.empty? %>
+    <p class="challenge">
+      <% if current_user? @user %>
+        How fast do you solve the cube?<br/>
+        <%= link_to "Stop your times and get the record!", puzzle_timers_path %>
+      <% else %>
+        <%= @user.name %> has no personal records yet. <%= link_to "Do you?", puzzle_timers_path %>
+      <% end %>
+    </p>
+  <% else %>
+    <ul class="records">
+      <% @records.each do |puzzle, records| %>
+      <li class="record <%= cycle "even", "odd" %>">
+        <div class="puzzle">
+          <div class="puzzle-image pos<%= puzzle.css_position %>">
+            <div class="kind-image pos<%= puzzle.kind.css_position %>"></div>
+          </div>
+          <span>
+            <%= puzzle.name %> <small><%= puzzle.kind.short_name %></small>
+          </span>
+        </div>
+        <div>
+          <table>
+            <% if @own_records %>
+              <thead>
+                <th></th>
+                <th><%= @user.name %></th>
+                <th>Me</th>
+              </thead>
+            <% end %>
+            <tbody>
+              <% AverageType.all.each do |type| %>
+                <tr<%= raw(' class="last"') if type.count == 12 %>>
+                  <th class="type">
+                    <% if @own_records %>
+                      <%= type.short_name %>
+                    <% else %>
+                      <%= type.name %>
+                    <% end %>
+                  </th>
+                  <td>
+                    <%= time_or_none records[type.count].try(:time) %>
+                  </td>
+                  <% if @own_records %>
+                  <% my_time = @own_records[puzzle].try(:[], type.count).try(:time) %>
+                  <td class="<%= compare(my_time, records[type.count].try(:time)) %>">
+                    <%= time_or_none my_time %>
+                  </td>
+                  <% end %>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </li>
+      <% end %>
+    </ul>
+  <% end %>
+</div>

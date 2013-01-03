@@ -7,11 +7,7 @@ module UrlHelper
     "/puzzles/#{id}/records"
   end
 
-  def user_path(user)
-    "/users/#{user.slug}"
-  end
-
-  def users_path
-    "/users"
+  def subnavigation_path(puzzle)
+    url_for :puzzle_id => puzzle.slug, :controller => params[:controller]
   end
 end

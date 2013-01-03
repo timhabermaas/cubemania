@@ -25,12 +25,14 @@ Cubemania::Application.routes.draw do
     resources :comments, :only => [:create, :destroy]
   end
 
-  resources :profiles
+  resources :users
 
   resources :puzzles, :defaults => { :puzzle_id => default_puzzle } do
-    resources :records, :only => [:show] do
+    resources :records, :only => [:show, :index] do
       get :share, :on => :member
     end
+
+    resources :timers, :path => "timer"
   end
 
   resources :kinds
@@ -40,7 +42,5 @@ Cubemania::Application.routes.draw do
   resource :session
   match 'login' => 'sessions#new', :as => 'login'
   match 'logout' => 'sessions#destroy', :as => 'logout'
-  match 'register' => 'profiles#new', :as => 'register'
-
-  match '*path' => 'backbones#show'
+  match 'register' => 'users#new', :as => 'register'
 end

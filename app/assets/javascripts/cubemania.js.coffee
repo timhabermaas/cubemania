@@ -1,4 +1,4 @@
-window.Cubemania =
+window.Cubemania = # TODO is timer only! => Rename.
   Models: {}
   Presenters: {}
   Collections: {}
@@ -11,15 +11,9 @@ window.Cubemania =
     Cubemania.puzzles = Cubemania.kinds.puzzles()
 
     Cubemania.currentPuzzle = new Cubemania.Models.CurrentPuzzle()
-    Cubemania.currentUser = new Cubemania.Models.User($("#user-profile").data("user-data"))
+    Cubemania.currentUser = new Cubemania.Models.User($("#backbone-container").data("user-data"))
 
     Cubemania.viewManager = new Cubemania.ViewManager()
-
-    Cubemania.navigationView = new Cubemania.Views.Navigation()
-    Cubemania.navigationView.setElement($("nav.main")).render()
-
-    Cubemania.subnavigationView = new Cubemania.Views.Subnavigation(collection: Cubemania.kinds)
-    Cubemania.subnavigationView.setElement($("#subnavigation")).render()
 
     Cubemania.flashView = new Cubemania.Views.Flash()
     Cubemania.flashView.setElement($("#flash"))
@@ -28,13 +22,3 @@ window.Cubemania =
 
     new Cubemania.Routers.Router()
     Backbone.history.start(pushState: true)
-
-    # fetch all links and use backbone to navigate
-    if Backbone.history && Backbone.history._hasPushState
-      $("a[rel=routing]").live "click", (event) ->
-        href = $(this).attr("href")
-        protocol = this.protocol + "//"
-
-        if href.slice(protocol.length) != protocol
-          event.preventDefault()
-          Backbone.history.navigate(href, true)

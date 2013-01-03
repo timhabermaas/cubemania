@@ -1,0 +1,11 @@
+<form accept-charset="UTF-8" action="/users" id="users-search" method="get">
+  <input autosave="users-search" id="q" name="q" placeholder="Search" results="5" type="search">
+</form>
+
+<ul id="users">
+  <%= render @users %>
+</ul>
+
+<div class="pagination">
+<%= link_to "Show more", users_url(:page => next_page), :remote => true %>
+</div>

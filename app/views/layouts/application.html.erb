@@ -24,16 +24,14 @@
       })();
     </script>
   </head>
-  <body data-using-backbone="<%= using_backbone? %>">
+  <body>
     <%= render "layouts/header" %>
     <%= render "layouts/nav" %>
-    <%= render "layouts/subnavigation" %>
+    <%= render "layouts/subnavigation" if display_subnavigation? %>
     <%= render "layouts/notice" %>
     <section id="content">
       <div class="center">
-        <div id="backbone-container">
-          <%= yield %>
-        </div>
+        <%= yield %>
       </div>
     </section>
     <%= render "layouts/footer" %>

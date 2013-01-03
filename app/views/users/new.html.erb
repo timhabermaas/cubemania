@@ -1,0 +1,18 @@
+<h1>Register</h1>
+
+<%= semantic_form_for @user do |form| %>
+  <%= form.inputs do %>
+    <%= form.input :name %>
+    <%= form.input :email %>
+    <div class="bot">
+      <%= form.input :bot_email %>
+    </div>
+    <%= form.input :wca, :label => "WCA ID (optional)" %>
+    <%= form.input :time_zone, :as => :time_zone %>
+    <%= form.input :password %>
+    <%= form.input :password_confirmation, :label => 'Confirmation' %>
+  <% end %>
+  <%= form.actions do %>
+    <%= form.action :submit, :button_html => { :value => action_label('Register') } %>
+  <% end %>
+<% end %>

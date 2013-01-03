@@ -1,0 +1,23 @@
+<%= semantic_form_for @user do |form| %>
+  <%= form.inputs do %>
+    <%= form.input :name %>
+    <%= form.input :email %>
+    <div class="bot">
+      <%= form.input :bot_email %>
+    </div>
+    <%= form.input :wca, :label => 'WCA ID (optional)' %>
+    <%= form.input :time_zone, :as => :time_zone %>
+    <%= form.input :wants_emails, :label => 'Receive Emails' %>
+    <% if admin? %>
+      <%= form.input :sponsor %>
+      <%= form.input :ignored %>
+      <%= form.input :role, :collection => User::ROLES.collect { |r| [r.titleize, r] }, :include_blank => false %>
+    <% end %>
+    <%= form.input :password %>
+    <%= form.input :password_confirmation, :label => 'Confirmation' %>
+  <% end %>
+  <%= form.actions do %>
+    <%= form.action :submit, :button_html => { :value => action_label('Register') } %>
+    <%= link_to 'Destroy', @user, :confirm => 'Are you sure?', :method => :delete %>
+  <% end %>
+<% end %>

@@ -1,6 +1,0 @@
-<% unless @shout.new_record? %>
-  $("#shouts-list").append("<%=j render @shout %>");
-  $("#shout_<%= @shout.id %>").hide().slideDown('normal');
-  <% @shout = Shout.new %>
-<% end %>
-$("#shouts form")[0].reset();

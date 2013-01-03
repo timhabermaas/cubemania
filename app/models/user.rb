@@ -17,18 +17,11 @@ class User < ActiveRecord::Base
 
   has_many :posts, :dependent => :nullify
   has_many :comments, :dependent => :nullify
-  has_many :competitions, :dependent => :nullify
-  has_many :shouts, :dependent => :nullify
-  def participances
-    cols = %w(id name puzzle_id created_at repeat).map { |c| "competitions.#{c}"}.join(', ')
-    Competition.joins(:averages).select("#{cols}, clocks.created_at as date").where(:user_id => self.id).group("#{cols}, clocks.created_at").all
-  end
   has_many :singles, :dependent => :delete_all do
     def for(puzzle); where(:puzzle_id => puzzle.id).order('created_at desc'); end
     def best(puzzle); not_dnf.where(:puzzle_id => puzzle.id).order(:time).first; end
     def average(puzzle); not_dnf.where(:puzzle_id => puzzle.id).calculate(:average, :time); end
   end
-  has_many :averages, :dependent => :destroy
 
   has_many :records, :include => { :puzzle => :kind }, :order => 'puzzles.name, kinds.name', :dependent => :delete_all do
     def for(puzzle, amount)

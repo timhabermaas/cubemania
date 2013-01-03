@@ -11,37 +11,13 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121020000945) do
-
-  create_table "averages", :force => true do |t|
-    t.integer  "time",                              :null => false
-    t.boolean  "dnf",            :default => false, :null => false
-    t.integer  "user_id",                           :null => false
-    t.integer  "puzzle_id",                         :null => false
-    t.integer  "competition_id",                    :null => false
-    t.string   "comment"
-    t.datetime "created_at",                        :null => false
-    t.datetime "updated_at",                        :null => false
-  end
+ActiveRecord::Schema.define(:version => 20121231015839) do
 
   create_table "comments", :force => true do |t|
     t.text     "content",    :null => false
     t.integer  "post_id",    :null => false
     t.integer  "user_id"
     t.datetime "created_at", :null => false
-  end
-
-  create_table "competitions", :force => true do |t|
-    t.string   "name",           :limit => 64,                     :null => false
-    t.string   "description"
-    t.integer  "user_id",                                          :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "puzzle_id",                                        :null => false
-    t.string   "repeat",         :limit => 32, :default => "once", :null => false
-    t.boolean  "sticky",                       :default => false,  :null => false
-    t.integer  "averages_count",               :default => 0,      :null => false
-    t.string   "skill",          :limit => 32, :default => "all",  :null => false
   end
 
   create_table "delayed_jobs", :force => true do |t|
@@ -113,31 +89,14 @@ ActiveRecord::Schema.define(:version => 20121020000945) do
 
   add_index "records_singles", ["record_id", "single_id"], :name => "index_records_singles_on_record_id_and_single_id"
 
-  create_table "scrambles", :force => true do |t|
-    t.string   "scramble",       :limit => 1024, :null => false
-    t.integer  "position",                       :null => false
-    t.integer  "competition_id",                 :null => false
-    t.datetime "created_at"
-  end
-
-  add_index "scrambles", ["competition_id", "created_at", "position"], :name => "index_scrambles_on_competition_id_and_created_at_and_position"
-
-  create_table "shouts", :force => true do |t|
-    t.string   "content",        :null => false
-    t.integer  "competition_id", :null => false
-    t.integer  "user_id"
-    t.datetime "created_at"
-  end
-
   create_table "singles", :force => true do |t|
-    t.integer  "time",                                      :null => false
-    t.integer  "puzzle_id",                                 :null => false
+    t.integer  "time",                                                          :null => false
+    t.integer  "puzzle_id",                                                     :null => false
     t.datetime "created_at"
-    t.integer  "user_id",                    :default => 0, :null => false
+    t.integer  "user_id",                    :default => 0,                     :null => false
     t.string   "scramble",   :limit => 1024
-    t.integer  "average_id"
     t.string   "comment"
-    t.datetime "updated_at",                                :null => false
+    t.datetime "updated_at",                 :default => '2010-01-01 00:00:00', :null => false
     t.string   "penalty",    :limit => 8
   end
 
@@ -150,7 +109,6 @@ ActiveRecord::Schema.define(:version => 20121020000945) do
     t.string   "encrypted_password",                                    :null => false
     t.datetime "created_at"
     t.string   "role",               :limit => 16,  :default => "user"
-    t.integer  "averages_count",                    :default => 0,      :null => false
     t.string   "wca"
     t.boolean  "sponsor",                           :default => false,  :null => false
     t.string   "time_zone",          :limit => 100, :default => "UTC"

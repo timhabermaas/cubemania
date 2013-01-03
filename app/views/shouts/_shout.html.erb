@@ -1,5 +1,0 @@
-<%= li_for shout do %>
-  <cite><%= shout.user.nil? ? 'Deleted Cuber' : link_to(shout.user.name, shout.user) %></cite>
-  <q><%=m shout.content %></q>
-  <small><%= link_to 'Destroy', [@puzzle, @competition, shout], :confirm => 'Are you sure?', :method => :delete if can? :destroy, shout %></small>
-<% end %>

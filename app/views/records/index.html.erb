@@ -1,0 +1,19 @@
+<p class="tabs">
+  <%= record_type_tabs %>
+</p>
+
+<% if @records.empty? %>
+  <p class="challenge">
+   Be the first: <%= link_to "Get the record!", puzzle_timers_path(params[:puzzle_id]) %>
+  </p>
+<% else %>
+  <table id="records">
+    <tbody>
+      <%= render @records %>
+    </tbody>
+  </table>
+<% end %>
+
+<div class="pagination">
+  <%= will_paginate @records %>
+</div>

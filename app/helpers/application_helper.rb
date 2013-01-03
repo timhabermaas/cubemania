@@ -23,16 +23,8 @@ module ApplicationHelper
     end.+ " #{params[:controller].singularize.titleize}"
   end
 
-  def using_backbone?
-    controller?(:homes, :backbones)
-  end
-
   def kinds
     @kinds ||= Kind.includes(:puzzles)
-  end
-
-  def subnavigation_path(puzzle)
-    url_for :puzzle_id => puzzle.slug, :type => params[:type], :controller => params[:controller]
   end
 
   def navigation_path(item)
@@ -47,6 +39,15 @@ module ApplicationHelper
     names.include? params[:action].to_sym
   end
 
+  def display_subnavigation?
+    controller? :records and action? :index or
+      controller? :timers
+  end
+
+  def profile_page?
+    current_page? user_path(current_user)
+  end
+
   def edit?
     action? :edit, :update, :show
   end
@@ -55,17 +56,24 @@ module ApplicationHelper
     controller? item[:controller].to_sym
   end
 
+  def current_puzzle
+    @current_puzzle ||= Puzzle.find params[:puzzle_id]
+  end
+
+  def current_kind
+    @current_kind ||= current_puzzle.kind
+  end
+
   def current_puzzle?(puzzle)
-    if [puzzle.id.to_s, puzzle.slug].include? params[:puzzle_id]
-      params[:kind_id] = puzzle.kind_id.to_s
-      true
-    else
-      false
-    end
+    puzzle == current_puzzle
   end
 
   def current_kind?(kind)
-    params[:kind_id] == kind.id.to_s
+    kind == current_kind
+  end
+
+  def current_kind_index
+    kinds.index current_kind
   end
 
   def type?(type)
@@ -95,20 +103,38 @@ module ApplicationHelper
     end
   end
 
+  def time_or_none(time)
+    if time
+      "<strong>#{ft time}</strong>"
+    else
+      "<small>None</small>"
+    end.html_safe
+  end
+
   def d(date)
+    return "" if date.nil? # TODO move to presenter class
     date.strftime '%B %d, %Y'
   end
 
   def dt(datetime)
+    return "" if datetime.nil? # TODO move to presenter class
     datetime.strftime '%B %d, %Y at %H:%M'
   end
 
-  def singles_as_string(average, spacer = ' ')
-    average.singles.map { |s| s.dnf? ? 'DNF' : ft(s.time, spacer) }.join ', ' if average.respond_to? :singles
-  end
-
-  def flot_dt(time)
-    time.to_i * 1000
+  def compare(my_time, other_time)
+    if other_time.nil? and my_time.nil?
+      "equal"
+    elsif other_time.nil?
+      "faster"
+    elsif my_time.nil?
+      "slower"
+    elsif my_time < other_time
+      "faster"
+    elsif my_time > other_time
+      "slower"
+    else
+      "equal"
+    end
   end
 
   def m(text)
@@ -128,21 +154,16 @@ module ApplicationHelper
     content_tag_for :li, record, *args, &block
   end
 
-  def cache_key(attribute = nil)
-    key = params.map{ |k, v| k.to_s + '/' + v.to_s}.sort
-    key << attribute.to_s if attribute
-    logger.info key.join('/')
-    key.join('/')
-  end
-
   def paginate(object, per_page = 100)
     object = object.paginate :page => params[:page], :per_page => per_page
   end
 
-  def options_for_user_select
-    users = User.joins(:singles).where("singles.puzzle_id" => params[:puzzle_id]).group("users.id").select("users.id, users.name")
-    #users = User.find_by_sql ['SELECT u.id, u.name FROM singles r LEFT OUTER JOIN users u ON r.user_id = u.id WHERE r.puzzle_id = ? AND r.record = ? AND u.id <> ? ORDER BY u.name', params[:puzzle_id], true, current_user.id]
-    options_for_select users.collect { |u| [u.name, "/users/#{u.id}/puzzles/#{params[:puzzle_id]}/singles.json"]}.unshift(['Compare with ...']) # was user_puzzle_averages_path(u.id, params[:puzzle_id], :format => :xml)
+  def current_page_number
+    params[:page].present? ? params[:page].to_i : 1
+  end
+
+  def next_page
+    current_page_number + 1
   end
 
   def possessive(name)
