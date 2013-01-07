@@ -6,6 +6,9 @@ class Cubemania.Models.User extends Backbone.Model
     this.records = new Cubemania.Collections.Records()
     @bind("change", @setupRecords, this)
 
+  getId: ->
+    @get("id")
+
   setupRecords: ->
     @records = new Cubemania.Collections.Records(@get("records") || [])
 

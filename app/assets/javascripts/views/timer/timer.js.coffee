@@ -12,8 +12,6 @@ class Cubemania.Views.Timer extends Cubemania.BaseView
     "blur div.add_comment textarea": "enableTimer"
 
   initialize: ->
-    @bindTo Cubemania.currentPuzzle, "change", @updateScramble, this
-    @bindTo Cubemania.currentPuzzle, "change", @resetTime, this
     @timer = new Cubemania.Timer()
     @bindTo @timer, "stopped", @displayAddCommentBubble, this
     @bindTo @timer, "started", @hideAddCommentBubble, this

@@ -5,7 +5,6 @@ class Cubemania.Views.Flash extends Cubemania.BaseView
 
   initialize: ->
     @message = ""
-    @bindTo Cubemania.currentPuzzle, "change", @slideUp, this
 
   show: (message) ->
     @message = message

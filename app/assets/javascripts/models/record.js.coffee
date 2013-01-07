@@ -3,9 +3,8 @@ class Cubemania.Models.Record extends Backbone.Model
   containsSingle: (single) ->
     _.any(@get("singles"), (s) -> s.id == single.get("id"))
 
-  getHtmlUrl: ->
-    puzzle = Cubemania.puzzles.get(@get("puzzle_id"))
-    "/puzzles/#{puzzle.get("slug")}/records/#{@get('id')}"
+  getHtmlUrl: (slug) ->
+    "/puzzles/#{slug}/records/#{@get("id")}"
 
   title: -> # TODO move to RecordPresenter?
     if @get("amount") == 1

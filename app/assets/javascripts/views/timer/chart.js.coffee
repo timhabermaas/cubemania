@@ -122,7 +122,7 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
       callback(@generateChartDataFromApiData data)
 
   addUserToChart: (id, name, color = Cubemania.Views.Chart.COLORS[0]) ->
-    puzzleId = Cubemania.currentPuzzle.puzzle.get("id")
+    puzzleId = Cubemania.currentPuzzle.getId()
     @fetchDataForChart puzzleId, id, @groupBy, (data) =>
       @chart.addSeries
         id: id
@@ -132,7 +132,7 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
       @chart.setTitle({}, { text: @subtitle(data) }) # TODO duplication
 
   updateDataForUser: (id, interval) ->
-    puzzleId = Cubemania.currentPuzzle.puzzle.get("id")
+    puzzleId = Cubemania.currentPuzzle.getId()
     @fetchDataForChart puzzleId, id, interval, (data) =>
       @chart.get(id).setData(data)
       @chart.setTitle({}, { text: @subtitle(data) })

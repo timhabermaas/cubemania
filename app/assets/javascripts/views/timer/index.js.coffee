@@ -26,7 +26,7 @@ class Cubemania.Views.TimerIndex extends Cubemania.BaseView
       @records.fetch(data: $.param(user_id: Cubemania.currentUser.get("id")))
 
   refetchRecords: =>
-    @records.setPuzzleId(Cubemania.currentPuzzle.puzzle.get("id"))
+    @records.setPuzzleId(Cubemania.currentPuzzle.getId())
     @records.fetch(data: {user_id: Cubemania.currentUser.get("id")})
 
   newRecordsArrived: (records) ->

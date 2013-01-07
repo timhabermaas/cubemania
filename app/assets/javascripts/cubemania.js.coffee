@@ -7,10 +7,8 @@ window.Cubemania = # TODO is timer only! => Rename.
 
   init: ->
     Cubemania.scrambler = new Cubemania.Scrambler()
-    Cubemania.kinds = new Cubemania.Collections.Kinds($("#subnavigation").data("kinds"))
-    Cubemania.puzzles = Cubemania.kinds.puzzles()
 
-    Cubemania.currentPuzzle = new Cubemania.Models.CurrentPuzzle()
+    Cubemania.currentPuzzle = new Cubemania.Models.Puzzle($("#backbone-container").data("puzzle"))
     Cubemania.currentUser = new Cubemania.Models.User($("#backbone-container").data("user-data"))
 
     Cubemania.flashView = new Cubemania.Views.Flash()
@@ -18,5 +16,15 @@ window.Cubemania = # TODO is timer only! => Rename.
 
     Cubemania.loadingView = new Cubemania.Views.LoadingIndicator()
 
-    new Cubemania.Routers.Router()
-    Backbone.history.start(pushState: true)
+    puzzle_id = Cubemania.currentPuzzle.getId()
+
+    singles = new Cubemania.Collections.Singles([], puzzleId: puzzle_id, useLocalStorage: !Cubemania.currentUser.present())
+    singles.fetch(data: $.param(user_id: Cubemania.currentUser.getId()))
+    records = new Cubemania.Collections.Records([], puzzleId: puzzle_id, useLocalStorage: !Cubemania.currentUser.present())
+    records.fetch(data: $.param(user_id: Cubemania.currentUser.getId()))
+
+    Cubemania.subnavigationView.makeAutoHideable()
+
+    view = new Cubemania.Views.TimerIndex(collection: singles, records: records)
+
+    $("#backbone-container").html(view.render().el)

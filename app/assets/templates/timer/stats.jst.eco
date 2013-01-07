@@ -15,7 +15,7 @@
     <% if r?: %>
       <%= r.capitalizedTitle() %>:
       <strong><%= formatTime r.get("time") %></strong>
-      <small><a href="<%= r.getHtmlUrl() %>">Details</a></small><br />
+      <small><a href="<%= r.getHtmlUrl(@puzzleSlug) %>">Details</a></small><br />
     <% end %>
   <% end %>
 </div>
