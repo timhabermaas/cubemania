@@ -34,6 +34,11 @@ class UsersController < ApplicationController
     end
   end
 
+  def block
+    @user = object
+    @user.block!
+  end
+
   def index
     @users = User.order("singles_count desc").paginate(:page => params[:page], :per_page => 200)
     if params[:q]

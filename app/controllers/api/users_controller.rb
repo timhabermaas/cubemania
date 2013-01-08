@@ -19,15 +19,6 @@ module Api
       end
     end
 
-    def block
-      @user = object
-      @user.block!
-
-      respond_to do |format|
-        format.json { render :json => @user }
-      end
-    end
-
   private
     def object(options = nil)
       User.find params[:id], options

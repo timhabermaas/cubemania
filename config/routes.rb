@@ -10,9 +10,7 @@ Cubemania::Application.routes.draw do
   match "/delayed_job" => DelayedJobWeb, :anchor => false
 
   namespace :api do
-    resources :users do
-      post :block, :on => :member
-    end
+    resources :users
     resources :puzzles do
       resources :singles do
         get :grouped, :on => :collection
@@ -25,7 +23,9 @@ Cubemania::Application.routes.draw do
     resources :comments, :only => [:create, :destroy]
   end
 
-  resources :users
+  resources :users do
+    post :block, :on => :member
+  end
 
   resources :puzzles, :defaults => { :puzzle_id => default_puzzle } do
     resources :records, :only => [:show, :index] do
