@@ -6,7 +6,7 @@ form {
     margin-bottom: 0.75em;
   }
   li.error {
-    input {
+    input, textarea {
       border: 2px solid #a00;
     }
     p.inline-errors {
