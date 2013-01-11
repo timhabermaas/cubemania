@@ -44,39 +44,37 @@
             <%= puzzle.name %> <small><%= puzzle.kind.short_name %></small>
           </span>
         </div>
-        <div>
-          <table>
-            <% if @own_records %>
-              <thead>
-                <th></th>
-                <th><%= @user.name %></th>
-                <th>Me</th>
-              </thead>
-            <% end %>
-            <tbody>
-              <% AverageType.all.each do |type| %>
-                <tr<%= raw(' class="last"') if type.count == 12 %>>
-                  <th class="type">
-                    <% if @own_records %>
-                      <%= type.short_name %>
-                    <% else %>
-                      <%= type.name %>
-                    <% end %>
-                  </th>
-                  <td>
-                    <%= time_or_none records[type.count].try(:time) %>
-                  </td>
+        <table>
+          <% if @own_records %>
+            <thead>
+              <th></th>
+              <th><%= truncate @user.name, :length => 11 %></th>
+              <th>Me</th>
+            </thead>
+          <% end %>
+          <tbody>
+            <% AverageType.all.each do |type| %>
+              <tr<%= raw(' class="last"') if type.count == 12 %>>
+                <th class="type">
                   <% if @own_records %>
-                  <% my_time = @own_records[puzzle].try(:[], type.count).try(:time) %>
-                  <td class="<%= compare(my_time, records[type.count].try(:time)) %>">
-                    <%= time_or_none my_time %>
-                  </td>
+                    <%= type.short_name %>
+                  <% else %>
+                    <%= type.name %>
                   <% end %>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
+                </th>
+                <td>
+                  <%= time_or_none records[type.count].try(:time) %>
+                </td>
+                <% if @own_records %>
+                <% my_time = @own_records[puzzle].try(:[], type.count).try(:time) %>
+                <td class="<%= compare(my_time, records[type.count].try(:time)) %>">
+                  <%= time_or_none my_time %>
+                </td>
+                <% end %>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
       </li>
       <% end %>
     </ul>
