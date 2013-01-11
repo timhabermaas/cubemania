@@ -45,42 +45,6 @@ describe User do
     end
   end
 
-  describe "to_json" do
-    let(:forbidden_attributes) do
-      [:encrypted_password, :ignored, :salt, :email, :created_at, :sponsor]
-    end
-
-    let(:necessary_attributes) do
-      [:id, :singles_count, :time_zone, :wca, :name]
-    end
-
-    let(:user) do
-      create(:user, :name => 'peter', :email => 'peter@doc.com', :wca => '2007JDAE01')
-    end
-
-    let(:user_hash) do
-      JSON.parse(user.to_json)
-    end
-
-    it "should not display sensible information via json" do
-      forbidden_attributes.each do |attribute|
-        user_hash.keys.should_not include(attribute.to_s)
-      end
-    end
-
-    it "should contain necessary informations about a user" do
-      necessary_attributes.each do |attribute|
-        user_hash.keys.should include(attribute.to_s)
-      end
-    end
-
-    it "should contain proper values" do
-      user_hash['name'].should == 'peter'
-      user_hash['singles_count'].should == 0
-      user_hash['wca'].should == '2007JDAE01'
-    end
-  end
-
   describe "password" do
     let(:user) do
       create(:user)

@@ -27,10 +27,6 @@ module ApplicationHelper
     @kinds ||= Kind.includes(:puzzles)
   end
 
-  def navigation_path(item)
-    url_for :controller => item.controller, :action => item.action
-  end
-
   def controller?(*names)
     names.include? params[:controller].to_sym
   end
@@ -52,10 +48,6 @@ module ApplicationHelper
     action? :edit, :update, :show
   end
 
-  def current_item?(item)
-    controller? item[:controller].to_sym
-  end
-
   def current_puzzle
     @current_puzzle ||= Puzzle.find params[:puzzle_id]
   end
@@ -74,10 +66,6 @@ module ApplicationHelper
 
   def current_kind_index
     kinds.index current_kind
-  end
-
-  def type?(type)
-    params[:type] == type.to_s
   end
 
   def permit?
