@@ -48,8 +48,8 @@
           <% if @own_records %>
             <thead>
               <th></th>
-              <th><%= truncate @user.name, :length => 11 %></th>
               <th>Me</th>
+              <th><%= truncate @user.name, :length => 11 %></th>
             </thead>
           <% end %>
           <tbody>
@@ -62,15 +62,15 @@
                     <%= type.name %>
                   <% end %>
                 </th>
-                <td>
-                  <%= time_or_none records[type.count].try(:time) %>
-                </td>
                 <% if @own_records %>
                 <% my_time = @own_records[puzzle].try(:[], type.count).try(:time) %>
                 <td class="<%= compare(my_time, records[type.count].try(:time)) %>">
                   <%= time_or_none my_time %>
                 </td>
                 <% end %>
+                <td>
+                  <%= time_or_none records[type.count].try(:time) %>
+                </td>
               </tr>
             <% end %>
           </tbody>
