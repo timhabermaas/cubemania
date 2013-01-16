@@ -95,8 +95,8 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
 
   subtitle: (data = []) ->
     if data.length > 0
-      from = formatDate(new Date(data[data.length - 1][0]))
-      to = formatDate(new Date(data[0][0]))
+      from = formatDate(new Date(data[data.length - 1].x))
+      to = formatDate(new Date(data[0].x))
       "from #{from} to #{to}"
     else
       "from ? to ?"
@@ -125,7 +125,11 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
       @chart.setTitle({}, { text: @subtitle(data) }) # TODO set tooltip according to groupBy
 
   generateChartDataFromApiData: (apiData) ->
-    _.map apiData, (single) -> [single.created_at_timestamp * 1000, single.time]
+    _.map apiData, (single) ->
+      {
+        x: single.created_at_timestamp * 1000
+        y: single.time
+      }
 
   removeUserFromChart: (id) ->
     @chart.get(id).remove()
