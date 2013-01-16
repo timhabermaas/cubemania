@@ -114,13 +114,16 @@
 #times {
   #chart-container {
     #chart {
-      margin-bottom: 0.25em;
+      margin-bottom: 1em;
     }
     width: 598px;
     float: left;
     ul {
       margin: 0 auto;
       width: 50%;
+    }
+    p.help {
+      margin-top: -0.75em;
     }
   }
   #singles {

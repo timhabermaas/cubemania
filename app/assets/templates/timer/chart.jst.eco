@@ -1,7 +1,7 @@
 <div id="chart"></div>
 <p class="help">Zoom in by clicking and dragging with your mouse.</p>
 <p class="tabs">
-  <a href="#" class="solve">By Solve</a>
-  <a href="#" class="date selected">By Date</a>
+  <a href="#" class="by-solve selected">Recent solves</a>
+  <a href="#" class="by-date">By Date</a>
 </p>
 <input id="user-tokens" name="user-tokens" type="text" />

@@ -19,8 +19,14 @@ root.formatDateTime = (date) ->
   d = new Date(date)
   d.format("mmmm dd, yyyy 'at' h:mm tt")
 
-root.formatScramble = (text) ->
+replaceNewlinesWithBr = (text) ->
   text.replace /\n/g, "<br />" if text?
+
+root.formatScramble = (text) ->
+  replaceNewlinesWithBr(text)
+
+root.formatComment = (text) ->
+  replaceNewlinesWithBr(text)
 
 root.average = (singles, size) ->
   singles = singles[0...size]

@@ -7,44 +7,122 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
 
   @COLORS: [
     'rgba(223, 83, 83, 0.8)', # red
-    'rgba(81, 115, 151, 0.8)' # blue
+    'rgba(81, 115, 151, 0.85)' # blue
   ]
 
-  # TODO reset zoom
-  # TODO duplicated code
-  # TODO cancel fetching of json when user switches between intervals fast enough
-  #      or add local cache
+  byDate: (event) ->
+    event.preventDefault()
+    @$("p.tabs a").removeClass("selected")
+    $(event.currentTarget).addClass("selected")
 
-  byDate: ->
-    console.log "date"
+    if @singleChart
+      @createDateChart()
+      @addCurrentUserToChart()
+      @singleChart = false
+      @$("p.help").show()
+      @$("ul.token-input-list-facebook").show()
 
-  bySolve: ->
-    console.log "solve"
+  bySolve: (event) ->
+    event.preventDefault()
+    @$("p.tabs a").removeClass("selected")
+    $(event.currentTarget).addClass("selected")
 
-  userIdsInChart: ->
-    ids = _.pluck @$("#user-tokens").tokenInput("get"), "id"
-    ids.concat [Cubemania.currentUser.get("id")]
+    if !@singleChart
+      @createSinglesChart()
+      @singleChart = true
+      @$("p.help").hide()
+      @$("ul.token-input-list-facebook").hide()
 
-  render: ->
-    unless Cubemania.currentUser.present()
-      $(@el).html("<p class='suggestion'>You're currently not logged in!<br /> <a href='/login'>Login</a> or <a href='/register'>register</a> to save your times permanently. </p>")
-      return this
+  initialize: ->
+    @bindTo @collection, "reset", @render, this # TODO get rid of BaseView boilerplate
+    @bindTo @collection, "reset", @createSinglesChart, this
+    @bindTo @collection, "remove", @removeSingleFromChart, this
+    @bindTo @collection, "change", @updateSingleInChart, this
+    @singleChart = true
 
-    $(@el).html(@template())
+  # TODO extract common chart properties
+  createSinglesChart: ->
+    data = _.map @collection.models, @dataPointFromSingle
 
     @chart = new Highcharts.Chart(
       chart:
         renderTo: @$("#chart")[0]
         type: "scatter"
-        zoomType: "x"
+      title:
+        text: Cubemania.currentPuzzle.getFullName()
+      tooltip:
+        formatter: ->
+          t = "#{formatDateTime(this.point.date)}<br/>Time: <b>#{formatTime(this.y)}</b>"
+          if this.point.comment?
+            t += "<br/><i>#{formatScramble(this.point.comment)}</i>"
+          t
+      plotOptions:
+        scatter:
+          marker:
+            radius: 7
+            symbol: "circle"
+            states:
+              hover:
+                enabled: true
+                lineColor: 'rgb(100,100,100)'
+          states:
+            hover:
+              marker:
+                enabled: false
+      yAxis:
+        title:
+          text: "Time"
+        labels:
+          formatter: ->
+            formatTime(this.value)
+      series: [{
+        name: Cubemania.currentUser.get("name")
+        data: data
+        color: Cubemania.Views.Chart.COLORS[0]
+      }]
+    )
 
+  dataPointFromSingle: (single) ->
+    {
+      id: single.get("id")
+      y: single.get("time")
+      date: single.get("created_at")
+      comment: single.get("comment")
+    }
+
+  addSingleToChart: (single) ->
+    return unless @singleChart
+
+    @chart.series[0].addPoint(@dataPointFromSingle(single))
+
+  removeSingleFromChart: (single) ->
+    return unless @singleChart
+    @chart.get(single.get("id")).remove()
+
+  updateSingleInChart: (single) ->
+    return unless @singleChart
+
+    point = @chart.get(single.get("id"))
+
+    if point?
+      point.update @dataPointFromSingle(single)
+      console.log single
+    else
+      @addSingleToChart(single)
+
+  createDateChart: ->
+    @chart = new Highcharts.Chart(
+      chart:
+        renderTo: @$("#chart")[0]
+        type: "scatter"
+        zoomType: "x"
       title:
         text: "Your cubing progress in #{Cubemania.currentPuzzle.getFullName()}"
       subtitle:
         text: @subtitle()
       tooltip:
         formatter: ->
-          "#{formatDate(this.x)}<br/>Mean: #{formatTime(this.y)}"
+          "#{formatDate(this.x)}<br/>Mean: <b>#{formatTime(this.y)}</b>"
       plotOptions:
         scatter:
           marker:
@@ -62,12 +140,11 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
         type: "datetime"
         events:
           setExtremes: (event) => # TODO have one big chart (monthly cached, which gets set again when user zooms out)
-            userId = Cubemania.currentUser.get("id")
+            userIds = @userIdsInChart()
             if event.min?
-              @updateDataForUser userId, event.min / 1000, event.max / 1000
+              @updateDataForUsers userIds, event.min / 1000, event.max / 1000
             else
-              @updateDataForUser userId, null, null
-
+              @updateDataForUsers userIds, null, null
       yAxis:
         title:
           text: "Time"
@@ -76,6 +153,14 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
             formatTime(this.value)
       series: []
     )
+
+  render: ->
+    unless Cubemania.currentUser.present()
+      $(@el).html("<p class='suggestion'>You're currently not logged in!<br /> <a href='/login'>Login</a> or <a href='/register'>register</a> to save your times permanently. </p>")
+      return this
+
+    $(@el).html(@template())
+    @$("p.help").hide()
 
     @$("#user-tokens").tokenInput "/api/users.json",
       crossDomain: false
@@ -89,7 +174,7 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
       onDelete: (item) =>
         @removeUserFromChart(item.id)
 
-    @addCurrentUserToChart()
+    @$("ul.token-input-list-facebook").hide()
 
     this
 
@@ -124,12 +209,19 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
       @chart.get(id).setData(data)
       @chart.setTitle({}, { text: @subtitle(data) }) # TODO set tooltip according to groupBy
 
+  updateDataForUsers: (ids, from, to) ->
+    @updateDataForUser(id, from, to) for id in ids
+
   generateChartDataFromApiData: (apiData) ->
     _.map apiData, (single) ->
       {
         x: single.created_at_timestamp * 1000
         y: single.time
       }
+
+  userIdsInChart: ->
+    ids = _.pluck @$("#user-tokens").tokenInput("get"), "id"
+    ids.concat [Cubemania.currentUser.get("id")]
 
   removeUserFromChart: (id) ->
     @chart.get(id).remove()
