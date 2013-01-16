@@ -13,7 +13,7 @@ Cubemania::Application.routes.draw do
     resources :users
     resources :puzzles do
       resources :singles do
-        get :grouped, :on => :collection
+        get :chart, :on => :collection
       end
       resources :records
     end

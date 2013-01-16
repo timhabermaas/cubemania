@@ -1,6 +1,10 @@
 class Cubemania.Views.Chart extends Cubemania.BaseView
   template: JST["timer/chart"]
 
+  events:
+    "click a.by-solve": "bySolve"
+    "click a.by-date": "byDate"
+
   @COLORS: [
     'rgba(223, 83, 83, 0.8)', # red
     'rgba(81, 115, 151, 0.8)' # blue
@@ -10,41 +14,16 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
   # TODO duplicated code
   # TODO cancel fetching of json when user switches between intervals fast enough
   #      or add local cache
-  switchToDay: =>
-    @switchTo "day"
 
-  switchToWeek: =>
-    @switchTo "week"
+  byDate: ->
+    console.log "date"
 
-  switchToMonth: =>
-    @switchTo "month"
-
-  switchTo: (interval) ->
-    @groupBy = interval
-    @updateDataForUser(id, interval) for id in @userIdsInChart()
+  bySolve: ->
+    console.log "solve"
 
   userIdsInChart: ->
     ids = _.pluck @$("#user-tokens").tokenInput("get"), "id"
     ids.concat [Cubemania.currentUser.get("id")]
-
-  initialize: ->
-    @groupBy = "month"
-    @tabs = @addSubview new Cubemania.Views.Tabs
-      title: "Group by:"
-      tabs: [
-        name: "Day"
-        className: "day"
-        callback: @switchToDay
-      ,
-        name: "Week"
-        className: "week"
-        callback: @switchToWeek
-      ,
-        name: "Month"
-        className: "month"
-        callback: @switchToMonth
-      ]
-      selectedIndex: 2
 
   render: ->
     unless Cubemania.currentUser.present()
@@ -52,13 +31,13 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
       return this
 
     $(@el).html(@template())
-    @$("p.help").after(@tabs.render().el)
 
     @chart = new Highcharts.Chart(
       chart:
         renderTo: @$("#chart")[0]
         type: "scatter"
         zoomType: "x"
+
       title:
         text: "Your cubing progress in #{Cubemania.currentPuzzle.getFullName()}"
       subtitle:
@@ -81,6 +60,14 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
                 enabled: false
       xAxis:
         type: "datetime"
+        events:
+          setExtremes: (event) => # TODO have one big chart (monthly cached, which gets set again when user zooms out)
+            userId = Cubemania.currentUser.get("id")
+            if event.min?
+              @updateDataForUser userId, event.min / 1000, event.max / 1000
+            else
+              @updateDataForUser userId, null, null
+
       yAxis:
         title:
           text: "Time"
@@ -117,13 +104,14 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
   addCurrentUserToChart: ->
     @addUserToChart Cubemania.currentUser.get("id"), Cubemania.currentUser.get("name")
 
-  fetchDataForChart: (puzzleId, userId, interval, callback) ->
-    $.getJSON "/api/puzzles/#{puzzleId}/singles/grouped.json?by=#{@groupBy}&user_id=#{userId}", (data) =>
+  # TODO add convenient function for zooming on current day
+  fetchDataForChart: (userId, from, to, callback) ->
+    puzzleId = Cubemania.currentPuzzle.getId()
+    $.getJSON "/api/puzzles/#{puzzleId}/singles/chart.json?from=#{from}&to=#{to}&user_id=#{userId}", (data) =>
       callback(@generateChartDataFromApiData data)
 
   addUserToChart: (id, name, color = Cubemania.Views.Chart.COLORS[0]) ->
-    puzzleId = Cubemania.currentPuzzle.getId()
-    @fetchDataForChart puzzleId, id, @groupBy, (data) =>
+    @fetchDataForChart id, null, null, (data) =>
       @chart.addSeries
         id: id
         name: name
@@ -131,12 +119,10 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
         data: data
       @chart.setTitle({}, { text: @subtitle(data) }) # TODO duplication
 
-  updateDataForUser: (id, interval) ->
-    puzzleId = Cubemania.currentPuzzle.getId()
-    @fetchDataForChart puzzleId, id, interval, (data) =>
+  updateDataForUser: (id, from, to) ->
+    @fetchDataForChart id, from, to, (data) =>
       @chart.get(id).setData(data)
-      @chart.setTitle({}, { text: @subtitle(data) })
-      # TODO set tooltip according to groupBy
+      @chart.setTitle({}, { text: @subtitle(data) }) # TODO set tooltip according to groupBy
 
   generateChartDataFromApiData: (apiData) ->
     _.map apiData, (single) -> [single.created_at_timestamp * 1000, single.time]

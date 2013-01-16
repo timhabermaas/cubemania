@@ -34,8 +34,8 @@ describe Single do
       let(:december_3) { DateTime.new(2012, 12, 3) }
 
       before :each do
-        create :single, :time => 1000, :created_at => october_4
-        create :single, :time => 4000, :created_at => october_5
+        create :single, :time => 1000, :created_at => october_4, :comment => "Best solve ever!"
+        create :single, :time => 4000, :created_at => october_5, :comment => "Even better!"
         create :single, :time => 4000, :created_at => october_20
         create :single, :time => 3000, :created_at => october_20
         create :single, :time => 5000, :created_at => november_2
@@ -69,10 +69,17 @@ describe Single do
       end
 
       describe "ignores dnf solves" do
-        subject { Single.grouped(by: :month).all }
+        subject { Single.grouped(by: :month) }
         before(:each) { create :dnf_single, :created_at => december_3 }
 
         it { should have(2).items }
+      end
+
+      describe "comments" do
+        it "concatenates comments" do
+          singles = Single.grouped(by: :month).sort_by { |s| s.created_at }
+          expect(singles[0].comment).to eq("Best solve ever!\nEven better!")
+        end
       end
 
       context "by: invalid_interval" do

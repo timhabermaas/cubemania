@@ -3,18 +3,35 @@ module Api
   class SinglesController < ApiController
     respond_to :json
 
-    before_filter :fetch_user, :only => [:index, :grouped]
+    before_filter :fetch_user, :only => [:index, :chart]
     before_filter :fetch_puzzle
-    caches_action :grouped, :cache_path => lambda { |c| c.params },
-                            :expires_in => 1.minutes
 
     def index
       @singles = @user.singles.for(@puzzle).limit(params[:limit] || 150)
       respond_with @singles
     end
 
-    def grouped
-      @singles = @user.singles.where(:puzzle_id => @puzzle.id).grouped(by: params[:by]).order("created_at desc")
+    def chart
+      @singles = @user.singles.where(:puzzle_id => @puzzle.id)
+
+      begin
+        from = DateTime.strptime(params[:from], "%s")
+        to = DateTime.strptime(params[:to], "%s")
+      rescue
+        from = @singles.minimum(:created_at)
+        to = Time.zone.now
+      end
+      difference = to - from # in days
+      @singles =
+        if difference > 365 * 2 # TODO 2.years
+          @singles.grouped(by: :month)
+        elsif difference > 200
+          @singles.grouped(by: :week)
+        elsif difference > 30
+          @singles.grouped(by: :day)
+        else
+          @singles.scoped
+        end.where(:created_at => from..to).order("created_at desc") # add singles / don't group
       respond_with @singles
     end
 
