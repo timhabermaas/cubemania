@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe "api/puzzles/:id/singles" do
-  describe "grouped" do
+  describe "chart" do
     let(:puzzle) { create(:puzzle) }
     let(:user2) { create(:user) }
 
@@ -19,9 +19,9 @@ describe "api/puzzles/:id/singles" do
       create :single, :user => user2, :puzzle => puzzle, :created_at => third_of_april, :time => 20000
     end
 
-    describe "by month" do
-      it "return" do
-        page.driver.get "/api/puzzles/#{puzzle.id}/singles/grouped.json", :user_id => @user.id, :by => "month"
+    describe "no date range given" do
+      it "returns singles grouped by month" do
+        page.driver.get "/api/puzzles/#{puzzle.id}/singles/chart.json", :user_id => @user.id
         result = JSON.parse(page.driver.response.body)
         expect(result).to have(2).items
         expect(result[0]["time"]).to eq(2500)

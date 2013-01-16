@@ -72,7 +72,7 @@ describe Single do
         subject { Single.grouped(by: :month) }
         before(:each) { create :dnf_single, :created_at => december_3 }
 
-        it { should have(2).items }
+        its(:length) { should eq(2)  }
       end
 
       describe "comments" do
