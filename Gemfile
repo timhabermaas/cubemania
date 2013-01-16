@@ -60,4 +60,6 @@ group :development, :test do
   gem 'guard-spork'
   gem 'rb-fsevent'
   gem 'growl'
+  gem 'quiet_assets'
+  gem 'thin'
 end
