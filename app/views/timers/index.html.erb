@@ -1,4 +1,4 @@
-<%= content_tag :div, :id => "backbone-container", :data => { :user_data => current_user.to_json, :puzzle => @puzzle.to_json } do %>
+<%= content_tag :div, :id => "backbone-container", :data => { :user_data => current_user.to_json, :puzzle => @puzzle.to_json(:include => :kind) } do %>
   <p class="suggestion">
     Enable JavaScript to fully enjoy Cubemania!
   </p>
