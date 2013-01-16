@@ -25,7 +25,7 @@
 
 //= require_tree .
 
-document.cookie = 'tz_offset=' + ((new Date()).getTimezoneOffset() + calculateDst() * 6);
+document.cookie = 'tz_offset=' + (new Date()).getTimezoneOffset();
 
 $(document).ready(function() {
   if ($("#subnavigation").length > 0) {
