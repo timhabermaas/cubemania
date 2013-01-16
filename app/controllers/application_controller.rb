@@ -17,9 +17,14 @@ class ApplicationController < ActionController::Base
   end
 
   before_filter :store_return_to
+  around_filter :set_time_zone
 
 private
   def store_return_to
     store_location params[:return_to] unless params[:return_to].nil?
+  end
+
+  def set_time_zone(&block)
+    Time.use_zone(current_user.time_zone, &block)
   end
 end
