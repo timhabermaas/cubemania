@@ -106,7 +106,6 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
 
     if point?
       point.update @dataPointFromSingle(single)
-      console.log single
     else
       @addSingleToChart(single)
 
