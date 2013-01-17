@@ -154,10 +154,6 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
     )
 
   render: ->
-    unless Cubemania.currentUser.present()
-      $(@el).html("<p class='suggestion'>You're currently not logged in!<br /> <a href='/login'>Login</a> or <a href='/register'>register</a> to save your times permanently. </p>")
-      return this
-
     $(@el).html(@template())
     @$("p.help").hide()
 
