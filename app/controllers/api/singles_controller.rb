@@ -12,7 +12,7 @@ module Api
     end
 
     def chart
-      @singles = @user.singles.where(:puzzle_id => @puzzle.id)
+      @singles = @user.singles.where(:puzzle_id => @puzzle.id).not_dnf
 
       begin
         from = DateTime.strptime(params[:from], "%s")

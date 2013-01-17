@@ -68,13 +68,6 @@ describe Single do
         end
       end
 
-      describe "ignores dnf solves" do
-        subject { Single.grouped(by: :month) }
-        before(:each) { create :dnf_single, :created_at => december_3 }
-
-        its(:length) { should eq(2)  }
-      end
-
       describe "comments" do
         it "concatenates comments" do
           singles = Single.grouped(by: :month).sort_by { |s| s.created_at }
