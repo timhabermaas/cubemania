@@ -1,0 +1,25 @@
+<h3>Activity</h3>
+
+<section class="calendar">
+  <svg width="636" height="84">
+    <style>
+      rect:hover {
+        opacity: 0.5;
+      }
+    </style>
+    <% 52.downto(0) do |week| %>
+      <% week_date = week.weeks.ago.beginning_of_week + 1.day %>
+      <g transform="translate(<%= (52 - week) * 12 %>, 0)">
+        <% 7.times do |day| %>
+          <% day_date = (week_date + day.days).utc.beginning_of_day %>
+          <% if day_date <= Time.zone.now %>
+            <% count = @activity[day_date.to_s(:db)] || 0 %>
+            <rect class="box" width="10" height="10" y="<%= day * 12 %>" style="fill: <%= count_to_color(count) %>;">
+              <title><%= count %> solves on <%=d day_date %></title>
+            </rect>
+          <% end %>
+        <% end %>
+      </g>
+    <% end %>
+  </svg>
+</section>
