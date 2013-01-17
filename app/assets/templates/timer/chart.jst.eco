@@ -1,8 +1,8 @@
-<div id="chart"></div>
-<p class="help">Zoom in by clicking and dragging with your mouse.</p>
 <p class="tabs">
   Chart:
   <a href="#" class="by-solve selected">Recent</a>
   <a href="#" class="by-date">Longtime</a>
 </p>
+<div id="chart"></div>
+<p class="help">Zoom in by clicking and dragging with your mouse.</p>
 <input id="user-tokens" name="user-tokens" type="text" />

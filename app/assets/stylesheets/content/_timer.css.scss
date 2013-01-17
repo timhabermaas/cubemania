@@ -113,8 +113,11 @@
 }
 #times {
   #chart-container {
+    p.tabs {
+      margin-bottom: 0.5em;
+    }
     #chart {
-      margin-bottom: 1em;
+      margin-bottom: 0.5em;
     }
     width: 598px;
     float: left;
@@ -123,7 +126,7 @@
       width: 50%;
     }
     p.help {
-      margin-top: -0.75em;
+      margin-bottom: 2em;
     }
   }
   #singles {
