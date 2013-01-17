@@ -3,6 +3,7 @@ class Ability
 
   def initialize(user)
     can :read, :all
+    cannot :read, :activity
     if user.nil?
       can :create, User
     elsif user.admin?

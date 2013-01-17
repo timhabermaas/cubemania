@@ -23,12 +23,12 @@
     </div>
   <% end %>
 
-  <h3>Activity</h3>
-  <% cache [@user, "activity"] do %>
-    <%= render :partial => "activity", :locals => { :activity => @activity.count } %>
+  <% if can? :read, :activity %>
+    <% cache [@user, "activity"] do %>
+      <%= render :partial => "activity", :locals => { :activity => @activity.count } %>
+    <% end %>
   <% end %>
 
-  <h3>Records</h3>
   <% cache [@user, "records"] do %>
     <%= render :partial => "records", :locals => { :records => @records.grouped_by_puzzle_and_amount } %>
   <% end %>
