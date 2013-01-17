@@ -17,9 +17,9 @@ class RecordsController < ApplicationController
   end
 
   def show
-    @puzzle = Puzzle.find params[:puzzle_id]
-    @record = @puzzle.records.find params[:id], :include => [:singles]
-    @user = @record.user
+    @user = User.find params[:user_id]
+    @record = @user.records.find params[:id], :include => [:singles]
+    @puzzle = @record.puzzle
     @singles = @record.singles.ordered
   end
 

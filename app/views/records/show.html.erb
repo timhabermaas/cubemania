@@ -33,7 +33,7 @@
 
 <% if can? :share, @record %>
 <p class="suggestion">
-  <%= link_to "Post on Facebook!", share_puzzle_record_path(@puzzle, @record) %>
+  <%= link_to "Post on Facebook!", share_user_record_path(@user, @record) %>
 </p>
 <% else %>
 <p class="challenge">

@@ -6,9 +6,9 @@ describe "records" do
   let!(:record2) { create :record, :puzzle => puzzle, :amount => 5, :time => 15230 }
   let!(:record3) { create :record, :puzzle => puzzle, :amount => 1, :time => 13370 }
 
-  describe "GET /puzzles/3x3x3/records/141" do
+  describe "GET /users/jon/records/141" do
     it "lists all singles and average time for that record" do
-      visit puzzle_record_path(puzzle, record)
+      visit user_record_path(record.user, record)
       expect(page).to have_content "12.51"
       5.times do |i|
         expect(page).to have_content record.singles[i].human_time

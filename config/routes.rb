@@ -25,12 +25,13 @@ Cubemania::Application.routes.draw do
 
   resources :users do
     post :block, :on => :member
+    resources :records, :only => [:show] do
+      get :share, :on => :member
+    end
   end
 
   resources :puzzles, :defaults => { :puzzle_id => default_puzzle } do
-    resources :records, :only => [:show, :index] do
-      get :share, :on => :member
-    end
+    resources :records, :only => [:index]
 
     resources :timers, :path => "timer"
   end

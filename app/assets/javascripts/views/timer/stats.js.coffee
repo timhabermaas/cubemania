@@ -27,9 +27,9 @@ class Cubemania.Views.Stats extends Cubemania.BaseView
     records = for i in [1, 5, 12] # TODO move to records collection?
       @records.getByAmount(i)
 
-    puzzleSlug = Cubemania.currentPuzzle.get("slug")
+    userSlug = Cubemania.currentUser.get("slug")
 
-    $(@el).html(@template(currentAverages: currentAverages, records: records, puzzleSlug: puzzleSlug))
+    $(@el).html(@template(currentAverages: currentAverages, records: records, userSlug: userSlug))
     this
 
   currentAverageDetails: (event) ->
