@@ -23,62 +23,13 @@
     </div>
   <% end %>
 
-  <%= render "activity" %>
+  <h3>Activity</h3>
+  <% cache [@user, "activity"] do %>
+    <%= render :partial => "activity", :locals => { :activity => @activity.count } %>
+  <% end %>
 
-  <% if @records.empty? %>
-    <p class="challenge">
-      <% if current_user? @user %>
-        How fast do you solve the cube?<br/>
-        <%= link_to "Stop your times and get the record!", puzzle_timers_path %>
-      <% else %>
-        <%= @user.name %> has no personal records yet. <%= link_to "Do you?", puzzle_timers_path %>
-      <% end %>
-    </p>
-  <% else %>
-    <ul class="records">
-      <% @records.each do |puzzle, records| %>
-      <li class="record <%= cycle "even", "odd" %>">
-        <div class="puzzle">
-          <div class="puzzle-image pos<%= puzzle.css_position %>">
-            <div class="kind-image pos<%= puzzle.kind.css_position %>"></div>
-          </div>
-          <span>
-            <%= puzzle.name %> <small><%= puzzle.kind.short_name %></small>
-          </span>
-        </div>
-        <table>
-          <% if @own_records %>
-            <thead>
-              <th></th>
-              <th>Me</th>
-              <th><%= truncate @user.name, :length => 11 %></th>
-            </thead>
-          <% end %>
-          <tbody>
-            <% AverageType.all.each do |type| %>
-              <tr<%= raw(' class="last"') if type.count == 12 %>>
-                <th class="type">
-                  <% if @own_records %>
-                    <%= type.short_name %>
-                  <% else %>
-                    <%= type.name %>
-                  <% end %>
-                </th>
-                <% if @own_records %>
-                <% my_time = @own_records[puzzle].try(:[], type.count).try(:time) %>
-                <td class="<%= compare(my_time, records[type.count].try(:time)) %>">
-                  <%= time_or_none my_time %>
-                </td>
-                <% end %>
-                <td>
-                  <%= time_or_none records[type.count].try(:time) %>
-                </td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      </li>
-      <% end %>
-    </ul>
+  <h3>Records</h3>
+  <% cache [@user, "records"] do %>
+    <%= render "records" %>
   <% end %>
 </div>

@@ -1,5 +1,5 @@
 class Single < ActiveRecord::Base
-  belongs_to :user, :counter_cache => true
+  belongs_to :user, :counter_cache => true, :touch => true
   belongs_to :puzzle
   has_and_belongs_to_many :records
 
