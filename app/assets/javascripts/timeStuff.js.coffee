@@ -17,7 +17,7 @@ root.formatDate = (date) ->
 
 root.formatDateTime = (date) ->
   d = new Date(date)
-  d.format("mmmm dd, yyyy 'at' h:mm tt")
+  d.format("mmmm dd, yyyy 'at' H:MM tt")
 
 replaceNewlinesWithBr = (text) ->
   text.replace /\n/g, "<br />" if text?
