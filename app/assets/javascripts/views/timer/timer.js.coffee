@@ -1,4 +1,4 @@
-class Cubemania.Views.Timer extends Cubemania.BaseView
+class Cubemania.Views.Timer extends Backbone.View
   template: JST["timer/timer"]
 
   events:
@@ -13,8 +13,8 @@ class Cubemania.Views.Timer extends Cubemania.BaseView
 
   initialize: ->
     @timer = new Cubemania.Timer()
-    @bindTo @timer, "stopped", @displayAddCommentBubble, this
-    @bindTo @timer, "started", @hideAddCommentBubble, this
+    @timer.on "stopped", @displayAddCommentBubble, this
+    @timer.on "started", @hideAddCommentBubble, this
     @timerEnabled = true
     @scramble = Cubemania.scrambler.scramble(Cubemania.currentPuzzle.getName())
     $(document).keydown(@stopTimer)
@@ -110,7 +110,3 @@ class Cubemania.Views.Timer extends Cubemania.BaseView
     @$("div.add_comment").slideUp()
     @$("div.add_comment form").hide()
     @$("div.add_comment a").show()
-
-  onDispose: ->
-    $(document).unbind("keydown")
-    $(document).unbind("keyup")

@@ -1,4 +1,4 @@
-class Cubemania.Views.Subnavigation extends Cubemania.BaseView
+class Cubemania.Views.Subnavigation extends Backbone.View
   events:
     "click #kinds a": "kindClicked"
 

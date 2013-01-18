@@ -1,14 +1,14 @@
-class Cubemania.Views.TimerIndex extends Cubemania.BaseView
+class Cubemania.Views.TimerIndex extends Backbone.View
   template: JST["timer/index"]
 
   initialize: (options) ->
     @records = options.records
-    @statsView = @addSubview new Cubemania.Views.Stats(singles: @collection, records: @records)
-    @timerView = @addSubview new Cubemania.Views.Timer(collection: @collection)
+    @statsView = new Cubemania.Views.Stats(singles: @collection, records: @records)
+    @timerView = new Cubemania.Views.Timer(collection: @collection)
     if Cubemania.currentUser.present()
-      @chartView = @addSubview new Cubemania.Views.Chart(collection: @collection)
+      @chartView = new Cubemania.Views.Chart(collection: @collection)
 
-    @singlesView = @addSubview new Cubemania.Views.Singles(collection: @collection)
+    @singlesView = new Cubemania.Views.Singles(collection: @collection)
     $(document).ajaxComplete(@checkForNewRecord)
     @refetchRecordsIntervalId = setInterval(@refetchRecords, 600000) # refetch records every 10 minutes
 
@@ -27,7 +27,7 @@ class Cubemania.Views.TimerIndex extends Cubemania.BaseView
 
   checkForNewRecord: (e, request, options) =>
     if request.getResponseHeader("X-NewRecord")
-      @records.on("reset", @newRecordsArrived, this)
+      @records.on "reset", @newRecordsArrived, this
       @records.fetch(data: $.param(user_id: Cubemania.currentUser.get("id")))
 
   refetchRecords: =>
@@ -38,7 +38,3 @@ class Cubemania.Views.TimerIndex extends Cubemania.BaseView
     r = new Cubemania.Presenters.RecordsPresenter(records)
     Cubemania.flashView.slideDown r.flashMessage(@collection.lastSingle())
     @records.off("reset", @newRecordsArrived)
-
-  onDispose: ->
-    $(document).unbind("ajaxComplete")
-    clearInterval(@refetchRecordsIntervalId)

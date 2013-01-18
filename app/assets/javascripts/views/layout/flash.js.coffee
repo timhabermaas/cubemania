@@ -1,4 +1,4 @@
-class Cubemania.Views.Flash extends Cubemania.BaseView
+class Cubemania.Views.Flash extends Backbone.View
 
   events:
     "click .close": "clickClose"

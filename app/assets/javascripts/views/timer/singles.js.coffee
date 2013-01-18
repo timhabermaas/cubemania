@@ -1,19 +1,19 @@
-class Cubemania.Views.Singles extends Cubemania.BaseView
+class Cubemania.Views.Singles extends Backbone.View
   template: JST["timer/singles"]
 
   events:
     "click .load-more a": "loadMore"
 
   initialize: ->
-    @bindTo @collection, "reset", @onReset, this
-    @bindTo @collection, "add", @prependSingle, this
+    @collection.on "reset", @onReset, this
+    @collection.on "add", @prependSingle, this
 
-    @bindTo @collection, "add", @increaseIndex, this
-    @bindTo @collection, "remove", @decreaseIndex, this
+    @collection.on "add", @increaseIndex, this
+    @collection.on "remove", @decreaseIndex, this
 
-    @bindTo @collection, "reset", @hideOrShowSuggestion, this
-    @bindTo @collection, "add", @hideOrShowSuggestion, this
-    @bindTo @collection, "remove", @hideOrShowSuggestion, this
+    @collection.on "reset", @hideOrShowSuggestion, this
+    @collection.on "add", @hideOrShowSuggestion, this
+    @collection.on "remove", @hideOrShowSuggestion, this
 
     @nextSingleIndex = 0
 

@@ -1,4 +1,4 @@
-class Cubemania.Views.Single extends Cubemania.BaseView
+class Cubemania.Views.Single extends Backbone.View
   template: JST["timer/single"]
 
   tagName: "li"
@@ -9,8 +9,8 @@ class Cubemania.Views.Single extends Cubemania.BaseView
     "click a.dnf": "clickDnf"
 
   initialize: ->
-    @bindTo @model, "change", @render, this
-    @bindTo @model, "destroy", @remove, this
+    @model.on "change", @render, this
+    @model.on "destroy", @remove, this
 
   render: ->
     $(@el).html(@template(single: @model))

@@ -1,4 +1,4 @@
-class Cubemania.Views.Chart extends Cubemania.BaseView
+class Cubemania.Views.Chart extends Backbone.View
   template: JST["timer/chart"]
 
   events:
@@ -34,10 +34,10 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
       @$("ul.token-input-list-facebook").hide()
 
   initialize: ->
-    @bindTo @collection, "reset", @render, this # TODO get rid of BaseView boilerplate
-    @bindTo @collection, "reset", @createSinglesChart, this
-    @bindTo @collection, "remove", @removeSingleFromChart, this
-    @bindTo @collection, "change", @updateSingleInChart, this
+    @collection.on "reset", @render, this
+    @collection.on "reset", @createSinglesChart, this
+    @collection.on "remove", @removeSingleFromChart, this
+    @collection.on "change", @updateSingleInChart, this
     @singleChart = true
 
   # TODO extract common chart properties
@@ -220,6 +220,3 @@ class Cubemania.Views.Chart extends Cubemania.BaseView
 
   removeUserFromChart: (id) ->
     @chart.get(id).remove()
-
-  onDispose: ->
-    @chart.destroy() if @chart?

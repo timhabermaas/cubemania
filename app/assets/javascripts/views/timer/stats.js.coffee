@@ -1,4 +1,4 @@
-class Cubemania.Views.Stats extends Cubemania.BaseView
+class Cubemania.Views.Stats extends Backbone.View
   template: JST["timer/stats"]
   detailTemplate: JST["timer/average_detail"]
 
@@ -12,13 +12,13 @@ class Cubemania.Views.Stats extends Cubemania.BaseView
 
   initialize: (options) ->
     @singles = options.singles
-    @bindTo @singles, "reset", @render, this
-    @bindTo @singles, "change", @render, this
-    @bindTo @singles, "add", @render, this
-    @bindTo @singles, "destroy", @render, this # TODO use extra backbone view for singles/records
+    @singles.on "reset", @render, this
+    @singles.on "change", @render, this
+    @singles.on "add", @render, this
+    @singles.on "destroy", @render, this # TODO use extra backbone view for singles/records
 
     @records = options.records
-    @bindTo @records, "reset", @render, this
+    @records.on "reset", @render, this
 
   render: ->
     currentAverages = {}
