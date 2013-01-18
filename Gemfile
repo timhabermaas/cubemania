@@ -48,6 +48,7 @@ gem 'newrelic_rpm'
 group :development, :test do
   gem 'turn', :require => false
   gem 'rspec-rails'
+  gem 'rack-test'
   gem 'shoulda-matchers'
   gem 'capybara'
   gem 'launchy'

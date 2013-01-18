@@ -24,14 +24,14 @@ module Api
       difference = to - from # in days
       @singles =
         if difference > 365 * 2 # TODO 2.years
-          @singles.grouped(by: :month)
+          @singles.grouped(by: :month, time_zone: @user.time_zone)
         elsif difference > 200
-          @singles.grouped(by: :week)
+          @singles.grouped(by: :week, time_zone: @user.time_zone)
         elsif difference > 30
-          @singles.grouped(by: :day)
+          @singles.grouped(by: :day, time_zone: @user.time_zone)
         else
           @singles.scoped
-        end.where(:created_at => from..to).order("created_at desc") # add singles / don't group
+        end.where(:created_at => from..to).order("created_at")
       respond_with @singles
     end
 

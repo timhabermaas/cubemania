@@ -9,9 +9,10 @@ module Capybara
       user
     end
 
-    def login_via_rack_test
-      user = create :user, :password => "muhmuh", :password_confirmation => "muhmuh"
-      page.driver.post "/session", { :login => { :name => user.name, :password => "muhmuh" } }
+    def login_via_rack_test(options = {})
+      options.reverse_merge!({ :password => "muhmuh", :password_confirmation => "muhmuh" })
+      user = create :user, options
+      post "/session", { :login => { :name => user.name, :password => "muhmuh" } }
       user
     end
   end

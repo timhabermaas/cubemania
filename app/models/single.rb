@@ -18,7 +18,13 @@ class Single < ActiveRecord::Base
   scope :last_24_hours, lambda { where "created_at > ?", 24.hours.ago }
   scope :grouped, lambda { |options|
     raise ArgumentError, "by must be either :day, :week or :month" unless [:day, :week, :month].include? options[:by].to_sym
-    field = "date_trunc('#{options[:by]}', created_at)"
+
+    field = if options[:time_zone]
+      offset = ActiveSupport::TimeZone.new(options[:time_zone]).formatted_offset[1..-1]
+      "date_trunc('#{options[:by]}', created_at + time '#{offset}')"
+    else
+      "date_trunc('#{options[:by]}', created_at)"
+    end
     group(field).select(field + " as created_at, AVG(time) as time, string_agg(comment, '\n') as comment")
   }
 

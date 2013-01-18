@@ -26,12 +26,12 @@ describe Single do
   end
 
   describe "scopes" do
-    describe ".grouped" do
-      let(:october_4) { DateTime.new(2012, 10, 4) }
-      let(:october_5) { DateTime.new(2012, 10, 5) }
-      let(:october_20) { DateTime.new(2012, 10, 20) }
-      let(:november_2) { DateTime.new(2012, 11, 2) }
-      let(:december_3) { DateTime.new(2012, 12, 3) }
+    describe ".grouped" do # TODO add options for sum/avg/count
+      let(:october_4) { Time.new(2012, 10, 4) }
+      let(:october_5) { Time.new(2012, 10, 5) }
+      let(:october_20) { Time.new(2012, 10, 20) }
+      let(:november_2) { Time.new(2012, 11, 2) }
+      let(:december_3) { Time.new(2012, 12, 3) }
 
       before :each do
         create :single, :time => 1000, :created_at => october_4, :comment => "Best solve ever!"
@@ -65,6 +65,21 @@ describe Single do
           expect(subject).to have(2).items
           expect(subject[0].time).to eq(3000)
           expect(subject[1].time).to eq(5000)
+        end
+      end
+
+      context "timezone: Berlin" do
+        let(:time_zone) { ActiveSupport::TimeZone.new("Berlin") }
+
+        it "is timezone aware" do
+          Single.delete_all # TODO
+          create :single, :time => 10, :created_at => time_zone.local(2012, 1, 1, 20, 00)
+          create :single, :time => 2, :created_at => time_zone.local(2012, 1, 1, 23, 30)
+          create :single, :time => 100, :created_at => time_zone.local(2012, 1, 2, 0, 30)
+          create :single, :time => 20, :created_at => time_zone.local(2012, 1, 2, 4, 00)
+          grouped = Single.grouped(by: :day, time_zone: "Berlin").order("created_at")
+          expect(grouped.first.time).to eq(6)
+          expect(grouped.last.time).to eq(60)
         end
       end
 

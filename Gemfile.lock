@@ -281,6 +281,7 @@ DEPENDENCIES
   quiet_assets
   rabl (= 0.6.10)
   rack (~> 1.4.1)
+  rack-test
   rails (= 3.2.11)
   rb-fsevent
   rspec-rails
