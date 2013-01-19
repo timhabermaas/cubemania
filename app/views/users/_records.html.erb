@@ -1,4 +1,4 @@
-<% if @records.empty? %>
+<% if records.empty? %>
   <p class="challenge">
     <% if current_user? @user %>
       How fast do you solve the cube?<br/>
@@ -9,7 +9,7 @@
   </p>
 <% else %>
   <ul class="records">
-    <% @records.each do |puzzle, records| %>
+    <% records.each do |puzzle, records| %>
     <li class="record <%= cycle "even", "odd" %>">
       <div class="puzzle">
         <div class="puzzle-image pos<%= puzzle.css_position %>">
