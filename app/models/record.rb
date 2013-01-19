@@ -57,7 +57,7 @@ class Record < ActiveRecord::Base
 
   def set_set_at
     unless singles.empty?
-      self.set_at = singles.last.created_at || Time.now
+      self.set_at = singles.sort_by { |s| s.created_at }.last.created_at || Time.now
     end
   end
 

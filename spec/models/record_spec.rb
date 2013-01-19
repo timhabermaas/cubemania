@@ -17,12 +17,16 @@ describe Record do
   end
 
   describe "#set_at" do
-    it "is set to date of last single" do
-      last_single = nil
-      last_single = create :single
-      record = Record.new :amount => 5, :singles => ([create(:single)] * 4) + [last_single]
+    it "is set to date of most recent single" do
+      s = []
+      s << create(:single, :created_at => Time.new(2012, 3, 1))
+      s << create(:single, :created_at => Time.new(2012, 3, 4))
+      s << create(:single, :created_at => Time.new(2012, 1, 8))
+      s << create(:single, :created_at => Time.new(2012, 5, 2))
+      s << create(:single, :created_at => Time.new(2012, 2, 2))
+      record = Record.new :amount => 5, :singles => s
       record.save
-      record.set_at.should == last_single.created_at
+      record.set_at.should == s[3].created_at
     end
   end
 
