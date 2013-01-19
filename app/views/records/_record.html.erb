@@ -5,7 +5,7 @@
   <td><cite><%= link_to record.user.name, record.user %></cite></td>
   <% if can? :block, User %>
     <td>
-      <%= link_to "Block!", block_user_path(record.user), :remote => true, :method => :post %>
+      <%= link_to "Block!", block_user_path(record.user), :remote => true, :method => :post, :confirm => "Are you sure?" %>
     </td>
   <% end %>
   <td><small><%=d record.set_at %></small></td>
