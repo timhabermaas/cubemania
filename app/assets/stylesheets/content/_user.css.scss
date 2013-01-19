@@ -52,11 +52,8 @@
     table {
       width: 100%;
     }
-    tr {
+    thead {
       border-bottom: 1px solid $yellow;
-    }
-    tr.last {
-      border: none;
     }
     th, td {
       padding: 0; // TODO delete default table styles?

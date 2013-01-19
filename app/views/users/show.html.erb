@@ -45,13 +45,15 @@
           </span>
         </div>
         <table>
-          <% if @own_records %>
-            <thead>
-              <th></th>
-              <th>Me</th>
-              <th><%= truncate @user.name, :length => 11 %></th>
-            </thead>
-          <% end %>
+          <thead>
+            <tr>
+              <% if @own_records %>
+                <th></th>
+                <th>Me</th>
+                <th><%= truncate @user.name, :length => 11 %></th>
+              <% end %>
+            </tr>
+          </thead>
           <tbody>
             <% AverageType.all.each do |type| %>
               <tr<%= raw(' class="last"') if type.count == 12 %>>
