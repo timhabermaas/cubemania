@@ -8,6 +8,7 @@
 //= require jquery_ujs
 //= require date
 //= require highcharts
+//= require d3
 //= require jquery.tokeninput
 //= require jquery.fancybox
 //= require underscore

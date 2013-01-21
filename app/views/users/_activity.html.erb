@@ -1,35 +1,3 @@
 <h3>Activity</h3>
-
-<section class="activity">
-  <svg width="656" height="104">
-    <style>
-      rect:hover {
-        opacity: 0.5;
-      }
-      text.month-name, text.day-name {
-        fill: #dadee3;
-      }
-    </style>
-    <g transform="translate(20, 20)">
-      <% 52.downto(0) do |week| %>
-        <% week_date = week.weeks.ago.beginning_of_week + 1.day %>
-        <g transform="translate(<%= (52 - week) * 12 %>, 0)">
-          <% 7.times do |day| %>
-            <% day_date = (week_date + day.days).utc.beginning_of_day %>
-            <% if day_date <= Time.zone.now %>
-              <% count = activity[day_date.to_s(:db)] || 0 %>
-              <rect class="box" width="10" height="10" y="<%= day * 12 %>" style="fill: <%= count_to_color(count) %>;">
-                <title><%= count %> solves on <%=d day_date %></title>
-              </rect>
-            <% end %>
-          <% end %>
-        </g>
-        <% p month_beginning_in_this_week(week_date) %>
-        <text x="<%= (52 - week) * 12 %>" y="-5" class="month-name"><%= month_beginning_in_this_week(week_date).try(:strftime, "%b") %></text>
-      <% end %>
-      <text x="-20" y="11" class="day-name">M</text>
-      <text x="-20" y="47" class="day-name">T</text>
-      <text x="-20" y="83" class="day-name">S</text>
-    </g>
-  </svg>
+<section id="activity" data-activity="<%= activity.to_json %>">
 </section>
