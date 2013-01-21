@@ -29,7 +29,7 @@
     <% end %>
   <% end %>
 
-  <% cache [@user, "records", "current_user", current_user.try(:id)] do %>
+  <% cache [@user, "records", current_user] do %>
     <%= render :partial => "records", :locals => { :records => @records.grouped_by_puzzle_and_amount } %>
   <% end %>
 </div>
