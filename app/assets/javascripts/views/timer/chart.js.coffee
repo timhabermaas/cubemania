@@ -6,8 +6,10 @@ class Cubemania.Views.Chart extends Backbone.View
     "click a.by-date": "byDate"
 
   @COLORS: [
-    'rgba(223, 83, 83, 0.8)', # red
-    'rgba(81, 115, 151, 0.85)' # blue
+    'rgba(22, 98, 147, 0.9)',
+    'rgba(230, 138, 23, 0.9)',
+    'rgba(141, 16, 150, 0.9)',
+    'rgba(192, 223, 22, 0.9)'
   ]
 
   byDate: (event) ->
@@ -165,7 +167,7 @@ class Cubemania.Views.Chart extends Backbone.View
         _.filter(results, (r) -> r.id != Cubemania.currentUser.get("id")) # remove self from list
       hintText: "Compare with..."
       onAdd: (item) =>
-        @addUserToChart item.id, item.name, Cubemania.Views.Chart.COLORS[1] # TODO cycle colors
+        @addUserToChart item.id, item.name
       onDelete: (item) =>
         @removeUserFromChart(item.id)
 
@@ -190,7 +192,9 @@ class Cubemania.Views.Chart extends Backbone.View
     $.getJSON "/api/puzzles/#{puzzleId}/singles/chart.json?from=#{from}&to=#{to}&user_id=#{userId}", (data) =>
       callback(@generateChartDataFromApiData data)
 
-  addUserToChart: (id, name, color = Cubemania.Views.Chart.COLORS[0]) ->
+  addUserToChart: (id, name) ->
+    count = @chart.series.length
+    color = Cubemania.Views.Chart.COLORS[count % Cubemania.Views.Chart.COLORS.length]
     @fetchDataForChart id, null, null, (data) =>
       @chart.addSeries
         id: id
@@ -218,5 +222,5 @@ class Cubemania.Views.Chart extends Backbone.View
     ids = _.pluck @$("#user-tokens").tokenInput("get"), "id"
     ids.concat [Cubemania.currentUser.get("id")]
 
-  removeUserFromChart: (id) ->
+  removeUserFromChart: (id) -> # TODO colors will be messed up after that
     @chart.get(id).remove()
