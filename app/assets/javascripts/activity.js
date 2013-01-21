@@ -1,4 +1,8 @@
 jQuery(function() {
+  if (!$("#activity").length) {
+    return;
+  }
+
   var week = d3.time.format("%W"),
       day  = d3.time.format("%w");
 
