@@ -6,7 +6,7 @@ class Cubemania.Views.Chart extends Backbone.View
     "click a.by-date": "byDate"
 
   @COLORS: [
-    'rgba(22, 98, 147, 0.9)',
+    'rgba(81, 115, 151, 0.9)',
     'rgba(230, 138, 23, 0.9)',
     'rgba(141, 16, 150, 0.9)',
     'rgba(192, 223, 22, 0.9)'
