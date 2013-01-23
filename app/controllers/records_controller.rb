@@ -29,12 +29,12 @@ class RecordsController < ApplicationController
 
     options = {
                 :app_id => ENV["FACEBOOK_APP_ID"],
-                :link => puzzle_record_url(@record.puzzle, @record),
+                :link => user_record_url(@record.user, @record),
                 :picture => @record.puzzle.combined_url,
                 :name => "#{current_user.name.capitalize} has a new #{presenter.full_puzzle_name} " + presenter.record_type + " record: " + presenter.human_time,
                 :caption => "Keep track of your times and join Cubemania!",
                 :description => presenter.singles_as_text,
-                :redirect_uri => puzzle_record_url(@record)
+                :redirect_uri => user_record_url(@record.user, @record)
               }
 
     url = "http://www.facebook.com/dialog/feed?" + URI.encode(options.collect { |k, v| "#{k}=#{v}"}.join("&"))
