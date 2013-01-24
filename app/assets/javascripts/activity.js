@@ -23,13 +23,15 @@ jQuery(function() {
   var data = $("#activity").data("activity");
   var svg = d3.select("#activity")
     .append("svg")
-    .attr("width", cellSize * 53 + 20 + 65)
+    .attr("width", "100%")
     .attr("height", cellSize * 7 + 20 + 5)
     .attr("font-size", 14);
 
+  // page is 960px wide; svg element is displayed as 656px, so move it (960-656)/2 to the right
+  // well, almost...
   var container = svg
     .append("g")
-    .attr("transform", "translate(35, 20)");
+    .attr("transform", "translate(190, 20)");
 
   data = d3.map(data);
 
@@ -131,15 +133,21 @@ jQuery(function() {
     .attr("transform", "translate(" + tempX + "," + tempY + ")");
 
   box.append("rect")
-    .attr("width", 38)
-    .attr("height", cellSize + 2 * strokeWidth);
+    .attr("height", cellSize + 2 * strokeWidth)
+    .attr("class", "box");
 
   box.append("text")
     .attr("fill", "#df0")
-    .attr("text-anchor", "end")
-    .attr("x", 35)
     .attr("y", strokeWidth + cellSize / 2)
     .attr("dy", ".35em");
+
+  function pluralize(singular, count) {
+    if (count == 1) {
+      return count + " " + singular;
+    } else {
+      return count + " " + singular + "s";
+    }
+  }
 
   days
     .on("mouseover", function(d, i) {
@@ -148,11 +156,15 @@ jQuery(function() {
         g = d3.select(this.parentElement);
         var x = g[0][0].transform.baseVal.getItem(0).matrix.e;
         var y = rect[0][0].y.baseVal.value;
+        var solveCount = countFor(d);
+        var boxWidth = 65 + (solveCount.toString().length - 1) * 9;
         tooltip
           .attr("transform", "translate(" + x + "," + y + ")")
           .attr("opacity", 1)
           .select("text")
-          .text(countFor(d));
+          .text(pluralize("Solve", solveCount));
+        tooltip.select("rect.box")
+          .attr("width", boxWidth);
       }
     })
     .on("mouseout", function() {
