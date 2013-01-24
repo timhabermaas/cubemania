@@ -21,6 +21,7 @@ class Ability
         comment.user_id == user.id
       end
       cannot :read, Puzzle
+      can :read, :activity
     end
   end
 end
