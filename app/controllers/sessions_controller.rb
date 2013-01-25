@@ -11,7 +11,7 @@ class SessionsController < ApplicationController
     @login = Login.new params[:login]
     if self.current_user = @login.validate
       flash[:notice] = "Hello #{current_user.name}, you are now logged in."
-      redirect_back root_path
+      redirect_back current_user
     else
       render :new
     end
