@@ -4,17 +4,13 @@ jQuery(function() {
   }
 
   var week = d3.time.format("%W"),
-      day  = d3.time.format("%w");
+      day  = d3.time.format("%w"),
+      dateAsString = d3.time.format("%Y-%m-%d 00:00:00");
 
   var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
   function monthName(d) {
     return monthNames[d.getMonth()];
-  }
-
-  function parseDate(string) {
-    var parts = string.match(/(\d+)/g);
-    return new Date(parts[0], parseInt(parts[1]) - 1, parts[2]);
   }
 
   var cellSize = 12;
@@ -34,11 +30,6 @@ jQuery(function() {
     .attr("transform", "translate(190, 20)");
 
   data = d3.map(data);
-
-  var newData = d3.map();
-  data.forEach(function(k, v) {
-    newData.set(parseDate(k), v);
-  });
 
   var today = new Date();
   var oneYearAgo = d3.time.year.offset(today, -1);
@@ -90,7 +81,8 @@ jQuery(function() {
     .clamp(true);
 
   function countFor(date) {
-    var c = newData.get(date);
+    var string = dateAsString(date);
+    var c = data.get(string);
     return c ? c : 0;
   }
 
@@ -151,7 +143,7 @@ jQuery(function() {
 
   days
     .on("mouseover", function(d, i) {
-      if (newData.get(d)) {
+      if (countFor(d) > 0) {
         rect = d3.select(this);
         g = d3.select(this.parentElement);
         var x = g[0][0].transform.baseVal.getItem(0).matrix.e;
