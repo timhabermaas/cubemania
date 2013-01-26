@@ -5,7 +5,7 @@
     <h2><%= @record.human_time %></h2>
     <small><%=dt @record.set_at %></small>
     <div class="puzzle pos<%= @puzzle.css_position %>">
-      <div class="kind pos<%= @puzzle.kind.css_position %>"><%= @puzzle.combined %></div>
+      <div class="kind pos<%= @puzzle.kind.css_position %>"><%= @puzzle.long_name %></div>
     </div>
   </header>
 

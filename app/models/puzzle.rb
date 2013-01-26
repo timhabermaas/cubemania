@@ -3,7 +3,7 @@ class Puzzle < ActiveRecord::Base
 
   FORMATS = %w{average mean best_of}
 
-  friendly_id :combined, :use => :slugged
+  friendly_id :long_name, :use => :slugged
 
   after_save :compose_fb_image
 
@@ -32,7 +32,7 @@ class Puzzle < ActiveRecord::Base
     (1..attempt_count).map { |i| scramble }
   end
 
-  def combined
+  def long_name
     "#{name} #{kind.short_name}"
   end
 

@@ -1,6 +1,12 @@
 module ApplicationHelper
   def page_title
-    params[:controller].titleize.singularize
+    if controller? :timers
+      current_puzzle.long_name + " " + "Timer"
+    elsif controller? :records and action? :index
+      current_puzzle.long_name + " " + "Records"
+    else
+      params[:controller].titleize.singularize
+    end
   end
 
   def action_label(new = 'Create', edit = 'Update')
@@ -49,7 +55,7 @@ module ApplicationHelper
   end
 
   def current_puzzle
-    @current_puzzle ||= Puzzle.find params[:puzzle_id]
+    @current_puzzle ||= Puzzle.find params[:puzzle_id], :include => :kind
   end
 
   def current_kind
