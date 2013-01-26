@@ -133,7 +133,7 @@ jQuery(function() {
     .attr("y", strokeWidth + cellSize / 2)
     .attr("dy", ".35em");
 
-  function pluralize(singular, count) {
+  function pluralize(count, singular) {
     if (count == 1) {
       return count + " " + singular;
     } else {
@@ -154,7 +154,7 @@ jQuery(function() {
           .attr("transform", "translate(" + x + "," + y + ")")
           .attr("opacity", 1)
           .select("text")
-          .text(pluralize("Solve", solveCount));
+          .text(pluralize(solveCount, "Solve"));
         tooltip.select("rect.box")
           .attr("width", boxWidth);
       }
