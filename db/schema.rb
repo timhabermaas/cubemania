@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130103203526) do
+ActiveRecord::Schema.define(:version => 20130127003055) do
 
   create_table "comments", :force => true do |t|
     t.text     "content",    :null => false
@@ -46,8 +46,8 @@ ActiveRecord::Schema.define(:version => 20130103203526) do
     t.string   "title"
     t.text     "content"
     t.integer  "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
     t.integer  "comments_count", :default => 0, :null => false
   end
 
@@ -91,13 +91,13 @@ ActiveRecord::Schema.define(:version => 20130103203526) do
   add_index "records_singles", ["record_id", "single_id"], :name => "index_records_singles_on_record_id_and_single_id"
 
   create_table "singles", :force => true do |t|
-    t.integer  "time",                                                          :null => false
-    t.integer  "puzzle_id",                                                     :null => false
-    t.datetime "created_at"
-    t.integer  "user_id",                    :default => 0,                     :null => false
+    t.integer  "time",                       :null => false
+    t.integer  "puzzle_id",                  :null => false
+    t.datetime "created_at",                 :null => false
+    t.integer  "user_id",                    :null => false
     t.string   "scramble",   :limit => 1024
     t.string   "comment"
-    t.datetime "updated_at",                 :default => '2010-01-01 00:00:00', :null => false
+    t.datetime "updated_at",                 :null => false
     t.string   "penalty",    :limit => 8
   end
 
@@ -108,13 +108,13 @@ ActiveRecord::Schema.define(:version => 20130103203526) do
     t.string   "email",              :limit => 64
     t.string   "salt",               :limit => 8,                       :null => false
     t.string   "encrypted_password",                                    :null => false
-    t.datetime "created_at"
+    t.datetime "created_at",                                            :null => false
     t.string   "role",               :limit => 16,  :default => "user"
     t.string   "wca"
     t.boolean  "sponsor",                           :default => false,  :null => false
     t.string   "time_zone",          :limit => 100, :default => "UTC"
     t.boolean  "ignored",                           :default => false,  :null => false
-    t.datetime "updated_at"
+    t.datetime "updated_at",                                            :null => false
     t.boolean  "wants_emails",                      :default => false,  :null => false
     t.integer  "singles_count",                     :default => 0,      :null => false
     t.string   "slug"
