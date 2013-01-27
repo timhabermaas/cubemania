@@ -9,7 +9,6 @@
     <%= form.input :time_zone, :as => :time_zone %>
     <%= form.input :wants_emails, :label => 'Receive Emails' %>
     <% if admin? %>
-      <%= form.input :sponsor %>
       <%= form.input :ignored %>
       <%= form.input :role, :collection => User::ROLES.collect { |r| [r.titleize, r] }, :include_blank => false %>
     <% end %>

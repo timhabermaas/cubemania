@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
   attr_accessible :name, :email, :time_zone, :password, :password_confirmation, :wca, :bot_email
   attr_accessible :name, :email, :time_zone, :password, :password_confirmation, :wca, :bot_email, :wants_emails, :as => :user
   attr_accessible :name, :email, :time_zone, :password, :password_confirmation, :wca, :bot_email, :wants_emails, :ignored, :as => :moderator
-  attr_accessible :name, :email, :time_zone, :password, :password_confirmation, :wca, :bot_email, :wants_emails, :ignored, :role, :sponsor, :as => :admin
+  attr_accessible :name, :email, :time_zone, :password, :password_confirmation, :wca, :bot_email, :wants_emails, :ignored, :role, :as => :admin
 
   has_many :posts, :dependent => :nullify
   has_many :comments, :dependent => :nullify

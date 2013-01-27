@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130127003055) do
+ActiveRecord::Schema.define(:version => 20130127004622) do
 
   create_table "comments", :force => true do |t|
     t.text     "content",    :null => false
@@ -111,7 +111,6 @@ ActiveRecord::Schema.define(:version => 20130127003055) do
     t.datetime "created_at",                                            :null => false
     t.string   "role",               :limit => 16,  :default => "user"
     t.string   "wca"
-    t.boolean  "sponsor",                           :default => false,  :null => false
     t.string   "time_zone",          :limit => 100, :default => "UTC"
     t.boolean  "ignored",                           :default => false,  :null => false
     t.datetime "updated_at",                                            :null => false
