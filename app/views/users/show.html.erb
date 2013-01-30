@@ -19,7 +19,7 @@
   <% elsif current_user? @user %>
     <div id="wca">
       <a href="http://www.worldcubeassociation.org" class="logo">&nbsp;</a>
-      <a href="#">Link your World Cube Association profile!</a>
+      <%= link_to "Link your World Cube Association profile!", edit_user_path(@user) %>
     </div>
   <% end %>
 
