@@ -31,7 +31,7 @@
           </tr>
         </thead>
         <tbody>
-          <% AverageType.all.each do |type| %>
+          <% RecordType.all.each do |type| %>
             <tr<%= raw(' class="last"') if type.count == 12 %>>
               <th class="type">
                 <% if @own_records %>
