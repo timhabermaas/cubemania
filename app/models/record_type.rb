@@ -3,7 +3,7 @@ class RecordType < Struct.new(:full_name, :short_name, :count) # TODO add Mean/A
     [
       RecordType.new("Single", "s", 1),
       RecordType.new("Average of 5", "avg5", 5),
-      RecordType.new("Average of 12", "avg12", 12),
+      RecordType.new("Average of 12", "avg12", 12)
     ]
   end
 
