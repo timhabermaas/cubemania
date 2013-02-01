@@ -16,7 +16,6 @@ class CubingAverage
     @solved_singles = nil
   end
 
-  # TODO use Enumerable#min by extracting <=> and reusing it in Single
   def best
     return @singles.first if solved_singles.empty?
     solved_singles.min
