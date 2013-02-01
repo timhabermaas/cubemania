@@ -33,7 +33,11 @@ class Puzzle < ActiveRecord::Base
   end
 
   def full_name
-    "#{name} #{kind.short_name}"
+    if kind.short_name.blank?
+      name
+    else
+      "#{name} #{kind.short_name}"
+    end
   end
 
   def combined_file_name
