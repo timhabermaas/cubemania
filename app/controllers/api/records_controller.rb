@@ -1,23 +1,10 @@
 module Api
   class RecordsController < ApiController
     def index
-      @puzzle = Puzzle.find params[:puzzle_id]
+      puzzle = Puzzle.find params[:puzzle_id]
+      user = User.find params[:user_id]
 
-      @records =
-      if params[:user_id]
-        user = User.find params[:user_id]
-        user.records.where(:puzzle_id => @puzzle.id)
-      else
-        params[:type] ||= "avg5"
-
-        if params[:type] == "single"
-          @puzzle.records.amount(1)
-        elsif params[:type] == "avg12"
-          @puzzle.records.amount(12)
-        else
-          @puzzle.records.amount(5)
-        end.paginate(:page => params[:page], :per_page => 50)
-      end
+      @records = user.records.where(:puzzle_id => puzzle.id)
 
       respond_to do |format|
         format.html
