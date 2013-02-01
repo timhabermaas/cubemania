@@ -1,4 +1,4 @@
-<h1><%= link_to possessive(@user.name.titleize), @user %> <%= RecordPresenter.new(@record).record_type.capitalize %> Record</h1>
+<h1><%= link_to possessive(@user.name.titleize), @user %> <%= @record.type.full_name %> Record</h1>
 
 <article id="record">
   <header>
