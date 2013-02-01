@@ -1,5 +1,7 @@
+require "comparable_solve"
+
 class CubingAverage
-  include Comparable
+  include ComparableSolve
 
   attr_reader :singles
 
@@ -14,27 +16,16 @@ class CubingAverage
     @solved_singles = nil
   end
 
-  def <=>(other) # TODO this logic could be probably moved into a module and shared with Single, Average and Record
-    if not self.dnf? and not other.dnf?
-      self.time <=> other.time
-    elsif self.dnf? and not other.dnf?
-      1
-    elsif other.dnf? and not self.dnf?
-      -1
-    else # both dnf
-      0
-    end
-  end
-
+  # TODO use Enumerable#min by extracting <=> and reusing it in Single
   def best
     return @singles.first if solved_singles.empty?
-    solved_singles.sort_by(&:time).first
+    solved_singles.min
   end
 
   def worst
     dnf = @singles.detect(&:dnf?)
     return dnf if dnf
-    @singles.sort_by(&:time).last
+    @singles.max
   end
 
   def time
@@ -49,7 +40,7 @@ class CubingAverage
 
       return nil if dnfs > 1
 
-      sorted_singles = solved_singles.sort_by(&:time)
+      sorted_singles = solved_singles.sort
 
       if dnfs == 0
         sorted_singles[1..-2].map(&:time).inject(:+) / (sorted_singles.size - 2).to_f

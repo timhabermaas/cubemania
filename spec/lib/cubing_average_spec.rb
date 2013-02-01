@@ -1,4 +1,5 @@
 require "cubing_average"
+require "comparable_solve"
 
 describe CubingAverage do
   it "saves singles" do
@@ -36,6 +37,15 @@ describe CubingAverage do
     let(:single_7) { stub :time => 7, :dnf? => false }
     let(:single_10) { stub :time => 10, :dnf? => false }
     let(:single_dnf) { stub :time => 20, :dnf? => true }
+
+    before do
+      single_5.extend(ComparableSolve)
+      single_5.extend(ComparableSolve)
+      single_6.extend(ComparableSolve)
+      single_7.extend(ComparableSolve)
+      single_10.extend(ComparableSolve)
+      single_dnf.extend(ComparableSolve) # TODO omg, remove this shit by decoupling Single from ActiveRecord :)
+    end
 
     it "actually changes if other times are pushed in" do
       average = CubingAverage.new([single_5] * 5)
@@ -96,6 +106,13 @@ describe CubingAverage do
     let(:single_2) { stub :dnf? => false, :time => 13 }
     let(:single_3) { stub :dnf? => false, :time => 23 }
     let(:single_dnf) { stub :dnf? => true, :time => 9 }
+
+    before do
+      single_1.extend(ComparableSolve)
+      single_2.extend(ComparableSolve)
+      single_3.extend(ComparableSolve)
+      single_dnf.extend(ComparableSolve)
+    end
 
     describe "#best" do
       it "returns the single with fastest time if everything's solved" do
