@@ -3,15 +3,7 @@ class RecordsController < ApplicationController
 
   def index
     @puzzle = Puzzle.find params[:puzzle_id]
-    amount = # TODO move into extra class (mapping of int to description)
-      case params[:type]
-        when "single"
-          1
-        when "avg12"
-          12
-        else
-          5
-      end
+    amount = RecordType.by_short_name(params[:type]).try(:count) || 5
 
     @records = @puzzle.records.amount(amount).paginate(:page => params[:page], :per_page => 50)
   end

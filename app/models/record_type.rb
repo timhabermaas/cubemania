@@ -10,4 +10,8 @@ class RecordType < Struct.new(:full_name, :short_name, :count) # TODO add Mean/A
   def self.by_count(count)
     all.find { |t| t.count == count }
   end
+
+  def self.by_short_name(short_name)
+    all.find { |t| t.short_name == short_name }
+  end
 end
