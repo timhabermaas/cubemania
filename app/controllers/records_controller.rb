@@ -25,15 +25,15 @@ class RecordsController < ApplicationController
 
   def share
     @record = current_user.records.find params[:id]
-    presenter = RecordPresenter.new(@record)
+    post = FacebookPost.new @record, SinglesFormatter.new(@record.singles)
 
     options = {
                 :app_id => ENV["FACEBOOK_APP_ID"],
                 :link => user_record_url(@record.user, @record),
                 :picture => @record.puzzle.combined_url,
-                :name => "#{current_user.name.capitalize} has a new #{presenter.full_puzzle_name} " + presenter.record_type + " record: " + presenter.human_time,
-                :caption => "Keep track of your times and join Cubemania!",
-                :description => presenter.singles_as_text,
+                :name => post.title,
+                :caption => post.caption,
+                :description => post.body,
                 :redirect_uri => user_record_url(@record.user, @record)
               }
 

@@ -46,6 +46,10 @@ class Record < ActiveRecord::Base
     CubingAverage.new singles, time
   end
 
+  def type
+    RecordType.by_count amount
+  end
+
   def update_comment!
     update_attributes :comment => comments_from_singles
   end
