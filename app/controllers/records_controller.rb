@@ -25,7 +25,7 @@ class RecordsController < ApplicationController
 
   def share
     @record = current_user.records.find params[:id]
-    post = FacebookPost.new @record, SinglesFormatter.new(@record.singles)
+    post = FacebookPost.new @record
 
     options = {
                 :app_id => ENV["FACEBOOK_APP_ID"],

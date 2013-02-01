@@ -1,5 +1,7 @@
+require "singles_formatter"
+
 class FacebookPost
-  def initialize(record, formatter)
+  def initialize(record, formatter = SinglesFormatter.new(record.singles))
     @record = record
     @formatter = formatter
   end
