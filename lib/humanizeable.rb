@@ -1,4 +1,4 @@
-module Humanizer
+module Humanizeable
   def humanize (attributes_hash)
     attributes_hash.each do |attribute, type|
       if type == :time

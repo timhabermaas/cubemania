@@ -1,5 +1,6 @@
 class Single < ActiveRecord::Base
   include ComparableSolve
+  extend Humanizeable
 
   belongs_to :user, :counter_cache => true, :touch => true
   belongs_to :puzzle

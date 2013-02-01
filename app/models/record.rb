@@ -1,4 +1,6 @@
 class Record < ActiveRecord::Base
+  extend Humanizeable
+
   belongs_to :puzzle
   belongs_to :user, :touch => true
   has_and_belongs_to_many :singles do

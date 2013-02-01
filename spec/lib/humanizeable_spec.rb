@@ -1,13 +1,13 @@
-require "humanizer"
+require "humanizeable"
 
 class Dummy
-  extend Humanizer
+  extend Humanizeable
   attr_accessor :blub
 
   humanize :blub => :time
 end
 
-describe Humanizer do
+describe Humanizeable do
   subject { Dummy.new }
 
   it { should respond_to(:human_blub) }
