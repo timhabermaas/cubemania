@@ -35,7 +35,7 @@
             <tr<%= raw(' class="last"') if type.count == 12 %>>
               <th class="type">
                 <% if @own_records %>
-                  <%= type.short_name.upcase %>
+                  <%= type.short_name.capitalize %>
                 <% else %>
                   <%= type.full_name %>
                 <% end %>
