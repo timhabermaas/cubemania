@@ -1,9 +1,9 @@
 module ApplicationHelper
   def page_title
     if controller? :timers
-      current_puzzle.long_name + " " + "Timer"
+      current_puzzle.full_name + " " + "Timer"
     elsif controller? :records and action? :index
-      current_puzzle.long_name + " " + "Records"
+      current_puzzle.full_name + " " + "Records"
     else
       params[:controller].titleize.singularize
     end

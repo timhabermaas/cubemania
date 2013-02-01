@@ -19,7 +19,7 @@ describe FacebookPost do
 
   describe "#title" do # TODO stub awkwardness
     let(:user) { stub(:user, :name => "peter") }
-    let(:puzzle) { stub(:puzzle, :long_name => "5x5x5 BLD") }
+    let(:puzzle) { stub(:puzzle, :full_name => "5x5x5 BLD") }
     let(:record_type) { stub(:record_type, :full_name => "average of 5") }
     let(:record) { stub(:record, :human_time => "2:42.12min",
                                  :user => user,

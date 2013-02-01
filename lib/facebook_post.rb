@@ -13,6 +13,6 @@ class FacebookPost
   end
 
   def title
-    "#{@record.user.name.capitalize} has a new #{@record.puzzle.long_name} " + @record.type.full_name + " record: " + @record.human_time
+    "#{@record.user.name.capitalize} has a new #{@record.puzzle.full_name} " + @record.type.full_name + " record: " + @record.human_time
   end
 end
