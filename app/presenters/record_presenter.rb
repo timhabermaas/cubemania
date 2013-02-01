@@ -20,11 +20,6 @@ class RecordPresenter
     "You have a new #{record_type.downcase} record: <strong>#{@record.human_time}</strong>!"
   end
 
-  def full_puzzle_name
-    kind = @record.puzzle.kind.name == "speed" ? "" : @record.puzzle.kind.short_name.upcase
-    [@record.puzzle.name, kind].join " "
-  end
-
   def singles_as_text
     SinglesFormatter.new(@record.singles).as_text
   end
