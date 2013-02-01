@@ -18,11 +18,6 @@ describe "SinglesFormatter" do
       let(:single_3) { Single.new :time => 7210 }
       let(:singles) { [single_1, single_2, single_3] }
 
-      before do
-        singles.stub(:min).and_return { single_1 } # TODO replace with real stuff
-        singles.stub(:max).and_return { single_2 }
-      end
-
       it "puts best and worst time in parantheses" do
         expect(subject.as_text).to eq("(3.21) (10.21) 7.21")
       end
@@ -35,13 +30,16 @@ describe "SinglesFormatter" do
 
       let(:singles) { [single_1, single_2, single_3] }
 
-      before do
-        singles.stub(:min).and_return { single_3 } # TODO replace with real stuff
-        singles.stub(:max).and_return { single_2 }
-      end
-
       it "prints DNF instead of time" do
         expect(subject.as_text).to eq("21.32 (DNF) (12.00)")
+      end
+    end
+
+    context "+2" do
+      let(:singles) { [Single.new(:time => 12000, :penalty => "plus2")] } # TODO internals
+
+      it "displays a '+' after time" do
+        expect(subject.as_text).to eq("12.00+")
       end
     end
   end

@@ -5,14 +5,13 @@ class SinglesFormatter
 
   def as_text
     if @singles.size == 1
-      @singles.first.human_time(:unit => false)
+      formatted_time(@singles.first)
     else
       @singles.map do |s|
-        formated_time = s.dnf? ? "DNF" : s.human_time(:unit => false)
         if [best, worst].include? s
-          "(" + formated_time + ")"
+          "(" + formatted_time(s) + ")"
         else
-          formated_time
+          formatted_time(s)
         end
       end.join " "
     end
@@ -25,5 +24,10 @@ private
 
   def worst
     @max ||= @singles.max
+  end
+
+  def formatted_time(single)
+    return "DNF" if single.dnf?
+    single.human_time(:unit => false) + (single.plus2? ? "+" : "")
   end
 end
