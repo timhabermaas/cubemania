@@ -1,4 +1,4 @@
-require "facebook_post"
+require_relative "../../app/models/facebook_post"
 
 describe FacebookPost do
   let(:singles_formatter) { stub(:formatter, :as_text => "(12.32) 14.32 (DNF)") }
