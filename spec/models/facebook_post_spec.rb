@@ -9,7 +9,7 @@ describe FacebookPost do
     context "single record" do
       before do
         record.stub_chain(:type, :single?).and_return(true)
-        record.stub_chain(:singles, :first, :scramble).and_return("R2 D2")
+        record.stub(:scrambles).and_return(["R2 D2"])
       end
 
       it "returns the times" do

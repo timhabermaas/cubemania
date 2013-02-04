@@ -52,6 +52,10 @@ class Record < ActiveRecord::Base
     RecordType.by_count amount
   end
 
+  def scrambles
+    singles.map(&:scramble)
+  end
+
   def update_comment!
     update_attributes :comment => comments_from_singles
   end

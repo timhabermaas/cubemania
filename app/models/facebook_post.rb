@@ -8,7 +8,7 @@ class FacebookPost
 
   def body
     if @record.type.single?
-      @record.singles.first.scramble
+      @record.scrambles.first
     else
       @formatter.as_text
     end
