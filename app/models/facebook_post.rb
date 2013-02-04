@@ -7,7 +7,11 @@ class FacebookPost
   end
 
   def body
-    @formatter.as_text
+    if @record.type.single?
+      @record.singles.first.scramble
+    else
+      @formatter.as_text
+    end
   end
 
   def caption

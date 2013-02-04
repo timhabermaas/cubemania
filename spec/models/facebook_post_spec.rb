@@ -2,12 +2,29 @@ require_relative "../../app/models/facebook_post"
 
 describe FacebookPost do
   let(:singles_formatter) { stub(:formatter, :as_text => "(12.32) 14.32 (DNF)") }
-  let(:record) { stub }
+  let(:record) { stub(:record) }
   let(:subject) { FacebookPost.new(record, singles_formatter) }
 
   describe "#body" do
-    it "returns the times" do
-      expect(subject.body).to eq("(12.32) 14.32 (DNF)")
+    context "single record" do
+      before do
+        record.stub_chain(:type, :single?).and_return(true)
+        record.stub_chain(:singles, :first, :scramble).and_return("R2 D2")
+      end
+
+      it "returns the times" do
+        expect(subject.body).to eq("R2 D2")
+      end
+    end
+
+    context "average record" do
+      before do
+        record.stub_chain(:type, :single?).and_return(false)
+      end
+
+      it "returns the times" do
+        expect(subject.body).to eq("(12.32) 14.32 (DNF)")
+      end
     end
   end
 
