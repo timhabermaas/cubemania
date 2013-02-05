@@ -7,6 +7,10 @@ class RecordType < Struct.new(:full_name, :short_name, :count) # TODO add Mean/A
     ]
   end
 
+  def self.counts
+    all.map(&:count)
+  end
+
   def self.by_count(count)
     all.find { |t| t.count == count }
   end
