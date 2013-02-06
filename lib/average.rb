@@ -1,3 +1,5 @@
+require "mean"
+
 class Average
   def initialize(solves)
     @solves = solves
@@ -9,6 +11,6 @@ class Average
     best = @solves.min
     worst = @solves.max
     relevant_singles = @solves - [best] - [worst]
-    relevant_singles.inject(0) { |sum, s| sum + s.time } / relevant_singles.size.to_f
+    Mean.new(relevant_singles).result
   end
 end
