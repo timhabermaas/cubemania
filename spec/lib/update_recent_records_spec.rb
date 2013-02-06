@@ -1,4 +1,5 @@
-require 'update_recent_records'
+require "update_recent_records"
+require_relative "../../app/models/record_type"
 
 class Single; end
 class CubingAverage; end
@@ -10,17 +11,17 @@ describe UpdateRecentRecords do
   let(:puzzle) { stub(:id => 3) }
 
   describe ".for" do
-    it "calls for_amount for 1, 5 and 12" do
-      subject.should_receive(:for_amount).with(user, puzzle, 1)
-      subject.should_receive(:for_amount).with(user, puzzle, 5)
-      subject.should_receive(:for_amount).with(user, puzzle, 12)
+    it "calls for_amount for all types" do
+      subject.should_receive(:for_amount).with(user, puzzle, RecordType.all[0])
+      subject.should_receive(:for_amount).with(user, puzzle, RecordType.all[1])
+      subject.should_receive(:for_amount).with(user, puzzle, RecordType.all[2])
       subject.for(user, puzzle)
     end
 
     it "returns trueish value if at least one record was updated" do
-      subject.stub(:for_amount).with(user, puzzle, 1)  { false }
-      subject.stub(:for_amount).with(user, puzzle, 5)  { true }
-      subject.stub(:for_amount).with(user, puzzle, 12) { false }
+      subject.stub(:for_amount).with(user, puzzle, RecordType.all[0])  { false }
+      subject.stub(:for_amount).with(user, puzzle, RecordType.all[1])  { true }
+      subject.stub(:for_amount).with(user, puzzle, RecordType.all[2]) { false }
       subject.for(user, puzzle).should be_true
     end
 
@@ -31,6 +32,10 @@ describe UpdateRecentRecords do
   end
 
   describe ".for_amount" do
+    let(:single_type) { stub(:single_type, :count => 1) }
+    let(:avg5_type) { stub(:avg5_type, :count => 5) }
+    let(:avg12_type) { stub(:avg12_type, :count => 12) }
+
     context "not enough singles given" do
       before do
         Single.stub_chain(:for_user_and_puzzle, :recent) { [] }
@@ -38,15 +43,15 @@ describe UpdateRecentRecords do
 
       it "updates nothing" do
         Record.should_not_receive(:update_with!)
-        UpdateRecentRecords.for_amount(user, puzzle, 1)
-        UpdateRecentRecords.for_amount(user, puzzle, 5)
-        UpdateRecentRecords.for_amount(user, puzzle, 12)
+        UpdateRecentRecords.for_amount(user, puzzle, single_type)
+        UpdateRecentRecords.for_amount(user, puzzle, avg5_type)
+        UpdateRecentRecords.for_amount(user, puzzle, avg12_type)
       end
 
       it "returns falseish value" do
-        UpdateRecentRecords.for_amount(user, puzzle, 1).should be_false
-        UpdateRecentRecords.for_amount(user, puzzle, 5).should be_false
-        UpdateRecentRecords.for_amount(user, puzzle, 12).should be_false
+        UpdateRecentRecords.for_amount(user, puzzle, single_type).should be_false
+        UpdateRecentRecords.for_amount(user, puzzle, avg5_type).should be_false
+        UpdateRecentRecords.for_amount(user, puzzle, avg12_type).should be_false
       end
     end
 
@@ -63,13 +68,13 @@ describe UpdateRecentRecords do
         it "updates avg5 record" do
           CubingAverage.should_receive(:new).with(singles).and_return(average)
           Record.should_receive(:update_with!).with(user, puzzle, 5, 10, singles)
-          UpdateRecentRecords.for_amount(user, puzzle, 5)
+          UpdateRecentRecords.for_amount(user, puzzle, avg5_type)
         end
 
         it "returns trueish value" do
           CubingAverage.stub(:new) { average }
           Record.stub(:update_with!) { true }
-          UpdateRecentRecords.for_amount(user, puzzle, 5).should be_true
+          UpdateRecentRecords.for_amount(user, puzzle, avg5_type).should be_true
         end
       end
 
@@ -79,12 +84,12 @@ describe UpdateRecentRecords do
         it "does not update avg5 record" do
           CubingAverage.should_receive(:new).with(singles).and_return(average)
           Record.should_not_receive(:update_with!)
-          UpdateRecentRecords.for_amount(user, puzzle, 5)
+          UpdateRecentRecords.for_amount(user, puzzle, avg5_type)
         end
 
         it "returns falseish value" do
           CubingAverage.stub(:new) { average }
-          UpdateRecentRecords.for_amount(user, puzzle, 5).should be_false
+          UpdateRecentRecords.for_amount(user, puzzle, avg5_type).should be_false
         end
       end
     end
@@ -100,7 +105,7 @@ describe UpdateRecentRecords do
         average = stub(:time => 1337, :dnf? => false)
         CubingAverage.should_receive(:new).with(singles).and_return(average)
         Record.should_receive(:update_with!).with(user, puzzle, 1, 1337, singles)
-        UpdateRecentRecords.for_amount(user, puzzle, 1)
+        UpdateRecentRecords.for_amount(user, puzzle, single_type)
       end
     end
   end
