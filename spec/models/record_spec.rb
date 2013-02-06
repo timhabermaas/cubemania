@@ -96,15 +96,6 @@ describe Record do
     end
   end
 
-  describe "#cubing_average" do
-    let(:record) { create :record }
-    it "returns an instance of CubingAverage filled with proper stuff" do
-      average = record.cubing_average
-      average.should be_instance_of CubingAverage
-      average.singles.should == record.singles
-    end
-  end
-
   describe "#scrambles" do
     let(:single_1) { build :single, :scramble => "D2 R2" }
     let(:single_2) { build :single, :scramble => "R B" }

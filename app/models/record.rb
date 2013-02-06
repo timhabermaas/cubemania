@@ -44,10 +44,6 @@ class Record < ActiveRecord::Base
     grouped_by_puzzles.merge(grouped_by_puzzles) { |k, v| v = v.group_by { |r| r.amount }; v.merge(v) { |k, v| v.try(:first) } }
   end
 
-  def cubing_average
-    CubingAverage.new singles, time
-  end
-
   def type
     RecordType.by_count amount
   end
