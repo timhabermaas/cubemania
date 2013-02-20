@@ -19,6 +19,8 @@ Cubemania::Application.routes.draw do
     end
   end
 
+  resource :feed
+
   resources :posts do
     resources :comments, :only => [:create, :destroy]
   end

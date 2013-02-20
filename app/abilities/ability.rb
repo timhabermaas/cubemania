@@ -4,6 +4,7 @@ class Ability
   def initialize(user)
     can :read, :all
     cannot :read, :activity
+    cannot :read, Feed
     if user.nil?
       can :create, User
     elsif user.admin?
@@ -12,6 +13,7 @@ class Ability
       can [:destroy, :edit, :update], User do |u|
         u == user
       end
+      can :read, Feed
       can :share, Record do |record|
         record.user_id == user.id
       end

@@ -35,4 +35,14 @@ describe Ability do
       expect(subject.can? :unfollow, user).to eq(false)
     end
   end
+
+  describe "feed" do
+    it "can be accessed for logged in users" do
+      expect(subject.can? :read, Feed).to eq(true)
+    end
+
+    it "can't be accessed when user isn't logged in" do
+      expect(Ability.new(nil).can? :read, Feed).to eq(false)
+    end
+  end
 end

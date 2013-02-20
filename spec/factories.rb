@@ -52,4 +52,14 @@ FactoryGirl.define do
     singles { FactoryGirl.build_list(:single, amount) }
     set_at Time.now
   end
+
+  factory :following do
+    association :follower, :factory => :user
+    association :followee, :factory => :user
+  end
+
+  factory :follow_activity do
+    association :user
+    association :trackable, :factory => :following
+  end
 end
