@@ -41,7 +41,9 @@ class UsersController < ApplicationController
 
   def follow
     user = User.find params[:id]
-    if current_user.follow!(user)
+    following = current_user.follow!(user)
+    if following
+      CreateActivity.for_following(following)
       redirect_to user, :notice => "You are now following #{user.name}."
     else
       redirect_to user
