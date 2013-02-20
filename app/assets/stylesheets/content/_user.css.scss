@@ -3,7 +3,9 @@
     margin-right: 10px;
   }
   div.follow {
+    text-align: right;
     input {
+      display: inline;
       font: inherit;
       line-height: normal;
       border: 0;
@@ -11,8 +13,6 @@
       background-color: $yellow;
       color: black;
       cursor: pointer;
-      margin-left: auto;
-      margin-right: 10px;
       font-weight: bold;
     }
     input:hover {
