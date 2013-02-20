@@ -2,6 +2,23 @@
   div.admin {
     margin-right: 10px;
   }
+  div.follow {
+    input {
+      font: inherit;
+      line-height: normal;
+      border: 0;
+      padding: 10px;
+      background-color: $yellow;
+      color: black;
+      cursor: pointer;
+      margin-left: auto;
+      margin-right: 10px;
+      font-weight: bold;
+    }
+    input:hover {
+      background-color: $yellow - #222;
+    }
+  }
   h1 small {
     font-size: 40%;
     margin-left: 0.5em;
