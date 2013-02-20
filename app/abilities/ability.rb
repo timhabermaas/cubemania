@@ -22,7 +22,9 @@ class Ability
       end
       cannot :read, Puzzle
       can :read, :activity
-      can :follow, User
+      can :follow, User do |u|
+        user != u && !u.followers.include?(user)
+      end
     end
   end
 end
