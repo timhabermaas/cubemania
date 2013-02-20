@@ -8,12 +8,17 @@
 
 #users {
   font-size: 1.5em;
+  li {
+    small {
+      font-size: 0.4em;
+    }
+  }
+}
+
+ul.users {
   text-align: center;
   li {
     display: inline;
     margin-right: 16px;
-    small {
-      font-size: 0.4em;
-    }
   }
 }

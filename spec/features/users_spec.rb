@@ -55,6 +55,28 @@ describe "Users" do
       end
     end
 
+    describe "followings" do
+      let(:nick) { create :user, :name => "Nick" }
+
+      before do
+        user.follow!(nick)
+      end
+
+      it "lists the names of all cubers he follows" do
+        visit user_path(user)
+        within("ul.followees") do
+          expect(page).to have_content "Nick"
+        end
+      end
+
+      it "lists the names of all cubers who follow him" do
+        visit user_path(nick)
+        within("ul.followers") do
+          expect(page).to have_content "rowe"
+        end
+      end
+    end
+
     context "having records" do
       let!(:record)  { create :record, :user => user, :puzzle => puzzle, :amount => 5, :time => 14500 }
       let!(:record2) { create :record, :user => user, :puzzle => puzzle2, :amount => 12, :time => 22300 }
