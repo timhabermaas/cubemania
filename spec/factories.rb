@@ -14,22 +14,6 @@ FactoryGirl.define do
     end
   end
 
-  factory :competition do
-    name "CubeMonster"
-    description "Rule it!"
-    user
-    puzzle
-    repeat "daily"
-    skill "beginner"
-  end
-
-  factory :authorization do
-    provider "facebook"
-    uid "12325141asda"
-    token "afaslga9airadsfa12111"
-    user
-  end
-
   factory :post do
     sequence(:title) { |n| "title #{n}" }
     content 'some stupid content full of stuff'
@@ -60,14 +44,6 @@ FactoryGirl.define do
     penalty "plus2"
   end
 
-  factory :average do
-    time { rand(16000) + 5000 }
-    association :puzzle
-    association :user
-    association :competition
-    singles { FactoryGirl.build_list(:single, 5) }
-  end
-
   factory :record do
     time { rand(16000) + 5000 }
     association :puzzle
@@ -75,11 +51,5 @@ FactoryGirl.define do
     amount 5
     singles { FactoryGirl.build_list(:single, amount) }
     set_at Time.now
-  end
-
-  factory :match do
-    association :user
-    association :opponent, :factory => :user
-    association :puzzle
   end
 end
