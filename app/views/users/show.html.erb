@@ -4,6 +4,11 @@
       <%= link_to "Edit Profile", edit_user_path(@user) %>
     <% end %>
   </div>
+  <% if can? :follow, @user %>
+    <div class="follow">
+      <%= button_to "Follow #{@user.name}", follow_user_path(@user) %>
+    </div>
+  <% end %>
   <h1>
     <%= avatar_image @user %>
     <%= @user.name %>

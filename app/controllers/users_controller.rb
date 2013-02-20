@@ -39,6 +39,15 @@ class UsersController < ApplicationController
     @user.block!
   end
 
+  def follow
+    user = User.find params[:id]
+    if current_user.follow!(user)
+      redirect_to user, :notice => "You are now following #{user.name}."
+    else
+      redirect_to user
+    end
+  end
+
   def index
     @users = User.order("singles_count desc").paginate(:page => params[:page], :per_page => 200)
     if params[:q]

@@ -15,6 +15,10 @@ class User < ActiveRecord::Base
   attr_accessible :name, :email, :time_zone, :password, :password_confirmation, :wca, :bot_email, :wants_emails, :ignored, :as => :moderator
   attr_accessible :name, :email, :time_zone, :password, :password_confirmation, :wca, :bot_email, :wants_emails, :ignored, :role, :as => :admin
 
+  has_many :followeeds, :class_name => "Following", :foreign_key => :follower_id
+  has_many :followerds, :class_name => "Following", :foreign_key => :followee_id
+  has_many :followees, :through => :followeeds, :source => :followee
+  has_many :followers, :through => :followerds, :source => :follower
   has_many :posts, :dependent => :nullify
   has_many :comments, :dependent => :nullify
   has_many :singles, :dependent => :delete_all do
@@ -22,7 +26,6 @@ class User < ActiveRecord::Base
     def best(puzzle); not_dnf.where(:puzzle_id => puzzle.id).order(:time).first; end
     def average(puzzle); not_dnf.where(:puzzle_id => puzzle.id).calculate(:average, :time); end
   end
-
   has_many :records, :include => { :puzzle => :kind }, :order => 'puzzles.name, kinds.name', :dependent => :delete_all do
     def for(puzzle, amount)
       find_by_puzzle_id_and_amount puzzle.id, amount
@@ -90,6 +93,10 @@ class User < ActiveRecord::Base
 
   def unblock!
     update_attribute :ignored, false
+  end
+
+  def follow!(user)
+    Following.create(:followee_id => user.id, :follower_id => self.id)
   end
 
   def role?(required_role, request_id, object)

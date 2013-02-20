@@ -110,6 +110,24 @@ describe User do
     end
   end
 
+  describe "follow!" do
+    let(:peter) { create :user, :name => "Peter" }
+    let(:nick) { create :user, :name => "Nick" }
+
+    it "follows peter" do
+      nick.follow!(peter)
+      expect(peter.followers).to eq [nick]
+      expect(nick.followees).to eq [peter]
+    end
+
+    it "doesn't follow people twice" do
+      nick.follow!(peter)
+      nick.follow!(peter)
+      expect(peter.followers).to eq [nick]
+      expect(nick.followees).to eq [peter]
+    end
+  end
+
   describe ".authorize" do
     let!(:user) { create :user, :name => "charlie", :password => "password",
                                                     :password_confirmation => "password" }

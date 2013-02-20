@@ -25,6 +25,7 @@ Cubemania::Application.routes.draw do
 
   resources :users do
     post :block, :on => :member
+    post :follow, :on => :member
     resources :records, :only => [:show] do
       get :share, :on => :member
     end

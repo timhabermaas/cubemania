@@ -22,6 +22,7 @@ class Ability
       end
       cannot :read, Puzzle
       can :read, :activity
+      can :follow, User
     end
   end
 end
