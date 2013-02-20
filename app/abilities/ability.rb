@@ -25,6 +25,9 @@ class Ability
       can :follow, User do |u|
         user != u && !u.followers.include?(user)
       end
+      can :unfollow, User do |u|
+        user != u && u.followers.include?(user)
+      end
     end
   end
 end

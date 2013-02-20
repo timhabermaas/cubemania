@@ -110,7 +110,7 @@ describe User do
     end
   end
 
-  describe "follow!" do
+  describe "#follow!" do
     let(:peter) { create :user, :name => "Peter" }
     let(:nick) { create :user, :name => "Nick" }
 
@@ -125,6 +125,24 @@ describe User do
       nick.follow!(peter)
       expect(peter.followers).to eq [nick]
       expect(nick.followees).to eq [peter]
+    end
+  end
+
+  describe "#unfollow!" do
+    let(:peter) { create :user, :name => "Peter" }
+    let(:nick) { create :user, :name => "Nick" }
+
+    it "successfully unfollows users" do
+      nick.follow!(peter)
+      nick.unfollow!(peter)
+      expect(nick.followees).to eq([])
+      expect(peter.followers).to eq([])
+    end
+
+    it "doesn't crash if there's no following relationship" do
+      nick.unfollow!(peter)
+      expect(nick.followees).to eq([])
+      expect(peter.followers).to eq([])
     end
   end
 

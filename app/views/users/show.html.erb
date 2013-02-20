@@ -9,6 +9,11 @@
       <%= button_to "Follow #{@user.name}", follow_user_path(@user) %>
     </div>
   <% end %>
+  <% if can? :unfollow, @user %>
+    <div class="follow">
+      <%= button_to "Unfollow #{@user.name}", unfollow_user_path(@user) %>
+    </div>
+  <% end %>
   <h1>
     <%= avatar_image @user %>
     <%= @user.name %>

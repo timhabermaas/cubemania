@@ -96,7 +96,12 @@ class User < ActiveRecord::Base
   end
 
   def follow!(user)
-    Following.create(:followee_id => user.id, :follower_id => self.id)
+    Following.create(:follower_id => self.id, :followee_id => user.id)
+  end
+
+  def unfollow!(user)
+    following = Following.where(:follower_id => self.id, :followee_id => user.id).first
+    following.destroy if following
   end
 
   def role?(required_role, request_id, object)

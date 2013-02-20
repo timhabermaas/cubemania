@@ -48,6 +48,15 @@ class UsersController < ApplicationController
     end
   end
 
+  def unfollow
+    user = User.find params[:id]
+    if current_user.unfollow!(user)
+      redirect_to user, :notice => "You are no longer following #{user.name}."
+    else
+      redirect_to user
+    end
+  end
+
   def index
     @users = User.order("singles_count desc").paginate(:page => params[:page], :per_page => 200)
     if params[:q]
