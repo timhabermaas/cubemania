@@ -31,6 +31,14 @@ FactoryGirl.define do
     attempt_count 5
     association :kind
   end
+  factory :cube, :parent => :puzzle do
+    name "3x3x3"
+    association :kind, :name => "speed", :short_name => ""
+  end
+  factory :cube_bld, :parent => :puzzle do
+    name "3x3x3"
+    association :kind, :name => "blindfolded", :short_name => "BLD"
+  end
 
   factory :single do
     time { rand(16000) + 5000 }
@@ -61,5 +69,10 @@ FactoryGirl.define do
   factory :follow_activity do
     association :user
     association :trackable, :factory => :following
+  end
+
+  factory :record_activity do
+    association :user
+    association :trackable, :factory => :record
   end
 end

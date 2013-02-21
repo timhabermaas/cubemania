@@ -25,6 +25,7 @@ class Record < ActiveRecord::Base
                        :amount => amount).first
     if old_record && (force || old_record.time > time)
       old_record.update_attributes(:time => time, :singles => singles)
+      old_record
     elsif old_record.nil?
       Record.create! :user_id => user.id,
                      :puzzle_id => puzzle.id,

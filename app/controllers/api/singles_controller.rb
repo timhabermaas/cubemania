@@ -38,7 +38,11 @@ module Api
     def create
       single = current_user.singles.build(params[:single].merge(:puzzle_id => @puzzle.id))
       if single.save
-        if UpdateRecentRecords.for(current_user, @puzzle)
+        records = UpdateRecentRecords.for(current_user, @puzzle)
+        records.each do |r|
+          CreateActivity.for_record(r)
+        end
+        if records.present?
           response.headers["X-NewRecord"] = "true"
         end
       end

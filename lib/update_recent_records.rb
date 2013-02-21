@@ -2,7 +2,7 @@ class UpdateRecentRecords
   def self.for(user, puzzle)
     RecordType.all.map do |type|
       for_amount(user, puzzle, type)
-    end.any? { |e| e }
+    end.compact
   end
 
   def self.for_amount(user, puzzle, type)

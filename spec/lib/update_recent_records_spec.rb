@@ -18,16 +18,12 @@ describe UpdateRecentRecords do
       subject.for(user, puzzle)
     end
 
-    it "returns trueish value if at least one record was updated" do
-      subject.stub(:for_amount).with(user, puzzle, RecordType.all[0])  { false }
-      subject.stub(:for_amount).with(user, puzzle, RecordType.all[1])  { true }
-      subject.stub(:for_amount).with(user, puzzle, RecordType.all[2]) { false }
-      subject.for(user, puzzle).should be_true
-    end
-
-    it "returns falseish value if no record was updated" do
-      subject.stub(:for_amount) { false }
-      subject.for(user, puzzle).should be_false
+    it "returns all updated records" do
+      record = stub(:record)
+      subject.stub(:for_amount).with(user, puzzle, RecordType.all[0])  { nil }
+      subject.stub(:for_amount).with(user, puzzle, RecordType.all[1])  { record }
+      subject.stub(:for_amount).with(user, puzzle, RecordType.all[2]) { nil }
+      subject.for(user, puzzle).should == [record]
     end
   end
 
@@ -49,9 +45,9 @@ describe UpdateRecentRecords do
       end
 
       it "returns falseish value" do
-        UpdateRecentRecords.for_amount(user, puzzle, single_type).should be_false
-        UpdateRecentRecords.for_amount(user, puzzle, avg5_type).should be_false
-        UpdateRecentRecords.for_amount(user, puzzle, avg12_type).should be_false
+        UpdateRecentRecords.for_amount(user, puzzle, single_type).should be_nil
+        UpdateRecentRecords.for_amount(user, puzzle, avg5_type).should be_nil
+        UpdateRecentRecords.for_amount(user, puzzle, avg12_type).should be_nil
       end
     end
 
@@ -71,10 +67,11 @@ describe UpdateRecentRecords do
           UpdateRecentRecords.for_amount(user, puzzle, avg5_type)
         end
 
-        it "returns trueish value" do
+        it "returns created record" do
+          record = stub(:record)
           CubingAverage.stub(:new) { average }
-          Record.stub(:update_with!) { true }
-          UpdateRecentRecords.for_amount(user, puzzle, avg5_type).should be_true
+          Record.stub(:update_with!) { record }
+          UpdateRecentRecords.for_amount(user, puzzle, avg5_type).should == record
         end
       end
 
@@ -87,9 +84,9 @@ describe UpdateRecentRecords do
           UpdateRecentRecords.for_amount(user, puzzle, avg5_type)
         end
 
-        it "returns falseish value" do
+        it "returns nil" do
           CubingAverage.stub(:new) { average }
-          UpdateRecentRecords.for_amount(user, puzzle, avg5_type).should be_false
+          UpdateRecentRecords.for_amount(user, puzzle, avg5_type).should be_nil
         end
       end
     end
