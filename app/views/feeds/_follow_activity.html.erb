@@ -1,1 +1,4 @@
-<%= link_to activity.user.name, activity.user %> started following <%= link_to activity.trackable.followee.name, activity.trackable.followee %>
+<% if activity.corrupt? %>
+<% else %>
+  <%= link_to activity.user.name, activity.user %> started following <%= link_to activity.trackable.followee.name, activity.trackable.followee %>
+<% end %>

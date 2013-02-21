@@ -1,3 +1,5 @@
 <% # TODO duplication of facebook post title %>
-
-<%= link_to activity.user.name, activity.user %> has a new <%= activity.trackable.puzzle.full_name %> <%= activity.trackable.type.full_name %> <%= link_to "record", user_record_path(activity.user, activity.trackable) %>!
+<% if activity.corrupt? %>
+<% else %>
+  <%= link_to activity.user.name, activity.user %> has a new <%= activity.trackable.puzzle.full_name %> <%= activity.trackable.type.full_name %> <%= link_to "record", user_record_path(activity.user, activity.trackable) %>!
+<% end %>
