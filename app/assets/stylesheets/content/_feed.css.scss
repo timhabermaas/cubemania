@@ -1,4 +1,8 @@
 #feed {
+  background-image: image-url("timeline.png");
+  background-repeat: repeat-y;
+  background-position: 50% top;
+
   h2.date {
     margin: 0 auto;
     width: 300px;
@@ -15,7 +19,7 @@
     min-height: 50px;
     margin: 0 auto;
     margin-bottom: 1em;
-    border-top: 5px solid $lightblue;
+    border-top: 3px solid $lightblue;
     background-color: $darkblue;
     text-align: center;
     padding: 16px 50px;
