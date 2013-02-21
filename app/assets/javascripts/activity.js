@@ -48,13 +48,13 @@ jQuery(function() {
     return week.getMonth() !== nextWeek.getMonth();
   }
 
-  weeks.append("text")
+  weeks
+    .filter(function(d, i) {
+      return hasBeginningOfMonthInWeek(d);
+    })
+    .append("text")
     .text(function(d, i) {
-      if (hasBeginningOfMonthInWeek(d)) {
-        return monthName(d3.time.day.offset(d, 7));
-      } else {
-        return "";
-      }
+      return monthName(d3.time.day.offset(d, 7));
     })
     .attr("y", -5)
     .attr("fill", "#b5cadf");
