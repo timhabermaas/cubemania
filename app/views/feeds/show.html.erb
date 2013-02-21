@@ -1,3 +1,10 @@
-<ul class="activities">
-  <%= render :partial => "activity", :collection => @feed.activities %>
+<ul id="feed">
+  <% @activities.each do |date, activities| %>
+    <li>
+      <h2 class="date"><%=d date %></h2>
+      <ul class="activities">
+        <%= render :partial => "activity", :collection => activities %>
+      </ul>
+    </li>
+  <% end %>
 </ul>

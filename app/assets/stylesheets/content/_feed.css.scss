@@ -1,0 +1,28 @@
+#feed {
+  h2.date {
+    margin: 0 auto;
+    width: 300px;
+    background-color: $darkblue;
+    padding: 1em;
+    text-align: center;
+    border-radius: 10px;
+    color: $lightblue;
+    margin-bottom: 1em;
+  }
+  li.activity {
+    position: relative;
+    width: 50%;
+    min-height: 50px;
+    margin: 0 auto;
+    margin-bottom: 1em;
+    border-top: 5px solid $lightblue;
+    background-color: $darkblue;
+    text-align: center;
+    padding: 16px 50px;
+  }
+  .puzzle {
+    @include puzzle-image;
+    position: absolute;
+    right: 1em;
+  }
+}
