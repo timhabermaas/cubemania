@@ -28,6 +28,7 @@
     @include puzzle-image;
     position: absolute;
     right: 1em;
+    top: 1em;
   }
   .kind-image {
     @include kind-image;
