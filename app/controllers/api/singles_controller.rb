@@ -38,6 +38,9 @@ module Api
     def create
       single = current_user.singles.build(params[:single].merge(:puzzle_id => @puzzle.id))
       if single.save
+        session = CubingSessionManager.create_or_add(single)
+        CreateActivity.for_cubing_session(session) if session.new?
+
         records = UpdateRecentRecords.for(current_user, @puzzle)
         records.each do |r|
           CreateActivity.for_record(r)

@@ -124,6 +124,11 @@ module ApplicationHelper
     datetime.strftime '%B %d, %Y at %H:%M'
   end
 
+  def time(time)
+    return "" if time.nil?
+    time.strftime '%H:%M'
+  end
+
   def compare(my_time, other_time)
     if other_time.nil? and my_time.nil?
       "equal"

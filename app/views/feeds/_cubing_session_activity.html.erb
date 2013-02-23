@@ -1,0 +1,9 @@
+<% puzzle = activity.trackable.puzzle %>
+  <div class="puzzle-image pos<%= puzzle.css_position %>">
+    <div class="kind-image pos<%= puzzle.kind.css_position %>"></div>
+  </div>
+
+<%= link_to activity.user.name, activity.user %> solved <small><%= activity.trackable.count %></small> <%= activity.trackable.puzzle.full_name %> from <small><%=time activity.trackable.from %></small> to <small><%=time activity.trackable.to %></small>
+<br />
+<br />
+<small><%= SinglesFormatter.new(activity.trackable.singles).as_text %></small>

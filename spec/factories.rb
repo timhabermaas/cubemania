@@ -61,6 +61,12 @@ FactoryGirl.define do
     set_at Time.now
   end
 
+  factory :cubing_session do
+    association :user
+    association :puzzle
+    single_ids { FactoryGirl.create_list(:single, 4, :user => user, :puzzle => puzzle).map(&:id) }
+  end
+
   factory :following do
     association :follower, :factory => :user
     association :followee, :factory => :user
@@ -74,5 +80,10 @@ FactoryGirl.define do
   factory :record_activity do
     association :user
     association :trackable, :factory => :record
+  end
+
+  factory :cubing_session_activity do
+    association :user
+    association :trackable, :factory => :cubing_session
   end
 end

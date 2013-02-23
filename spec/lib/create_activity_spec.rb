@@ -21,4 +21,13 @@ describe CreateActivity do
       CreateActivity.for_record(record, activity_class)
     end
   end
+
+  describe ".for_cubing_session" do
+    let(:session) { stub(:session, :user => user) }
+
+    it "creates a new CubingSessionActivity" do
+      activity_class.should_receive(:create).with(:user => user, :trackable => session)
+      CreateActivity.for_cubing_session(session, activity_class)
+    end
+  end
 end
