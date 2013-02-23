@@ -1,6 +1,6 @@
 <% unless activity.corrupt? %>
 <li class="activity <%= activity.class.name.underscore %>">
-  <%= render :partial => activity.class.name.underscore, :locals => {:activity => activity } %>
+  <%= render :partial => activity.class.name.underscore, :locals => { :activity => activity } %>
   <br />
   <br />
   <%= link_to "#" do %>
