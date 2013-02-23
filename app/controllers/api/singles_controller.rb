@@ -58,6 +58,7 @@ module Api
     def destroy
       single = current_user.singles.find params[:id]
       if single.destroy
+        CubingSessionManager.remove(single)
         enqueue_record_job current_user, @puzzle
       end
       respond_with single

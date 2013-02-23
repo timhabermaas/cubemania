@@ -11,8 +11,12 @@ class CubingSession < ActiveRecord::Base
            :singles => [single]
   end
 
+  def self.for(user_id, puzzle_id)
+    where(:user_id => user_id, :puzzle_id => puzzle_id)
+  end
+
   def self.last_for(user_id, puzzle_id)
-    where(:user_id => user_id, :puzzle_id => puzzle_id).order("updated_at desc").first
+    self.for(user_id, puzzle_id).order("updated_at desc").first
   end
 
   def singles

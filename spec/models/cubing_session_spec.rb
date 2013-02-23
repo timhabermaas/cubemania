@@ -74,14 +74,22 @@ describe CubingSession do
     its(:puzzle) { should == single.puzzle }
   end
 
-  describe ".last_for" do
+  describe "scopes" do
     let!(:session_1) { create :cubing_session, :user => user, :puzzle => puzzle, :updated_at => 1.month.ago }
     let!(:session_2) { create :cubing_session, :user => user, :puzzle => puzzle, :updated_at => 1.day.ago }
     let!(:session_3) { create :cubing_session, :user => user, :puzzle => puzzle, :updated_at => 2.days.ago }
     let!(:session_4) { create :cubing_session, :user => create(:user), :puzzle => puzzle, :updated_at => 1.hour.ago }
 
-    it "grabs the latest session for this user and puzzle" do
-      expect(CubingSession.last_for(user.id, puzzle.id)).to eq(session_2)
+    describe ".for" do
+      it "grabs all sessions for that particular user and puzzle" do
+        expect(CubingSession.for(user.id, puzzle.id)).to eq([session_1, session_2, session_3])
+      end
+    end
+
+    describe ".last_for" do
+      it "grabs the latest session for this user and puzzle" do
+        expect(CubingSession.last_for(user.id, puzzle.id)).to eq(session_2)
+      end
     end
   end
 end

@@ -9,4 +9,11 @@ class CubingSessionManager
       current_session
     end
   end
+
+  def self.remove(single, session_class=CubingSession)
+    sessions = session_class.for(single.user_id, single.puzzle_id)
+    sessions.each do |s|
+      s.destroy if s.singles == [] # TODO push this into model (Tell don't ask)
+    end
+  end
 end

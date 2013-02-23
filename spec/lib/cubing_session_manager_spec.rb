@@ -1,10 +1,11 @@
 require_relative "../../lib/cubing_session_manager"
 
 describe CubingSessionManager do
+  let(:session_class) { stub }
+  let(:single) { stub(:single, :user_id => 2, :puzzle_id => 10) }
+
   describe ".create_or_add" do
-    let(:session_class) { stub }
     let(:new_session) { stub }
-    let(:single) { stub(:single, :user_id => 2, :puzzle_id => 10) }
 
     context "no existing session" do
       before { session_class.should_receive(:last_for).with(2, 10).and_return(nil) }
@@ -43,6 +44,21 @@ describe CubingSessionManager do
           expect(result).to eq old_session
         end
       end
+    end
+  end
+
+  describe ".remove" do
+    let(:session_1) { stub(:session, :singles => []) }
+    let(:session_2) { stub(:session, :singles => [stub]) }
+    let(:sessions) { [session_1, session_2] }
+
+    before do
+      session_class.should_receive(:for).with(2, 10).and_return(sessions)
+    end
+
+    it "" do
+      session_1.should_receive(:destroy)
+      CubingSessionManager.remove(single, session_class)
     end
   end
 end
