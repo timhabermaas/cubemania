@@ -19,7 +19,6 @@ gem 'eco', '~> 1.0.0'
 gem 'oj'
 
 gem 'pg'
-gem 'sqlite3', :group => [:development, :test]
 
 gem 'memcachier'
 gem 'dalli', :group => :production
