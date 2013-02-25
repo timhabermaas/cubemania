@@ -6,6 +6,7 @@
     <%=formatTime @currentTime %>
   </div>
   <p class="help">Press Space to start/stop the timer.</p>
+  <label class="inspection-toggle"><input type="checkbox" class="inspection-toggle">15s Inspection</label>
 </div>
 <form accept-charset="UTF-8" class="formtastic single" id="new_single">
   <fieldset class="inputs">

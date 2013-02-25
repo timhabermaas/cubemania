@@ -1,8 +1,11 @@
 class Cubemania.TimerWithInspection
-  constructor: (inspection = 15) ->
+  constructor: (inspection) ->
     _.extend(this, Backbone.Events)
+    @reset(inspection)
+
+  reset: (inspection) ->
     @state = "reset"
-    @startedAt = new Date().getTime()
+    @startedAt = new Date().getTime() - 10000
     @stoppedAt = @startedAt
     @inspection = inspection * 1000
 
@@ -10,7 +13,7 @@ class Cubemania.TimerWithInspection
     switch @state
       when "reset"
         if @stoppedForLongerThan(2)
-          if @inspection?
+          if @hasInspection()
             @countdownStartedAt = new Date().getTime()
             @setState "countdownStarted"
           else
@@ -43,6 +46,9 @@ class Cubemania.TimerWithInspection
   setState: (state) ->
     @state = state
     @trigger(state, this)
+
+  hasInspection: ->
+    @inspection > 0
 
   currentTime: ->
     if @isCountdownRunning()

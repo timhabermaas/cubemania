@@ -8,11 +8,12 @@ class Cubemania.Views.Timer extends Backbone.View
     "touchend .time-container": "startTimer"
     "submit #add_comment": "addComment"
     "click a.add_comment": "toggleComment"
+    "click input.inspection-toggle": "toggleInspection"
     "focus div.add_comment textarea": "disableTimer"
     "blur div.add_comment textarea": "enableTimer"
 
   initialize: ->
-    @timer = new Cubemania.TimerWithInspection()
+    @timer = new Cubemania.TimerWithInspection(0)
     @timer.on "stopped", @displayAddCommentBubble, this
     @timer.on "stopped", @createSingle, this
     @timer.on "started", @hideStuff, this
@@ -64,6 +65,10 @@ class Cubemania.Views.Timer extends Backbone.View
     @$("div.add_comment form").toggle()
     @$("div.add_comment a").toggle()
     @$("div.add_comment form")[0].reset()
+
+  toggleInspection: (event) ->
+    inspection = if @$("input.inspection-toggle").prop("checked") then 15 else 0
+    @timer.reset(inspection)
 
   enableTimer: ->
     @timerEnabled = true
