@@ -31,6 +31,9 @@ class Cubemania.TimerWithInspection
         @stoppedAt = new Date().getTime()
         @setState "stopped"
 
+  isReset: ->
+    @state == "reset"
+
   isRunning: ->
     @state == "started"
 

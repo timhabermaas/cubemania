@@ -4,8 +4,8 @@ class Cubemania.Views.Timer extends Backbone.View
   events:
     "click a.toggle": "toggleManual"
     "submit #new_single": "submitSingle"
-    "touchstart .time-container": "stopTimer"
-    "touchend .time-container": "startTimer"
+    "touchstart .time-container": "keyDown"
+    "touchend .time-container": "keyUp"
     "submit #add_comment": "addComment"
     "click a.add_comment": "toggleComment"
     "click input.inspection-toggle": "toggleInspection"
@@ -20,9 +20,9 @@ class Cubemania.Views.Timer extends Backbone.View
     @timer.on "countdownStarted", @hideStuff, this
     @timerEnabled = true
     @scramble = Cubemania.scrambler.scramble(Cubemania.currentPuzzle.getName())
-    $(document).keydown(@stopTimer)
-    $(document).keyup(@startTimer)
-    setInterval(@updateDisplay, 23)
+    $(document).keydown(@keyDown)
+    $(document).keyup(@keyUp)
+    setInterval(@updateDisplay, 41)
 
   updateDisplay: =>
     if @timer.isCountdownRunning()
@@ -38,15 +38,18 @@ class Cubemania.Views.Timer extends Backbone.View
     $(@el).html(@template(currentTime: @timer.currentTime(), scramble: @scramble))
     this
 
-  startTimer: (event) =>
+  keyUp: (event) =>
     if (event.type == "touchend" or event.keyCode == 32) and @timerEnabled
       event.preventDefault()
       @timer.wantToStart()
+      @$(".time").removeClass("starting")
 
-  stopTimer: (event) =>
+  keyDown: (event) =>
     if (event.type == "touchstart" or event.keyCode == 32) and @timerEnabled
       event.preventDefault()
       @timer.wantToStop()
+      if @timer.hasInspection() and @timer.isCountdownRunning() or !@timer.hasInspection() and @timer.isReset()
+        @$(".time").addClass("starting")
 
   toggleManual: (event) ->
     event.preventDefault()
