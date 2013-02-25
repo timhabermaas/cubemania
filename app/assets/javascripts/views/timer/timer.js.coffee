@@ -12,16 +12,22 @@ class Cubemania.Views.Timer extends Backbone.View
     "blur div.add_comment textarea": "enableTimer"
 
   initialize: ->
-    @timer = new Cubemania.Timer()
+    @timer = new Cubemania.TimerWithInspection()
     @timer.on "stopped", @displayAddCommentBubble, this
-    @timer.on "started", @hideAddCommentBubble, this
+    @timer.on "stopped", @createSingle, this
+    @timer.on "started", @hideStuff, this
+    @timer.on "countdownStarted", @hideStuff, this
     @timerEnabled = true
     @scramble = Cubemania.scrambler.scramble(Cubemania.currentPuzzle.getName())
     $(document).keydown(@stopTimer)
     $(document).keyup(@startTimer)
+    setInterval(@updateDisplay, 23)
 
   updateDisplay: =>
-    @$(".time").html(formatTime(@timer.currentTime()))
+    if @timer.isCountdownRunning()
+      @$(".time").html(Math.ceil(@timer.currentTime() / 1000))
+    else
+      @$(".time").html(formatTime(@timer.currentTime()))
 
   updateScramble: ->
     @scramble = Cubemania.scrambler.scramble(Cubemania.currentPuzzle.getName())
@@ -32,30 +38,14 @@ class Cubemania.Views.Timer extends Backbone.View
     this
 
   startTimer: (event) =>
-    if (event.type == "touchend" or event.keyCode == 32) and !@timer.isRunning() and @timerEnabled
-      if @justStopped
-        @justStopped = false
-      else
-        @$(".time").removeClass("starting")
-        if @timer.timeSinceStopped() > 2000
-          @timer.start()
-          Cubemania.flashView.slideUp()
-          @$("p.help").hide()
-        @intervalId = setInterval(@updateDisplay, 23)
+    if (event.type == "touchend" or event.keyCode == 32) and @timerEnabled
       event.preventDefault()
+      @timer.wantToStart()
 
   stopTimer: (event) =>
     if (event.type == "touchstart" or event.keyCode == 32) and @timerEnabled
-      if @timer.isRunning()
-        @timer.stop()
-        @justStopped = true
-        @updateDisplay()
-        clearInterval(@intervalId)
-        intervalId = null
-        @createSingle(@timer.currentTime())
-      else
-        @$(".time").addClass("starting")
       event.preventDefault()
+      @timer.wantToStop()
 
   toggleManual: (event) ->
     event.preventDefault()
@@ -69,7 +59,7 @@ class Cubemania.Views.Timer extends Backbone.View
     else
       @$("#single_human_time").blur()
 
-  toggleComment: (event) ->
+  toggleComment: (event) -> # TODO confusion between toggle and hide
     event.preventDefault() if event?
     @$("div.add_comment form").toggle()
     @$("div.add_comment a").toggle()
@@ -88,7 +78,7 @@ class Cubemania.Views.Timer extends Backbone.View
     @$("form")[0].reset()
 
   createSingle: (time) ->
-    @collection.create({time: time, scramble: @scramble})
+    @collection.create({time: @timer.currentTime(), scramble: @scramble})
     @updateScramble() # TODO duplication
 
   addComment: (event) ->
@@ -106,3 +96,7 @@ class Cubemania.Views.Timer extends Backbone.View
     @$("div.add_comment").slideUp()
     @$("div.add_comment form").hide()
     @$("div.add_comment a").show()
+
+  hideStuff: ->
+    @hideAddCommentBubble()
+    Cubemania.flashView.slideUp()
