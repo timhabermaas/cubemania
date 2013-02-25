@@ -30,6 +30,10 @@ class Cubemania.TimerWithInspection
       when "started"
         @stoppedAt = new Date().getTime()
         @setState "stopped"
+      when "reset"
+        @trigger("isAboutToStart", this) unless @hasInspection()
+      when "countdownStarted"
+        @trigger("isAboutToStart", this)
 
   isReset: ->
     @state == "reset"
@@ -48,7 +52,7 @@ class Cubemania.TimerWithInspection
 
   setState: (state) ->
     @state = state
-    @trigger(state, this)
+    @trigger state, this
 
   hasInspection: ->
     @inspection > 0

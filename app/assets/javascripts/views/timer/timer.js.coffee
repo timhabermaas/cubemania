@@ -17,6 +17,7 @@ class Cubemania.Views.Timer extends Backbone.View
     @timer.on "stopped", @displayAddCommentBubble, this
     @timer.on "stopped", @createSingle, this
     @timer.on "started", @hideStuff, this
+    @timer.on "isAboutToStart", @makeTimeGreen, this
     @timer.on "countdownStarted", @hideStuff, this
     @timerEnabled = true
     @scramble = Cubemania.scrambler.scramble(Cubemania.currentPuzzle.getName())
@@ -48,8 +49,6 @@ class Cubemania.Views.Timer extends Backbone.View
     if (event.type == "touchstart" or event.keyCode == 32) and @timerEnabled
       event.preventDefault()
       @timer.wantToStop()
-      if @timer.hasInspection() and @timer.isCountdownRunning() or !@timer.hasInspection() and @timer.isReset()
-        @$(".time").addClass("starting")
 
   toggleManual: (event) ->
     event.preventDefault()
@@ -96,6 +95,9 @@ class Cubemania.Views.Timer extends Backbone.View
     lastSingle.save()
     @toggleComment()
     @hideAddCommentBubble()
+
+  makeTimeGreen: ->
+    @$(".time").addClass("starting")
 
   displayAddCommentBubble: ->
     @$("div.add_comment").slideDown()
