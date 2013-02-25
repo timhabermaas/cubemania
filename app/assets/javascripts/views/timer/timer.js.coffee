@@ -27,10 +27,6 @@ class Cubemania.Views.Timer extends Backbone.View
     @scramble = Cubemania.scrambler.scramble(Cubemania.currentPuzzle.getName())
     @$(".scramble").html(formatScramble @scramble)
 
-  resetTime: ->
-    @timer.reset()
-    @updateDisplay()
-
   render: ->
     $(@el).html(@template(currentTime: @timer.currentTime(), scramble: @scramble))
     this
