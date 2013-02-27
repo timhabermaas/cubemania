@@ -72,7 +72,7 @@ FactoryGirl.define do
     association :followee, :factory => :user
   end
 
-  factory :follow_activity do
+  factory :following_activity do
     association :user
     association :trackable, :factory => :following
   end

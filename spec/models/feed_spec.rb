@@ -5,9 +5,9 @@ describe Feed do
   let(:nick) { create :user }
   let(:peter) { create :user }
   let(:subject) { Feed.new(user) }
-  let!(:activity_1) { create :follow_activity, :user => user, :created_at => DateTime.new(2013, 2, 2) }
-  let!(:activity_2) { create :follow_activity, :user => nick, :created_at => DateTime.new(2013, 2, 5) }
-  let!(:activity_3) { create :follow_activity, :user => peter, :created_at => DateTime.new(2013, 2, 5) }
+  let!(:activity_1) { create :following_activity, :user => user, :created_at => DateTime.new(2013, 2, 2) }
+  let!(:activity_2) { create :following_activity, :user => nick, :created_at => DateTime.new(2013, 2, 5) }
+  let!(:activity_3) { create :following_activity, :user => peter, :created_at => DateTime.new(2013, 2, 5) }
 
   before do
     user.follow! nick

@@ -1,5 +1,5 @@
 class CreateActivity
-  def self.for_following(following, activity_class=FollowActivity)
+  def self.for_following(following, activity_class=FollowingActivity)
     activity_class.create :user => following.follower, :trackable => following
   end
 

@@ -14,8 +14,8 @@ describe "Activity feed" do
 
   describe "follow activity" do
     before do
-      create :follow_activity, :user => peter, :trackable => create(:following, :followee => nick)
-      create :follow_activity, :user => user, :trackable => create(:following, :followee => peter)
+      create :following_activity, :user => peter, :trackable => create(:following, :followee => nick)
+      create :following_activity, :user => user, :trackable => create(:following, :followee => peter)
     end
 
     it "displays a message for each following" do
