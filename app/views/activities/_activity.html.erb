@@ -3,9 +3,6 @@
     <%= render :partial => activity.class.name.underscore, :locals => { :activity => activity } %>
     <br />
     <br />
-    <ol class="comments">
-      <%= render activity.comments %>
-    </ol>
-    <%= render :partial => "comments/form", :locals => { :commentable => activity.sti_parent } %>
+    <%= render :partial => "comments/comments", :locals => { :commentable => activity.sti_parent } %>
   <% end %>
 <% end %>

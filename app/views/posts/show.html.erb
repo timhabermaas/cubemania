@@ -1,4 +1,4 @@
 <%= content_tag_for :div, @post do %>
   <%= render @post %>
-  <%= render 'comments/comments' %>
+  <%= render :partial => 'comments/comments', :locals => { :commentable => @post } %>
 <% end %>
