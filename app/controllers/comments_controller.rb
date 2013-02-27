@@ -1,16 +1,17 @@
 class CommentsController < ApplicationController
   def create
-    @comment = current_user.comments.build(params[:comment].merge :post_id => parent.id)
+    @comment = parent.comments.build(params[:comment])
+    @comment.user = current_user
 
     if @comment.save
       respond_to do |format|
         format.js
-        format.html { redirect_to @comment.post }
+        format.html { redirect_to parent }
       end
     else
       respond_to do |format|
         format.js { render 'create.failure' }
-        format.html { redirect_to @comment.post }
+        format.html { redirect_to parent }
       end
     end
   end
@@ -29,6 +30,11 @@ class CommentsController < ApplicationController
     end
 
     def parent
-      @post ||= Post.find params[:post_id]
+      if params[:post_id]
+        @parent ||= Post.find params[:post_id]
+      elsif params[:activity_id]
+        @parent ||= Activity.find(params[:activity_id]).becomes(Activity)
+      end
     end
+    helper_method :parent
 end

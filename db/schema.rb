@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130222232224) do
+ActiveRecord::Schema.define(:version => 20130227194426) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id", :null => false
@@ -22,10 +22,11 @@ ActiveRecord::Schema.define(:version => 20130222232224) do
   end
 
   create_table "comments", :force => true do |t|
-    t.text     "content",    :null => false
-    t.integer  "post_id",    :null => false
+    t.text     "content",          :null => false
     t.integer  "user_id"
-    t.datetime "created_at", :null => false
+    t.datetime "created_at",       :null => false
+    t.integer  "commentable_id",   :null => false
+    t.string   "commentable_type", :null => false
   end
 
   create_table "cubing_sessions", :force => true do |t|

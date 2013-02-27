@@ -19,7 +19,10 @@ Cubemania::Application.routes.draw do
     end
   end
 
-  resource :feed
+  resources :activities, :only => [:index, :show] do
+    resources :comments, :only => [:create, :destroy]
+  end
+  match 'feed' => "activities#index"
 
   resources :posts do
     resources :comments, :only => [:create, :destroy]

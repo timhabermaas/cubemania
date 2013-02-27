@@ -1,6 +1,6 @@
-<div id="comments">
+<div class="comments">
   <ol class="comments">
     <%= render @post.comments %>
   </ol>
-  <%= render 'comments/form' if logged_in? %>
+  <%= render(:partial => 'comments/form', :locals => { :comment => @comment ||= @post.comments.build, :commentable => @post }) if logged_in? %>
 </div>

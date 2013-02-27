@@ -38,11 +38,11 @@ describe Ability do
 
   describe "feed" do
     it "can be accessed for logged in users" do
-      expect(subject.can? :read, Feed).to eq(true)
+      expect(subject.can? :read, Activity).to eq(true)
     end
 
     it "can't be accessed when user isn't logged in" do
-      expect(Ability.new(nil).can? :read, Feed).to eq(false)
+      expect(Ability.new(nil).can? :read, Activity).to eq(false)
     end
   end
 end

@@ -1,4 +1,4 @@
-<%= semantic_form_for [@post, @comment ||= @post.comments.build], :remote => true do |form| %>
+<%= semantic_form_for [commentable, Comment.new], :remote => true do |form| %>
   <%= form.inputs do %>
     <%= form.input :content %>
   <% end %>

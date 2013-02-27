@@ -2,7 +2,7 @@
   <cite><%= comment.user.nil? ? 'Unknown' : link_to(comment.user.name, comment.user) %></cite>
   <small>
     <%=dt comment.created_at %>
-    <%= link_to 'Destroy', post_comment_path(@post, comment), :confirm => 'Are you sure?', :method => :delete, :remote => true if can? :destroy, comment %>
+    <%= link_to 'Destroy', [comment.commentable.sti_parent, comment], :confirm => 'Are you sure?', :method => :delete, :remote => true if can? :destroy, comment %>
   </small>
   <div class="text">
     <%=m comment.content %>

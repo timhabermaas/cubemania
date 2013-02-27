@@ -1,2 +1,4 @@
-<%= render @post %>
-<%= render 'comments/comments' %>
+<%= content_tag_for :div, @post do %>
+  <%= render @post %>
+  <%= render 'comments/comments' %>
+<% end %>
