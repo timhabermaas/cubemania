@@ -2,6 +2,12 @@
   <%= form.inputs do %>
     <%= form.input :name %>
     <%= form.input :email %>
+    <% if action? :edit %>
+      <div class="profile-image-edit">
+        <%= avatar_image @user, 30 %>
+        <%= link_to "Change your avatar on gravatar", "http://gravatar.com/" %>
+      </div>
+    <% end %>
     <div class="bot">
       <%= form.input :bot_email %>
     </div>

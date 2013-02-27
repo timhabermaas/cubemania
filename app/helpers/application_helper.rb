@@ -1,4 +1,13 @@
 module ApplicationHelper
+  def avatar_url(user, size)
+    gravatar_id = Digest::MD5.hexdigest(user.email.downcase)
+    "http://gravatar.com/avatar/#{gravatar_id}.png?s=#{size}"
+  end
+
+  def avatar_image(user, size=60)
+    image_tag avatar_url(user, size), :class => "profile-image"
+  end
+
   def page_title
     if controller? :timers
       current_puzzle.full_name + " " + "Timer"
