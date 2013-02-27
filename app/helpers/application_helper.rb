@@ -173,8 +173,8 @@ module ApplicationHelper
     name + ('s' == name[-1,1] ? "'" : "'s")
   end
 
-  def raffael_path
-    if u = User.find_by_slug("raffael")
+  def tim_path
+    if u = User.find_by_slug("tim")
       user_path u
     else
       root_path
