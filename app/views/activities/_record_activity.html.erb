@@ -1,8 +1,8 @@
 <% # TODO duplication of facebook post title %>
 
 <% puzzle = activity.trackable.puzzle %>
-  <div class="puzzle-image pos<%= puzzle.css_position %>">
-    <div class="kind-image pos<%= puzzle.kind.css_position %>"></div>
-  </div>
-
-<%= link_to activity.user.name, activity.user %> has a new <%= puzzle.full_name %> <%= activity.trackable.type.full_name %> record: <%= link_to activity.trackable.human_time, user_record_path(activity.user, activity.trackable) %>
+<div class="puzzle-image pos<%= puzzle.css_position %>">
+  <div class="kind-image pos<%= puzzle.kind.css_position %>"></div>
+</div>
+<% # TODO duplication of user avatar combination %>
+<%= avatar_image activity.user, :middle %> <%= link_to activity.user.name, activity.user %> has a new <%= puzzle.full_name %> <%= activity.trackable.type.full_name %> record: <%= link_to activity.trackable.human_time, user_record_path(activity.user, activity.trackable) %>

@@ -1,5 +1,5 @@
 <%= li_for comment do %>
-  <cite><%= comment.user.nil? ? 'Unknown' : link_to(comment.user.name, comment.user) %></cite>
+  <cite><%= avatar_image comment.user, :small %> <%= comment.user.nil? ? 'Unknown' : link_to(comment.user.name, comment.user) %></cite>
   <small>
     <%=dt comment.created_at %>
     <%= link_to 'Destroy', [comment.commentable.sti_parent, comment], :confirm => 'Are you sure?', :method => :delete, :remote => true if can? :destroy, comment %>

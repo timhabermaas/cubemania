@@ -4,7 +4,7 @@
     <%= form.input :email %>
     <% if action? :edit %>
       <div class="profile-image-edit">
-        <%= avatar_image @user, 30 %>
+        <%= avatar_image @user, :small %>
         <%= link_to "Change your avatar on gravatar", "http://gravatar.com/" %>
       </div>
     <% end %>

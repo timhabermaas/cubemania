@@ -4,7 +4,12 @@ module ApplicationHelper
     "http://gravatar.com/avatar/#{gravatar_id}.png?s=#{size}"
   end
 
-  def avatar_image(user, size=60)
+  def avatar_image(user, size)
+    size = {
+      :small => 30,
+      :middle => 45,
+      :large => 60
+    }[size]
     image_tag avatar_url(user, size), :class => "profile-image"
   end
 

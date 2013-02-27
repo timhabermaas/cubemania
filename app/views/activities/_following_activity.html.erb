@@ -1,1 +1,1 @@
-<%= link_to activity.user.name, activity.user %> started following <%= link_to activity.trackable.followee.name, activity.trackable.followee %>
+<%= avatar_image activity.user, :middle %> <%= link_to activity.user.name, activity.user %> started following <%= avatar_image activity.trackable.followee, :middle %> <%= link_to activity.trackable.followee.name, activity.trackable.followee %>

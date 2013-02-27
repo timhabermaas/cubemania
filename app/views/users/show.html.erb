@@ -15,7 +15,7 @@
     </div>
   <% end %>
   <h1>
-    <%= avatar_image @user %>
+    <%= avatar_image @user, :large %>
     <%= @user.name %>
     <small>
       has spent <%= distance_of_time_in_words @user.wasted_time %> solving puzzles.
