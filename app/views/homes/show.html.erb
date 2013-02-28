@@ -1,7 +1,7 @@
 <% unless @announcement.nil? %>
 <article class="announcement">
   <strong><%= @announcement.title %></strong>
-  <%= m(@announcement.content).html_safe %>
+  <%=m @announcement.content, false %>
   <%= link_to post_path(@announcement, :anchor => 'comments') do %>
     <%= pluralize @announcement.comments.size, 'Comment' %> &raquo;
   <% end %>

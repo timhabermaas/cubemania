@@ -150,8 +150,18 @@ module ApplicationHelper
     end
   end
 
-  def m(text)
-    RedCloth::new(text).to_html[3..-5].gsub("</p>\n<p>", "<br />").html_safe if text.present?
+  def m(text, wrap=true)
+    options = {
+      :filter_html => true,
+      :no_images => true,
+      :no_styles => true,
+      :safe_links_only => true
+    }
+    renderer = Redcarpet::Render::HTML.new options
+    markdown = Redcarpet::Markdown.new renderer, :autolink => true
+    result = markdown.render(text)
+    result = result[3..-6] unless wrap
+    result.html_safe
   end
 
   def format_scramble(text)

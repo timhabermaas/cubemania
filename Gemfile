@@ -23,7 +23,7 @@ gem 'pg'
 gem 'memcachier'
 gem 'dalli', :group => :production
 
-gem 'RedCloth'
+gem 'redcarpet'
 gem 'will_paginate'
 gem 'formtastic'
 gem 'friendly_id', '~> 4.0.0'

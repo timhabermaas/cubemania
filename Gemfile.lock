@@ -1,7 +1,6 @@
 GEM
   remote: http://rubygems.org/
   specs:
-    RedCloth (4.2.9)
     actionmailer (3.2.12)
       actionpack (= 3.2.12)
       mail (~> 2.4.4)
@@ -182,6 +181,7 @@ GEM
     rb-fsevent (0.9.3)
     rdoc (3.12.1)
       json (~> 1.4)
+    redcarpet (2.2.2)
     rspec (2.12.0)
       rspec-core (~> 2.12.0)
       rspec-expectations (~> 2.12.0)
@@ -253,7 +253,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  RedCloth
   aws-s3
   cancan
   capybara
@@ -283,6 +282,7 @@ DEPENDENCIES
   rack-test
   rails (= 3.2.12)
   rb-fsevent
+  redcarpet
   rspec-rails
   sass-rails (~> 3.2.3)
   scrambler
