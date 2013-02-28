@@ -45,12 +45,25 @@
     color: #2F2F2F;
     background-color: $yellow;
   }
-
-  .text p, .text blockquote, .text ul, .text ol {
-    margin-bottom: 1em;
-  }
-  .text a {
-    text-decoration: underline;
+  .text {
+    p, blockquote, ul, ol {
+      margin-bottom: 1em;
+    }
+    a {
+      text-decoration: underline;
+    }
+    ul, ol {
+      list-style-position: inside;
+    }
+    ul {
+      list-style-type: disc;
+    }
+    ol {
+      list-style-type: decimal;
+    }
+    li {
+      margin-bottom: 0.25em;
+    }
   }
 
   .challenge, .suggestion {
