@@ -6,7 +6,7 @@ module ApplicationHelper
 
   def avatar_image(user, size)
     size = {
-      :small => 20,
+      :small => 25,
       :middle => 45,
       :large => 60
     }[size]
