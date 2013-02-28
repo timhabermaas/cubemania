@@ -1,3 +1,7 @@
-$('#<%= dom_id(parent.sti_parent) %> ol.comments').append($('<%=j render @comment %>').hide().fadeIn(500));
-$('form.comment').replaceWith("<%=j render :partial => 'form', :locals => { :comment => Comment.new, :commentable => parent } %>");
-$('#<%= dom_id(parent.sti_parent) %> small.comments-count').text('(<%= parent.comments.size %>)');
+var parent = $('#<%= dom_id(parent.sti_parent) %>');
+
+parent.find('ol.comments').append($('<%=j render @comment %>').hide().fadeIn(500));
+parent.find('form.comment').replaceWith("<%=j render :partial => 'form', :locals => { :comment => Comment.new, :commentable => parent } %>");
+<% if params[:activity_id] %>
+  parent.find('div.comment-link').replaceWith('<%=j render :partial => "activities/comments_link", :locals => { :count => parent.comments.size } %>');
+<% end %>

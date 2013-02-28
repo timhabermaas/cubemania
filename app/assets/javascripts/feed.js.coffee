@@ -3,8 +3,10 @@ jQuery ->
 
   $("a.comment-toggle").on "click", (event) ->
     anchor = $(this)
-    if anchor.text() == "Show comments"
-      anchor.parent().find("div.comments").slideDown()
+    comments = anchor.parent().parent().find("div.comments")
+    if comments.is(":visible")
+      comments.slideUp()
+      anchor.text(anchor.data("show-text"))
     else
-      anchor.parent().find("div.comments").slideUp()
-    anchor.toggleText("Hide comments", "Show comments")
+      comments.slideDown()
+      anchor.text(anchor.data("hide-text"))

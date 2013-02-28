@@ -1,0 +1,7 @@
+<div class="comment-link">
+  <% if count.zero? %>
+    <%= link_to "Add comment", "javascript:;", :class => "comment-toggle", :data => { :show_text => "Add comment", :hide_text => "Hide comments" } %>
+  <% else %>
+    <%= link_to "Show comments", "javascript:;", :class => "comment-toggle", :data => { :show_text => "Show comments", :hide_text => "Hide comments" } %> <small class="comments-count">(<%= count %>)</small>
+  <% end %>
+</div>

@@ -3,7 +3,7 @@
     <div class="entry">
       <%= render :partial => activity.class.name.underscore, :locals => { :activity => activity } %>
     </div>
-    <%= link_to "Show comments", "javascript:;", :class => "comment-toggle" %> <small class="comments-count">(<%= activity.comments.size %>)</small>
+    <%= render :partial => "comments_link", :locals => { :count => activity.comments.size } %>
     <%= render :partial => "comments/comments", :locals => { :commentable => activity.sti_parent } %>
   <% end %>
 <% end %>
