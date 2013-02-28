@@ -49,7 +49,7 @@ class CubingSession < ActiveRecord::Base
   end
 
   # TODO alias Single#created_at to stopped_at?
-  def too_old?(single, time_span=6.hours)
+  def too_old?(single, time_span=3.hours)
     single.created_at - singles.last.created_at > time_span
   end
 
