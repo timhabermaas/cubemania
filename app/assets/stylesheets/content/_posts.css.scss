@@ -10,7 +10,7 @@ article.post {
 div.comments {
   background-color: $darkblue;
   padding: 1em;
-  ol.comments li {
+  ol.comments > li {
     margin-bottom: 1em;
   }
   .comment cite {

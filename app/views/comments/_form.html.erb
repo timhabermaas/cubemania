@@ -1,6 +1,6 @@
 <%= semantic_form_for [commentable, comment], :remote => true do |form| %>
   <%= form.inputs do %>
-    <%= form.input :content %>
+    <%= form.input :content, :input_html => { :rows => 4 } %>
   <% end %>
   <%= form.actions do %>
     <%= form.action :submit, :button_html => { :value => 'Respond', :disable_with => 'Wait...' } %>

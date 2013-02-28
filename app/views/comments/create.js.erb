@@ -1,2 +1,3 @@
 $('#<%= dom_id(parent.sti_parent) %> ol.comments').append($('<%=j render @comment %>').hide().fadeIn(500));
 $('form.comment').replaceWith("<%=j render :partial => 'form', :locals => { :comment => Comment.new, :commentable => parent } %>");
+$('#<%= dom_id(parent.sti_parent) %> small.comments-count').text('(<%= parent.comments.size %>)');

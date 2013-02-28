@@ -1,8 +1,9 @@
 <% unless activity.corrupt? %>
   <%= li_for activity.sti_parent, :class => "activity " + activity.class.name.underscore do %>
-    <%= render :partial => activity.class.name.underscore, :locals => { :activity => activity } %>
-    <br />
-    <br />
+    <div class="entry">
+      <%= render :partial => activity.class.name.underscore, :locals => { :activity => activity } %>
+    </div>
+    <%= link_to "Show comments", "javascript:;", :class => "comment-toggle" %> <small class="comments-count">(<%= activity.comments.size %>)</small>
     <%= render :partial => "comments/comments", :locals => { :commentable => activity.sti_parent } %>
   <% end %>
 <% end %>
