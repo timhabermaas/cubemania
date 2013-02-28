@@ -151,6 +151,7 @@ module ApplicationHelper
   end
 
   def m(text, wrap=true)
+    return if text.nil?
     options = {
       :filter_html => true,
       :no_images => true,
