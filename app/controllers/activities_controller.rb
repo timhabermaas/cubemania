@@ -1,6 +1,6 @@
 class ActivitiesController < ApplicationController
   def index
-    @activities = Feed.new(current_user).activities.group_by { |a| a.updated_at.beginning_of_day }
+    @activities = Feed.new(current_user).activities.paginate(:page => params[:page], :per_page => 50)
   end
 
   def show

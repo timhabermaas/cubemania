@@ -1,5 +1,5 @@
 <ul id="feed">
-  <% @activities.each do |date, activities| %>
+  <% @activities.group_by { |a| a.updated_at.beginning_of_day }.each do |date, activities| %>
     <li>
       <h2 class="date"><%=d date %></h2>
       <ul class="activities">
@@ -8,3 +8,5 @@
     </li>
   <% end %>
 </ul>
+
+<%= will_paginate @activities %>
