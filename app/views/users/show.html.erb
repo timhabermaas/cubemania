@@ -44,17 +44,17 @@
     <%= render :partial => "records", :locals => { :records => @records.grouped_by_puzzle_and_amount } %>
   <% end %>
 
-  <% if @user.followees.present? %>
-    <h2>Following <small>(<%= @user.followees.size %>)</small></h2>
-    <ul class="followees users">
-      <%= render :partial => "follower", :collection => @user.followees %>
-    </ul>
-  <% end %>
-
   <% if @user.followers.present? %>
     <h2>Followers <small>(<%= @user.followers.size %>)</small></h2>
     <ul class="followers users">
       <%= render :partial => "follower", :collection => @user.followers %>
+    </ul>
+  <% end %>
+
+  <% if @user.followees.present? %>
+    <h2>Following <small>(<%= @user.followees.size %>)</small></h2>
+    <ul class="followees users">
+      <%= render :partial => "follower", :collection => @user.followees %>
     </ul>
   <% end %>
 </div>
