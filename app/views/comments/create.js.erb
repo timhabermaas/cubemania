@@ -1,2 +1,2 @@
 $('#<%= dom_id(parent.sti_parent) %> ol.comments').append($('<%=j render @comment %>').hide().fadeIn(500));
-$('#new_comment').replaceWith("<%=j render :partial => 'form', :locals => { :comment => Comment.new, :commentable => parent } %>");
+$('form.comment').replaceWith("<%=j render :partial => 'form', :locals => { :comment => Comment.new, :commentable => parent } %>");

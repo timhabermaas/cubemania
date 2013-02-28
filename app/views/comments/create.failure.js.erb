@@ -1,1 +1,1 @@
-$('#new_comment').replaceWith("<%=j render :partial => 'form', :locals => { :comment => @comment, :commentable => parent } %>");
+$('form.comment').replaceWith("<%=j render :partial => 'form', :locals => { :comment => @comment, :commentable => parent } %>");
