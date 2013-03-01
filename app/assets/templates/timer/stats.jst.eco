@@ -2,7 +2,11 @@
   <h4>Current</h4>
   <% for count, time of @currentAverages: %>
     <div class="avg<%= count %>">
-      Average of <%= count %>:
+      <% if count == "100": %>
+        Mean of <%= count %>:
+      <% else: %>
+        Average of <%= count %>:
+      <% end %>
       <strong><%=formatTime time %></strong>
       <small><a href="#" class="details" data-count="<%= count %>">Details</a></small><br />
     </div>

@@ -1,6 +1,9 @@
 class Cubemania.Collections.Records extends Backbone.Collection
   model: Cubemania.Models.Record
 
+  comparator: (record) ->
+    record.get("amount")
+
   url: ->
     "/api/puzzles/" + @puzzleId + "/records?page=#{@currentPage()}&type=#{@getType()}"
 

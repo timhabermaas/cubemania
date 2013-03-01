@@ -49,6 +49,10 @@ class Record < ActiveRecord::Base
     RecordType.by_count amount
   end
 
+  def type_full_name
+    type.full_name
+  end
+
   def scrambles
     singles.map(&:scramble)
   end

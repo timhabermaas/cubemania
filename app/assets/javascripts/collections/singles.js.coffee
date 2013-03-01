@@ -29,6 +29,15 @@ class Cubemania.Collections.Singles extends Backbone.Collection
     else
       (sum - _.min(times)) / (size - 2)
 
+  currentMean: (size) ->
+    lastSingles = @recent(size)
+    dnfs = _.filter(lastSingles, (s) -> s.dnf())
+    return null if dnfs.length > 0 or lastSingles.length < size
+
+    times = _.map(lastSingles, (s) -> s.get("time"))
+    sum = _.reduce(times, ((memo, t) -> memo + t), 0)
+    sum / size
+
   recent: (amount) =>
     @models[-amount..-1]
 

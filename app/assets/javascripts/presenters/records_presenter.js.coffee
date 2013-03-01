@@ -4,8 +4,7 @@ class Cubemania.Presenters.RecordsPresenter
     @records = records
 
   flashMessage: (single) ->
-    records = _.map([1, 5, 12], (a) => @records.getByAmount(a))
-    messages = for record in records
+    messages = for record in @records.models
       if record && record.containsSingle(single)
         "You have a new #{record.title()} record: <strong>#{formatTime(record.get("time"))}</strong>! <a href='#{record.getHtmlUrl(Cubemania.currentUser.get("slug"))}'>Share it!</a>"
 

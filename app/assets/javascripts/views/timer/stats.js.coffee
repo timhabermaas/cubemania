@@ -5,8 +5,6 @@ class Cubemania.Views.Stats extends Backbone.View
   tagName: "section"
   id: "stats"
 
-  currentAverageCounts: [5, 12, 100]
-
   events:
     "click .current .details": "currentAverageDetails"
 
@@ -22,14 +20,13 @@ class Cubemania.Views.Stats extends Backbone.View
 
   render: ->
     currentAverages = {}
-    currentAverages[n] = @singles.currentAverage(n) for n in @currentAverageCounts
-
-    records = for i in [1, 5, 12] # TODO move to records collection?
-      @records.getByAmount(i)
+    currentAverages[5] = @singles.currentAverage(5)
+    currentAverages[12] = @singles.currentAverage(12)
+    currentAverages[100] = @singles.currentMean(100)
 
     userSlug = Cubemania.currentUser.get("slug")
 
-    $(@el).html(@template(currentAverages: currentAverages, records: records, userSlug: userSlug))
+    $(@el).html(@template(currentAverages: currentAverages, records: @records.models, userSlug: userSlug))
     this
 
   currentAverageDetails: (event) ->
