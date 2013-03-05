@@ -3,10 +3,16 @@
 </small>
 <div class="time-container">
   <div class="time">
-    <%=formatTime @currentTime %>
+    <%=formatTime @timer.currentTime() %>
   </div>
-  <p class="help">Press Space to start/stop the timer.</p>
-  <label class="inspection-toggle"><input type="checkbox" class="inspection-toggle">15s Inspection</label>
+  <p class="help">
+    <% if @timer.isCountdownRunning() or !@timer.hasInspection(): %>
+      Press Space to start/stop the timer.
+    <% else: %>
+      Press Space to start the countdown.
+    <% end %>
+  </p>
+  <label class="inspection-toggle"><input type="checkbox" class="inspection-toggle"<%= " checked" if @timer.hasInspection() %>>15s Inspection</label>
 </div>
 <form accept-charset="UTF-8" class="formtastic single" id="new_single">
   <fieldset class="inputs">

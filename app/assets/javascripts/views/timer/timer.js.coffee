@@ -36,7 +36,7 @@ class Cubemania.Views.Timer extends Backbone.View
     @$(".scramble").html(formatScramble @scramble)
 
   render: ->
-    $(@el).html(@template(currentTime: @timer.currentTime(), scramble: @scramble))
+    $(@el).html(@template(scramble: @scramble, timer: @timer))
     this
 
   keyUp: (event) =>
@@ -71,6 +71,7 @@ class Cubemania.Views.Timer extends Backbone.View
   toggleInspection: (event) ->
     inspection = if @$("input.inspection-toggle").prop("checked") then 15 else 0
     @timer.reset(inspection)
+    @render()
 
   enableTimer: ->
     @timerEnabled = true
