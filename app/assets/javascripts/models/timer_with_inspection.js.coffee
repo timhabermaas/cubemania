@@ -11,15 +11,10 @@ class Cubemania.TimerWithInspection
 
   wantToStart: ->
     switch @state
-      when "reset"
-        if @stoppedForLongerThan(2)
-          if @hasInspection()
-            @countdownStartedAt = new Date().getTime()
-            @setState "countdownStarted"
-          else
-            @startedAt = new Date().getTime()
-            @setState "started"
-      when "countdownStarted"
+      when "isAboutToStartCountdown"
+        @countdownStartedAt = new Date().getTime()
+        @setState "countdownStarted"
+      when "isAboutToStart"
         @startedAt = new Date().getTime()
         @setState "started"
       when "stopped"
@@ -27,13 +22,17 @@ class Cubemania.TimerWithInspection
 
   wantToStop: ->
     switch @state
+      when "reset"
+        if @stoppedForLongerThan(2)
+          if @hasInspection()
+            @setState "isAboutToStartCountdown"
+          else
+            @setState "isAboutToStart"
+      when "countdownStarted"
+        @setState "isAboutToStart"
       when "started"
         @stoppedAt = new Date().getTime()
         @setState "stopped"
-      when "reset"
-        @trigger("isAboutToStart", this) unless @hasInspection()
-      when "countdownStarted"
-        @trigger("isAboutToStart", this)
 
   isReset: ->
     @state == "reset"
