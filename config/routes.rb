@@ -51,4 +51,6 @@ Cubemania::Application.routes.draw do
   match 'login' => 'sessions#new', :as => 'login'
   match 'logout' => 'sessions#destroy', :as => 'logout'
   match 'register' => 'users#new', :as => 'register'
+
+  match '*path' => "errors#not_found"
 end
