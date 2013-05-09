@@ -53,7 +53,6 @@ group :development, :test do
   gem 'launchy'
   gem 'factory_girl_rails'
   gem 'spork', '~> 0.9.0.rc'
-  gem 'timecop'
   gem 'jasmine'
   gem 'guard-coffeescript'
   gem 'guard-rspec'
