@@ -10,10 +10,12 @@ class Record < ActiveRecord::Base
   end
 
   validates_presence_of :user_id, :puzzle_id, :time, :amount, :singles, :set_at
-  validates_uniqueness_of :user_id, :scope => [:puzzle_id, :amount], :message => "can't have more than one record per puzzle and amount"
   validates_inclusion_of :amount, :in => RecordType.counts
   validates_length_of :comment, :maximum => 255
   validate :has_as_many_singles_as_amount
+
+  scope :amount, ->(a) { where(:amount => a) }
+  scope :recent, -> { order("records.set_at desc").limit(1) }
 
   before_validation :set_set_at, :set_comments_from_singles
 

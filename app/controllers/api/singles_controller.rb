@@ -41,10 +41,10 @@ module Api
         session = CubingSessionManager.create_or_add(single)
         CreateActivity.for_cubing_session(session) if session.new?
 
-        records = UpdateRecentRecords.for(current_user, @puzzle)
-        records.each do |r|
-          CreateActivity.for_record(r)
-        end
+        records = calculate_new_records(single)
+        records.each { |r| r.save! }
+        records.each { |r| CreateActivity.for_record(r) }
+
         if records.present?
           response.headers["X-NewRecord"] = "true"
         end
@@ -79,6 +79,17 @@ module Api
     def enqueue_record_job(user, puzzle)
       job = RecordCalculationJob.new(user.id, puzzle.id)
       Delayed::Job.enqueue job unless job.exists?
+    end
+
+    # TODO don't reverse every time
+    def calculate_new_records(single)
+      puzzle = single.puzzle
+      recent_singles = single.user.singles.for(puzzle).limit(RecordType.max_count)
+
+      RecordType.all.map do |type|
+        current_record = single.user.records.where(:puzzle_id => puzzle.id).amount(type.count).recent.first
+        RecalculateRecordsHistory.for(type, recent_singles[0...type.count].reverse, current_record)
+      end.flatten
     end
 
     def fetch_user

@@ -26,11 +26,7 @@ class User < ActiveRecord::Base
     def best(puzzle); not_dnf.where(:puzzle_id => puzzle.id).order(:time).first; end
     def average(puzzle); not_dnf.where(:puzzle_id => puzzle.id).calculate(:average, :time); end
   end
-  has_many :records, :include => { :puzzle => :kind }, :order => 'puzzles.name, kinds.name', :dependent => :delete_all do
-    def for(puzzle, amount)
-      find_by_puzzle_id_and_amount puzzle.id, amount
-    end
-  end
+  has_many :records, :dependent => :delete_all
 
   scope :active, where('singles_count > 0')
 

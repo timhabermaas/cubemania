@@ -14,6 +14,10 @@ class RecordType < Struct.new(:full_name, :short_name, :calculator, :count) # TO
     all.map(&:count)
   end
 
+  def self.max_count
+    counts.max
+  end
+
   def self.by_count(count)
     all.find { |t| t.count == count }
   end
