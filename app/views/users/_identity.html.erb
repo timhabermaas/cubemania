@@ -1,0 +1,15 @@
+<% if user.nil? %>
+  Unknown
+<% else %>
+  <% if link %>
+    <% if can? :read, :avatar %>
+      <%= avatar_image user, size %>
+    <% end %>
+      <%= link_to user.name, user %>
+  <% else %>
+    <% if can? :read, :avatar %>
+      <%= avatar_image user, size %>
+    <% end %>
+    <%= user.name %>
+  <% end %>
+<% end %>

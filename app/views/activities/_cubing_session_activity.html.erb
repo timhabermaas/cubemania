@@ -3,7 +3,8 @@
   <div class="kind-image pos<%= puzzle.kind.css_position %>"></div>
 </div>
 
-<%= avatar_image activity.user, :middle %> <%= link_to activity.user.name, activity.user %> solved <small><%= activity.trackable.count %></small> <%= activity.trackable.puzzle.full_name %> from <small><%=time activity.trackable.from %></small> to <small><%=time activity.trackable.to %></small>
+<%= render :partial => "users/identity", :locals => { :user => activity.user, :size => :middle, :link =>true } %>
+ solved <small><%= activity.trackable.count %></small> <%= activity.trackable.puzzle.full_name %> from <small><%=time activity.trackable.from %></small> to <small><%=time activity.trackable.to %></small>
 <p class="times">
   <small>
     <%= SinglesFormatter.new(activity.trackable.singles).as_text %>

@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
   extend FriendlyId
 
   ENCRYPT = Digest::SHA256
-  ROLES = %w{user moderator admin}
+  ROLES = %w{user moderator admin beta_user}
 
   friendly_id :name, :use => :slugged
 
@@ -125,6 +125,10 @@ class User < ActiveRecord::Base
 
   def moderator?
     role.to_sym == :moderator
+  end
+
+  def beta_user?
+    role.to_sym == :beta_user
   end
 
   def activity(max)
