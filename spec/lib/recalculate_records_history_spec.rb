@@ -20,7 +20,7 @@ describe RecalculateRecordsHistory do
   end
 
   context "too less singles for a record" do
-    let(:singles) { [stub] * 3 }
+    let(:singles) { [stub] * 4 }
     let(:old_record) { stub }
 
     it "returns []" do
@@ -35,7 +35,7 @@ describe RecalculateRecordsHistory do
     context "no old_record" do
       let(:old_record) { nil }
 
-      it "all new records" do
+      it "returns all new records" do
         expect(result).to have(2).elements
         expect(result[0].time).to eq(3)
         expect(result[1].time).to eq(2)
