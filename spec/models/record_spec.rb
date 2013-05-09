@@ -91,16 +91,6 @@ describe Record do
     end
   end
 
-  describe "#scrambles" do
-    let(:single_1) { build :single, :scramble => "D2 R2" }
-    let(:single_2) { build :single, :scramble => "R B" }
-    let(:record) { build :record, :amount => 2, :singles => [single_1, single_2] }
-
-    it "returns all scrambles of the singles" do
-      expect(record.scrambles).to eq(["D2 R2", "R B"])
-    end
-  end
-
   describe ".update_with" do
     let(:singles) { create_list(:single, 5) }
 
