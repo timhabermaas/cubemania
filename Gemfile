@@ -52,7 +52,6 @@ group :development, :test do
   gem 'capybara'
   gem 'launchy'
   gem 'factory_girl_rails'
-  gem 'spork', '~> 0.9.0.rc'
   gem 'jasmine'
   gem 'guard-coffeescript'
   gem 'guard-rspec'
