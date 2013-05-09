@@ -38,6 +38,7 @@ describe Record do
     it "orders them by singles.created_at" do
       single_old = create :single, :created_at => DateTime.new(2010, 1, 2)
       single_new = create :single, :created_at => DateTime.new(2011, 1, 2)
+      single_today = create :single
       record = create :record, :singles => [single_new] + [single_today] * 3 + [single_old]
       record.singles.ordered.last.should == single_today
       record.singles.ordered.first.should == single_old
