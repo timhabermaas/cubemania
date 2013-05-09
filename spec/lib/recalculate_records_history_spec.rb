@@ -24,7 +24,7 @@ describe RecalculateRecordsHistory do
     let(:old_record) { stub }
 
     it "returns []" do
-      expect(subject.for(type, singles, old_record)).to eq([])
+      expect(subject.for(type, singles, old_record, record_class)).to eq([])
     end
   end
 
