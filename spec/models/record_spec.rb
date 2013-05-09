@@ -155,17 +155,16 @@ describe Record do
   end
 
   describe ".build_from_singles_and_type_and_time" do
-    let(:user) { mock_model("User") }
-    let(:puzzle) { mock_model("Puzzle") }
     let(:type) { stub(:type, :count => 5) }
-    let(:singles) { [stub(:single, :user => user, :puzzle => puzzle)] * 5 }
+    let(:singles) { [mock_model("Single", :user_id => 12, :puzzle_id => 13)] * 5 }
 
-    it "creates a new record for " do
+    it "returns a new record filled with attributes from singles" do
       record = Record.build_from_singles_and_type_and_time(singles, type, 141)
       expect(record.time).to eq(141)
-      expect(record.user).to eq(user)
-      expect(record.count).to eq(5)
-      expect(record.puzzle).to eq(5)
+      expect(record.singles).to eq(singles)
+      expect(record.user_id).to eq(12)
+      expect(record.amount).to eq(5)
+      expect(record.puzzle_id).to eq(13)
     end
   end
 

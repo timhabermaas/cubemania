@@ -41,7 +41,11 @@ class Record < ActiveRecord::Base
   end
 
   def self.build_from_singles_and_type_and_time(singles, type, time)
-    Record.new(:time => time, :user => singles.first.user)
+    Record.new :time => time,
+               :singles => singles,
+               :user_id => singles.first.user_id,
+               :puzzle_id => singles.first.puzzle_id,
+               :amount => type.count
   end
 
   def self.grouped_by_puzzle_and_amount
