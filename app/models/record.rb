@@ -40,6 +40,10 @@ class Record < ActiveRecord::Base
     record.destroy if record
   end
 
+  def self.build_from_singles_and_type_and_time(singles, type, time)
+    Record.new(:time => time, :user => singles.first.user)
+  end
+
   def self.grouped_by_puzzle_and_amount
     grouped_by_puzzles = all.group_by { |r| r.puzzle }
     grouped_by_puzzles.merge(grouped_by_puzzles) { |k, v| v = v.group_by { |r| r.amount }; v.merge(v) { |k, v| v.try(:first) } }

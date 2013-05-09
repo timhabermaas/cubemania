@@ -9,7 +9,7 @@ class RecalculateRecordsHistory
       new_time = type.calculator.new(recent_singles).result
 
       if !new_time.nil? and (old_record.nil? or new_time < old_record.time)
-       new_record = record_class.new(:time => new_time)
+       new_record = record_class.build_from_singles_and_type_and_time(recent_singles, type, new_time)
        result << new_record
        old_record = new_record
       end
