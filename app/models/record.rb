@@ -14,8 +14,11 @@ class Record < ActiveRecord::Base
   validates_length_of :comment, :maximum => 255
   validate :has_as_many_singles_as_amount
 
-  scope :amount, ->(a) { where(:amount => a) }
-  scope :recent, -> { order("records.set_at desc").limit(1) }
+  # FIXME creates a new scope which is propably very confusing
+  def self.recent
+    subquery = select("user_id, MIN(time) AS time").group("user_id")
+    Record.where("(user_id, time) IN (#{subquery.to_sql})")
+  end
 
   before_validation :set_set_at, :set_comments_from_singles
 

@@ -88,7 +88,9 @@ module Api
         singles_2 = Single.last_n_prior_to(type.count, single).reverse
 
         all_singles = singles_2 + singles
-        old_record = single.user.records.where(:puzzle_id => single.puzzle_id).amount(type.count).recent.first
+        old_record = single.user.records.where(:puzzle_id => single.puzzle_id,
+                                               :amount => type.count).
+                                         recent.first
         RecalculateRecordsHistory.for!(type, all_singles, old_record)
       end.flatten
     end

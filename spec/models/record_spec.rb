@@ -16,6 +16,26 @@ describe Record do
     end
   end
 
+  describe ".recent" do
+    let!(:record_1) { create :record, :user_id => 2, :puzzle_id => 3, :amount => 5 }
+    let!(:record_2) { create :record, :user_id => 2, :puzzle_id => 3, :amount => 5 }
+    let!(:record_3) { create :record, :user_id => 3, :puzzle_id => 3, :amount => 5 }
+    let!(:record_4) { create :record, :user_id => 2, :puzzle_id => 3, :amount => 12 }
+
+    before do
+      record_1.update_attribute :set_at, DateTime.new(2013, 5, 1)
+      record_2.update_attribute :set_at, DateTime.new(2013, 5, 2)
+      record_3.update_attribute :set_at, DateTime.new(2013, 5, 4)
+    end
+
+    it "returns just the recent records for each user" do
+      result = Record.where(:amount => 5).recent
+      expect(result).to have(2).items
+      expect(result).to include(record_2)
+      expect(result).to include(record_3)
+    end
+  end
+
   describe "#set_at" do
     it "is set to date of most recent single" do
       s = []

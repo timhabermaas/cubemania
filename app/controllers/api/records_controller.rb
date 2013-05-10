@@ -9,7 +9,8 @@ module Api
 
     def recent
       @records = RecordType.all.map do |type|
-        user.records.where(:puzzle_id => puzzle.id).amount(type.count).recent.first
+        user.records.where(:puzzle_id => puzzle.id, :amount => type.count).
+                     recent.first
       end.compact
       respond_with :api, puzzle, @records
     end

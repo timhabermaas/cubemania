@@ -4,8 +4,10 @@ class RecordsController < ApplicationController
   def index
     @puzzle = Puzzle.find params[:puzzle_id]
     amount = RecordType.by_short_name(params[:type]).try(:count) || 5
-    user_ids_query = "SELECT user_id, MIN(time) AS time FROM records WHERE puzzle_id=#{@puzzle.id} AND amount=#{amount} GROUP BY user_id"
-    @records = Record.where("(user_id, time) IN (#{user_ids_query})").where(:puzzle_id => @puzzle.id, :amount => amount).order("time").paginate(:page => params[:page], :per_page => 20)
+    @records = Record.where(:puzzle_id => @puzzle.id, :amount => amount).
+                      recent.
+                      order("time").
+                      paginate(:page => params[:page], :per_page => 50)
   end
 
   def show
