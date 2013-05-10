@@ -96,6 +96,24 @@ describe Single do
         end
       end
     end
+
+    describe ".last_n_prior_to" do
+      let!(:single_1) { create :single, :user_id => 2, :puzzle_id => 3, :created_at => DateTime.new(2013, 5, 1) }
+      let!(:single_2) { create :single, :user_id => 2, :puzzle_id => 4, :created_at => DateTime.new(2013, 5, 2) }
+      let!(:single_3) { create :single, :user_id => 2, :puzzle_id => 4, :created_at => DateTime.new(2013, 5, 5) }
+      let!(:single_4) { create :single, :user_id => 2, :puzzle_id => 4, :created_at => DateTime.new(2013, 5, 6) }
+
+      it "returns all solves prior to the given single's creation date" do
+        single = stub(:single, :user_id => 2,
+                               :puzzle_id => 4,
+                               :created_at => DateTime.new(2013, 5, 6))
+        singles = Single.last_n_prior_to(2, single)
+
+        expect(singles).to have(2).items
+        expect(singles).to include(single_2)
+        expect(singles).to include(single_3)
+      end
+    end
   end
 
   describe "updating comments" do

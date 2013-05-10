@@ -23,14 +23,8 @@ class User < ActiveRecord::Base
   has_many :comments, :dependent => :nullify
   has_many :singles, :dependent => :delete_all do
     def for(puzzle); where(:puzzle_id => puzzle.id).order('created_at desc'); end
-    def best(puzzle); not_dnf.where(:puzzle_id => puzzle.id).order(:time).first; end
-    def average(puzzle); not_dnf.where(:puzzle_id => puzzle.id).calculate(:average, :time); end
   end
-  has_many :records, :include => { :puzzle => :kind }, :order => 'puzzles.name, kinds.name', :dependent => :delete_all do
-    def for(puzzle, amount)
-      find_by_puzzle_id_and_amount puzzle.id, amount
-    end
-  end
+  has_many :records, :dependent => :delete_all
 
   scope :active, where('singles_count > 0')
 
@@ -55,20 +49,6 @@ class User < ActiveRecord::Base
 
   def self.max_singles_count
     maximum("singles_count")
-  end
-
-  def best_average(puzzle, amount)
-    result = CubingAverage.new [] # is basically a dnf average due to implementation of CubingAverage
-    current_average = RollingAverage.new amount
-
-    singles.for(puzzle).each do |single| # TODO each may be too hardcore
-      current_average << single
-      if current_average < result
-        result = CubingAverage.new(current_average.singles.clone) # TODO use CubingAverage's initialize_copy
-      end
-    end
-
-    result
   end
 
   def password=(password)

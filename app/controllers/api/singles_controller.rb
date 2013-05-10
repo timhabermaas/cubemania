@@ -41,17 +41,15 @@ module Api
         session = CubingSessionManager.create_or_add(single)
         CreateActivity.for_cubing_session(session) if session.new?
 
-        records = UpdateRecentRecords.for(current_user, @puzzle)
-        records.each do |r|
-          CreateActivity.for_record(r)
-        end
+        records = RecordCalculationJob.new(single).perform
+        records.each { |r| CreateActivity.for_record(r) }
+
         if records.present?
-          response.headers["X-NewRecord"] = "true"
+          response.headers["X-New-Records"] = "true"
         end
       end
-      respond_to do |format|
-        format.json { render :json => single } # TODO why does respond_with not work?
-      end
+
+      respond_with :api, @puzzle, single
     end
 
     # TODO add case for failed destruction (e.g. when single is part of competition)
@@ -59,26 +57,28 @@ module Api
       single = current_user.singles.find params[:id]
       if single.destroy
         CubingSessionManager.remove(single)
-        enqueue_record_job current_user, @puzzle
+        enqueue_record_job(single)
       end
+      response.headers["X-Refetch-Records"] = "true"
       respond_with single
     end
 
     def update
       single = current_user.singles.find params[:id]
       single.attributes = params[:single]
-      enqueue_record_job(current_user, @puzzle) if single.penalty_changed?
       if single.save
+        enqueue_record_job(single) # TODO only if penalty or time was updated
       else
-        # TODO handle error case
+        # TODO handle error case; add test
       end
+      response.headers["X-Refetch-Records"] = "true"
       respond_with single
     end
 
   private
-    def enqueue_record_job(user, puzzle)
-      job = RecordCalculationJob.new(user.id, puzzle.id)
-      Delayed::Job.enqueue job unless job.exists?
+    def enqueue_record_job(single)
+      job = RecordCalculationJob.new(single)
+      Delayed::Job.enqueue job unless job.exists? # TODO only if single is really old
     end
 
     def fetch_user
