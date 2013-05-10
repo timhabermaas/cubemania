@@ -61,6 +61,24 @@ describe Record do
     end
   end
 
+  describe ".younger_than" do
+    let!(:record_1) { create :record, :user_id => 2, :puzzle_id => 3, :set_at => DateTime.new(2013, 4, 5) }
+    let!(:record_2) { create :record, :user_id => 2, :puzzle_id => 4, :set_at => DateTime.new(2013, 4, 7) }
+    let!(:record_3) { create :record, :user_id => 2, :puzzle_id => 3, :set_at => DateTime.new(2013, 4, 4) }
+
+    it "returns all records which could" do
+      single = stub(:single,
+                    :created_at => DateTime.new(2013, 4, 5),
+                    :user_id => 2,
+                    :puzzle_id => 3)
+
+      records = Record.younger_than(single)
+      expect(records).to have(2).items
+      expect(records).to include(record_1)
+      expect(records).to include(record_3)
+    end
+  end
+
   describe "comments" do
     let(:single_1) { create :single, :comment => "foo" }
     let(:single_2) { create :single, :comment => "muh" }

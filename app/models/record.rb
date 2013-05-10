@@ -42,6 +42,12 @@ class Record < ActiveRecord::Base
     record.destroy if record
   end
 
+  def self.younger_than(single)
+    Record.where(:user_id => single.user_id).
+           where(:puzzle_id => single.puzzle_id).
+           where("set_at >= ?", single.created_at)
+  end
+
   def self.build_from_singles_and_type_and_time(singles, type, time)
     Record.new :time => time,
                :singles => singles,
