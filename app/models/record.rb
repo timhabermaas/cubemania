@@ -62,7 +62,7 @@ class Record < ActiveRecord::Base
   end
 
   def singles
-    @singles ||= Single.where(:id => single_ids).order("created_at").to_a
+    @singles ||= Single.where(:id => single_ids).to_a
   end
 
   def singles=(singles)
