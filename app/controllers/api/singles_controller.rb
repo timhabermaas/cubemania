@@ -41,8 +41,7 @@ module Api
         session = CubingSessionManager.create_or_add(single)
         CreateActivity.for_cubing_session(session) if session.new?
 
-        records = calculate_recent_records(single)
-        records.each { |r| r.save! }
+        records = recreate_records(single)
         records.each { |r| CreateActivity.for_record(r) }
 
         if records.present?
@@ -59,7 +58,6 @@ module Api
       single = current_user.singles.find params[:id]
       if single.destroy
         CubingSessionManager.remove(single)
-        #enqueue_record_job current_user, @puzzle
         recreate_records(single)
       end
       respond_with single
@@ -68,9 +66,8 @@ module Api
     def update
       single = current_user.singles.find params[:id]
       single.attributes = params[:single]
-      #enqueue_record_job(current_user, @puzzle) if single.penalty_changed?
       if single.save
-        recreate_records(single) if single.penalty_changed? or single.time_changed?
+        recreate_records(single) # TODO only if penalty or time was updated
       else
         # TODO handle error case
       end
@@ -83,29 +80,18 @@ module Api
       Delayed::Job.enqueue job unless job.exists?
     end
 
-    # TODO don't reverse every time
-    def calculate_recent_records(single)
-      puzzle = single.puzzle
-      recent_singles = single.user.singles.for(puzzle).limit(RecordType.max_count)
-
-      RecordType.all.map do |type|
-        current_record = single.user.records.where(:puzzle_id => puzzle.id).amount(type.count).recent.first
-        RecalculateRecordsHistory.for(type, recent_singles[0...type.count].reverse, current_record)
-      end.flatten
-    end
-
     # TODO if older than xy then add to job queue
     def recreate_records(single)
       InvalidateRecords.for(single)
 
-      RecordType.all.each do |type|
+      RecordType.all.map do |type|
         singles = Single.younger_than(single).order("created_at")
         singles_2 = Single.last_n_prior_to(type.count, single).reverse
 
         all_singles = singles_2 + singles
         old_record = single.user.records.where(:puzzle_id => single.puzzle_id).amount(type.count).recent.first
         RecalculateRecordsHistory.for!(type, all_singles, old_record)
-      end
+      end.flatten
     end
 
     def fetch_user
