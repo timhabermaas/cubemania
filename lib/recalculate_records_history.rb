@@ -18,4 +18,9 @@ class RecalculateRecordsHistory
 
     result
   end
+
+  def self.for!(type, singles, old_record, record_class=Record)
+    records = self.for(type, singles, old_record, record_class=Record)
+    records.each(&:save)
+  end
 end
