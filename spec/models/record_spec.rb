@@ -17,16 +17,10 @@ describe Record do
   end
 
   describe ".recent" do
-    let!(:record_1) { create :record, :user_id => 2, :puzzle_id => 3, :amount => 5 }
-    let!(:record_2) { create :record, :user_id => 2, :puzzle_id => 3, :amount => 5 }
-    let!(:record_3) { create :record, :user_id => 3, :puzzle_id => 3, :amount => 5 }
-    let!(:record_4) { create :record, :user_id => 2, :puzzle_id => 3, :amount => 12 }
-
-    before do
-      record_1.update_attribute :set_at, DateTime.new(2013, 5, 1)
-      record_2.update_attribute :set_at, DateTime.new(2013, 5, 2)
-      record_3.update_attribute :set_at, DateTime.new(2013, 5, 4)
-    end
+    let!(:record_1) { create :record, :time => 9, :user_id => 2, :puzzle_id => 3, :amount => 5 }
+    let!(:record_2) { create :record, :time => 5, :user_id => 2, :puzzle_id => 3, :amount => 5 }
+    let!(:record_3) { create :record, :time => 11, :user_id => 3, :puzzle_id => 3, :amount => 5 }
+    let!(:record_4) { create :record, :time => 4, :user_id => 2, :puzzle_id => 3, :amount => 12 }
 
     it "returns just the recent records for each user" do
       result = Record.where(:amount => 5).recent
