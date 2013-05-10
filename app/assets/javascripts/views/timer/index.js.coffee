@@ -26,7 +26,7 @@ class Cubemania.Views.TimerIndex extends Backbone.View
     this
 
   checkForNewRecord: (e, request, options) =>
-    if request.getResponseHeader("X-NewRecord")
+    if request.getResponseHeader("X-New-Record")
       @records.on "reset", @newRecordsArrived, this
       @records.fetch(data: $.param(user_id: Cubemania.currentUser.get("id")))
 

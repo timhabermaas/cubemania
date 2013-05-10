@@ -45,11 +45,15 @@ module Api
         records.each { |r| CreateActivity.for_record(r) }
 
         if records.present?
-          response.headers["X-NewRecord"] = "true"
+          response.headers["X-New-Record"] = "true"
         end
-      end
-      respond_to do |format|
-        format.json { render :json => single } # TODO why does respond_with not work?
+        respond_to do |format|
+          format.json { render :json => single } # TODO why does respond_with not work?
+        end
+      else
+        respond_to do |format|
+          format.json { render :json => { :errors => single.errors }, :status => :unprocessable_entity }
+        end
       end
     end
 
