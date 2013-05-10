@@ -21,27 +21,6 @@ class Record < ActiveRecord::Base
 
   humanize :time => :time
 
-  def self.update_with!(user, puzzle, amount, time, singles, force = false) # TODO use hash
-    old_record = where(:user_id => user.id,
-                       :puzzle_id => puzzle.id,
-                       :amount => amount).first
-    if old_record && (force || old_record.time > time)
-      old_record.update_attributes(:time => time, :singles => singles)
-      old_record
-    elsif old_record.nil?
-      Record.create! :user_id => user.id,
-                     :puzzle_id => puzzle.id,
-                     :amount => amount,
-                     :time => time,
-                     :singles => singles
-    end
-  end
-
-  def self.remove!(user, puzzle, amount)
-    record = where(:user_id => user.id, :puzzle_id => puzzle.id, :amount => amount).first
-    record.destroy if record
-  end
-
   def self.younger_than(single)
     Record.where(:user_id => single.user_id).
            where(:puzzle_id => single.puzzle_id).

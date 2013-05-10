@@ -134,59 +134,6 @@ describe Record do
     end
   end
 
-  describe ".update_with" do
-    let(:singles) { create_list(:single, 5) }
-
-    context "when record exists" do
-      let!(:record) { create :record, :time => 10, :amount => 5, :singles => singles }
-      let(:user) { record.user }
-      let(:puzzle) { record.puzzle }
-
-      context "and the new time is faster" do
-        it "updates the existing record" do
-          Record.update_with!(user, puzzle, 5, 9, singles)
-          record.reload.time.should == 9
-        end
-
-        it "returns trueish value" do
-          Record.update_with!(user, puzzle, 5, 9, singles).should be_true
-        end
-      end
-
-      context "and the new time isn't faster" do
-        it "doesn't update the record" do
-          Record.update_with!(user, puzzle, 5, 11, singles)
-          record.reload.time.should == 10
-        end
-
-        it "returns falseish value" do
-          Record.update_with!(user, puzzle, 5, 11, singles).should be_false
-        end
-      end
-
-      context "force writing of record" do
-        it "overwrites existing record if force flag is set" do
-          Record.update_with!(user, puzzle, 5, 11, singles, true)
-          record.reload.time.should == 11
-        end
-
-        it "returns trueish value" do
-          Record.update_with!(user, puzzle, 5, 11, singles, true).should be_true
-        end
-      end
-    end
-
-    context "when no record exists" do
-      it "creates a new record" do
-        user = stub(:id => 4)
-        puzzle = stub(:id => 4)
-        lambda {
-          Record.update_with!(user, puzzle, 5, 9, singles)
-        }.should change(Record, :count).by(1)
-      end
-    end
-  end
-
   describe ".build_from_singles_and_type_and_time" do
     let(:type) { stub(:type, :count => 5) }
     let(:singles) { [mock_model("Single", :user_id => 12, :puzzle_id => 13)] * 5 }
@@ -198,32 +145,6 @@ describe Record do
       expect(record.user_id).to eq(12)
       expect(record.amount).to eq(5)
       expect(record.puzzle_id).to eq(13)
-    end
-  end
-
-  describe ".remove!" do
-    let(:user) { create :user }
-    let(:puzzle_1) { create :puzzle }
-    let(:puzzle_2) { create :puzzle }
-
-    before :each do
-      create :record, :user => user, :puzzle => puzzle_1, :amount => 1, :singles => build_list(:single, 1)
-      @record = create :record, :user => user, :puzzle => puzzle_1, :amount => 5, :singles => build_list(:single, 5)
-      create :record, :user => user, :puzzle => puzzle_1, :amount => 12, :singles => build_list(:single, 12)
-      create :record, :user => user, :puzzle => puzzle_2, :amount => 5, :singles => build_list(:single, 5)
-    end
-
-    it "removes the existing avg5 record for puzzle 2 and user 1" do
-      lambda {
-        Record.remove!(user, puzzle_1, 5)
-      }.should change(Record, :count).by(-1)
-      Record.exists?(@record).should == false
-    end
-
-    it "does nothing if the record doesn't exist" do
-      lambda {
-        Record.remove!(user, puzzle_2, 12)
-      }.should_not change(Record, :count)
     end
   end
 end
