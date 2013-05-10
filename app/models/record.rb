@@ -16,8 +16,8 @@ class Record < ActiveRecord::Base
 
   # FIXME creates a new scope which is propably very confusing
   def self.recent
-    subquery = select("user_id, MIN(time) AS time").group("user_id")
-    Record.where("(user_id, time) IN (#{subquery.to_sql})")
+    subquery = select("user_id, MIN(time) AS time, puzzle_id, amount").group("user_id, puzzle_id, amount")
+    Record.where("(user_id, time, puzzle_id, amount) IN (#{subquery.to_sql})")
   end
 
   before_validation :set_set_at, :set_comments_from_singles
@@ -60,7 +60,7 @@ class Record < ActiveRecord::Base
   end
 
   def self.grouped_by_puzzle_and_amount
-    grouped_by_puzzles = all.group_by { |r| r.puzzle }
+    grouped_by_puzzles = recent.group_by { |r| r.puzzle }
     grouped_by_puzzles.merge(grouped_by_puzzles) { |k, v| v = v.group_by { |r| r.amount }; v.merge(v) { |k, v| v.try(:first) } }
   end
 
