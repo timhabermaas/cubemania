@@ -5,7 +5,7 @@ class Cubemania.Collections.Records extends Backbone.Collection
     record.get("amount")
 
   url: ->
-    "/api/puzzles/" + @puzzleId + "/records?page=#{@currentPage()}&type=#{@getType()}"
+    "/api/puzzles/" + @puzzleId + "/records/recent?page=#{@currentPage()}&type=#{@getType()}"
 
   initialize: (models, options) ->
     if options?
