@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe "/api/puzzles/:id/singles", :type => :api do
-  let!(:puzzle) { create(:puzzle, :name => "3x3x3") }
+  let(:puzzle) { create(:puzzle, :name => "3x3x3") }
 
   describe "POST /" do
     before do
@@ -41,7 +41,7 @@ describe "/api/puzzles/:id/singles", :type => :api do
   end
 
   # TODO move most of this stuff into unit tests
-  describe "GET chart" do
+  describe "GET /chart" do
     let(:user2) { create(:user) }
 
     let(:first_of_december) { DateTime.new(2012, 12, 1) }
