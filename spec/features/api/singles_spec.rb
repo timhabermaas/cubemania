@@ -12,8 +12,8 @@ describe "/api/puzzles/:id/singles", :type => :api do
     context "valid single" do
       let(:parameters) { {:time => 14500, :scramble => "R2 D2"} }
 
-      it "returns 200 OK and the created single" do
-        expect(last_response.status).to eq(200)
+      it "returns 201 Created and the created single" do
+        expect(last_response.status).to eq(201)
         expect(json_response["time"]).to eq(14500)
         expect(json_response["scramble"]).to eq("R2 D2")
       end

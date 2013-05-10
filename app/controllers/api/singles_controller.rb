@@ -47,14 +47,9 @@ module Api
         if records.present?
           response.headers["X-New-Record"] = "true"
         end
-        respond_to do |format|
-          format.json { render :json => single } # TODO why does respond_with not work?
-        end
-      else
-        respond_to do |format|
-          format.json { render :json => { :errors => single.errors }, :status => :unprocessable_entity }
-        end
       end
+
+      respond_with :api, @puzzle, single
     end
 
     # TODO add case for failed destruction (e.g. when single is part of competition)
