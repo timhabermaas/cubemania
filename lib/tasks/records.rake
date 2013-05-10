@@ -3,10 +3,12 @@ namespace :records do
   task :single => :environment do
     puzzles = Puzzle.all
     count = User.count
+    type = RecordType.by_count(1)
     User.find_each do |user|
       puts "User #{user.id}/#{count}: #{user.name}"
       puzzles.each do |puzzle|
-        UpdateRecords.single user, puzzle
+        singles = user.singles.where(:puzzle_id => puzzle.id).order("created_at")
+        RecalculateRecordsHistory.for!(type, singles)
       end
     end
   end
@@ -15,10 +17,12 @@ namespace :records do
   task :avg5 => :environment do
     puzzles = Puzzle.all
     count = User.count
+    type = RecordType.by_count(5)
     User.find_each do |user|
       puts "User #{user.id}/#{count}: #{user.name}"
       puzzles.each do |puzzle|
-        UpdateRecords.for_amount user, puzzle, 5
+        singles = user.singles.where(:puzzle_id => puzzle.id).order("created_at")
+        RecalculateRecordsHistory.for!(type, singles)
       end
     end
   end
@@ -27,10 +31,26 @@ namespace :records do
   task :avg12 => :environment do
     puzzles = Puzzle.all
     count = User.count
+    type = RecordType.by_count(12)
     User.find_each do |user|
       puts "User #{user.id}/#{count}: #{user.name}"
       puzzles.each do |puzzle|
-        UpdateRecords.for_amount user, puzzle, 12
+        singles = user.singles.where(:puzzle_id => puzzle.id).order("created_at")
+        RecalculateRecordsHistory.for!(type, singles)
+      end
+    end
+  end
+
+  desc 'Recalculate all mean of 100 records'
+  task :mean100 => :environment do
+    puzzles = Puzzle.all
+    count = User.count
+    type = RecordType.by_count(100)
+    User.find_each do |user|
+      puts "User #{user.id}/#{count}: #{user.name}"
+      puzzles.each do |puzzle|
+        singles = user.singles.where(:puzzle_id => puzzle.id).order("created_at")
+        RecalculateRecordsHistory.for!(type, singles)
       end
     end
   end
@@ -40,5 +60,6 @@ namespace :records do
     Rake::Task["records:single"].invoke
     Rake::Task["records:avg5"].invoke
     Rake::Task["records:avg12"].invoke
+    Rake::Task["records:mean100"].invoke
   end
 end
