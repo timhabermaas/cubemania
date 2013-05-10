@@ -41,11 +41,11 @@ module Api
         session = CubingSessionManager.create_or_add(single)
         CreateActivity.for_cubing_session(session) if session.new?
 
-        records = recreate_records(single)
+        records = RecordCalculationJob.new(single).perform
         records.each { |r| CreateActivity.for_record(r) }
 
         if records.present?
-          response.headers["X-New-Record"] = "true"
+          response.headers["X-New-Records"] = "true"
         end
       end
 
@@ -57,8 +57,9 @@ module Api
       single = current_user.singles.find params[:id]
       if single.destroy
         CubingSessionManager.remove(single)
-        recreate_records(single)
+        enqueue_record_job(single)
       end
+      response.headers["X-Refetch-Records"] = "true"
       respond_with single
     end
 
@@ -66,33 +67,18 @@ module Api
       single = current_user.singles.find params[:id]
       single.attributes = params[:single]
       if single.save
-        recreate_records(single) # TODO only if penalty or time was updated
+        enqueue_record_job(single) # TODO only if penalty or time was updated
       else
-        # TODO handle error case
+        # TODO handle error case; add test
       end
+      response.headers["X-Refetch-Records"] = "true"
       respond_with single
     end
 
   private
-    def enqueue_record_job(user, puzzle)
-      job = RecordCalculationJob.new(user.id, puzzle.id)
-      Delayed::Job.enqueue job unless job.exists?
-    end
-
-    # TODO if older than xy then add to job queue
-    def recreate_records(single)
-      InvalidateRecords.for(single)
-
-      RecordType.all.map do |type|
-        singles = Single.younger_than(single).order("created_at")
-        singles_2 = Single.last_n_prior_to(type.count, single).reverse
-
-        all_singles = singles_2 + singles
-        old_record = single.user.records.where(:puzzle_id => single.puzzle_id,
-                                               :amount => type.count).
-                                         recent.first
-        RecalculateRecordsHistory.for!(type, all_singles, old_record)
-      end.flatten
+    def enqueue_record_job(single)
+      job = RecordCalculationJob.new(single)
+      Delayed::Job.enqueue job unless job.exists? # TODO only if single is really old
     end
 
     def fetch_user

@@ -25,8 +25,8 @@ describe "/api/puzzles/:id/singles", :type => :api do
         expect(r.puzzle_id).to eq(puzzle.id)
       end
 
-      it "responds with X-New-Record='true'" do
-        expect(last_response.headers["X-New-Record"]).to eq("true")
+      it "responds with X-New-Records='true'" do
+        expect(last_response.headers["X-New-Records"]).to eq("true")
       end
     end
 
