@@ -6,6 +6,7 @@ class ApiAbility
 
   def initialize(user)
     can :read, :all
+    can :recent, Record
 
     if user.nil?
     elsif user.admin?
