@@ -1,7 +1,7 @@
 class RecalculateRecordsHistory
   # singles must be in ascending order
   # (this means: first single is the oldest)
-  def self.for(type, singles, old_record, record_class=Record)
+  def self.for(type, singles, old_record=nil, record_class=Record)
     result = []
 
     while singles.size >= type.count
@@ -19,7 +19,7 @@ class RecalculateRecordsHistory
     result
   end
 
-  def self.for!(type, singles, old_record, record_class=Record)
+  def self.for!(type, singles, old_record=nil, record_class=Record)
     records = self.for(type, singles, old_record, record_class=Record)
     records.each(&:save)
   end
