@@ -12,9 +12,9 @@ class RecordsController < ApplicationController
 
   def show
     @user = User.find params[:user_id]
-    @record = @user.records.find params[:id], :include => [:singles]
+    @record = @user.records.find params[:id]
     @puzzle = @record.puzzle
-    @singles = @record.singles.ordered
+    @singles = @record.singles
   end
 
   def share

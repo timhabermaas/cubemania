@@ -1,13 +1,10 @@
 class Record < ActiveRecord::Base
   extend Humanizeable
 
+  serialize :single_ids, Array
+
   belongs_to :puzzle
   belongs_to :user, :touch => true
-  has_and_belongs_to_many :singles do
-    def ordered
-      order("singles.created_at")
-    end
-  end
 
   validates_presence_of :user_id, :puzzle_id, :time, :amount, :singles, :set_at
   validates_inclusion_of :amount, :in => RecordType.counts
@@ -62,6 +59,16 @@ class Record < ActiveRecord::Base
   def self.grouped_by_puzzle_and_amount
     grouped_by_puzzles = recent.group_by { |r| r.puzzle }
     grouped_by_puzzles.merge(grouped_by_puzzles) { |k, v| v = v.group_by { |r| r.amount }; v.merge(v) { |k, v| v.try(:first) } }
+  end
+
+  def singles
+    @singles ||= Single.where(:id => single_ids).order("created_at").to_a
+  end
+
+  def singles=(singles)
+    sorted_singles = (singles || []).sort_by(&:created_at)
+    self.single_ids = sorted_singles.map(&:id)
+    @singles = sorted_singles
   end
 
   def type

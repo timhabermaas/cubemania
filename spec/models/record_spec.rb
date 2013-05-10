@@ -51,17 +51,18 @@ describe Record do
   end
 
   describe "#singles" do
+    let(:single_1) { stub(:single, :id => 1, :created_at => DateTime.new(2013)) }
+    let(:single_2) { stub(:single, :id => 1, :created_at => DateTime.new(2014)) }
+    let(:single_3) { stub(:single, :id => 1, :created_at => DateTime.new(2012)) }
+    let(:singles) { [single_1, single_2, single_3] }
+
     it "defaults to an empty array" do
       subject.singles.should == []
     end
 
-    it "orders them by singles.created_at" do
-      single_old = create :single, :created_at => DateTime.new(2010, 1, 2)
-      single_new = create :single, :created_at => DateTime.new(2011, 1, 2)
-      single_today = create :single
-      record = create :record, :singles => [single_new] + [single_today] * 3 + [single_old]
-      record.singles.ordered.last.should == single_today
-      record.singles.ordered.first.should == single_old
+    it "ensures a natural order of single" do
+      r = Record.new :singles => singles
+      expect(r.singles).to eq([single_3, single_1, single_2])
     end
   end
 
