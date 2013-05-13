@@ -1,0 +1,12 @@
+---
+- hosts: webserver
+  sudo: True
+  user: root
+  tasks:
+    - name: Install memcached
+      apt: pkg=memcached state=present update_cache=yes
+      notify: restart memcached
+
+  handlers:
+    - name: restart memcached
+      service: name=memcached state=restarted

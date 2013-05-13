@@ -3,6 +3,5 @@
 - include: playbooks/node.js.yml
 - include: playbooks/ruby.yml
 - include: playbooks/nginx.yml
-
-#- include playbooks/memcached.yml
+- include: playbooks/memcached.yml
 

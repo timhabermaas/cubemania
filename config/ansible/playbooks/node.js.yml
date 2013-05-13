@@ -1,7 +1,7 @@
 ---
 - hosts: webserver
   sudo: True
-  user: deployer
+  user: root
   tasks:
     - name: "add node.js repository"
       apt_repository: repo=ppa:chris-lea/node.js

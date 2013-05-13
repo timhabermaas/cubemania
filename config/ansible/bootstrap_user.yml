@@ -1,12 +1,13 @@
 - hosts: webserver
   sudo: yes
+  user: root
 
   tasks:
-    - name: create admin group
-      action: group name=admin system=no state=present
+    #- name: create admin group
+    #  action: group name=admin system=no state=present
 
-    - name: create user(s)
-      action: user name=deployer group=admin shell=/bin/bash state=present
+    #- name: create user(s)
+    #  action: user name=deployer group=admin shell=/bin/bash state=present
 
     - name: setup authorized keys
-      action: authorized_key user=deployer key='$FILE(~/.ssh/id_rsa.pub)'
+      action: authorized_key user=root key='$FILE(~/.ssh/id_rsa.pub)'

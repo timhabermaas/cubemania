@@ -1,7 +1,7 @@
 ---
 - hosts: webserver
   sudo: True
-  user: deployer
+  user: root
   tasks:
     - name: install python-software-properties for add-apt-repository
       apt: pkg=python-software-properties state=present update_cache=yes
@@ -26,7 +26,7 @@
 
 - hosts: webserver
   sudo: True
-  user: deployer
+  user: root
   sudo_user: postgres
   vars_prompt:
     password: "Database password"
