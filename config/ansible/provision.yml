@@ -1,7 +1,7 @@
 ---
+- include: playbooks/essentials.yml
 - include: playbooks/postgresql.yml
-- include: playbooks/node.js.yml
 - include: playbooks/ruby.yml
 - include: playbooks/nginx.yml
+- include: playbooks/unicorn.yml
 - include: playbooks/memcached.yml
-

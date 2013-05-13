@@ -2,14 +2,23 @@
 - hosts: webserver
   sudo: True
   user: root
+  vars_files:
+    - ../vars/all.yml
   tasks:
     - name: "add nginx repository"
       apt_repository: repo=ppa:nginx/stable
 
     - name: Install nginx
       apt: pkg=nginx state=present update_cache=yes
-      notify: restart nginx
 
-  handlers:
+    - name: Copy configuration file
+      template: src=../templates/nginx.conf.j2 dest=/etc/nginx/sites-available/cubemania.conf
+
+    - name: Disable default config
+      file: path=/etc/nginx/sites-enabled/default state=absent
+
+    - name: Enable Cubemania site
+      file: src=/etc/nginx/sites-available/cubemania.conf dest=/etc/nginx/sites-enabled/cubemania.conf state=link
+
     - name: restart nginx
       service: name=nginx state=restarted

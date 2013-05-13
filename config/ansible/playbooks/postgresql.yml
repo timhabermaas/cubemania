@@ -28,13 +28,12 @@
   sudo: True
   user: root
   sudo_user: postgres
-  vars_prompt:
-    password: "Database password"
-    database_user: "Database user"
+  vars_files:
+    - ../vars/database.yml
 
   tasks:
     - name: create database user
-      action: postgresql_user user=${database_user} password=$password state=present
+      action: postgresql_user user=${database_username} password=${database_password} state=present
 
     - name: create database
-      action: postgresql_db name=${database_user}_production owner=${database_user} state=present
+      action: postgresql_db name=${database_name} owner=${database_username} encoding='UTF-8' lc_collate='en_US.utf8' lc_ctype='en_US.utf8' template='template0' state=present

@@ -1,0 +1,18 @@
+---
+- hosts: webserver
+  sudo: True
+  user: root
+  vars_files:
+    - ../vars/all.yml
+  tasks:
+    - name: Install unicorn
+      gem: name=unicorn state=present
+
+    - name: Copy unicorn.sh to /etc/init.d
+      template: src=../templates/unicorn.sh.j2 dest=/etc/init.d/unicorn
+
+    - name: Make unicorn.sh executeable
+      command: chmod +x /etc/init.d/unicorn
+
+    - name: restart unicorn
+      service: name=unicorn state=restarted

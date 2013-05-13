@@ -1,0 +1,26 @@
+---
+- hosts: webserver
+  sudo: True
+  user: root
+  tasks:
+    - name: Update apt repositories
+      apt: update_cache=yes
+
+    - name: Install git
+      apt: pkg=git state=present
+
+    - name: Install ruby's and gem's dependencies
+      apt: pkg=$item state=present
+      with_items:
+        - build-essential
+        - zlib1g-dev
+        - libssl-dev
+        - libreadline-dev
+        - libxml2-dev
+        - libxslt1-dev
+
+    - name: "add node.js repository"
+      apt_repository: repo=ppa:chris-lea/node.js
+
+    - name: install node.js
+      apt: pkg=nodejs state=present update_cache=yes

@@ -12,16 +12,6 @@
       register: ruby_present
       ignore_errors: yes
 
-    - name: Install ruby's dependencies
-      apt: pkg=$item state=present update_cache=true
-      with_items:
-        - build-essential
-        - zlib1g-dev
-        - libssl-dev
-        - libreadline-dev
-        - git
-      when_failed: $ruby_present
-
     - name: clone ruby-build repository
       git: repo=git://github.com/sstephenson/ruby-build.git dest=${clone_dir}
       when_failed: $ruby_present

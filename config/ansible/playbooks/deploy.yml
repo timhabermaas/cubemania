@@ -1,0 +1,31 @@
+---
+- hosts: webserver
+  sudo: True
+  user: root
+  vars_files:
+    - ../vars/all.yml
+    - ../vars/database.yml
+  tasks:
+    - name: Clone git repository
+      git: repo=git://github.com/timhabermaas/cubemania.git dest=${app_root}
+
+    - name: Make sure pid folder exists
+      file: path=${app_root}/tmp/pids state=directory
+
+    - name: Copy unicorn.rb to config/unicorn.rb
+      template: src=../templates/unicorn.rb.j2 dest=${app_root}/config/unicorn.rb
+
+    - name: Copy database.yml
+      template: src=../templates/database.yml.j2 dest=${app_root}/config/database.yml
+
+    - name: bundle install
+      shell: cd ${app_root}; bundle install
+
+    - name: rake db:migrate
+      shell: cd ${app_root}; RAILS_ENV=production bundle exec rake db:migrate
+
+    - name: rake assets:precompile
+      shell: cd ${app_root}; RAILS_ENV=production bundle exec rake assets:precompile
+
+    - name: restart unicorn
+      service: name=unicorn state=restarted
