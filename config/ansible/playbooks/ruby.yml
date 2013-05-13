@@ -1,0 +1,37 @@
+- hosts: webserver
+  sudo: yes
+  user: deployer
+  vars:
+    ruby_version: 1.9.3-p392
+    ruby_home: /usr/local
+    clone_dir: /tmp/ruby-build
+
+  tasks:
+    - name: check for installed ruby
+      command: test -x ${ruby_home}/bin/ruby
+      register: ruby_present
+      ignore_errors: yes
+
+    - name: Install ruby's dependencies
+      apt: pkg=$item state=present update_cache=true
+      with_items:
+        - build-essential
+        - zlib1g-dev
+        - libssl-dev
+        - libreadline-dev
+        - git
+      when_failed: $ruby_present
+
+    - name: clone ruby-build repository
+      git: repo=git://github.com/sstephenson/ruby-build.git dest=${clone_dir}
+      when_failed: $ruby_present
+
+    - name: Compile Ruby ${ruby_version}
+      command: ${clone_dir}/bin/ruby-build ${ruby_version} ${ruby_home}
+      when_failed: $ruby_present
+
+    - name: Clean up ruby-build repository
+      command: rm -rf ${clone_dir}
+
+    - name: Install bundler
+      gem: name=bundler state=latest

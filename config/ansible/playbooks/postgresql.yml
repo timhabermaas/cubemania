@@ -1,0 +1,40 @@
+---
+- hosts: webserver
+  sudo: True
+  user: deployer
+  tasks:
+    - name: install python-software-properties for add-apt-repository
+      apt: pkg=python-software-properties state=present update_cache=yes
+
+    - name: "add postgresql repository"
+      apt_repository: repo=ppa:pitti/postgresql
+
+    - name: "update apt repository"
+      apt: update_cache=yes
+
+    - name: install db server packages
+      apt: pkg=$item state=present
+      with_items:
+        - postgresql
+        - postgresql-contrib
+        - libpq-dev
+        - python-dev
+        - python-setuptools
+
+    - name: install python libraries for ansible commands
+      easy_install: name=psycopg2==2.4.5
+
+- hosts: webserver
+  sudo: True
+  user: deployer
+  sudo_user: postgres
+  vars_prompt:
+    password: "Database password"
+    database_user: "Database user"
+
+  tasks:
+    - name: create database user
+      action: postgresql_user user=${database_user} password=$password state=present
+
+    - name: create database
+      action: postgresql_db name=${database_user}_production owner=${database_user} state=present

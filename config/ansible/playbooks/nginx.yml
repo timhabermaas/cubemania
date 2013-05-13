@@ -1,0 +1,15 @@
+---
+- hosts: webserver
+  sudo: True
+  user: deployer
+  tasks:
+    - name: "add nginx repository"
+      apt_repository: repo=ppa:nginx/stable
+
+    - name: Install nginx
+      apt: pkg=nginx state=present update_cache=yes
+      notify: restart nginx
+
+  handlers:
+    - name: restart nginx
+      service: name=nginx state=restarted

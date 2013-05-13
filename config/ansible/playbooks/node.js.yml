@@ -1,0 +1,10 @@
+---
+- hosts: webserver
+  sudo: True
+  user: deployer
+  tasks:
+    - name: "add node.js repository"
+      apt_repository: repo=ppa:chris-lea/node.js
+
+    - name: install node.js
+      apt: pkg=nodejs state=present update_cache=yes
