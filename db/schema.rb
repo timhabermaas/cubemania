@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130510194531) do
+ActiveRecord::Schema.define(:version => 20130524151520) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id",                  :null => false
@@ -85,7 +85,6 @@ ActiveRecord::Schema.define(:version => 20130510194531) do
     t.string   "name",            :limit => 64,                        :null => false
     t.integer  "kind_id",                                              :null => false
     t.integer  "scramble_length"
-    t.integer  "record_id"
     t.integer  "attempt_count",                 :default => 1,         :null => false
     t.integer  "countdown",                     :default => 15,        :null => false
     t.string   "average_format",                :default => "average", :null => false
