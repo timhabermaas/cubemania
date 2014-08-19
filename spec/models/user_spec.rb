@@ -62,6 +62,54 @@ describe User do
     end
   end
 
+  describe "#singles.best" do
+    let(:user) { create(:user) }
+    let(:puzzle) { create(:puzzle) }
+
+    subject { user.singles.best(puzzle).time }
+
+    before do
+      create(:single, :time => 20, :user => user, :puzzle => puzzle)
+      create(:single, :time => 9, :user => user, :puzzle => puzzle, :penalty => "dnf")
+      create(:single, :time => 10, :user => user, :puzzle => puzzle)
+      create(:single, :time => 30, :user => user, :puzzle => puzzle)
+    end
+
+    it { should == 10 }
+  end
+
+
+  describe "#best_average" do
+    let(:user) { create(:user) }
+    let(:puzzle) { create(:puzzle) }
+
+    context "given [10, 3, 15, 4, 6, 8, 7]" do
+      before :each do
+        [10, 3, 15, 4, 6, 8, 7].each do |time|
+          create :single, :puzzle => puzzle, :user => user, :time => time
+        end
+      end
+
+      it "returns an average with a time of 6" do
+        user.best_average(puzzle, 5).time.should == (4 + 6 + 8)/3.0
+      end
+    end
+
+    context "given [10, 3, DNF, 5, DNF, 2]" do
+      before :each do
+        singles = [10, 3, 20, 5, 4, 2].map do |time|
+          create :single, :puzzle => puzzle, :user => user, :time => time
+        end
+        singles[2].toggle_dnf!
+        singles[4].toggle_dnf!
+      end
+
+      it "returns a dnf average" do
+        user.best_average(puzzle, 5).should be_dnf
+      end
+    end
+  end
+
   describe "#follow!" do
     let(:peter) { create :user, :name => "Peter" }
     let(:nick) { create :user, :name => "Nick" }

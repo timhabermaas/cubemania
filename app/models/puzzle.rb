@@ -10,7 +10,11 @@ class Puzzle < ActiveRecord::Base
   belongs_to :kind
   has_many :competitions, :dependent => :destroy
   has_many :singles, :dependent => :destroy
-  has_many :records, :order => "records.time", :include => :user, :conditions => { 'users.ignored' => false }, :dependent => :destroy
+  has_many :records, :order => "records.time", :include => :user, :conditions => { 'users.ignored' => false }, :dependent => :destroy do
+    def amount(n)
+      where(:amount => n)
+    end
+  end
 
   validates_presence_of :name, :attempt_count, :countdown, :kind_id
   validates_length_of :name, :maximum => 64

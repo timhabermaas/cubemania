@@ -30,17 +30,6 @@ class Single < ActiveRecord::Base
     end
     group(field).select(field + " as created_at, AVG(time) as time, string_agg(comment, '\n') as comment")
   }
-  scope :younger_than, lambda { |s| where(:user_id => s.user_id,
-                                          :puzzle_id => s.puzzle_id).
-                                    where("created_at >= ?", s.created_at) }
-
-  def self.last_n_prior_to(n, single)
-    where(:user_id => single.user_id,
-          :puzzle_id => single.puzzle_id).
-    where("created_at < ?", single.created_at).
-    order("created_at desc").
-    limit(n)
-  end
 
   humanize :time => :time
 

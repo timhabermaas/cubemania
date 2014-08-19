@@ -106,7 +106,6 @@ ActiveRecord::Schema.define(:version => 20130524151520) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
     t.string   "comment"
-    t.text     "single_ids"
   end
 
   add_index "records", ["puzzle_id", "amount", "time"], :name => "index_records_on_puzzle_id_and_amount_and_time"

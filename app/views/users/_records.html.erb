@@ -10,7 +10,7 @@
 <% else %>
   <h3>Records</h3>
   <ul class="records">
-    <% records.sort_by { |p, r| p.full_name }.each do |puzzle, records| %>
+    <% records.each do |puzzle, records| %>
     <li class="record <%= cycle "even", "odd" %>">
       <div class="puzzle">
         <div class="puzzle-image pos<%= puzzle.css_position %>">

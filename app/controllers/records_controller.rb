@@ -4,17 +4,15 @@ class RecordsController < ApplicationController
   def index
     @puzzle = Puzzle.find params[:puzzle_id]
     amount = RecordType.by_short_name(params[:type]).try(:count) || 5
-    @records = Record.where(:puzzle_id => @puzzle.id, :amount => amount).
-                      recent.
-                      order("time").
-                      paginate(:page => params[:page], :per_page => 50)
+
+    @records = @puzzle.records.amount(amount).paginate(:page => params[:page], :per_page => 50)
   end
 
   def show
     @user = User.find params[:user_id]
-    @record = @user.records.find params[:id]
+    @record = @user.records.find params[:id], :include => [:singles]
     @puzzle = @record.puzzle
-    @singles = @record.singles
+    @singles = @record.singles.ordered
   end
 
   def share

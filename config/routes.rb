@@ -15,9 +15,7 @@ Cubemania::Application.routes.draw do
       resources :singles do
         get :chart, :on => :collection
       end
-      resources :records do
-        get :recent, :on => :collection
-      end
+      resources :records
     end
   end
 
