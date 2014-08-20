@@ -16,10 +16,10 @@ class Cubemania.Scrambler
       when "pyraminx" then @mark2["pyram"].getRandomScramble().scramble_string
       when "clock" then clock(25)
       when "square-1" then square1()
+      when "skewb" then cube [["U"], ["L"], ["R"], ["B"]], 15, ['', "'"]
       else ""
 
-  cube = (turns, length) ->
-    variants = ['', "'", '2']
+  cube = (turns, length, variants=['', "'", '2']) ->
     axis = rand turns.length
     (
       (
