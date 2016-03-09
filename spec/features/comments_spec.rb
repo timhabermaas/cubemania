@@ -1,9 +1,9 @@
 require "spec_helper"
 
 describe "Comments" do
-  before { @user = login }
-
   describe "for posts" do
+    before { @user = login }
+
     let(:post) { create :post }
 
     it "adds comment to post" do
@@ -21,6 +21,8 @@ describe "Comments" do
   end
 
   describe "for activity" do
+    before { @user = login(as: "beta_user") }
+
     let(:ben) { create :user }
     let(:following) { @user.follow! ben }
     let!(:activity) { create :following_activity, :trackable => following, :user => @user }

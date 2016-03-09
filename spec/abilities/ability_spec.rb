@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Ability do
-  let(:user) { create :user }
+  let(:user) { create :beta_user }
   let(:nick) { create :user, :name => "Nick" }
   subject { Ability.new(user) }
 

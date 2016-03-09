@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe "Following" do
   before do
-    @user = login
+    @user = login(as: 'beta_user')
     @peter = create :user, :name => "Peter"
   end
 

@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe "Activity feed" do
-  let(:user) { login }
+  let!(:user) { login(as: 'beta_user') }
   let(:nick) { create :user, :name => "Nick" }
   let(:peter) { create :user, :name => "Peter" }
   let(:cube) { create :cube }

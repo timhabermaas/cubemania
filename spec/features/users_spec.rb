@@ -56,10 +56,11 @@ describe "Users" do
     end
 
     describe "followings" do
-      let(:nick) { create :user, :name => "Nick" }
+      let(:nick) { create :beta_user, :name => "Nick" }
 
       before do
         user.follow!(nick)
+        login(as: "beta_user")
       end
 
       it "lists the names of all cubers he follows" do
