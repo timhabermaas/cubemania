@@ -88,10 +88,5 @@ module Api
     def fetch_puzzle
       @puzzle = Puzzle.find params[:puzzle_id]
     end
-=begin
-    def grouped_cache_path(user, puzzle, by)
-      ["grouped", user.id, puzzle.id, by].join("/")
-    end
-=end
   end
 end
