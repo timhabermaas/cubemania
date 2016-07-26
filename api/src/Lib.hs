@@ -10,12 +10,15 @@ module Lib
     ( startApp
     ) where
 
+import qualified Db as Db
+
 import Network.Wai
 import Network.Wai.Handler.Warp
 import Network.Wai.Middleware.RequestLogger (logStdoutDev)
 import Servant
 
-import Data.Maybe (fromMaybe)
+import Data.Time.Clock (UTCTime)
+import Data.Time.Clock.POSIX (posixSecondsToUTCTime)
 
 import Types
 
@@ -24,40 +27,20 @@ import Control.Monad.Reader
 import Control.Monad.Except
 import Database.PostgreSQL.Simple
 
-data Configuration = Configuration
-  { getPool :: Connection
-  }
-
 newtype MyStack a
   = MyStack
   { runApp :: ReaderT Configuration (ExceptT ServantErr IO) a
   } deriving (Functor, Applicative, Monad, MonadReader Configuration,
               MonadError ServantErr, MonadIO)
 
-type MyAPI = "api" :> "puzzles" :> Capture "puzzleId" PuzzleId :> "singles" :> QueryParam "user_id" UserId :> QueryParam "limit" Limit :> Get '[JSON] [Single]
-        :<|> "api" :> "puzzles" :> Capture "puzzleId" PuzzleId :> "records" :> QueryParam "page" Int :> QueryParam "user_id" UserId :> Get '[JSON] [Record]
+type PuzzleAPI = "api" :> "puzzles" :> Capture "puzzleId" PuzzleId :>
+                      ("singles" :> QueryParam "user_id" UserId :> QueryParam "limit" Limit :> Get '[JSON] [Single]
+                  :<|> "records" :> QueryParam "page" Int :> QueryParam "user_id" UserId :> Get '[JSON] [Record]
+                  :<|> "singles" :> "chart.json" :> QueryParam "from" Float :> QueryParam "to" Float :> QueryParam "user_id" UserId :> Get '[JSON] [ChartData])
+type CubemaniaAPI = PuzzleAPI
+                  :<|> "api" :> "users.json" :> QueryParam "q" String :> Get '[JSON] [SimpleUser] -- TODO: Remove .json
 
 
-runDb :: (MonadReader Configuration m, MonadIO m) => (Connection -> m a) -> m a
-runDb query = do
-    conn <- asks getPool
-    query conn
-
-getRecords :: (MonadIO m) => UserId -> PuzzleId -> Connection -> m [Record]
-getRecords (UserId uid) (PuzzleId pid) conn = do
-    records <- liftIO $ query conn "select id, time, comment, puzzle_id, amount from records where user_id = ? and puzzle_id = ?" (uid, pid)
-    liftIO $ mapM (grabSingles conn) records
-
-grabSingles :: Connection -> Record -> IO Record
-grabSingles conn r = do
-    singles <- query conn "SELECT singles.id, singles.time, singles.scramble FROM singles INNER JOIN records_singles ON singles.id = records_singles.single_id WHERE records_singles.record_id = ?" (Only $ recordId r)
-    return $ r { recordSingles = singles }
-
-getSingles :: (MonadIO m) => PuzzleId -> UserId -> Limit -> Connection -> m [Single]
-getSingles (PuzzleId pid) (UserId uid) (Limit limit) conn = do
-    singles <- liftIO $ query conn "select id, time, comment, scramble, penalty, created_at from singles where puzzle_id = ? and user_id = ? ORDER BY created_at DESC LIMIT ?" (pid, uid, limit)
-    liftIO $ putStrLn $ show $ length singles
-    return singles
 
 startApp :: IO ()
 startApp = do
@@ -68,30 +51,48 @@ startApp = do
 convertApp :: Configuration -> MyStack :~> ExceptT ServantErr IO
 convertApp cfg = Nat (flip runReaderT cfg . runApp)
 
-appToServer :: Configuration -> Server MyAPI
+appToServer :: Configuration -> Server CubemaniaAPI
 appToServer cfg = enter (convertApp cfg) allHandlers
 
 app :: Configuration -> Application
 app config = serve api $ appToServer config
 
-api :: Proxy MyAPI
+api :: Proxy CubemaniaAPI
 api = Proxy
 
-allHandlers :: ServerT MyAPI MyStack
-allHandlers = singlesHandler :<|> recordsHandler
+allHandlers :: ServerT CubemaniaAPI MyStack
+allHandlers = puzzleHandler :<|> usersHandler
+  where
+    puzzleHandler puzzleId = singlesHandler puzzleId :<|> recordsHandler puzzleId :<|> chartHandler puzzleId
+
 
 recordsHandler :: PuzzleId -> Maybe Int -> Maybe UserId -> MyStack [Record]
 recordsHandler puzzleId _page userId =
     case userId of
         Nothing -> return []
-        Just uid -> runDb $ getRecords uid puzzleId
+        Just uid -> Db.runDb $ Db.getRecords uid puzzleId
 
 singlesHandler :: PuzzleId -> Maybe UserId -> Maybe Limit -> MyStack [Single]
 singlesHandler puzzleId userId limit = do
     case userId of
         Nothing -> return []
-        Just uid -> runDb $ getSingles puzzleId uid $ getLimit limit
+        Just uid -> Db.runDb $ Db.getSingles puzzleId uid $ getLimit limit
   where
     getLimit l = case l of
         Nothing -> Limit 150
         Just l' -> l'
+
+chartHandler :: PuzzleId -> Maybe Float -> Maybe Float -> Maybe UserId -> MyStack [ChartData]
+chartHandler puzzleId from to userId = do
+    case userId of
+      Just uid -> Db.runDb $ Db.getChartData puzzleId uid (epochToUTCTime <$> from, epochToUTCTime <$> to)
+      Nothing -> return []
+  where
+    epochToUTCTime :: Float -> UTCTime
+    epochToUTCTime = posixSecondsToUTCTime . fromIntegral . floor
+
+usersHandler :: Maybe String -> MyStack [SimpleUser]
+usersHandler q = do
+    case q of
+        Just query -> Db.runDb $ Db.matchUsers query
+        Nothing    -> return []

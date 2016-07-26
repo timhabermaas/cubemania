@@ -18,3 +18,5 @@ db/*.sqlite3
 /spec/javascripts/compiled
 
 /public/system
+
+tags

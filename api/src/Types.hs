@@ -10,14 +10,18 @@ import Servant (FromHttpApiData(..))
 import Data.Text (Text)
 import Data.Char (chr)
 import Data.Time.LocalTime (LocalTime, localTimeToUTC, utc)
+import Data.Time.Format (defaultTimeLocale, formatTime)
 import Data.Time.Clock (UTCTime)
 import Data.Word (Word8)
 import Database.PostgreSQL.Simple.FromRow
 import Database.PostgreSQL.Simple.FromField
 import qualified Data.ByteString as BS
-import Data.ByteString.Char8
-import Data.ByteString.Lazy.Char8
 import Control.Monad (mzero)
+import Database.PostgreSQL.Simple
+
+data Configuration = Configuration
+  { getPool :: Connection
+  }
 
 newtype PuzzleId = PuzzleId Int deriving (Generic)
 instance FromHttpApiData PuzzleId where
@@ -42,7 +46,10 @@ newtype SingleId = SingleId Int deriving (Generic)
 instance FromField SingleId where
     fromField f s = SingleId <$> fromField f s
 
-newtype UserId = UserId Int
+newtype UserId = UserId Int deriving (Generic)
+instance FromField UserId where
+    fromField f s = UserId <$> fromField f s
+instance ToJSON UserId
 instance FromHttpApiData UserId where
   parseUrlPiece t = UserId <$> parseInt t
     where
@@ -109,6 +116,23 @@ instance ToJSON RecordSingle where
       , "scramble" .= recordSingleScramble
       ]
 
+data SimpleUser = SimpleUser
+    { userId :: UserId
+    , userSlug :: String
+    , userName :: String
+    , userSinglesCount :: Int
+    }
+
+instance ToJSON SimpleUser where
+    toJSON (SimpleUser {..}) = object
+      [ "id" .= userId
+      , "slug" .= userSlug
+      , "name" .= userName
+      , "singles_count" .= userSinglesCount
+      ]
+
+instance FromRow SimpleUser where
+    fromRow = SimpleUser <$> field <*> field <*> field <*> field
 
 -- TODO get rid of Type prefix
 data RecordType = TypeSingle | TypeAverage5 | TypeAverage12
@@ -149,3 +173,29 @@ instance ToJSON Record where
         , "type_full_name" .= recordType
         , "singles" .= recordSingles
         ]
+
+data ChartData = ChartData
+    { chartTime :: Double
+    , chartComment :: Maybe String
+    , chartCreatedAt :: UTCTime
+    }
+
+instance FromRow ChartData where
+    fromRow = ChartData <$> (fromRational <$> field) <*> field <*> (localTimeToUTC utc <$> field)
+instance ToJSON ChartData where
+    toJSON ChartData{..} = object
+        [ "time" .= chartTime
+        , "created_at" .= chartCreatedAt
+        , "created_at_timestamp" .= utcTimeToEpoch chartCreatedAt
+        ]
+      where
+        utcTimeToEpoch :: UTCTime -> Int
+        utcTimeToEpoch time = read $ formatTime defaultTimeLocale "%s" time
+
+data ChartGroup = Month | Week | Day
+
+newtype LocalTimeWithFromRow = LocalTimeWithFromRow LocalTime deriving (Generic)
+instance FromRow LocalTimeWithFromRow
+
+localTimeToUTCTime :: LocalTimeWithFromRow -> UTCTime
+localTimeToUTCTime (LocalTimeWithFromRow t) = localTimeToUTC utc t
