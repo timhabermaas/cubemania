@@ -117,18 +117,18 @@ instance ToJSON RecordSingle where
       ]
 
 data SimpleUser = SimpleUser
-    { userId :: UserId
-    , userSlug :: String
-    , userName :: String
-    , userSinglesCount :: Int
+    { simpleUserId :: UserId
+    , simpleUserSlug :: String
+    , simpleUserName :: String
+    , simpleUserSinglesCount :: Int
     }
 
 instance ToJSON SimpleUser where
     toJSON (SimpleUser {..}) = object
-      [ "id" .= userId
-      , "slug" .= userSlug
-      , "name" .= userName
-      , "singles_count" .= userSinglesCount
+      [ "id" .= simpleUserId
+      , "slug" .= simpleUserSlug
+      , "name" .= simpleUserName
+      , "singles_count" .= simpleUserSinglesCount
       ]
 
 instance FromRow SimpleUser where

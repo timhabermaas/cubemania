@@ -16,11 +16,16 @@ import Network.Wai
 import Network.Wai.Handler.Warp
 import Network.Wai.Middleware.RequestLogger (logStdoutDev)
 import Servant
+import Servant.HTML.Blaze
+import Text.Blaze.Html5 (Html)
 
 import Data.Time.Clock (UTCTime)
 import Data.Time.Clock.POSIX (posixSecondsToUTCTime)
+import Data.ByteString.Char8 (pack)
+import Data.Maybe(fromMaybe)
 
 import Types
+import qualified Html as H
 
 import Control.Monad.IO.Class
 import Control.Monad.Reader
@@ -38,13 +43,13 @@ type PuzzleAPI = "api" :> "puzzles" :> Capture "puzzleId" PuzzleId :>
                   :<|> "records" :> QueryParam "page" Int :> QueryParam "user_id" UserId :> Get '[JSON] [Record]
                   :<|> "singles" :> "chart.json" :> QueryParam "from" Float :> QueryParam "to" Float :> QueryParam "user_id" UserId :> Get '[JSON] [ChartData])
 type CubemaniaAPI = PuzzleAPI
-                  :<|> "api" :> "users.json" :> QueryParam "q" String :> Get '[JSON] [SimpleUser] -- TODO: Remove .json
+               :<|> "api" :> "users.json" :> QueryParam "q" String :> Get '[JSON] [SimpleUser] -- TODO: Remove .json
+               :<|> "users" :> Get '[HTML] Html
 
 
-
-startApp :: IO ()
-startApp = do
-  conn <- connectPostgreSQL "postgresql://postgres@db/cubemania_production"
+startApp :: String -> IO ()
+startApp dbConnectionString = do
+  conn <- connectPostgreSQL $ pack dbConnectionString --"postgresql://localhost:5432/cubemania_production"
   let c = Configuration conn
   run 9090 $ logStdoutDev $ app c
 
@@ -61,9 +66,13 @@ api :: Proxy CubemaniaAPI
 api = Proxy
 
 allHandlers :: ServerT CubemaniaAPI MyStack
-allHandlers = puzzleHandler :<|> usersHandler
+allHandlers = puzzleHandler :<|> usersHandler :<|> otherHandler
   where
     puzzleHandler puzzleId = singlesHandler puzzleId :<|> recordsHandler puzzleId :<|> chartHandler puzzleId
+    otherHandler = do
+        users <- Db.runDb Db.getUsers
+        maxSinglesCount <- Db.runDb Db.maxSinglesCount
+        return $ H.usersPage users $ fromMaybe 1 maxSinglesCount
 
 
 recordsHandler :: PuzzleId -> Maybe Int -> Maybe UserId -> MyStack [Record]

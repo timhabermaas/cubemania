@@ -7,6 +7,8 @@ module Db
     , getSingles
     , runDb
     , getChartData
+    , getUsers
+    , maxSinglesCount
     ) where
 
 import Types
@@ -14,7 +16,7 @@ import Data.Time.Clock (UTCTime, getCurrentTime, diffUTCTime, NominalDiffTime)
 import Data.Time.LocalTime (localTimeToUTC, utc)
 import Control.Monad.Reader (MonadReader, MonadIO, asks)
 import Control.Monad.IO.Class
-import Database.PostgreSQL.Simple (Connection, query, Only(..))
+import Database.PostgreSQL.Simple (Connection, query, query_, Only(..))
 
 import Debug.Trace
 
@@ -41,6 +43,17 @@ grabSingles conn r = do
 matchUsers :: (MonadIO m) => String -> Connection -> m [SimpleUser]
 matchUsers q conn = do
     liftIO $ query conn "SELECT id, slug, name, singles_count FROM users WHERE lower(name) LIKE ? LIMIT 200" (Only $ ('%':q) ++ ['%'])
+
+getUsers :: (MonadIO m) => Connection -> m [SimpleUser]
+getUsers conn = do
+    liftIO $ query conn "SELECT id, slug, name, singles_count FROM users ORDER BY singles_count DESC LIMIT 200" ()
+
+maxSinglesCount :: (MonadIO m) => Connection -> m (Maybe Int)
+maxSinglesCount conn = do
+    counts <- liftIO $ query_ conn "SELECT singles_count FROM users ORDER BY singles_count DESC LIMIT 1"
+    case counts of
+      [Only x] -> return $ Just x
+      []  -> return $ Nothing
 
 getChartData :: (MonadIO m) => PuzzleId -> UserId -> (Maybe UTCTime, Maybe UTCTime) -> Connection -> m [ChartData]
 getChartData (PuzzleId puzzleId) (UserId userId) (from, to) conn = do
