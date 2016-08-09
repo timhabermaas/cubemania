@@ -44,7 +44,7 @@ instance FromHttpApiData Limit where
       parseInt :: Text -> Either Text Int
       parseInt = parseUrlPiece
 
-newtype SingleId = SingleId Int deriving (Generic, Show)
+newtype SingleId = SingleId Int deriving (Generic, Show, Eq)
 instance FromField SingleId where
     fromField f s = SingleId <$> fromField f s
 instance FromHttpApiData SingleId where
@@ -53,7 +53,7 @@ instance FromHttpApiData SingleId where
       parseInt :: Text -> Either Text Int
       parseInt = parseUrlPiece
 
-newtype UserId = UserId Int deriving (Generic)
+newtype UserId = UserId Int deriving (Generic, Show, Eq)
 instance FromField UserId where
     fromField f s = UserId <$> fromField f s
 instance FromRow UserId
@@ -90,6 +90,7 @@ data Single = Single
     , singleScramble :: String
     , singlePenalty :: Maybe Penalty
     , singleCreatedAt :: UTCTime
+    , singleUserId :: UserId
     } deriving (Generic)
 
 instance ToJSON Single where
@@ -105,7 +106,7 @@ instance ToJSON Single where
 
 
 instance FromRow Single where
-    fromRow = Single <$> field <*> field <*> field <*> field <*> field <*> ((localTimeToUTC utc) <$> field)
+    fromRow = Single <$> field <*> field <*> field <*> field <*> field <*> ((localTimeToUTC utc) <$> field) <*> field
 
 -- TODO: Add prefix and use custom FromJSON instance.
 data SubmittedSingle = SubmittedSingle

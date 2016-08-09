@@ -45,7 +45,7 @@ module Authentication
     def logout
       if logged_in?
         flash[:notice] = 'You must logout before you can login or register.'
-        redirect_to root_url
+        redirect_to root_path
       end
     end
 
@@ -80,12 +80,20 @@ module Authentication
     def current_user
       @current_user ||= User.find session[:user_id] unless session[:user_id].nil?
     rescue ActiveRecord::RecordNotFound
-      session[:user_id] = nil
+      self.current_user = nil
+      #session[:user_id] = nil
+      #cookies[:current_user_id] = nil
     end
 
     def current_user=(user)
       @current_user = user
-      session[:user_id] = user.nil? ? nil : user.id
+      if user.nil?
+        session[:user_id] = nil
+        cookies[:current_user_id] = nil
+      else
+        session[:user_id] = user.id
+        cookies[:current_user_id] = user.id
+      end
     end
 
     def redirect_back(default)

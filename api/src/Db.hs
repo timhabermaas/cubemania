@@ -19,26 +19,23 @@ module Db
 import Types
 import Utils
 import Data.Time.Clock (UTCTime, getCurrentTime, diffUTCTime, NominalDiffTime)
-import Data.Time.LocalTime (localTimeToUTC, utc)
-import Control.Monad.Reader (MonadReader, MonadIO, asks)
+import Control.Monad.Reader (MonadReader, asks)
 import Control.Monad.IO.Class
 import Database.PostgreSQL.Simple (Connection, query, query_, execute, withTransaction, Only(..))
 
-import Debug.Trace
-
 runDb :: (MonadReader Configuration m, MonadIO m) => (Connection -> m a) -> m a
-runDb query = do
+runDb q = do
     conn <- asks getPool
-    query conn
+    q conn
 
 getSingles :: (MonadIO m) => PuzzleId -> UserId -> Limit -> Connection -> m [Single]
 getSingles (PuzzleId pid) (UserId uid) (Limit limit) conn = do
-    singles <- liftIO $ query conn "select id, time, comment, scramble, penalty, created_at from singles where puzzle_id = ? and user_id = ? ORDER BY created_at DESC LIMIT ?" (pid, uid, limit)
+    singles <- liftIO $ query conn "select id, time, comment, scramble, penalty, created_at, user_id from singles where puzzle_id = ? and user_id = ? ORDER BY created_at DESC LIMIT ?" (pid, uid, limit)
     return singles
 
 getSingle :: (MonadIO m) => SingleId -> Connection -> m Single
 getSingle (SingleId id) conn = do
-    result <- liftIO $ query conn "SELECT id, time, comment, scramble, penalty, created_at FROM singles WHERE id = ?" (Only id)
+    result <- liftIO $ query conn "SELECT id, time, comment, scramble, penalty, created_at, user_id FROM singles WHERE id = ?" (Only id)
     case safeHead result of
       Just x -> return x
       Nothing -> error "nope"
@@ -54,27 +51,22 @@ grabSingles conn r = do
     singles <- query conn "SELECT singles.id, singles.time, singles.scramble FROM singles INNER JOIN records_singles ON singles.id = records_singles.single_id WHERE records_singles.record_id = ?" (Only $ recordId r)
     return $ r { recordSingles = singles }
 
-postSingle :: (MonadIO m) => PuzzleId -> SubmittedSingle -> Connection -> m SingleId
-postSingle (PuzzleId pid) (SubmittedSingle s t) conn = do
-    let userId = 3 :: Int
+postSingle :: (MonadIO m) => PuzzleId -> UserId -> SubmittedSingle -> Connection -> m SingleId
+postSingle (PuzzleId pid) (UserId userId) (SubmittedSingle s t) conn = do
     result :: [Only Int] <- liftIO $ withTransaction conn $ do
         time <- getCurrentTime
-        execute conn "UPDATE users SET singles_count = COALESCE(singles_count, 0) + 1 WHERE users.id = ?" (Only userId)
+        _ <- execute conn "UPDATE users SET singles_count = COALESCE(singles_count, 0) + 1 WHERE users.id = ?" (Only userId)
         query conn "INSERT INTO singles (time, puzzle_id, user_id, scramble, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?) RETURNING id" (t, pid, userId, s, time, time)
     case safeHead result of
         Just (Only x) -> return $ SingleId $ x
         Nothing -> error "not gonna happen"
-userIdOfSingle :: (MonadIO m) => SingleId -> Connection -> m UserId
-userIdOfSingle (SingleId singleId) conn = do
-    result <- liftIO $ query conn "SELECT user_id FROM singles WHERE id = ?" (Only singleId)
-    return $ head result
 
 deleteSingle :: (MonadIO m) => SingleId -> Connection -> m ()
 deleteSingle s@(SingleId singleId) conn = do
     liftIO $ withTransaction conn $ do
-        (UserId userId) <- userIdOfSingle s conn
-        execute conn "UPDATE users SET singles_count = COALESCE(singles_count, 0) - 1 WHERE users.id = ?" (Only userId)
-        execute conn "DELETE FROM singles WHERE id = ?" (Only singleId)
+        (UserId userId) <- singleUserId <$> getSingle s conn
+        _ <- execute conn "UPDATE users SET singles_count = COALESCE(singles_count, 0) - 1 WHERE users.id = ?" (Only userId)
+        _ <- execute conn "DELETE FROM singles WHERE id = ?" (Only singleId)
         return ()
 
 matchUsers :: (MonadIO m) => String -> Connection -> m [SimpleUser]
@@ -90,7 +82,7 @@ maxSinglesCount conn = do
     counts <- liftIO $ query_ conn "SELECT singles_count FROM users ORDER BY singles_count DESC LIMIT 1"
     case counts of
       [Only x] -> return $ Just x
-      []  -> return $ Nothing
+      _        -> return $ Nothing
 
 getChartData :: (MonadIO m) => PuzzleId -> UserId -> (Maybe UTCTime, Maybe UTCTime) -> Connection -> m [ChartData]
 getChartData (PuzzleId puzzleId) (UserId userId) (from, to) conn = do
