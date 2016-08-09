@@ -18,7 +18,7 @@
 resolver: lts-6.7
 
 docker:
-  enable: true
+  enable: false
   image: "haskell-build"
 
 # User packages to be built.

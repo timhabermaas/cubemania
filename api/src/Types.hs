@@ -5,7 +5,7 @@
 module Types where
 
 import GHC.Generics
-import Data.Aeson (ToJSON(..), Value(..), (.=), object)
+import Data.Aeson (ToJSON(..), FromJSON(..), Value(..), (.=), object)
 import Servant (FromHttpApiData(..))
 import Data.Text (Text)
 import Data.Char (chr)
@@ -18,6 +18,8 @@ import Database.PostgreSQL.Simple.FromField
 import qualified Data.ByteString as BS
 import Control.Monad (mzero)
 import Database.PostgreSQL.Simple
+
+type DurationInMs = Int
 
 data Configuration = Configuration
   { getPool :: Connection
@@ -42,13 +44,19 @@ instance FromHttpApiData Limit where
       parseInt :: Text -> Either Text Int
       parseInt = parseUrlPiece
 
-newtype SingleId = SingleId Int deriving (Generic)
+newtype SingleId = SingleId Int deriving (Generic, Show)
 instance FromField SingleId where
     fromField f s = SingleId <$> fromField f s
+instance FromHttpApiData SingleId where
+  parseUrlPiece t = SingleId <$> parseInt t
+    where
+      parseInt :: Text -> Either Text Int
+      parseInt = parseUrlPiece
 
 newtype UserId = UserId Int deriving (Generic)
 instance FromField UserId where
     fromField f s = UserId <$> fromField f s
+instance FromRow UserId
 instance ToJSON UserId
 instance FromHttpApiData UserId where
   parseUrlPiece t = UserId <$> parseInt t
@@ -67,17 +75,17 @@ word8ToString :: [Word8] -> String
 word8ToString = Prelude.map (chr . fromIntegral)
 
 instance FromField Penalty where
-  fromField field dat =
-      case BS.unpack <$> dat of
-        Nothing -> returnError UnexpectedNull field ""
-        Just v -> case word8ToString v of
-          "plus2" -> return Plus2
-          "dnf"   -> return Dnf
-          x       -> returnError ConversionFailed field x
+    fromField field dat =
+        case BS.unpack <$> dat of
+          Nothing -> returnError UnexpectedNull field ""
+          Just v -> case word8ToString v of
+            "plus2" -> return Plus2
+            "dnf"   -> return Dnf
+            x       -> returnError ConversionFailed field x
 
 data Single = Single
     { singleId :: SingleId
-    , singleTime :: Int
+    , singleTime :: DurationInMs
     , singleComment :: Maybe String
     , singleScramble :: String
     , singlePenalty :: Maybe Penalty
@@ -99,10 +107,17 @@ instance ToJSON Single where
 instance FromRow Single where
     fromRow = Single <$> field <*> field <*> field <*> field <*> field <*> ((localTimeToUTC utc) <$> field)
 
+-- TODO: Add prefix and use custom FromJSON instance.
+data SubmittedSingle = SubmittedSingle
+    { scramble :: String
+    , time :: DurationInMs
+    } deriving (Generic)
+
+instance FromJSON SubmittedSingle
 
 data RecordSingle = RecordSingle
     { recordSingleId :: SingleId
-    , recordSingleTime :: Int
+    , recordSingleTime :: DurationInMs
     , recordSingleScramble :: String
     }
 
@@ -153,7 +168,7 @@ instance ToJSON RecordType where
 
 data Record = Record
     { recordId :: Int
-    , recordTime :: Int
+    , recordTime :: DurationInMs
     , recordComment :: String
     , recordPuzzleId :: PuzzleId
     , recordType :: RecordType

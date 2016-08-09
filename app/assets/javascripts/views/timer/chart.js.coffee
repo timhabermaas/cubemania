@@ -159,7 +159,7 @@ class Cubemania.Views.Chart extends Backbone.View
     $(@el).html(@template())
     @$("p.help").hide()
 
-    @$("#user-tokens").tokenInput "/api/users.json",
+    @$("#user-tokens").tokenInput "/api/users",
       crossDomain: false
       theme: "facebook"
       preventDuplicates: true

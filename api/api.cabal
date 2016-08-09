@@ -19,8 +19,11 @@ library
   other-modules:       Types
                      , Db
                      , Html
+                     , MyServantBlaze
+                     , Utils
   build-depends:       base >= 4.7 && < 5
                      , aeson
+                     , servant
                      , servant-server
                      , wai
                      , warp
@@ -32,8 +35,8 @@ library
                      , text
                      , bytestring
                      , time
-                     , servant-blaze
                      , blaze-html
+                     , http-media
   default-language:    Haskell2010
 
 executable api-exe

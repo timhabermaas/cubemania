@@ -16,8 +16,9 @@ import Network.Wai
 import Network.Wai.Handler.Warp
 import Network.Wai.Middleware.RequestLogger (logStdoutDev)
 import Servant
-import Servant.HTML.Blaze
+import MyServantBlaze
 import Text.Blaze.Html5 (Html)
+import Text.Blaze.Html.Renderer.Pretty (renderHtml)
 
 import Data.Time.Clock (UTCTime)
 import Data.Time.Clock.POSIX (posixSecondsToUTCTime)
@@ -41,11 +42,12 @@ newtype MyStack a
 type PuzzleAPI = "api" :> "puzzles" :> Capture "puzzleId" PuzzleId :>
                       ("singles" :> QueryParam "user_id" UserId :> QueryParam "limit" Limit :> Get '[JSON] [Single]
                   :<|> "records" :> QueryParam "page" Int :> QueryParam "user_id" UserId :> Get '[JSON] [Record]
-                  :<|> "singles" :> "chart.json" :> QueryParam "from" Float :> QueryParam "to" Float :> QueryParam "user_id" UserId :> Get '[JSON] [ChartData])
+                  :<|> "singles" :> "chart.json" :> QueryParam "from" Float :> QueryParam "to" Float :> QueryParam "user_id" UserId :> Get '[JSON] [ChartData]
+                  :<|> "singles" :> ReqBody '[JSON] SubmittedSingle :> Post '[JSON] Single
+                  :<|> "singles" :> Capture "singleId" SingleId :> DeleteNoContent '[JSON] NoContent)
 type CubemaniaAPI = PuzzleAPI
-               :<|> "api" :> "users.json" :> QueryParam "q" String :> Get '[JSON] [SimpleUser] -- TODO: Remove .json
+               :<|> "api" :> "users" :> QueryParam "q" String :> Get '[JSON] [SimpleUser] -- TODO: Remove .json
                :<|> "users" :> Get '[HTML] Html
-
 
 startApp :: String -> IO ()
 startApp dbConnectionString = do
@@ -68,7 +70,11 @@ api = Proxy
 allHandlers :: ServerT CubemaniaAPI MyStack
 allHandlers = puzzleHandler :<|> usersHandler :<|> otherHandler
   where
-    puzzleHandler puzzleId = singlesHandler puzzleId :<|> recordsHandler puzzleId :<|> chartHandler puzzleId
+    puzzleHandler puzzleId = singlesHandler puzzleId
+                        :<|> recordsHandler puzzleId
+                        :<|> chartHandler puzzleId
+                        :<|> submitSingleHandler puzzleId
+                        :<|> deleteSingleHandler puzzleId
     otherHandler = do
         users <- Db.runDb Db.getUsers
         maxSinglesCount <- Db.runDb Db.maxSinglesCount
@@ -90,6 +96,16 @@ singlesHandler puzzleId userId limit = do
     getLimit l = case l of
         Nothing -> Limit 150
         Just l' -> l'
+
+submitSingleHandler :: PuzzleId -> SubmittedSingle -> MyStack Single
+submitSingleHandler p s = do
+    id <- Db.runDb $ Db.postSingle p s
+    Db.runDb $ Db.getSingle id
+
+deleteSingleHandler :: PuzzleId -> SingleId -> MyStack NoContent
+deleteSingleHandler _puzzleId singleId = do
+    Db.runDb $ Db.deleteSingle singleId
+    return NoContent
 
 chartHandler :: PuzzleId -> Maybe Float -> Maybe Float -> Maybe UserId -> MyStack [ChartData]
 chartHandler puzzleId from to userId = do
