@@ -14,6 +14,7 @@ module Db
     , maxSinglesCount
     , postSingle
     , deleteSingle
+    , updateSingle
     ) where
 
 import Types
@@ -52,7 +53,7 @@ grabSingles conn r = do
     return $ r { recordSingles = singles }
 
 postSingle :: (MonadIO m) => PuzzleId -> UserId -> SubmittedSingle -> Connection -> m SingleId
-postSingle (PuzzleId pid) (UserId userId) (SubmittedSingle s t) conn = do
+postSingle (PuzzleId pid) (UserId userId) (SubmittedSingle s t _p) conn = do
     result :: [Only Int] <- liftIO $ withTransaction conn $ do
         time <- getCurrentTime
         _ <- execute conn "UPDATE users SET singles_count = COALESCE(singles_count, 0) + 1 WHERE users.id = ?" (Only userId)
@@ -60,6 +61,12 @@ postSingle (PuzzleId pid) (UserId userId) (SubmittedSingle s t) conn = do
     case safeHead result of
         Just (Only x) -> return $ SingleId $ x
         Nothing -> error "not gonna happen"
+
+updateSingle :: (MonadIO m) => PuzzleId -> SingleId -> SubmittedSingle -> Connection -> m SingleId
+updateSingle (PuzzleId pid) (SingleId sid) s conn = do
+    time' <- liftIO getCurrentTime
+    liftIO $ execute conn "UPDATE singles SET time=?, updated_at=?, penalty=? WHERE id = ?" (time s, time', penalty s, sid)
+    return $ SingleId sid
 
 deleteSingle :: (MonadIO m) => SingleId -> Connection -> m ()
 deleteSingle s@(SingleId singleId) conn = do

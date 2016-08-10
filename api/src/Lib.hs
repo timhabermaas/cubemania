@@ -49,7 +49,8 @@ type PuzzleAPI = "api" :> "puzzles" :> Capture "puzzleId" PuzzleId :>
                   :<|> "records" :> QueryParam "page" Int :> QueryParam "user_id" UserId :> Get '[JSON] [Record]
                   :<|> "singles" :> "chart.json" :> QueryParam "from" Float :> QueryParam "to" Float :> QueryParam "user_id" UserId :> Get '[JSON] [ChartData]
                   :<|> "singles" :> AuthProtect "cookie-auth" :> ReqBody '[JSON] SubmittedSingle :> PostNoContent '[JSON] NoContent
-                  :<|> "singles" :> AuthProtect "cookie-auth" :> Capture "singleId" SingleId :> DeleteNoContent '[JSON] NoContent)
+                  :<|> "singles" :> AuthProtect "cookie-auth" :> Capture "singleId" SingleId :> DeleteNoContent '[JSON] NoContent
+                  :<|> "singles" :> AuthProtect "cookie-auth" :> Capture "singleId" SingleId :> ReqBody '[JSON] SubmittedSingle :> Put '[JSON] NoContent)
 type CubemaniaAPI = PuzzleAPI
                :<|> "api" :> "users" :> QueryParam "q" String :> Get '[JSON] [SimpleUser] -- TODO: Remove .json
                :<|> "users" :> Get '[HTML] Html
@@ -69,7 +70,7 @@ convertApp cfg = Nat (flip runReaderT cfg . runApp)
 appToServer :: Configuration -> Server CubemaniaAPI
 appToServer cfg = enter (convertApp cfg) allHandlers
 
-unauthorized :: ExceptT ServantErr IO a
+unauthorized :: MonadError ServantErr m => m a
 unauthorized = throwError (err401 { errBody = "Missing auth cookie" })
 
 authHandler :: AuthHandler Request UserId
@@ -118,6 +119,7 @@ allHandlers = puzzleHandler :<|> usersHandler :<|> otherHandler
                         :<|> chartHandler puzzleId
                         :<|> submitSingleHandler puzzleId
                         :<|> deleteSingleHandler puzzleId
+                        :<|> updateSingleHandler puzzleId
     otherHandler = do
         users <- Db.runDb Db.getUsers
         maxSinglesCount <- Db.runDb Db.maxSinglesCount
@@ -134,15 +136,16 @@ singlesHandler :: PuzzleId -> Maybe UserId -> Maybe Limit -> MyStack [Single]
 singlesHandler puzzleId userId limit = do
     case userId of
         Nothing -> return []
-        Just uid -> Db.runDb $ Db.getSingles puzzleId uid $ getLimit limit
-  where
-    getLimit l = case l of
-        Nothing -> Limit 150
-        Just l' -> l'
+        Just uid -> Db.runDb $ Db.getSingles puzzleId uid $ fromMaybe (Limit 150) limit
 
 submitSingleHandler :: PuzzleId -> UserId -> SubmittedSingle -> MyStack NoContent
 submitSingleHandler p uid s = do
     _ <- Db.runDb $ Db.postSingle p uid s
+    return NoContent
+
+updateSingleHandler :: PuzzleId -> UserId -> SingleId -> SubmittedSingle -> MyStack NoContent
+updateSingleHandler p uid sid s = do
+    _ <- Db.runDb $ Db.updateSingle p sid s
     return NoContent
 
 deleteSingleHandler :: PuzzleId -> UserId -> SingleId -> MyStack NoContent
@@ -153,8 +156,7 @@ deleteSingleHandler _puzzleId userId singleId = do
         Db.runDb $ Db.deleteSingle singleId
         return NoContent
     else
-      -- TODO: unify with unauthorized
-      throwError (err401 { errBody = "Missing auth cookie" })
+      unauthorized
 
 chartHandler :: PuzzleId -> Maybe Float -> Maybe Float -> Maybe UserId -> MyStack [ChartData]
 chartHandler puzzleId from to userId = do

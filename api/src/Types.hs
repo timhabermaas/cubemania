@@ -15,6 +15,7 @@ import Data.Time.Clock (UTCTime)
 import Data.Word (Word8)
 import Database.PostgreSQL.Simple.FromRow
 import Database.PostgreSQL.Simple.FromField
+import Database.PostgreSQL.Simple.ToField
 import qualified Data.ByteString as BS
 import Control.Monad (mzero)
 import Database.PostgreSQL.Simple
@@ -66,10 +67,17 @@ instance FromHttpApiData UserId where
 
 instance ToJSON SingleId
 
-data Penalty = Plus2 | Dnf deriving (Generic)
+data Penalty = Plus2 | Dnf deriving (Generic, Show)
 instance ToJSON Penalty where
     toJSON Plus2 = String "plus2"
     toJSON Dnf   = String "dnf"
+instance ToField Penalty where
+    toField Plus2 = Escape $ "plus2"
+    toField Dnf = Escape $ "dnf"
+instance FromJSON Penalty where
+    parseJSON (String "dnf") = pure Dnf
+    parseJSON (String "plus2") = pure Plus2
+    parseJSON _ = fail "foo"
 
 word8ToString :: [Word8] -> String
 word8ToString = Prelude.map (chr . fromIntegral)
@@ -112,6 +120,7 @@ instance FromRow Single where
 data SubmittedSingle = SubmittedSingle
     { scramble :: String
     , time :: DurationInMs
+    , penalty :: Maybe Penalty
     } deriving (Generic)
 
 instance FromJSON SubmittedSingle
