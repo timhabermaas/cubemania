@@ -44,15 +44,19 @@ newtype MyStack a
   } deriving (Functor, Applicative, Monad, MonadReader Configuration,
               MonadError ServantErr, MonadIO)
 
+type ProtectedAPI = AuthProtect "cookie-auth" :> (
+                    "singles" :> ReqBody '[JSON] SubmittedSingle :> PostNoContent '[JSON] NoContent
+                    :<|> "singles" :> Capture "singleId" SingleId :> DeleteNoContent '[JSON] NoContent
+                    :<|> "singles" :> Capture "singleId" SingleId :> ReqBody '[JSON] SubmittedSingle :> Put '[JSON] NoContent
+                  )
+
 type PuzzleAPI = "api" :> "puzzles" :> Capture "puzzleId" PuzzleId :>
                       ("singles" :> QueryParam "user_id" UserId :> QueryParam "limit" Limit :> Get '[JSON] [Single]
                   :<|> "records" :> QueryParam "page" Int :> QueryParam "user_id" UserId :> Get '[JSON] [Record]
                   :<|> "singles" :> "chart.json" :> QueryParam "from" Float :> QueryParam "to" Float :> QueryParam "user_id" UserId :> Get '[JSON] [ChartData]
-                  :<|> "singles" :> AuthProtect "cookie-auth" :> ReqBody '[JSON] SubmittedSingle :> PostNoContent '[JSON] NoContent
-                  :<|> "singles" :> AuthProtect "cookie-auth" :> Capture "singleId" SingleId :> DeleteNoContent '[JSON] NoContent
-                  :<|> "singles" :> AuthProtect "cookie-auth" :> Capture "singleId" SingleId :> ReqBody '[JSON] SubmittedSingle :> Put '[JSON] NoContent)
+                  :<|> ProtectedAPI)
 type CubemaniaAPI = PuzzleAPI
-               :<|> "api" :> "users" :> QueryParam "q" String :> Get '[JSON] [SimpleUser] -- TODO: Remove .json
+               :<|> "api" :> "users" :> QueryParam "q" String :> Get '[JSON] [SimpleUser]
                :<|> "users" :> Get '[HTML] Html
 
 
@@ -60,7 +64,7 @@ type instance AuthServerData (AuthProtect "cookie-auth") = UserId
 
 startApp :: String -> IO ()
 startApp dbConnectionString = do
-  conn <- connectPostgreSQL $ pack dbConnectionString --"postgresql://localhost:5432/cubemania_production"
+  conn <- connectPostgreSQL $ pack dbConnectionString
   let c = Configuration conn
   run 9090 $ logStdoutDev $ app c
 
@@ -83,7 +87,6 @@ authHandler =
           let foo = split (fromIntegral $ ord ';') x
           let bar = Data.ByteString.filter (\x -> fromIntegral x /= ord ' ') <$> foo
           let bar2 = safeHead $ split (fromIntegral $ ord '=') <$> Prelude.filter (\x -> isPrefixOf "current_user_id" x) bar
-          liftIO $ putStrLn $ show bar2
           case bar2 >>= listToPair of
             Just (_key, value) ->
               case safeRead $ unpack value of
@@ -91,12 +94,6 @@ authHandler =
                 Nothing -> unauthorized
             Nothing -> unauthorized
         Nothing -> unauthorized
-
-    safeRead :: String -> Maybe Int
-    safeRead x =
-      case reads x of
-        [(i, _rest)] -> Just i
-        _ -> Nothing
 
     listToPair :: [a] -> Maybe (a, a)
     listToPair [a, b] = Just (a, b)
@@ -117,13 +114,15 @@ allHandlers = puzzleHandler :<|> usersHandler :<|> otherHandler
     puzzleHandler puzzleId = singlesHandler puzzleId
                         :<|> recordsHandler puzzleId
                         :<|> chartHandler puzzleId
-                        :<|> submitSingleHandler puzzleId
-                        :<|> deleteSingleHandler puzzleId
-                        :<|> updateSingleHandler puzzleId
+                        :<|> protectedHandlers puzzleId
     otherHandler = do
         users <- Db.runDb Db.getUsers
         maxSinglesCount <- Db.runDb Db.maxSinglesCount
         return $ H.usersPage users $ fromMaybe 1 maxSinglesCount
+    protectedHandlers puzzleId userId = submitSingleHandler puzzleId userId
+                                   :<|> deleteSingleHandler puzzleId userId
+                                   :<|> updateSingleHandler puzzleId userId
+
 
 
 recordsHandler :: PuzzleId -> Maybe Int -> Maybe UserId -> MyStack [Record]
