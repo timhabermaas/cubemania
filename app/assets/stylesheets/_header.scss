@@ -1,6 +1,6 @@
 header.main {
   height: 100px;
-  background: image-url("header.gif") repeat-x;
+  background: url(#{$image-path}/header.gif) repeat-x;
 
   div.center {
     @include center($width - 32px);
@@ -15,7 +15,7 @@ header.main {
       display: block;
       height: 100px;
       width: 295px;
-      background: image-url("logo.gif") no-repeat left center;
+      background: url(#{$image-path}/logo.gif) no-repeat left center;
     }
   }
 
@@ -36,11 +36,11 @@ header.main {
   }
   q:before {
     left: -2px;
-    background: image-url("open-quote.gif") no-repeat top left;
+    background: url(#{$image-path}/open-quote.gif) no-repeat top left;
   }
   q:after {
     right: -2px;
     bottom: -2px;
-    background: image-url("close-quote.gif") no-repeat bottom right;
+    background: url(#{$image-path}/close-quote.gif) no-repeat bottom right;
   }
 }

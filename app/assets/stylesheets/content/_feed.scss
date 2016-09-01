@@ -1,5 +1,5 @@
 #feed {
-  background-image: image-url("timeline.png");
+  background-image: url(#{$image-path}/timeline.png);
   background-repeat: repeat-y;
   background-position: 50% top;
 

@@ -12,7 +12,6 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
-gem 'jquery-rails'
 gem 'ejs', '~> 1.0.0'
 gem 'eco', '~> 1.0.0'
 

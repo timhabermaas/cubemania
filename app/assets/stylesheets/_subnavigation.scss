@@ -24,7 +24,7 @@
   overflow: hidden;
   height: 68px;
   padding: 1em 0;
-  background: #5d5d5d image-url("puzzles.gif") repeat-x;
+  background: #5d5d5d url(#{$image-path}/puzzles.gif) repeat-x;
   ul {
     position: relative;
   }
@@ -70,7 +70,7 @@
   height: 1em;
   padding: 0.3750em 0;
   padding-top: 0.5em;
-  background: #1c1c1c image-url("kinds.gif") bottom repeat-x;
+  background: #1c1c1c url(#{$image-path}/kinds.gif) bottom repeat-x;
   li a {
     font-size: 0.75em;
     text-transform: uppercase;

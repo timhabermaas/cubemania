@@ -1,5 +1,5 @@
 footer {
-  background: #1E1E1E image-url("footer.gif") repeat-x;
+  background: #1E1E1E url(#{$image-path}/footer.gif) repeat-x;
   color: #5C7DA0;
   text-align: center;
   p {
