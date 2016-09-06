@@ -25,6 +25,7 @@ jsfiles := $(jsdir)/cubemania.js\
 cssfiles := $(wildcard $(cssdir)/*.scss)\
 	    $(wildcard $(cssdir)/**/*.scss)\
 	    vendor/assets/stylesheets/jquery.fancybox.css.scss
+PID = tmp/api-exe.pid
 
 public/assets/app.js: $(jsfiles) $(jslibfiles)
 	@mkdir -p public/assets
@@ -41,15 +42,24 @@ public/assets/images: app/assets/images vendor/assets/images
 	cp -r app/assets/images $@
 	cp vendor/assets/images/* $@
 
-api/dist/api-exe: api/src/*.hs api/app/Main.hs
-	cd api; mkdir -p dist; stack build
+api-exe: api/src/*.hs api/app/Main.hs
+	cd api; stack build
+
+restart: kill api-exe
+	@cd api; stack exec api-exe & echo $$! > ../$(PID)
+
+kill:
+	@kill `cat $(PID)` || true
+
+serve: restart
+	fswatch -o api/src api/app | xargs -n1 -I{} make restart || make kill
 
 assets: public/assets/app.min.js public/assets/app.css public/assets/images
 
 clean:
 	rm -r public/assets
-	rm -r api/dist
 
 all: assets api/dist/api-exe
 
-.PHONY: assets clean all
+watch:
+	@fswatch -o . | xargs -n1 -I{} make assets

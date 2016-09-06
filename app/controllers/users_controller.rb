@@ -60,13 +60,6 @@ class UsersController < ApplicationController
   end
 
   def index
-    conn = Faraday.new(:url => "http://localhost:9090/") do |faraday|
-      faraday.response :logger
-      faraday.adapter Faraday.default_adapter
-    end
-
-    @content = conn.get('/users').body
-    return
     @users = User.order("singles_count desc").paginate(:page => params[:page], :per_page => 200)
     if params[:q]
       @users = @users.where('lower(name) LIKE ?', "%#{params[:q].downcase}%")

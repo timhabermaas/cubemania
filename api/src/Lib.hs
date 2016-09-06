@@ -1,6 +1,5 @@
 {-# LANGUAGE DataKinds                  #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE TemplateHaskell            #-}
 {-# LANGUAGE TypeOperators              #-}
 {-# LANGUAGE FlexibleContexts           #-}
 {-# LANGUAGE FlexibleInstances          #-}
@@ -25,12 +24,15 @@ import Text.Blaze.Html5 (Html)
 import Data.ByteString (split, filter, isPrefixOf)
 import Data.ByteString.Char8 (unpack)
 import Data.Char (ord)
+import qualified Data.Text as T
 import Data.Time.Clock (UTCTime)
 import Data.Time.Clock.POSIX (posixSecondsToUTCTime)
 import Data.ByteString.Char8 (pack)
-import Data.Maybe (fromMaybe)
+import Data.Maybe (fromMaybe, maybe)
 
 import Types
+import Routes
+import RecordCalculation
 import qualified Html as H
 
 import Control.Monad.IO.Class
@@ -44,29 +46,13 @@ newtype MyStack a
   } deriving (Functor, Applicative, Monad, MonadReader Configuration,
               MonadError ServantErr, MonadIO)
 
-type ProtectedAPI = AuthProtect "cookie-auth" :> (
-                    "singles" :> ReqBody '[JSON] SubmittedSingle :> PostNoContent '[JSON] NoContent
-                    :<|> "singles" :> Capture "singleId" SingleId :> DeleteNoContent '[JSON] NoContent
-                    :<|> "singles" :> Capture "singleId" SingleId :> ReqBody '[JSON] SubmittedSingle :> Put '[JSON] NoContent
-                  )
-
-type PuzzleAPI = "api" :> "puzzles" :> Capture "puzzleId" PuzzleId :>
-                      ("singles" :> QueryParam "user_id" UserId :> QueryParam "limit" Limit :> Get '[JSON] [Single]
-                  :<|> "records" :> QueryParam "page" Int :> QueryParam "user_id" UserId :> Get '[JSON] [Record]
-                  :<|> "singles" :> "chart.json" :> QueryParam "from" Float :> QueryParam "to" Float :> QueryParam "user_id" UserId :> Get '[JSON] [ChartData]
-                  :<|> ProtectedAPI)
-type CubemaniaAPI = PuzzleAPI
-               :<|> "api" :> "users" :> QueryParam "q" String :> Get '[JSON] [SimpleUser]
-               :<|> "users" :> Get '[HTML] Html
-
-
-type instance AuthServerData (AuthProtect "cookie-auth") = UserId
-
 startApp :: String -> IO ()
 startApp dbConnectionString = do
   conn <- connectPostgreSQL $ pack dbConnectionString
   let c = Configuration conn
-  run 9090 $ logStdoutDev $ app c
+  let port = 9090
+  putStrLn $ "Starting server on port " ++ show port
+  run port $ logStdoutDev $ app c
 
 convertApp :: Configuration -> MyStack :~> ExceptT ServantErr IO
 convertApp cfg = Nat (flip runReaderT cfg . runApp)
@@ -81,12 +67,12 @@ authHandler :: AuthHandler Request UserId
 authHandler =
     mkAuthHandler handler
   where
-    handler req = do
+    handler req =
       case lookup "Cookie" (requestHeaders req) of
         Just x -> do
           let foo = split (fromIntegral $ ord ';') x
           let bar = Data.ByteString.filter (\x -> fromIntegral x /= ord ' ') <$> foo
-          let bar2 = safeHead $ split (fromIntegral $ ord '=') <$> Prelude.filter (\x -> isPrefixOf "current_user_id" x) bar
+          let bar2 = safeHead $ split (fromIntegral $ ord '=') <$> Prelude.filter (isPrefixOf "current_user_id") bar
           case bar2 >>= listToPair of
             Just (_key, value) ->
               case safeRead $ unpack value of
@@ -105,20 +91,23 @@ apiContext = authHandler :. EmptyContext
 app :: Configuration -> Application
 app config = serveWithContext api apiContext $ appToServer config
 
-api :: Proxy CubemaniaAPI
-api = Proxy
-
 allHandlers :: ServerT CubemaniaAPI MyStack
-allHandlers = puzzleHandler :<|> usersHandler :<|> otherHandler
+allHandlers = puzzleHandler :<|> usersApiHandler :<|> usersHandler :<|> rootHandler
   where
     puzzleHandler puzzleId = singlesHandler puzzleId
                         :<|> recordsHandler puzzleId
                         :<|> chartHandler puzzleId
                         :<|> protectedHandlers puzzleId
-    otherHandler = do
-        users <- Db.runDb Db.getUsers
+    usersHandler query page = do
+        let pageNumber = fromMaybe (PageNumber 1) page
+        users <- case query of
+            Just q -> Db.runDb $ Db.matchUsers q
+            Nothing -> Db.runDb $ Db.getUsers (fromPageNumber pageNumber)
         maxSinglesCount <- Db.runDb Db.maxSinglesCount
-        return $ H.usersPage users $ fromMaybe 1 maxSinglesCount
+        return $ H.usersPage users (fromMaybe 1 maxSinglesCount) pageNumber query
+    rootHandler = do
+        announcement <- Db.runDb Db.getLatestAnnouncement
+        return $ H.rootPage announcement
     protectedHandlers puzzleId userId = submitSingleHandler puzzleId userId
                                    :<|> deleteSingleHandler puzzleId userId
                                    :<|> updateSingleHandler puzzleId userId
@@ -137,15 +126,23 @@ singlesHandler puzzleId userId limit = do
         Nothing -> return []
         Just uid -> Db.runDb $ Db.getSingles puzzleId uid $ fromMaybe (Limit 150) limit
 
-submitSingleHandler :: PuzzleId -> UserId -> SubmittedSingle -> MyStack NoContent
-submitSingleHandler p uid s = do
-    _ <- Db.runDb $ Db.postSingle p uid s
-    return NoContent
+submitSingleHandler :: PuzzleId -> UserId -> SubmittedSingle -> MyStack (Headers '[Header "X-NewRecord" String] Single)
+submitSingleHandler p userId s = do
+    singleId <- Db.runDb $ Db.postSingle p userId s
+    single <- Db.runDb $ Db.getSingle singleId
+    --singles <- Db.runDb $ Db.getSingles p userId (Limit 100000)
+    --let best = bestAverage 1 singles
+    return $ addHeader "true" single
 
 updateSingleHandler :: PuzzleId -> UserId -> SingleId -> SubmittedSingle -> MyStack NoContent
-updateSingleHandler p uid sid s = do
-    _ <- Db.runDb $ Db.updateSingle p sid s
-    return NoContent
+updateSingleHandler p userId singleId s = do
+    single <- Db.runDb $ Db.getSingle singleId
+    if (singleUserId single) == userId then
+      do
+        Db.runDb $ Db.updateSingle p singleId s
+        return NoContent
+    else
+      unauthorized
 
 deleteSingleHandler :: PuzzleId -> UserId -> SingleId -> MyStack NoContent
 deleteSingleHandler _puzzleId userId singleId = do
@@ -166,8 +163,8 @@ chartHandler puzzleId from to userId = do
     epochToUTCTime :: Float -> UTCTime
     epochToUTCTime = posixSecondsToUTCTime . fromIntegral . floor
 
-usersHandler :: Maybe String -> MyStack [SimpleUser]
-usersHandler q = do
+usersApiHandler :: Maybe T.Text -> MyStack [SimpleUser]
+usersApiHandler q = do
     case q of
         Just query -> Db.runDb $ Db.matchUsers query
         Nothing    -> return []

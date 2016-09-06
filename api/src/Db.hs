@@ -15,14 +15,17 @@ module Db
     , postSingle
     , deleteSingle
     , updateSingle
+    , getLatestAnnouncement
     ) where
 
 import Types
 import Utils
+import Data.Monoid ((<>))
 import Data.Time.Clock (UTCTime, getCurrentTime, diffUTCTime, NominalDiffTime)
 import Control.Monad.Reader (MonadReader, asks)
 import Control.Monad.IO.Class
 import Database.PostgreSQL.Simple (Connection, query, query_, execute, withTransaction, Only(..))
+import Data.Text (Text)
 
 runDb :: (MonadReader Configuration m, MonadIO m) => (Connection -> m a) -> m a
 runDb q = do
@@ -76,13 +79,14 @@ deleteSingle s@(SingleId singleId) conn = do
         _ <- execute conn "DELETE FROM singles WHERE id = ?" (Only singleId)
         return ()
 
-matchUsers :: (MonadIO m) => String -> Connection -> m [SimpleUser]
-matchUsers q conn = do
-    liftIO $ query conn "SELECT id, slug, name, singles_count FROM users WHERE lower(name) LIKE ? LIMIT 200" (Only $ ('%':q) ++ ['%'])
+matchUsers :: (MonadIO m) => Text -> Connection -> m [SimpleUser]
+matchUsers q conn =
+    liftIO $ query conn "SELECT id, slug, name, singles_count FROM users WHERE lower(name) LIKE ? ORDER BY singles_count DESC LIMIT 200" (Only $ "%" <> q <> "%")
 
-getUsers :: (MonadIO m) => Connection -> m [SimpleUser]
-getUsers conn = do
-    liftIO $ query conn "SELECT id, slug, name, singles_count FROM users ORDER BY singles_count DESC LIMIT 200" ()
+getUsers :: (MonadIO m) => Int -> Connection -> m [SimpleUser]
+getUsers page conn = do
+    let offset = (page - 1) * 200
+    liftIO $ query conn "SELECT id, slug, name, singles_count FROM users ORDER BY singles_count DESC LIMIT 200 OFFSET ?" (Only offset)
 
 maxSinglesCount :: (MonadIO m) => Connection -> m (Maybe Int)
 maxSinglesCount conn = do
@@ -123,3 +127,8 @@ getChartData (PuzzleId puzzleId) (UserId userId) (from, to) conn = do
     fetchSingles (from, to) = query conn "SELECT time, comment, created_at FROM singles WHERE (penalty IS NULL OR penalty NOT LIKE 'dnf') AND puzzle_id = ? AND user_id = ? AND created_at BETWEEN ? AND ? ORDER BY created_at" (puzzleId, userId, from, to)
     minimumSingle :: IO UTCTime
     minimumSingle = (localTimeToUTCTime . head) <$> query conn "SELECT created_at FROM singles WHERE puzzle_id = ? AND user_id = ? ORDER BY created_at LIMIT 1" (puzzleId, userId)
+
+getLatestAnnouncement :: (MonadIO m) => Connection -> m (Maybe Announcement)
+getLatestAnnouncement conn = do
+    posts <- liftIO $ query_ conn "SELECT id, title, content, user_id FROM posts ORDER BY created_at desc LIMIT 1"
+    return $ safeHead posts

@@ -11,7 +11,7 @@ import           Data.Typeable                 (Typeable)
 import qualified Network.HTTP.Media            as M
 import           Servant.API                   (Accept (..), MimeRender (..))
 import           Text.Blaze.Html               (Html, ToMarkup, toHtml)
-import           Text.Blaze.Html.Renderer.Pretty (renderHtml)
+import           Text.Blaze.Html.Renderer.Utf8 (renderHtml)
 import           Data.ByteString.Lazy.Char8 (pack)
 
 data HTML deriving Typeable
@@ -21,7 +21,7 @@ instance Accept HTML where
     contentType _ = "text" M.// "html" M./: ("charset", "utf-8")
 
 instance {-# OVERLAPPABLE #-} ToMarkup a => MimeRender HTML a where
-    mimeRender _ = pack . renderHtml . toHtml
+    mimeRender _ = renderHtml . toHtml
 
 instance {-# OVERLAPPING #-} MimeRender HTML Html where
-    mimeRender _ = pack . renderHtml
+    mimeRender _ = renderHtml

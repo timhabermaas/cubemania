@@ -7,6 +7,7 @@ module Types where
 import GHC.Generics
 import Data.Aeson (ToJSON(..), FromJSON(..), Value(..), (.=), object)
 import Servant (FromHttpApiData(..))
+import Web.HttpApiData (ToHttpApiData, toQueryParam)
 import Data.Text (Text)
 import Data.Char (chr)
 import Data.Time.LocalTime (LocalTime, localTimeToUTC, utc)
@@ -22,16 +23,24 @@ import Database.PostgreSQL.Simple
 
 type DurationInMs = Int
 
+newtype PageNumber = PageNumber Int
+fromPageNumber :: Num a => PageNumber -> a
+fromPageNumber (PageNumber x) = fromIntegral x
+nextPage :: PageNumber -> PageNumber
+nextPage (PageNumber x) = PageNumber (succ x)
+
+instance ToHttpApiData PageNumber where
+    toQueryParam (PageNumber i) = toQueryParam i
+instance FromHttpApiData PageNumber where
+    parseUrlPiece t = PageNumber <$> parseUrlPiece t--parseInt t
+
 data Configuration = Configuration
   { getPool :: Connection
   }
 
 newtype PuzzleId = PuzzleId Int deriving (Generic)
 instance FromHttpApiData PuzzleId where
-  parseUrlPiece t = PuzzleId <$> parseInt t
-    where
-      parseInt :: Text -> Either Text Int
-      parseInt = parseUrlPiece
+    parseUrlPiece t = PuzzleId <$> parseUrlPiece t
 instance ToJSON PuzzleId
 instance FromField PuzzleId where
     fromField f s = PuzzleId <$> fromField f s
@@ -40,19 +49,19 @@ newtype Limit = Limit Int deriving (Generic)
 instance FromField Limit where
     fromField f s = Limit <$> fromField f s
 instance FromHttpApiData Limit where
-  parseUrlPiece t = Limit <$> parseInt t
-    where
-      parseInt :: Text -> Either Text Int
-      parseInt = parseUrlPiece
+  parseUrlPiece t = Limit <$> parseUrlPiece t
+
+newtype AnnouncementId = AnnouncementId Int deriving (Generic, Eq)
+instance Show AnnouncementId where
+    show (AnnouncementId x) = show x
+instance FromField AnnouncementId where
+    fromField f s = AnnouncementId <$> fromField f s
 
 newtype SingleId = SingleId Int deriving (Generic, Show, Eq)
 instance FromField SingleId where
     fromField f s = SingleId <$> fromField f s
 instance FromHttpApiData SingleId where
-  parseUrlPiece t = SingleId <$> parseInt t
-    where
-      parseInt :: Text -> Either Text Int
-      parseInt = parseUrlPiece
+  parseUrlPiece s = SingleId <$> parseUrlPiece s
 
 newtype UserId = UserId Int deriving (Generic, Show, Eq)
 instance FromField UserId where
@@ -60,14 +69,11 @@ instance FromField UserId where
 instance FromRow UserId
 instance ToJSON UserId
 instance FromHttpApiData UserId where
-  parseUrlPiece t = UserId <$> parseInt t
-    where
-      parseInt :: Text -> Either Text Int
-      parseInt = parseUrlPiece
+  parseUrlPiece u = UserId <$> parseUrlPiece u
 
 instance ToJSON SingleId
 
-data Penalty = Plus2 | Dnf deriving (Generic, Show)
+data Penalty = Plus2 | Dnf deriving (Generic, Show, Eq)
 instance ToJSON Penalty where
     toJSON Plus2 = String "plus2"
     toJSON Dnf   = String "dnf"
@@ -91,6 +97,16 @@ instance FromField Penalty where
             "dnf"   -> return Dnf
             x       -> returnError ConversionFailed field x
 
+data Announcement = Announcement
+    { announcementId :: AnnouncementId
+    , announcementTitle :: Text
+    , announcementContent :: Text
+    , announcementUserId :: UserId
+    }
+
+instance FromRow Announcement where
+    fromRow = Announcement <$> field <*> field <*> field <*> field
+
 data Single = Single
     { singleId :: SingleId
     , singleTime :: DurationInMs
@@ -99,7 +115,17 @@ data Single = Single
     , singlePenalty :: Maybe Penalty
     , singleCreatedAt :: UTCTime
     , singleUserId :: UserId
-    } deriving (Generic)
+    } deriving (Generic, Eq)
+
+isDnf :: Single -> Bool
+isDnf (Single _ _ _ _ (Just Dnf) _ _) = True
+isDnf _ = False
+
+instance Ord Single where
+    compare (Single _ _ _ _ (Just Dnf) _ _) (Single _ _ _ _ (Just Dnf) _ _) = EQ
+    compare (Single _ _ _ _ (Just Dnf) _ _) (Single _ _ _ _ _ _ _) = GT
+    compare (Single _ _ _ _ _ _ _) (Single _ _ _ _ (Just Dnf) _ _) = LT
+    compare s1 s2 = (singleTime s1) `compare` (singleTime s2)
 
 instance ToJSON Single where
     toJSON (Single {..}) = object

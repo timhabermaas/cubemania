@@ -55,7 +55,7 @@ jQuery(function() {
       };
 
       TimerIndex.prototype.checkForNewRecord = function(e, request, options) {
-        if (request.getResponseHeader("X-NewRecord")) {
+        if (request.getResponseHeader("X-NewRecord") === "true") {
           this.records.on("reset", this.newRecordsArrived, this);
           return this.records.fetch({
             data: $.param({
