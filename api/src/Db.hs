@@ -68,7 +68,7 @@ postSingle (PuzzleId pid) (UserId userId) (SubmittedSingle s t _p) conn = do
 updateSingle :: (MonadIO m) => PuzzleId -> SingleId -> SubmittedSingle -> Connection -> m SingleId
 updateSingle (PuzzleId pid) (SingleId sid) s conn = do
     time' <- liftIO getCurrentTime
-    liftIO $ execute conn "UPDATE singles SET time=?, updated_at=?, penalty=? WHERE id = ?" (time s, time', penalty s, sid)
+    liftIO $ execute conn "UPDATE singles SET time=?, updated_at=?, penalty=? WHERE id = ?" (submittedSingleTime s, time', submittedSinglePenalty s, sid)
     return $ SingleId sid
 
 deleteSingle :: (MonadIO m) => SingleId -> Connection -> m ()

@@ -5,7 +5,7 @@
 module Types where
 
 import GHC.Generics
-import Data.Aeson (ToJSON(..), FromJSON(..), Value(..), (.=), object)
+import Data.Aeson (ToJSON(..), FromJSON(..), Value(..), (.=), object, (.:))
 import Servant (FromHttpApiData(..))
 import Web.HttpApiData (ToHttpApiData, toQueryParam)
 import Data.Text (Text)
@@ -51,7 +51,7 @@ instance FromField Limit where
 instance FromHttpApiData Limit where
   parseUrlPiece t = Limit <$> parseUrlPiece t
 
-newtype AnnouncementId = AnnouncementId Int deriving (Generic, Eq)
+newtype AnnouncementId = AnnouncementId Int deriving (Eq)
 instance Show AnnouncementId where
     show (AnnouncementId x) = show x
 instance FromField AnnouncementId where
@@ -62,6 +62,7 @@ instance FromField SingleId where
     fromField f s = SingleId <$> fromField f s
 instance FromHttpApiData SingleId where
   parseUrlPiece s = SingleId <$> parseUrlPiece s
+instance ToJSON SingleId
 
 newtype UserId = UserId Int deriving (Generic, Show, Eq)
 instance FromField UserId where
@@ -71,9 +72,8 @@ instance ToJSON UserId
 instance FromHttpApiData UserId where
   parseUrlPiece u = UserId <$> parseUrlPiece u
 
-instance ToJSON SingleId
 
-data Penalty = Plus2 | Dnf deriving (Generic, Show, Eq)
+data Penalty = Plus2 | Dnf deriving (Show, Eq)
 instance ToJSON Penalty where
     toJSON Plus2 = String "plus2"
     toJSON Dnf   = String "dnf"
@@ -115,7 +115,7 @@ data Single = Single
     , singlePenalty :: Maybe Penalty
     , singleCreatedAt :: UTCTime
     , singleUserId :: UserId
-    } deriving (Generic, Eq)
+    } deriving (Eq)
 
 isDnf :: Single -> Bool
 isDnf (Single _ _ _ _ (Just Dnf) _ _) = True
@@ -144,12 +144,17 @@ instance FromRow Single where
 
 -- TODO: Add prefix and use custom FromJSON instance.
 data SubmittedSingle = SubmittedSingle
-    { scramble :: String
-    , time :: DurationInMs
-    , penalty :: Maybe Penalty
-    } deriving (Generic)
+    { submittedSingleScramble :: String
+    , submittedSingleTime :: DurationInMs
+    , submittedSinglePenalty :: Maybe Penalty
+    }
 
-instance FromJSON SubmittedSingle
+instance FromJSON SubmittedSingle where
+    parseJSON (Object v) = SubmittedSingle <$>
+                             v .: "scramble" <*>
+                             v .: "time" <*>
+                             v .: "penalty"
+    parseJSON _          = mempty
 
 data RecordSingle = RecordSingle
     { recordSingleId :: SingleId
@@ -209,7 +214,7 @@ data Record = Record
     , recordPuzzleId :: PuzzleId
     , recordType :: RecordType
     , recordSingles :: [RecordSingle]
-    } deriving (Generic)
+    }
 
 instance FromRow Record where
     fromRow = Record <$> field <*> field <*> field <*> field <*> field <*> pure []
