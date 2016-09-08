@@ -36,7 +36,7 @@ public/assets/app.css: $(cssfiles)
 	sass app/assets/stylesheets/application.scss >> $@
 
 public/assets/app.min.js: public/assets/app.js
-	uglifyjs $^ > $@
+	uglifyjs $^ -m > $@
 
 public/assets/images: app/assets/images vendor/assets/images
 	cp -r app/assets/images $@
