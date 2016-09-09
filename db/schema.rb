@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130524151520) do
+ActiveRecord::Schema.define(:version => 20160909103117) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id",                  :null => false
@@ -132,7 +132,7 @@ ActiveRecord::Schema.define(:version => 20130524151520) do
 
   create_table "users", :force => true do |t|
     t.string   "name",               :limit => 32,                      :null => false
-    t.string   "email",              :limit => 64
+    t.string   "email",                                                 :null => false
     t.string   "salt",               :limit => 8,                       :null => false
     t.string   "encrypted_password",                                    :null => false
     t.datetime "created_at",                                            :null => false
