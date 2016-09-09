@@ -1,11 +1,13 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Types where
 
+import Prelude hiding (id)
 import GHC.Generics
-import Data.Aeson (ToJSON(..), FromJSON(..), Value(..), (.=), object, (.:))
+import Data.Aeson (ToJSON(..), FromJSON(..), Value(..), (.=), object, (.:), (.:?))
 import Servant (FromHttpApiData(..))
 import Web.HttpApiData (ToHttpApiData, toQueryParam)
 import Data.Text (Text)
@@ -19,7 +21,6 @@ import Database.PostgreSQL.Simple.FromField
 import Database.PostgreSQL.Simple.ToField
 import qualified Data.ByteString as BS
 import Control.Monad (mzero)
-import Database.PostgreSQL.Simple
 
 type DurationInMs = Int
 
@@ -33,10 +34,6 @@ instance ToHttpApiData PageNumber where
     toQueryParam (PageNumber i) = toQueryParam i
 instance FromHttpApiData PageNumber where
     parseUrlPiece t = PageNumber <$> parseUrlPiece t--parseInt t
-
-data Configuration = Configuration
-  { getPool :: Connection
-  }
 
 newtype PuzzleId = PuzzleId Int deriving (Generic)
 instance FromHttpApiData PuzzleId where
@@ -64,13 +61,40 @@ instance FromHttpApiData SingleId where
   parseUrlPiece s = SingleId <$> parseUrlPiece s
 instance ToJSON SingleId
 
-newtype UserId = UserId Int deriving (Generic, Show, Eq)
+--newtype SlugOrId a b = SlugOrId (Either a b)
+data SlugOrId a b = Slug a | Id b deriving (Show)
+instance (FromHttpApiData a, FromHttpApiData b) => FromHttpApiData (SlugOrId a b) where
+    parseUrlPiece u =
+      case parseId u of
+        Right r -> Right $ Id r
+        Left _ ->
+          case parseSlug u of
+            Right r -> Right $ Slug r
+            Left text -> Left text
+      where
+        parseSlug :: Text -> Either Text a
+        parseSlug = parseUrlPiece
+        parseId :: Text -> Either Text b
+        parseId = parseUrlPiece
+
+slugOrIdToEither :: SlugOrId a b -> Either a b
+slugOrIdToEither (Slug s) = Left s
+slugOrIdToEither (Id i) = Right i
+
+newtype UserId = UserId Int deriving (Generic, Show, Eq, Ord)
 instance FromField UserId where
     fromField f s = UserId <$> fromField f s
 instance FromRow UserId
 instance ToJSON UserId
+instance ToField UserId where
+    toField (UserId id) = toField id
 instance FromHttpApiData UserId where
-  parseUrlPiece u = UserId <$> parseUrlPiece u
+    parseUrlPiece u = UserId <$> parseUrlPiece u
+newtype UserSlug = UserSlug Text deriving (Show)
+instance ToField UserSlug where
+    toField (UserSlug slug) = toField slug
+instance FromHttpApiData UserSlug where
+    parseUrlPiece u = UserSlug <$> parseUrlPiece u
 
 
 data Penalty = Plus2 | Dnf deriving (Show, Eq)
@@ -89,13 +113,13 @@ word8ToString :: [Word8] -> String
 word8ToString = Prelude.map (chr . fromIntegral)
 
 instance FromField Penalty where
-    fromField field dat =
+    fromField f dat =
         case BS.unpack <$> dat of
-          Nothing -> returnError UnexpectedNull field ""
+          Nothing -> returnError UnexpectedNull f ""
           Just v -> case word8ToString v of
             "plus2" -> return Plus2
             "dnf"   -> return Dnf
-            x       -> returnError ConversionFailed field x
+            x       -> returnError ConversionFailed f x
 
 data Announcement = Announcement
     { announcementId :: AnnouncementId
@@ -115,7 +139,7 @@ data Single = Single
     , singlePenalty :: Maybe Penalty
     , singleCreatedAt :: UTCTime
     , singleUserId :: UserId
-    } deriving (Eq)
+    } deriving (Show, Eq)
 
 isDnf :: Single -> Bool
 isDnf (Single _ _ _ _ (Just Dnf) _ _) = True
@@ -147,13 +171,13 @@ data SubmittedSingle = SubmittedSingle
     { submittedSingleScramble :: String
     , submittedSingleTime :: DurationInMs
     , submittedSinglePenalty :: Maybe Penalty
-    }
+    } deriving (Show)
 
 instance FromJSON SubmittedSingle where
     parseJSON (Object v) = SubmittedSingle <$>
                              v .: "scramble" <*>
                              v .: "time" <*>
-                             v .: "penalty"
+                             v .:? "penalty"
     parseJSON _          = mempty
 
 data RecordSingle = RecordSingle
@@ -180,7 +204,7 @@ data SimpleUser = SimpleUser
     }
 
 instance ToJSON SimpleUser where
-    toJSON (SimpleUser {..}) = object
+    toJSON SimpleUser{..} = object
       [ "id" .= simpleUserId
       , "slug" .= simpleUserSlug
       , "name" .= simpleUserName
@@ -190,6 +214,19 @@ instance ToJSON SimpleUser where
 instance FromRow SimpleUser where
     fromRow = SimpleUser <$> field <*> field <*> field <*> field
 
+data User = User
+    { userId :: UserId
+    , userName :: Text
+    , userSlug :: Text
+    , userEmail :: Text
+    , userRole :: Text -- TODO: Use sum type
+    , userWca :: Maybe Text
+    , userIgnored :: Bool
+    , userWastedTime :: Integer
+    }
+
+instance FromRow User where
+    fromRow = User <$> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field
 -- TODO get rid of Type prefix
 data RecordType = TypeSingle | TypeAverage5 | TypeAverage12
 

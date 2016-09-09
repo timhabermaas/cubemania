@@ -12,7 +12,6 @@ import qualified Network.HTTP.Media            as M
 import           Servant.API                   (Accept (..), MimeRender (..))
 import           Text.Blaze.Html               (Html, ToMarkup, toHtml)
 import           Text.Blaze.Html.Renderer.Utf8 (renderHtml)
-import           Data.ByteString.Lazy.Char8 (pack)
 
 data HTML deriving Typeable
 

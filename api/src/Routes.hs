@@ -16,8 +16,7 @@ import Types
 import Data.Monoid ((<>))
 import qualified Data.Text as T
 import Servant
-import Servant.Server.Experimental.Auth (AuthHandler, mkAuthHandler, AuthServerData)
-import Servant.Utils.Links (safeLink)
+import Servant.Server.Experimental.Auth (AuthServerData)
 import Text.Blaze.Html5 (Html)
 import MyServantBlaze
 
@@ -34,10 +33,12 @@ type PuzzleAPI = "api" :> "puzzles" :> Capture "puzzleId" PuzzleId :>
                   :<|> ProtectedAPI)
 
 type UsersPath = "users" :> QueryParam "q" T.Text :> QueryParam "page" PageNumber :> Get '[HTML] Html
+type UserPath = "users" :> Capture "userId" (SlugOrId UserSlug UserId) :> Get '[HTML] Html
 type RootPath = Get '[HTML] Html
 type CubemaniaAPI = PuzzleAPI
                :<|> "api" :> "users" :> QueryParam "q" T.Text :> Get '[JSON] [SimpleUser]
                :<|> UsersPath
+               :<|> UserPath
                :<|> RootPath
 
 type instance AuthServerData (AuthProtect "cookie-auth") = UserId
@@ -45,13 +46,14 @@ type instance AuthServerData (AuthProtect "cookie-auth") = UserId
 api :: Proxy CubemaniaAPI
 api = Proxy
 
+linkTo :: Proxy UsersPath -> MkLink UsersPath
 linkTo = safeLink api
 
 usersLink :: Maybe PageNumber -> T.Text
 usersLink page = "/" `T.append` (T.pack . show $ linkTo (Proxy :: Proxy UsersPath) Nothing page)
 
 postLinkToComments :: AnnouncementId -> T.Text
-postLinkToComments announcementId = postLink announcementId <> "#comments"
+postLinkToComments aId = postLink aId <> "#comments"
 
 postLink :: AnnouncementId -> T.Text
-postLink announcementId = "/posts/" <> T.pack (show announcementId)
+postLink aId = "/posts/" <> T.pack (show aId)

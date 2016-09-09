@@ -52,7 +52,7 @@ kill:
 	@kill `cat $(PID)` || true
 
 serve: restart
-	fswatch -o api/src api/app | xargs -n1 -I{} make restart || make kill
+	fswatch -o api/src api/app api/api.cabal | xargs -n1 -I{} make restart || make kill
 
 assets: public/assets/app.min.js public/assets/app.css public/assets/images
 

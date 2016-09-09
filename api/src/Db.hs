@@ -11,6 +11,7 @@ module Db
     , runDb
     , getChartData
     , getUsers
+    , getUser
     , maxSinglesCount
     , postSingle
     , deleteSingle
@@ -18,8 +19,10 @@ module Db
     , getLatestAnnouncement
     ) where
 
+import Prelude hiding (id)
 import Types
 import Utils
+import Types.Configuration
 import Data.Monoid ((<>))
 import Data.Time.Clock (UTCTime, getCurrentTime, diffUTCTime, NominalDiffTime)
 import Control.Monad.Reader (MonadReader, asks)
@@ -65,8 +68,8 @@ postSingle (PuzzleId pid) (UserId userId) (SubmittedSingle s t _p) conn = do
         Just (Only x) -> return $ SingleId $ x
         Nothing -> error "not gonna happen"
 
-updateSingle :: (MonadIO m) => PuzzleId -> SingleId -> SubmittedSingle -> Connection -> m SingleId
-updateSingle (PuzzleId pid) (SingleId sid) s conn = do
+updateSingle :: (MonadIO m) => SingleId -> SubmittedSingle -> Connection -> m SingleId
+updateSingle (SingleId sid) s conn = do
     time' <- liftIO getCurrentTime
     liftIO $ execute conn "UPDATE singles SET time=?, updated_at=?, penalty=? WHERE id = ?" (submittedSingleTime s, time', submittedSinglePenalty s, sid)
     return $ SingleId sid
@@ -83,6 +86,14 @@ matchUsers :: (MonadIO m) => Text -> Connection -> m [SimpleUser]
 matchUsers q conn =
     liftIO $ query conn "SELECT id, slug, name, singles_count FROM users WHERE lower(name) LIKE ? ORDER BY singles_count DESC LIMIT 200" (Only $ "%" <> q <> "%")
 
+getUser :: (MonadIO m) => SlugOrId UserSlug UserId -> Connection -> m (Maybe User)
+getUser slugOrId conn = do
+    users <- liftIO $ query' slugOrId
+    return $ safeHead users
+  where
+    query' (Id id') = query conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time FROM users WHERE id = ?" (Only id')
+    query' (Slug slug) = query conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time FROM users WHERE slug = ?" (Only slug)
+
 getUsers :: (MonadIO m) => Int -> Connection -> m [SimpleUser]
 getUsers page conn = do
     let offset = (page - 1) * 200
@@ -95,18 +106,19 @@ maxSinglesCount conn = do
       [Only x] -> return $ Just x
       _        -> return $ Nothing
 
+-- TODO: Make (Maybe UTCTime, Maybe UTCTime) to Maybe (UTCTime, UTCTime) ?
 getChartData :: (MonadIO m) => PuzzleId -> UserId -> (Maybe UTCTime, Maybe UTCTime) -> Connection -> m [ChartData]
 getChartData (PuzzleId puzzleId) (UserId userId) (from, to) conn = do
-    min <- case from of
+    startDate <- case from of
              Just t -> return t
-             Nothing -> liftIO minimumSingle
-    max <- case to of
+             Nothing -> liftIO firstSingleDate
+    endDate <- case to of
              Just t -> return t
              Nothing -> liftIO getCurrentTime
-    let difference = diffUTCTime max min
+    let difference = diffUTCTime endDate startDate
     case groupingForDateDiff difference of
-        Just group -> liftIO $ groupSingles (min, max) group
-        Nothing -> liftIO $ fetchSingles (min, max)
+        Just group -> liftIO $ groupSingles (startDate, endDate) group
+        Nothing -> liftIO $ fetchSingles (startDate, endDate)
   where
     groupingForDateDiff :: NominalDiffTime -> Maybe String
     groupingForDateDiff diff =
@@ -122,11 +134,11 @@ getChartData (PuzzleId puzzleId) (UserId userId) (from, to) conn = do
             else
               Nothing
     groupSingles :: (UTCTime, UTCTime) -> String -> IO [ChartData]
-    groupSingles (from, to) grouping = query conn "SELECT AVG(time) as time, string_agg(comment, '\n') AS comment, date_trunc(?, created_at) as created_at FROM singles WHERE (penalty IS NULL OR penalty NOT LIKE 'dnf') AND puzzle_id = ? AND user_id = ? AND created_at BETWEEN ? AND ? GROUP BY date_trunc(?, created_at) ORDER BY created_at" (grouping, puzzleId, userId, from, to, grouping)
+    groupSingles (from', to') grouping = query conn "SELECT AVG(time) as time, string_agg(comment, '\n') AS comment, date_trunc(?, created_at) as created_at FROM singles WHERE (penalty IS NULL OR penalty NOT LIKE 'dnf') AND puzzle_id = ? AND user_id = ? AND created_at BETWEEN ? AND ? GROUP BY date_trunc(?, created_at) ORDER BY created_at" (grouping, puzzleId, userId, from', to', grouping)
     fetchSingles :: (UTCTime, UTCTime) -> IO [ChartData]
-    fetchSingles (from, to) = query conn "SELECT time, comment, created_at FROM singles WHERE (penalty IS NULL OR penalty NOT LIKE 'dnf') AND puzzle_id = ? AND user_id = ? AND created_at BETWEEN ? AND ? ORDER BY created_at" (puzzleId, userId, from, to)
-    minimumSingle :: IO UTCTime
-    minimumSingle = (localTimeToUTCTime . head) <$> query conn "SELECT created_at FROM singles WHERE puzzle_id = ? AND user_id = ? ORDER BY created_at LIMIT 1" (puzzleId, userId)
+    fetchSingles (from', to') = query conn "SELECT time, comment, created_at FROM singles WHERE (penalty IS NULL OR penalty NOT LIKE 'dnf') AND puzzle_id = ? AND user_id = ? AND created_at BETWEEN ? AND ? ORDER BY created_at" (puzzleId, userId, from', to')
+    firstSingleDate :: IO UTCTime
+    firstSingleDate = (localTimeToUTCTime . head) <$> query conn "SELECT created_at FROM singles WHERE puzzle_id = ? AND user_id = ? ORDER BY created_at LIMIT 1" (puzzleId, userId)
 
 getLatestAnnouncement :: (MonadIO m) => Connection -> m (Maybe Announcement)
 getLatestAnnouncement conn = do
