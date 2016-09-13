@@ -17,10 +17,6 @@
 #  location: "./custom-snapshot.yaml"
 resolver: lts-6.17
 
-docker:
-  enable: false
-  image: "haskell-build"
-
 # User packages to be built.
 # Various formats can be used as shown in the example below.
 #
