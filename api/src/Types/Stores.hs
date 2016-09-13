@@ -17,14 +17,14 @@ newWastedTimeStore :: STM WastedTimeStore
 newWastedTimeStore = WastedTimeStore <$> newTVar Map.empty
 
 addWastedTime :: WastedTimeStore -> UserId -> Integer -> STM ()
-addWastedTime (WastedTimeStore t) userId time =
-    modifyTVar' t (\map -> Map.alter (\oldTime -> Just $ maybe time (+time) oldTime) userId map)
+addWastedTime (WastedTimeStore t) uId time =
+    modifyTVar' t (\map -> Map.alter (\oldTime -> Just $ maybe time (+time) oldTime) uId map)
 
 removeWastedTime :: WastedTimeStore -> UserId -> Integer -> STM ()
-removeWastedTime (WastedTimeStore t) userId time =
-    modifyTVar' t (\map -> Map.alter (\oldTime -> Just $ maybe time ((-) time) oldTime) userId map)
+removeWastedTime (WastedTimeStore t) uId time =
+    modifyTVar' t (\map -> Map.alter (\oldTime -> Just $ maybe time ((-) time) oldTime) uId map)
 
 getWastedTimeFor :: WastedTimeStore -> UserId -> STM (Maybe Integer)
-getWastedTimeFor (WastedTimeStore t) userId = do
+getWastedTimeFor (WastedTimeStore t) uId = do
     map <- readTVar t
-    return $ Map.lookup userId map
+    return $ Map.lookup uId map

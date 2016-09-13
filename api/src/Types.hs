@@ -15,12 +15,14 @@ import Data.Char (chr)
 import Data.Time.LocalTime (LocalTime, localTimeToUTC, utc)
 import Data.Time.Format (defaultTimeLocale, formatTime)
 import Data.Time.Clock (UTCTime)
+import Data.Maybe (isJust)
 import Data.Word (Word8)
 import Database.PostgreSQL.Simple.FromRow
 import Database.PostgreSQL.Simple.FromField
 import Database.PostgreSQL.Simple.ToField
 import qualified Data.ByteString as BS
 import Control.Monad (mzero)
+import Text.Blaze.Html (ToMarkup(..))
 
 type DurationInMs = Int
 
@@ -35,7 +37,7 @@ instance ToHttpApiData PageNumber where
 instance FromHttpApiData PageNumber where
     parseUrlPiece t = PageNumber <$> parseUrlPiece t--parseInt t
 
-newtype PuzzleId = PuzzleId Int deriving (Generic)
+newtype PuzzleId = PuzzleId Int deriving (Generic, Eq, Ord)
 instance FromHttpApiData PuzzleId where
     parseUrlPiece t = PuzzleId <$> parseUrlPiece t
 instance ToJSON PuzzleId
@@ -61,26 +63,6 @@ instance FromHttpApiData SingleId where
   parseUrlPiece s = SingleId <$> parseUrlPiece s
 instance ToJSON SingleId
 
---newtype SlugOrId a b = SlugOrId (Either a b)
-data SlugOrId a b = Slug a | Id b deriving (Show)
-instance (FromHttpApiData a, FromHttpApiData b) => FromHttpApiData (SlugOrId a b) where
-    parseUrlPiece u =
-      case parseId u of
-        Right r -> Right $ Id r
-        Left _ ->
-          case parseSlug u of
-            Right r -> Right $ Slug r
-            Left text -> Left text
-      where
-        parseSlug :: Text -> Either Text a
-        parseSlug = parseUrlPiece
-        parseId :: Text -> Either Text b
-        parseId = parseUrlPiece
-
-slugOrIdToEither :: SlugOrId a b -> Either a b
-slugOrIdToEither (Slug s) = Left s
-slugOrIdToEither (Id i) = Right i
-
 newtype UserId = UserId Int deriving (Generic, Show, Eq, Ord)
 instance FromField UserId where
     fromField f s = UserId <$> fromField f s
@@ -93,8 +75,13 @@ instance FromHttpApiData UserId where
 newtype UserSlug = UserSlug Text deriving (Show)
 instance ToField UserSlug where
     toField (UserSlug slug) = toField slug
+instance FromField UserSlug where
+    fromField f s = UserSlug <$> fromField f s
 instance FromHttpApiData UserSlug where
     parseUrlPiece u = UserSlug <$> parseUrlPiece u
+
+fromSlug :: UserSlug -> Text
+fromSlug (UserSlug s) = s
 
 
 data Penalty = Plus2 | Dnf deriving (Show, Eq)
@@ -217,44 +204,69 @@ instance FromRow SimpleUser where
 data User = User
     { userId :: UserId
     , userName :: Text
-    , userSlug :: Text
+    , userSlug :: UserSlug
     , userEmail :: Text
     , userRole :: Text -- TODO: Use sum type
     , userWca :: Maybe Text
     , userIgnored :: Bool
     , userWastedTime :: Integer
-    }
+    } deriving (Show)
+
+instance Eq User where
+    (==) u1 u2 = userId u1 == userId u2
+
+hasWcaId :: User -> Bool
+hasWcaId = isJust . userWca
 
 instance FromRow User where
-    fromRow = User <$> field <*> field <*> field <*> field <*> field <*> field <*> field <*> field
--- TODO get rid of Type prefix
-data RecordType = TypeSingle | TypeAverage5 | TypeAverage12
+    fromRow = User <$> field <*> field <*> field <*> field <*> field <*> wcaField <*> field <*> field
+      where
+      -- converting empty string to Nothing. :(
+      wcaField = do
+          text <- field
+          case text of
+            Just t -> if t == "" then return Nothing else return $ Just t
+            Nothing -> return Nothing
+
+newtype LoggedIn a = LoggedIn a deriving (Show)
+type LoggedInUser = LoggedIn User
+
+data RecordType = SingleRecord | AverageOf5Record | AverageOf12Record deriving (Enum, Bounded, Ord, Eq)
+
+instance ToMarkup RecordType where
+    toMarkup SingleRecord = toMarkup ("Single" :: String)
+    toMarkup AverageOf5Record = toMarkup ("Average of 5" :: String)
+    toMarkup AverageOf12Record = toMarkup ("Average of 12" :: String)
+
+allRecordTypes :: [RecordType]
+allRecordTypes = [(minBound :: RecordType)..]
 
 instance FromField RecordType where
     fromField f s = do
         a <- fromField f s
         case (a :: Int) of
-          1  -> return TypeSingle
-          5  -> return TypeAverage5
-          12 -> return TypeAverage12
+          1  -> return SingleRecord
+          5  -> return AverageOf5Record
+          12 -> return AverageOf12Record
           _  -> mzero
 
 instance ToJSON RecordType where
-    toJSON TypeSingle = String "Single"
-    toJSON TypeAverage5 = String "Average of 5"
-    toJSON TypeAverage12 = String "Average of 12"
+    toJSON SingleRecord = String "Single"
+    toJSON AverageOf5Record = String "Average of 5"
+    toJSON AverageOf12Record = String "Average of 12"
 
 data Record = Record
     { recordId :: Int
     , recordTime :: DurationInMs
     , recordComment :: String
     , recordPuzzleId :: PuzzleId
+    , recordUserId :: UserId
     , recordType :: RecordType
-    , recordSingles :: [RecordSingle]
+    , recordSingles :: [RecordSingle] -- TODO: remove me/use tuple for joins
     }
 
 instance FromRow Record where
-    fromRow = Record <$> field <*> field <*> field <*> field <*> field <*> pure []
+    fromRow = Record <$> field <*> field <*> field <*> field <*> field <*> field <*> pure []
 
 instance ToJSON Record where
     toJSON Record{..} = object
@@ -266,6 +278,36 @@ instance ToJSON Record where
         , "type_full_name" .= recordType
         , "singles" .= recordSingles
         ]
+
+data Puzzle = Puzzle
+    { puzzleId :: PuzzleId
+    , puzzleName :: Text
+    , puzzleCssPosition :: Int
+    } deriving (Eq)
+
+instance FromRow Puzzle where
+    fromRow = Puzzle <$> field <*> field <*> field
+
+instance Ord Puzzle where
+    left `compare` right =
+        let toTuple p = (puzzleName p, puzzleId p, puzzleCssPosition p)
+        in (toTuple left) `compare` (toTuple right)
+
+
+data Kind = Kind
+    { kindId :: Int
+    , kindName :: Text
+    , kindShortName :: Maybe Text
+    , kindCssPosition :: Int
+    } deriving (Eq)
+
+instance Ord Kind where
+    left `compare` right =
+        let toTuple k = (kindShortName k, kindName k, kindId k, kindCssPosition k)
+        in (toTuple left) `compare` (toTuple right)
+
+instance FromRow Kind where
+    fromRow = Kind <$> field <*> field <*> field <*> field
 
 data ChartData = ChartData
     { chartTime :: Double

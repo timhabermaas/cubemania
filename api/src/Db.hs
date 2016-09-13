@@ -11,7 +11,9 @@ module Db
     , runDb
     , getChartData
     , getUsers
-    , getUser
+    , getUserBySlug
+    , getUserById
+    , getRecordsForUser
     , maxSinglesCount
     , postSingle
     , deleteSingle
@@ -24,9 +26,11 @@ import Types
 import Utils
 import Types.Configuration
 import Data.Monoid ((<>))
+import qualified Data.Map.Strict as Map
 import Data.Time.Clock (UTCTime, getCurrentTime, diffUTCTime, NominalDiffTime)
 import Control.Monad.Reader (MonadReader, asks)
 import Control.Monad.IO.Class
+import Database.PostgreSQL.Simple.FromRow
 import Database.PostgreSQL.Simple (Connection, query, query_, execute, withTransaction, Only(..))
 import Data.Text (Text)
 
@@ -50,7 +54,7 @@ getSingle (SingleId id) conn = do
 
 getRecords :: (MonadIO m) => UserId -> PuzzleId -> Connection -> m [Record]
 getRecords (UserId uid) (PuzzleId pid) conn = do
-    records <- liftIO $ query conn "select id, time, comment, puzzle_id, amount from records where user_id = ? and puzzle_id = ?" (uid, pid)
+    records <- liftIO $ query conn "select id, time, comment, puzzle_id, user_id, amount from records where user_id = ? and puzzle_id = ?" (uid, pid)
     liftIO $ mapM (grabSingles conn) records
 
 grabSingles :: Connection -> Record -> IO Record
@@ -86,13 +90,30 @@ matchUsers :: (MonadIO m) => Text -> Connection -> m [SimpleUser]
 matchUsers q conn =
     liftIO $ query conn "SELECT id, slug, name, singles_count FROM users WHERE lower(name) LIKE ? ORDER BY singles_count DESC LIMIT 200" (Only $ "%" <> q <> "%")
 
-getUser :: (MonadIO m) => SlugOrId UserSlug UserId -> Connection -> m (Maybe User)
-getUser slugOrId conn = do
-    users <- liftIO $ query' slugOrId
+getUserBySlug :: (MonadIO m) => UserSlug -> Connection -> m (Maybe User)
+getUserBySlug slug conn = do
+    users <- liftIO $ query conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time FROM users WHERE slug = ?" (Only slug)
     return $ safeHead users
+
+getUserById :: (MonadIO m) => UserId -> Connection -> m (Maybe User)
+getUserById id conn = do
+    users <- liftIO $ query conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time FROM users WHERE id = ?" (Only id)
+    return $ safeHead users
+
+data JoinedRecordResult = JoinedRecordResult { unwrapJoinedRecordResult :: (Puzzle, Kind, Record) }
+
+instance FromRow JoinedRecordResult where
+    fromRow = JoinedRecordResult <$> ((,,) <$> fromRow <*> fromRow <*> fromRow)
+
+getRecordsForUser :: (MonadIO m) => UserId -> Connection -> m (Map.Map (Puzzle, Kind) (Map.Map RecordType DurationInMs))
+getRecordsForUser uid conn = do
+    result <- liftIO $ query conn "SELECT puzzles.id, puzzles.name, puzzles.css_position, kinds.id, kinds.name, kinds.short_name, kinds.css_position, records.id, records.time, records.comment, records.puzzle_id, records.user_id, records.amount FROM records LEFT OUTER JOIN puzzles ON puzzles.id = records.puzzle_id LEFT OUTER JOIN kinds ON kinds.id = puzzles.kind_id WHERE records.user_id = ? ORDER BY puzzles.name, kinds.name" (Only uid)
+    return $ groupByPuzzle (unwrapJoinedRecordResult <$> result)
   where
-    query' (Id id') = query conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time FROM users WHERE id = ?" (Only id')
-    query' (Slug slug) = query conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time FROM users WHERE slug = ?" (Only slug)
+    groupByPuzzle :: [(Puzzle, Kind, Record)] -> Map.Map (Puzzle, Kind) (Map.Map RecordType DurationInMs)
+    groupByPuzzle i = Map.fromListWith
+                        Map.union
+                        [((p, k), Map.singleton (recordType r) (recordTime r)) | (p, k, r) <- i]
 
 getUsers :: (MonadIO m) => Int -> Connection -> m [SimpleUser]
 getUsers page conn = do
