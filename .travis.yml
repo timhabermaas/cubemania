@@ -11,6 +11,13 @@ cache:
   directories:
     - $HOME/.stack
 
+matrix:
+  include:
+    - env: ARGS="--resolver nightly"
+    - env: ARGS="" # take the resolver specified in stack.yaml
+  allow_failures:
+    - env: ARGS="--resolver nightly"
+
 before_install:
   - mkdir -p ~/.local/bin
   - export PATH=$HOME/.local/bin:$PATH
@@ -18,8 +25,7 @@ before_install:
 
 install:
   - cd api
-  - stack setup
-  - stack build --only-snapshot
+  - stack --no-terminal --install-ghc $ARGS test --bench --only-dependencies
 
 script:
-  - stack --no-terminal test
+  - stack --no-terminal $ARGS test
