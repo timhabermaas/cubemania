@@ -143,7 +143,7 @@ getChartData (PuzzleId puzzleId) (UserId userId) (from, to) conn = do
         Just group -> liftIO $ groupSingles (startDate, endDate) group
         Nothing -> liftIO $ fetchSingles (startDate, endDate)
   where
-    groupingForDateDiff :: NominalDiffTime -> Maybe String
+    groupingForDateDiff :: NominalDiffTime -> Maybe Text
     groupingForDateDiff diff =
         let
             diffInDays = (toRational diff) / 60.0 / 60.0 / 24.0
@@ -156,7 +156,7 @@ getChartData (PuzzleId puzzleId) (UserId userId) (from, to) conn = do
               Just "day"
             else
               Nothing
-    groupSingles :: (UTCTime, UTCTime) -> String -> IO [ChartData]
+    groupSingles :: (UTCTime, UTCTime) -> Text -> IO [ChartData]
     groupSingles (from', to') grouping = query conn "SELECT AVG(time) as time, string_agg(comment, '\n') AS comment, date_trunc(?, created_at) as created_at FROM singles WHERE (penalty IS NULL OR penalty NOT LIKE 'dnf') AND puzzle_id = ? AND user_id = ? AND created_at BETWEEN ? AND ? GROUP BY date_trunc(?, created_at) ORDER BY created_at" (grouping, puzzleId, userId, from', to', grouping)
     fetchSingles :: (UTCTime, UTCTime) -> IO [ChartData]
     fetchSingles (from', to') = query conn "SELECT time, comment, created_at FROM singles WHERE (penalty IS NULL OR penalty NOT LIKE 'dnf') AND puzzle_id = ? AND user_id = ? AND created_at BETWEEN ? AND ? ORDER BY created_at" (puzzleId, userId, from', to')

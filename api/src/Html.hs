@@ -75,7 +75,7 @@ withLayout currentUser currentPage title' inner =
               H.title $ toHtml $ title' `T.append` " · Cubemania"
               link ! href "/assets/app.css" ! media "screen" ! rel "stylesheet" ! type_ "text/css"
               script ! src "/assets/app.js" ! type_ "text/javascript" $ mempty
-              preEscapedToHtml ("<!--[if lt IE 9]><script src=\"http://html5shim.googlecode.com/svn/trunk/html5.js\"></script><![endif]-->" :: String)
+              preEscapedToHtml ("<!--[if lt IE 9]><script src=\"http://html5shim.googlecode.com/svn/trunk/html5.js\"></script><![endif]-->" :: T.Text)
               meta ! content "authenticity_token" ! name "csrf-param"
               meta ! content "iF91XiNQPByT6XXpFtx7BmWSt3k5unBNNs1F7NMni1c=" ! name "csrf-token"
               script ! type_ "text/javascript" $ "var _gaq = _gaq || [];\n      _gaq.push(['_setAccount', 'UA-28649455-1']);\n      _gaq.push(['_setDomainName', 'cubemania.org']);\n      _gaq.push(['_trackPageview']);\n\n      (function() {\n        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;\n        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';\n        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);\n      })();"
@@ -98,8 +98,8 @@ usersPage currentUser users maxSinglesCount currentPageNumber query = withLayout
         unless (isJust query) $
             H.div ! class_ "pagination" $ a ! href (toValue (usersLink (Just (nextPage currentPageNumber)))) $ "Show more"
   where
-    userLi user@SimpleUser{..} = li ! A.style (stringValue $ "font-size: " ++ show (fontSize user maxSinglesCount) ++ "em") $ do
-        a ! href (stringValue ("/users/" ++ simpleUserSlug)) $ toHtml simpleUserName
+    userLi user@SimpleUser{..} = li ! A.style (toValue $ "font-size: " ++ show (fontSize user maxSinglesCount) ++ "em") $ do
+        a ! href (toValue ("/users/" <> simpleUserSlug)) $ toHtml simpleUserName
         space
         small ! class_ "singles" $ toHtml $ show simpleUserSinglesCount
     fontSize :: SimpleUser -> Int -> Float
@@ -143,8 +143,8 @@ userPage cu user@User{..} records activity = withLayout cu Users "User" $
             table $ do
                 thead $ tr mempty
                 tbody $ sequence_ $ fmap (\type' -> recordEntry type' (Map.lookup type' records)) allRecordTypes
-    posClass :: Int -> String
-    posClass n = "pos" <> (show n)
+    posClass :: Int -> T.Text
+    posClass n = "pos" <> (T.pack $ show n)
     profileImage =
       let url email = "http://gravatar.com/avatar/" <> hash email <> ".png?s=60"
           hash email = TE.decodeUtf8 $ encode $ MD5.hash (TE.encodeUtf8 email)

@@ -122,8 +122,8 @@ instance FromRow Announcement where
 data Single = Single
     { singleId :: SingleId
     , singleTime :: DurationInMs
-    , singleComment :: Maybe String
-    , singleScramble :: String
+    , singleComment :: Maybe Text
+    , singleScramble :: Text
     , singlePenalty :: Maybe Penalty
     , singleCreatedAt :: UTCTime
     , singleUserId :: UserId
@@ -156,7 +156,7 @@ instance FromRow Single where
 
 -- TODO: Add prefix and use custom FromJSON instance.
 data SubmittedSingle = SubmittedSingle
-    { submittedSingleScramble :: String
+    { submittedSingleScramble :: Text
     , submittedSingleTime :: DurationInMs
     , submittedSinglePenalty :: Maybe Penalty
     } deriving (Show)
@@ -171,7 +171,7 @@ instance FromJSON SubmittedSingle where
 data RecordSingle = RecordSingle
     { recordSingleId :: SingleId
     , recordSingleTime :: DurationInMs
-    , recordSingleScramble :: String
+    , recordSingleScramble :: Text
     }
 
 instance FromRow RecordSingle where
@@ -186,8 +186,8 @@ instance ToJSON RecordSingle where
 
 data SimpleUser = SimpleUser
     { simpleUserId :: UserId
-    , simpleUserSlug :: String
-    , simpleUserName :: String
+    , simpleUserSlug :: Text
+    , simpleUserName :: Text
     , simpleUserSinglesCount :: Int
     }
 
@@ -235,9 +235,9 @@ type LoggedInUser = LoggedIn User
 data RecordType = SingleRecord | AverageOf5Record | AverageOf12Record deriving (Enum, Bounded, Ord, Eq)
 
 instance ToMarkup RecordType where
-    toMarkup SingleRecord = toMarkup ("Single" :: String)
-    toMarkup AverageOf5Record = toMarkup ("Average of 5" :: String)
-    toMarkup AverageOf12Record = toMarkup ("Average of 12" :: String)
+    toMarkup SingleRecord = toMarkup ("Single" :: Text)
+    toMarkup AverageOf5Record = toMarkup ("Average of 5" :: Text)
+    toMarkup AverageOf12Record = toMarkup ("Average of 12" :: Text)
 
 allRecordTypes :: [RecordType]
 allRecordTypes = [(minBound :: RecordType)..]
@@ -312,7 +312,7 @@ instance FromRow Kind where
 
 data ChartData = ChartData
     { chartTime :: Double
-    , chartComment :: Maybe String
+    , chartComment :: Maybe Text
     , chartCreatedAt :: UTCTime
     }
 
