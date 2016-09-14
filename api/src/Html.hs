@@ -22,6 +22,7 @@ import Text.Blaze.Html5 as H
 import Text.Blaze.Html5.Attributes as A
 import Text.Blaze.Html.Renderer.Utf8 (renderHtml)
 import Text.Markdown (markdown, def)
+import qualified Data.Aeson as JSON
 import qualified Crypto.Hash.MD5 as MD5
 import Utils
 
@@ -104,8 +105,8 @@ usersPage currentUser users maxSinglesCount currentPageNumber query = withLayout
     fontSize :: SimpleUser -> Int -> Float
     fontSize SimpleUser{..} maxSinglesCount' = fromIntegral simpleUserSinglesCount / fromIntegral maxSinglesCount' * 1.4 + 0.6
 
-userPage :: Maybe (LoggedIn User) -> User -> Map.Map (Puzzle, Kind) (Map.Map RecordType DurationInMs) -> Html
-userPage cu user@User{..} records = withLayout cu Users "User" $
+userPage :: Maybe (LoggedIn User) -> User -> Map.Map (Puzzle, Kind) (Map.Map RecordType DurationInMs) -> Activity -> Html
+userPage cu user@User{..} records activity = withLayout cu Users "User" $
     H.div ! A.id "user" $ do
         H.div ! class_ "admin" $ mempty
         h1 $ do
@@ -165,7 +166,7 @@ userPage cu user@User{..} records = withLayout cu Users "User" $
     isSelf (Just (LoggedIn cu)) = cu == user
     isSelf _ = False
 
-    activityJSON = "{\"2015-10-07 00:00:00\":5,\"2016-02-21 00:00:00\":4,\"2015-09-17 00:00:00\":18,\"2016-04-14 00:00:00\":3,\"2015-10-29 00:00:00\":2,\"2016-02-18 00:00:00\":1,\"2016-03-05 00:00:00\":9,\"2015-12-20 00:00:00\":1,\"2016-04-17 00:00:00\":6,\"2015-09-19 00:00:00\":55,\"2015-10-14 00:00:00\":5,\"2015-11-02 00:00:00\":2,\"2015-09-13 00:00:00\":40,\"2016-03-03 00:00:00\":2,\"2016-04-16 00:00:00\":1,\"2015-09-30 00:00:00\":9,\"2015-12-07 00:00:00\":14,\"2015-09-29 00:00:00\":29,\"2016-04-04 00:00:00\":2,\"2015-09-11 00:00:00\":8,\"2015-11-27 00:00:00\":24,\"2015-10-27 00:00:00\":2,\"2015-10-10 00:00:00\":7,\"2015-10-02 00:00:00\":15,\"2015-09-14 00:00:00\":5,\"2015-10-31 00:00:00\":12,\"2015-09-22 00:00:00\":15,\"2015-10-09 00:00:00\":5,\"2015-10-03 00:00:00\":13,\"2015-12-10 00:00:00\":5,\"2015-09-08 00:00:00\":14,\"2016-02-12 00:00:00\":3,\"2016-03-02 00:00:00\":9,\"2015-10-04 00:00:00\":36,\"2015-10-30 00:00:00\":17,\"2016-04-15 00:00:00\":2,\"2015-10-15 00:00:00\":6,\"2015-09-18 00:00:00\":7,\"2016-04-01 00:00:00\":15,\"2015-09-21 00:00:00\":17,\"2015-09-28 00:00:00\":5,\"2016-04-13 00:00:00\":3,\"2015-10-01 00:00:00\":16,\"2015-12-17 00:00:00\":6,\"2015-11-03 00:00:00\":6,\"2016-03-07 00:00:00\":17,\"2015-11-30 00:00:00\":1,\"2015-09-15 00:00:00\":2,\"2016-02-20 00:00:00\":1,\"2016-04-21 00:00:00\":8,\"2015-09-16 00:00:00\":1,\"2015-10-11 00:00:00\":26,\"2015-09-20 00:00:00\":7}"
+    activityJSON = toValue $ TE.decodeUtf8 $ toStrict $ JSON.encode activity
 
 rootPage :: Maybe LoggedInUser -> Maybe Announcement -> Html
 rootPage currentUser post = withLayout currentUser Home "Home" $ do

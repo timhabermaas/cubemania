@@ -147,7 +147,8 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> rootHandler
         case user of
             Just u -> do
                 records <- Db.runDb $ Db.getRecordsForUser (userId u)
-                return $ H.userPage currentUser u records
+                activity <- Db.runDb $ Db.getActivity (userId u)
+                return $ H.userPage currentUser u records activity
             Nothing -> notFound
 
     rootHandler userId = withCurrentUser userId $ \currentUser -> do

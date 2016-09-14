@@ -10,12 +10,13 @@ import GHC.Generics
 import Data.Aeson (ToJSON(..), FromJSON(..), Value(..), (.=), object, (.:), (.:?))
 import Servant (FromHttpApiData(..))
 import Web.HttpApiData (ToHttpApiData, toQueryParam)
-import Data.Text (Text)
+import Data.Text (Text, pack)
 import Data.Char (chr)
 import Data.Time.LocalTime (LocalTime, localTimeToUTC, utc)
 import Data.Time.Format (defaultTimeLocale, formatTime)
 import Data.Time.Clock (UTCTime)
 import Data.Maybe (isJust)
+import qualified Data.Map.Strict as Map
 import Data.Word (Word8)
 import Database.PostgreSQL.Simple.FromRow
 import Database.PostgreSQL.Simple.FromField
@@ -328,6 +329,13 @@ instance ToJSON ChartData where
         utcTimeToEpoch time = read $ formatTime defaultTimeLocale "%s" time
 
 data ChartGroup = Month | Week | Day
+
+newtype Activity = Activity (Map.Map LocalTime Int) deriving (Show)
+
+instance ToJSON Activity where
+    -- TODO: order?
+    toJSON (Activity m) = object $ (\(k, v) -> (pack $ show k) .= v) <$> Map.toAscList m
+
 
 newtype LocalTimeWithFromRow = LocalTimeWithFromRow LocalTime deriving (Generic)
 instance FromRow LocalTimeWithFromRow

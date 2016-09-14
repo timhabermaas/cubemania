@@ -19,6 +19,7 @@ module Db
     , deleteSingle
     , updateSingle
     , getLatestAnnouncement
+    , getActivity
     ) where
 
 import Prelude hiding (id)
@@ -27,7 +28,8 @@ import Utils
 import Types.Configuration
 import Data.Monoid ((<>))
 import qualified Data.Map.Strict as Map
-import Data.Time.Clock (UTCTime, getCurrentTime, diffUTCTime, NominalDiffTime)
+import Data.Time.Clock (UTCTime, getCurrentTime, diffUTCTime, NominalDiffTime, utctDay)
+import Data.Time.Calendar (addDays)
 import Control.Monad.Reader (MonadReader, asks)
 import Control.Monad.IO.Class
 import Database.PostgreSQL.Simple.FromRow
@@ -165,3 +167,10 @@ getLatestAnnouncement :: (MonadIO m) => Connection -> m (Maybe Announcement)
 getLatestAnnouncement conn = do
     posts <- liftIO $ query_ conn "SELECT id, title, content, user_id FROM posts ORDER BY created_at desc LIMIT 1"
     return $ safeHead posts
+
+getActivity :: (MonadIO m) => UserId -> Connection -> m (Activity)
+getActivity uid conn = do
+    today <- liftIO $ utctDay <$> getCurrentTime
+    let oneYearAgo = addDays (-366) today
+    result <- liftIO $ query conn "SELECT date_trunc('day', created_at), COUNT(*) FROM singles WHERE user_id = ? AND (created_at BETWEEN ? AND ?) GROUP BY date_trunc('day', created_at)" (uid, oneYearAgo, today)
+    return $ Activity $ Map.fromList $ fmap (\(t, x) -> (t, x)) result
