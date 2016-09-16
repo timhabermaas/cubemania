@@ -13,8 +13,8 @@ cache:
 
 matrix:
   include:
-    - env: ARGS="--resolver nightly"
-    - env: ARGS="" # take the resolver specified in stack.yaml
+    # - env: ARGS="--resolver nightly"
+     - env: ARGS="" # take the resolver specified in stack.yaml
   allow_failures:
     - env: ARGS="--resolver nightly"
 
