@@ -5,6 +5,7 @@
 {-# LANGUAGE FlexibleInstances          #-}
 {-# LANGUAGE OverloadedStrings          #-}
 {-# LANGUAGE TypeFamilies               #-}
+{-# LANGUAGE RecordWildCards            #-}
 
 module Lib
     ( startApp
@@ -26,7 +27,7 @@ import qualified Data.Text as T
 import Data.Time.Clock (UTCTime, NominalDiffTime)
 import Data.Time.Clock.POSIX (posixSecondsToUTCTime)
 import Data.ByteString.Char8 (pack)
-import Data.Maybe (fromMaybe)
+import Data.Maybe (fromMaybe, isJust, fromJust)
 import Control.Concurrent (forkIO)
 import Control.Concurrent.STM (atomically)
 import Control.Concurrent.STM.TChan (newBroadcastTChan, dupTChan, writeTChan)
@@ -91,6 +92,7 @@ parseSessionCookie req =
                Just x' -> Just $ UserId x'
                Nothing -> Nothing
            Nothing -> Nothing
+       Nothing -> Nothing
   where
     foo x = split (fromIntegral $ ord ';') x
     bar x = Data.ByteString.filter (\x' -> fromIntegral x' /= ord ' ') <$> foo x
@@ -128,7 +130,7 @@ app :: Config.Configuration -> Application
 app config = serveWithContext api apiContext $ appToServer config
 
 allHandlers :: ServerT CubemaniaAPI CubemaniaApp
-allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> rootHandler
+allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postHandler :<|> rootHandler
   where
     jsonApiHandler = puzzleHandler :<|> usersApiHandler
     puzzleHandler puzzleId = singlesHandler puzzleId
@@ -150,10 +152,20 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> rootHandler
                 activity <- Db.runDb $ Db.getActivity (userId u)
                 return $ H.userPage currentUser u records activity
             Nothing -> notFound
+    postHandler uId pId = withCurrentUser uId $ \currentUser -> do
+        post <- Db.runDb $ Db.getAnnouncement pId
+        case post of
+            Just p -> do
+              user <- Db.runDb $ Db.getUserById $ announcementUserId p
+              comments' <- Db.runDb $ Db.getCommentsForAnnouncement $ announcementId p
+              comments <- mapM (\c@Comment{..} -> (if isJust commentAuthorId then Db.runDb $ Db.getUserById (fromJust commentAuthorId) else return Nothing) >>= \u -> return (c, u)) comments'
+              return $ H.postPage currentUser p user comments
+            Nothing -> notFound
 
     rootHandler userId = withCurrentUser userId $ \currentUser -> do
         announcement <- Db.runDb Db.getLatestAnnouncement
-        return $ H.rootPage currentUser announcement
+        comments <- maybe (return []) (\a -> Db.runDb $ Db.getCommentsForAnnouncement (announcementId a)) announcement
+        return $ H.rootPage currentUser ((\a -> (a, comments)) <$> announcement)
     protectedHandlers puzzleId userId = submitSingleHandler puzzleId userId
                                  :<|> deleteSingleHandler puzzleId userId
                                  :<|> updateSingleHandler puzzleId userId

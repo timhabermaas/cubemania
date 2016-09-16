@@ -19,6 +19,8 @@ module Db
     , deleteSingle
     , updateSingle
     , getLatestAnnouncement
+    , getAnnouncement
+    , getCommentsForAnnouncement
     , getActivity
     ) where
 
@@ -102,6 +104,15 @@ getUserById id conn = do
     users <- liftIO $ query conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time FROM users WHERE id = ?" (Only id)
     return $ safeHead users
 
+getAnnouncement :: (MonadIO m) => AnnouncementId -> Connection -> m (Maybe Announcement)
+getAnnouncement id conn = do
+    posts <- liftIO $ query conn "SELECT id, title, content, user_id, created_at FROM posts WHERE id = ?" (Only id)
+    return $ safeHead posts
+
+getCommentsForAnnouncement :: (MonadIO m) => AnnouncementId -> Connection -> m [Comment]
+getCommentsForAnnouncement id conn = do
+    liftIO $ query conn "SELECT id, content, user_id, created_at FROM comments WHERE commentable_id = ? AND commentable_type = 'Post' ORDER BY created_at" (Only id)
+
 data JoinedRecordResult = JoinedRecordResult { unwrapJoinedRecordResult :: (Puzzle, Kind, Record) }
 
 instance FromRow JoinedRecordResult where
@@ -165,7 +176,7 @@ getChartData (PuzzleId puzzleId) (UserId userId) (from, to) conn = do
 
 getLatestAnnouncement :: (MonadIO m) => Connection -> m (Maybe Announcement)
 getLatestAnnouncement conn = do
-    posts <- liftIO $ query_ conn "SELECT id, title, content, user_id FROM posts ORDER BY created_at desc LIMIT 1"
+    posts <- liftIO $ query_ conn "SELECT id, title, content, user_id, created_at FROM posts ORDER BY created_at desc LIMIT 1"
     return $ safeHead posts
 
 getActivity :: (MonadIO m) => UserId -> Connection -> m (Activity)

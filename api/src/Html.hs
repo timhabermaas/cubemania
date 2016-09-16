@@ -4,6 +4,7 @@
 module Html
     ( usersPage
     , userPage
+    , postPage
     , rootPage
     ) where
 
@@ -22,6 +23,7 @@ import Text.Blaze.Html5 as H
 import Text.Blaze.Html5.Attributes as A
 import Text.Blaze.Html.Renderer.Utf8 (renderHtml)
 import Text.Markdown (markdown, def)
+import qualified Data.Time.Format as DF
 import qualified Data.Aeson as JSON
 import qualified Crypto.Hash.MD5 as MD5
 import Utils
@@ -110,7 +112,7 @@ userPage cu user@User{..} records activity = withLayout cu Users "User" $
     H.div ! A.id "user" $ do
         H.div ! class_ "admin" $ mempty
         h1 $ do
-            profileImage
+            userImage Large user
             space
             toHtml userName
             small "has spent 16 days solving puzzles."
@@ -125,7 +127,7 @@ userPage cu user@User{..} records activity = withLayout cu Users "User" $
     recordEntry type' (Just time) =
         tr $ do
             th ! class_ "type" $ toHtml type'
-            td $ strong $ toHtml $ formatTime time
+            td $ strong $ toHtml $ Utils.formatTime time
     recordEntry type' Nothing =
         tr $ do
             th ! class_ "type" $ toHtml type'
@@ -145,11 +147,6 @@ userPage cu user@User{..} records activity = withLayout cu Users "User" $
                 tbody $ sequence_ $ fmap (\type' -> recordEntry type' (Map.lookup type' records)) allRecordTypes
     posClass :: Int -> T.Text
     posClass n = "pos" <> (T.pack $ show n)
-    profileImage =
-      let url email = "http://gravatar.com/avatar/" <> hash email <> ".png?s=60"
-          hash email = TE.decodeUtf8 $ encode $ MD5.hash (TE.encodeUtf8 email)
-      in
-          img ! class_ "profile-image" ! src (toValue $ url userEmail)
     wcaLinkSection :: Maybe (LoggedIn User) -> Html
     wcaLinkSection currentUser =
         case userWca of
@@ -168,7 +165,7 @@ userPage cu user@User{..} records activity = withLayout cu Users "User" $
 
     activityJSON = toValue $ TE.decodeUtf8 $ toStrict $ JSON.encode activity
 
-rootPage :: Maybe LoggedInUser -> Maybe Announcement -> Html
+rootPage :: Maybe LoggedInUser -> Maybe (Announcement, [Comment]) -> Html
 rootPage currentUser post = withLayout currentUser Home "Home" $ do
     fromMaybe noAnnouncement $ announcementHtml <$> post
     p ! class_ "introduction" $ do
@@ -192,17 +189,58 @@ rootPage currentUser post = withLayout currentUser Home "Home" $ do
             p "Get the record!"
   where
     noAnnouncement = return ()
-    announcementHtml Announcement{..} =
+    announcementHtml (Announcement{..}, comments) =
         article ! class_ "announcement" $ do
             strong $ toHtml announcementTitle
             space
             preEscapedToHtml $ renderInlineMarkdown announcementContent
             space
-            a ! href (toValue $ postLinkToComments announcementId) $ "76 Comments »"
+            a ! href (toValue $ postLinkToComments announcementId) $ toHtml $ ((show $ length comments) <> " Comments »")
 
--- Type annotation necessary for ToMarkup class
+maybeUserLink :: Maybe User -> Html
+maybeUserLink (Just User{..}) = a ! href (toValue $ userLink userSlug) $ toHtml $ userName
+maybeUserLink Nothing         = "Unknown"
+
+data UserImageSize = Small | Large
+
+userImage :: UserImageSize -> User -> Html
+userImage imageSize User{..} =
+    let url email = "http://gravatar.com/avatar/" <> hash email <> ".png?s=" <> (pxSize imageSize)
+        hash email = TE.decodeUtf8 $ encode $ MD5.hash (TE.encodeUtf8 email)
+        pxSize Small = "25"
+        pxSize Large = "60"
+    in
+        img ! class_ "profile-image" ! src (toValue $ url userEmail)
+
+formatTime :: DF.FormatTime t => t -> String
+formatTime = DF.formatTime DF.defaultTimeLocale "%B %d, %Y at %H:%M"
+
+formatDate :: DF.FormatTime t => t -> String
+formatDate = DF.formatTime DF.defaultTimeLocale "%B %d, %Y"
+
+postPage :: Maybe LoggedInUser -> Announcement -> Maybe User -> [(Comment, Maybe User)] -> Html
+postPage currentUser Announcement{..} author comments = withLayout currentUser Home "Post" $ do
+    article ! class_ "post" $ do
+        h1 $ toHtml announcementTitle
+        section ! class_ "text" $ do
+            markdown def $ LT.fromStrict announcementContent
+        H.div ! class_ "meta" $ do
+            toHtml $ formatDate announcementCreatedAt
+            " · "
+            H.cite $ maybeUserLink author
+    H.div ! class_ "comments" $ ol ! class_ "comments" $ do mapM_ comment comments
+  where
+    comment (Comment{..}, author) =
+        li ! class_ "comment" ! A.id (toValue $ "comment" <> (show commentId)) $ do
+            H.cite $ do
+                maybe (return ()) (userImage Small) author
+                space
+                maybeUserLink author
+            small $ toHtml $ Html.formatTime commentCreatedAt
+            H.div ! class_ "text" $ p $ toHtml commentContent
+
 space :: Html
-space = toHtml (" " :: T.Text)
+space = toHtml (" " :: T.Text) -- Type annotation necessary for ToMarkup class
 
 renderInlineMarkdown :: T.Text -> T.Text
 renderInlineMarkdown = T.replace "</p>" "" . T.replace "<p>" "" . TE.decodeUtf8 . toStrict . renderHtml . markdown def . LT.fromStrict

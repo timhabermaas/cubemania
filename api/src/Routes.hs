@@ -39,10 +39,12 @@ type JsonApi = "api" :> PuzzleApi
 
 type UsersPath = "users" :> QueryParam "q" T.Text :> QueryParam "page" PageNumber :> Get '[HTML] Html
 type UserPath = "users" :> Capture "userId" UserSlug :> Get '[HTML] Html
+type PostPath = "posts" :> Capture "postId" AnnouncementId :> Get '[HTML] Html
 type RootPath = Get '[HTML] Html
 type CubemaniaAPI = JsonApi
                :<|> AuthProtect "cookie-auth-optional" :> UsersPath
                :<|> AuthProtect "cookie-auth-optional" :> UserPath
+               :<|> AuthProtect "cookie-auth-optional" :> PostPath
                :<|> AuthProtect "cookie-auth-optional" :> RootPath
 
 type instance AuthServerData (AuthProtect "cookie-auth") = UserId

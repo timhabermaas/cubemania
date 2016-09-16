@@ -36,7 +36,7 @@ nextPage (PageNumber x) = PageNumber (succ x)
 instance ToHttpApiData PageNumber where
     toQueryParam (PageNumber i) = toQueryParam i
 instance FromHttpApiData PageNumber where
-    parseUrlPiece t = PageNumber <$> parseUrlPiece t--parseInt t
+    parseUrlPiece t = PageNumber <$> parseUrlPiece t
 
 newtype PuzzleId = PuzzleId Int deriving (Generic, Eq, Ord)
 instance FromHttpApiData PuzzleId where
@@ -49,13 +49,21 @@ newtype Limit = Limit Int deriving (Generic)
 instance FromField Limit where
     fromField f s = Limit <$> fromField f s
 instance FromHttpApiData Limit where
-  parseUrlPiece t = Limit <$> parseUrlPiece t
+    parseUrlPiece t = Limit <$> parseUrlPiece t
 
 newtype AnnouncementId = AnnouncementId Int deriving (Eq)
 instance Show AnnouncementId where
     show (AnnouncementId x) = show x
 instance FromField AnnouncementId where
     fromField f s = AnnouncementId <$> fromField f s
+instance ToField AnnouncementId where
+    toField (AnnouncementId id) = toField id
+instance FromHttpApiData AnnouncementId where
+    parseUrlPiece t = AnnouncementId <$> parseUrlPiece t
+
+newtype CommentId = CommentId Int deriving Show
+instance FromField CommentId where
+    fromField f s = CommentId <$> fromField f s
 
 newtype SingleId = SingleId Int deriving (Generic, Show, Eq)
 instance FromField SingleId where
@@ -114,10 +122,21 @@ data Announcement = Announcement
     , announcementTitle :: Text
     , announcementContent :: Text
     , announcementUserId :: UserId
+    , announcementCreatedAt :: UTCTime
     }
 
 instance FromRow Announcement where
-    fromRow = Announcement <$> field <*> field <*> field <*> field
+    fromRow = Announcement <$> field <*> field <*> field <*> field <*> ((localTimeToUTC utc) <$> field)
+
+data Comment = Comment
+    { commentId :: CommentId
+    , commentContent :: Text
+    , commentAuthorId :: Maybe UserId
+    , commentCreatedAt :: UTCTime
+    }
+
+instance FromRow Comment where
+    fromRow = Comment <$> field <*> field <*> field <*> ((localTimeToUTC utc) <$> field)
 
 data Single = Single
     { singleId :: SingleId
