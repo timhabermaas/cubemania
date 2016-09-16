@@ -4,3 +4,5 @@ RUN apt-get update
 RUN apt-get install --reinstall krb5-multidev
 RUN apt-get install --reinstall libssl-dev
 RUN apt-get install --reinstall libpq-dev
+
+WORKDIR /src
