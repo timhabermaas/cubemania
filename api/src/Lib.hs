@@ -51,6 +51,9 @@ newtype CubemaniaApp a
   } deriving (Functor, Applicative, Monad, MonadReader Config.Configuration,
               MonadError ServantErr, MonadIO)
 
+runCubemania :: Config.Configuration -> CubemaniaApp a -> ExceptT ServantErr IO a
+runCubemania config (CubemaniaApp app) = runReaderT app config
+
 startApp :: String -> IO ()
 startApp dbConnectionString = do
   conn <- connectPostgreSQL $ pack dbConnectionString
@@ -59,12 +62,12 @@ startApp dbConnectionString = do
   let c = Config.Configuration conn wastedTimeStore channel
       port = 9090
   putStrLn $ "Starting server on port " ++ show port
-  channelForWastedTimeThread <- atomically $ dupTChan channel
-  forkIO $ wastedTimeThread channelForWastedTimeThread wastedTimeStore
+  wastedTimeChannel <- atomically $ dupTChan channel
+  forkIO $ wastedTimeThread wastedTimeChannel wastedTimeStore
   run port $ logStdoutDev $ app c
 
 convertApp :: Config.Configuration -> CubemaniaApp :~> ExceptT ServantErr IO
-convertApp cfg = Nat (flip runReaderT cfg . runApp)
+convertApp cfg = Nat $ runCubemania cfg
 
 appToServer :: Config.Configuration -> Server CubemaniaAPI
 appToServer cfg = enter (convertApp cfg) allHandlers
@@ -72,14 +75,19 @@ appToServer cfg = enter (convertApp cfg) allHandlers
 unauthorized :: MonadError ServantErr m => m a
 unauthorized = throwError (err401 { errBody = "Missing auth cookie" })
 
-authHandler :: AuthHandler Request UserId
-authHandler =
-    mkAuthHandler handler
+authHandler :: Config.Configuration -> AuthHandler Request (LoggedIn User)
+authHandler configuration =
+    mkAuthHandler $ (runCubemania configuration) . handler
   where
     handler req = do
       let userId = parseSessionCookie req
       case userId of
-        Just u -> return u
+        Just u -> do
+          -- TODO: use maybe
+          user <- Db.runDb $ Db.getUserById u
+          case user of
+            Just u -> return $ LoggedIn u
+            Nothing -> unauthorized
         Nothing -> unauthorized
 
 parseSessionCookie :: Request -> Maybe UserId
@@ -103,31 +111,22 @@ parseSessionCookie req =
     listToPair _      = Nothing
 
 
-authHandlerOptional :: AuthHandler Request (Maybe UserId)
-authHandlerOptional = mkAuthHandler handler
+authHandlerOptional :: Config.Configuration -> AuthHandler Request (Maybe (LoggedIn User))
+authHandlerOptional configuration =
+    mkAuthHandler ((runCubemania configuration) . handler)
   where
     handler req = do
         case parseSessionCookie req of
-          Just u -> return $ Just u
-          Nothing -> return $ Nothing
+          Just u -> do
+            (fmap LoggedIn) <$> (Db.runDb $ Db.getUserById u)
+          Nothing -> return Nothing
 
 
-apiContext :: Context (AuthHandler Request (Maybe UserId)  ': AuthHandler Request UserId ': '[])
-apiContext = authHandlerOptional :. authHandler :. EmptyContext
-
-withCurrentUser :: Maybe UserId -> (Maybe (LoggedIn User) -> CubemaniaApp a) -> CubemaniaApp a
-withCurrentUser userId callback =
-    case userId of
-      Just uid -> do
-        user <- Db.runDb $ Db.getUserById uid
-        case user of
-          Just u -> callback $ Just $ LoggedIn u
-          Nothing -> callback Nothing
-      Nothing ->
-        callback Nothing
+apiContext :: Config.Configuration -> Context (AuthHandler Request (Maybe (LoggedIn User))  ': AuthHandler Request (LoggedIn User) ': '[])
+apiContext config = (authHandlerOptional config) :. (authHandler config)  :. EmptyContext
 
 app :: Config.Configuration -> Application
-app config = serveWithContext api apiContext $ appToServer config
+app config = serveWithContext api (apiContext config) $ appToServer config
 
 allHandlers :: ServerT CubemaniaAPI CubemaniaApp
 allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postHandler :<|> rootHandler
@@ -137,14 +136,14 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postHandler
                         :<|> recordsHandler puzzleId
                         :<|> chartHandler puzzleId
                         :<|> protectedHandlers puzzleId
-    usersHandler userId query page = withCurrentUser userId $ \currentUser -> do
+    usersHandler currentUser query page = do
         let pageNumber = fromMaybe (PageNumber 1) page
         users <- case query of
             Just q -> Db.runDb $ Db.matchUsers q
             Nothing -> Db.runDb $ Db.getUsers (fromPageNumber pageNumber)
         maxSinglesCount <- Db.runDb Db.maxSinglesCount
         return $ H.usersPage currentUser users (fromMaybe 1 maxSinglesCount) pageNumber query
-    userHandler uId userSlug = withCurrentUser uId $ \currentUser -> do
+    userHandler currentUser userSlug = do
         user <- Db.runDb $ Db.getUserBySlug userSlug
         case user of
             Just u -> do
@@ -152,7 +151,7 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postHandler
                 activity <- Db.runDb $ Db.getActivity (userId u)
                 return $ H.userPage currentUser u records activity
             Nothing -> notFound
-    postHandler uId pId = withCurrentUser uId $ \currentUser -> do
+    postHandler currentUser pId = do
         post <- Db.runDb $ Db.getAnnouncement pId
         case post of
             Just p -> do
@@ -162,13 +161,13 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postHandler
               return $ H.postPage currentUser p user comments
             Nothing -> notFound
 
-    rootHandler userId = withCurrentUser userId $ \currentUser -> do
+    rootHandler currentUser = do
         announcement <- Db.runDb Db.getLatestAnnouncement
         comments <- maybe (return []) (\a -> Db.runDb $ Db.getCommentsForAnnouncement (announcementId a)) announcement
         return $ H.rootPage currentUser ((\a -> (a, comments)) <$> announcement)
-    protectedHandlers puzzleId userId = submitSingleHandler puzzleId userId
-                                 :<|> deleteSingleHandler puzzleId userId
-                                 :<|> updateSingleHandler puzzleId userId
+    protectedHandlers puzzleId user = submitSingleHandler puzzleId user
+                                 :<|> deleteSingleHandler puzzleId user
+                                 :<|> updateSingleHandler puzzleId user
 
 
 
@@ -184,28 +183,28 @@ singlesHandler puzzleId userId limit = do
         Nothing -> return []
         Just uid -> Db.runDb $ Db.getSingles puzzleId uid $ fromMaybe (Limit 150) limit
 
-submitSingleHandler :: PuzzleId -> UserId -> SubmittedSingle -> CubemaniaApp (Headers '[Header "X-NewRecord" String] Single)
-submitSingleHandler p userId s = do
+submitSingleHandler :: PuzzleId -> LoggedIn User -> SubmittedSingle -> CubemaniaApp (Headers '[Header "X-NewRecord" String] Single)
+submitSingleHandler p (LoggedIn user) s = do
     -- TODO: DB transaction
-    singleId' <- Db.runDb $ Db.postSingle p userId s
+    singleId' <- Db.runDb $ Db.postSingle p (userId user) s
     single <- Db.runDb $ Db.getSingle singleId'
-    publishEvent (SingleSubmitted userId s)
+    publishEvent (SingleSubmitted (userId user) s)
     return $ addHeader "true" single
 
-updateSingleHandler :: PuzzleId -> UserId -> SingleId -> SubmittedSingle -> CubemaniaApp NoContent
-updateSingleHandler _puzzleId userId singleId' s = do
+updateSingleHandler :: PuzzleId -> LoggedIn User -> SingleId -> SubmittedSingle -> CubemaniaApp NoContent
+updateSingleHandler _puzzleId (LoggedIn user) singleId' s = do
     single <- Db.runDb $ Db.getSingle singleId'
-    if singleUserId single == userId then
+    if singleUserId single == userId user then
       do
         Db.runDb $ Db.updateSingle singleId' s
         return NoContent
     else
       unauthorized
 
-deleteSingleHandler :: PuzzleId -> UserId -> SingleId -> CubemaniaApp NoContent
-deleteSingleHandler _puzzleId userId singleId' = do
+deleteSingleHandler :: PuzzleId -> LoggedIn User -> SingleId -> CubemaniaApp NoContent
+deleteSingleHandler _puzzleId (LoggedIn user) singleId' = do
     single <- Db.runDb $ Db.getSingle singleId'
-    if (singleUserId single) == userId then
+    if (singleUserId single) == (userId user) then
       do
         Db.runDb $ Db.deleteSingle singleId'
         publishEvent (SingleDeleted single)

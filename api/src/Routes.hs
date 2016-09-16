@@ -47,8 +47,8 @@ type CubemaniaAPI = JsonApi
                :<|> AuthProtect "cookie-auth-optional" :> PostPath
                :<|> AuthProtect "cookie-auth-optional" :> RootPath
 
-type instance AuthServerData (AuthProtect "cookie-auth") = UserId
-type instance AuthServerData (AuthProtect "cookie-auth-optional") = Maybe UserId
+type instance AuthServerData (AuthProtect "cookie-auth") = LoggedIn User
+type instance AuthServerData (AuthProtect "cookie-auth-optional") = Maybe (LoggedIn User)
 
 api :: Proxy CubemaniaAPI
 api = Proxy
