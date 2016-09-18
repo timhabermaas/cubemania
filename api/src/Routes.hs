@@ -1,7 +1,8 @@
+{-# LANGUAGE ExistentialQuantification  #-}
 {-# LANGUAGE DataKinds                  #-}
 {-# LANGUAGE TypeOperators              #-}
 {-# LANGUAGE TypeFamilies               #-}
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings          #-}
 
 module Routes
     ( CubemaniaAPI
@@ -10,6 +11,7 @@ module Routes
     , userLink
     , postLink
     , postLinkToComments
+    , postLinkWithComments
     , wcaLink
     ) where
 
@@ -45,6 +47,7 @@ type CubemaniaAPI = JsonApi
                :<|> AuthProtect "cookie-auth-optional" :> UsersPath
                :<|> AuthProtect "cookie-auth-optional" :> UserPath
                :<|> AuthProtect "cookie-auth-optional" :> PostPath
+               :<|> AuthProtect "cookie-auth" :> "posts" :> Capture "postId" AnnouncementId :> "comments" :> ReqBody '[FormUrlEncoded] [(T.Text, T.Text)] :> Post '[HTML] Html
                :<|> AuthProtect "cookie-auth-optional" :> RootPath
 
 type instance AuthServerData (AuthProtect "cookie-auth") = LoggedIn User
@@ -68,6 +71,9 @@ postLinkToComments aId = postLink aId <> "#comments"
 
 postLink :: AnnouncementId -> T.Text
 postLink aId = "/posts/" <> T.pack (show aId)
+
+postLinkWithComments :: AnnouncementId -> T.Text
+postLinkWithComments aId = postLink aId <> "/comments"
 
 wcaLink :: T.Text -> T.Text
 wcaLink id = "http://www.worldcubeassociation.org/results/p.php?i=" <> id

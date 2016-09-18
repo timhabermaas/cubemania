@@ -1,10 +1,7 @@
 {-# LANGUAGE DataKinds                  #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE TypeOperators              #-}
 {-# LANGUAGE FlexibleContexts           #-}
-{-# LANGUAGE FlexibleInstances          #-}
 {-# LANGUAGE OverloadedStrings          #-}
-{-# LANGUAGE TypeFamilies               #-}
 {-# LANGUAGE RecordWildCards            #-}
 
 module Lib
@@ -24,6 +21,7 @@ import Data.ByteString (split, filter, isPrefixOf)
 import Data.ByteString.Char8 (unpack)
 import Data.Char (ord)
 import qualified Data.Text as T
+import qualified Data.Text.Encoding as TE
 import Data.Time.Clock (UTCTime, NominalDiffTime)
 import Data.Time.Clock.POSIX (posixSecondsToUTCTime)
 import Data.ByteString.Char8 (pack)
@@ -39,20 +37,14 @@ import Types.Events
 import Routes
 import qualified Html as H
 import Workers (wastedTimeThread)
+import Frontend.Forms
 
 import Control.Monad.IO.Class
 import Control.Monad.Reader
 import Control.Monad.Except
 import Database.PostgreSQL.Simple (connectPostgreSQL)
+import Types.AppMonad
 
-newtype CubemaniaApp a
-  = CubemaniaApp
-  { runApp :: ReaderT Config.Configuration (ExceptT ServantErr IO) a
-  } deriving (Functor, Applicative, Monad, MonadReader Config.Configuration,
-              MonadError ServantErr, MonadIO)
-
-runCubemania :: Config.Configuration -> CubemaniaApp a -> ExceptT ServantErr IO a
-runCubemania config (CubemaniaApp app) = runReaderT app config
 
 startApp :: String -> IO ()
 startApp dbConnectionString = do
@@ -66,14 +58,14 @@ startApp dbConnectionString = do
   forkIO $ wastedTimeThread wastedTimeChannel wastedTimeStore
   run port $ logStdoutDev $ app c
 
-convertApp :: Config.Configuration -> CubemaniaApp :~> ExceptT ServantErr IO
-convertApp cfg = Nat $ runCubemania cfg
-
 appToServer :: Config.Configuration -> Server CubemaniaAPI
 appToServer cfg = enter (convertApp cfg) allHandlers
 
 unauthorized :: MonadError ServantErr m => m a
 unauthorized = throwError (err401 { errBody = "Missing auth cookie" })
+
+redirect303 :: MonadError ServantErr m => T.Text -> m a
+redirect303 url = throwError $ err303 { errHeaders = [("Location", TE.encodeUtf8 url)] }
 
 authHandler :: Config.Configuration -> AuthHandler Request (LoggedIn User)
 authHandler configuration =
@@ -129,7 +121,7 @@ app :: Config.Configuration -> Application
 app config = serveWithContext api (apiContext config) $ appToServer config
 
 allHandlers :: ServerT CubemaniaAPI CubemaniaApp
-allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postHandler :<|> rootHandler
+allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postHandler :<|> postCommentHandler :<|> rootHandler
   where
     jsonApiHandler = puzzleHandler :<|> usersApiHandler
     puzzleHandler puzzleId = singlesHandler puzzleId
@@ -144,22 +136,28 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postHandler
         maxSinglesCount <- Db.runDb Db.maxSinglesCount
         return $ H.usersPage currentUser users (fromMaybe 1 maxSinglesCount) pageNumber query
     userHandler currentUser userSlug = do
-        user <- Db.runDb $ Db.getUserBySlug userSlug
-        case user of
-            Just u -> do
-                records <- Db.runDb $ Db.getRecordsForUser (userId u)
-                activity <- Db.runDb $ Db.getActivity (userId u)
-                return $ H.userPage currentUser u records activity
-            Nothing -> notFound
+        user <- grabOrNotFound $ Db.runDb $ Db.getUserBySlug userSlug
+        records <- Db.runDb $ Db.getRecordsForUser (userId user)
+        activity <- Db.runDb $ Db.getActivity (userId user)
+        return $ H.userPage currentUser user records activity
     postHandler currentUser pId = do
-        post <- Db.runDb $ Db.getAnnouncement pId
-        case post of
-            Just p -> do
-              user <- Db.runDb $ Db.getUserById $ announcementUserId p
-              comments' <- Db.runDb $ Db.getCommentsForAnnouncement $ announcementId p
-              comments <- mapM (\c@Comment{..} -> (if isJust commentAuthorId then Db.runDb $ Db.getUserById (fromJust commentAuthorId) else return Nothing) >>= \u -> return (c, u)) comments'
-              return $ H.postPage currentUser p user comments
-            Nothing -> notFound
+        form <- runGetForm "comment" commentForm
+        post <- grabOrNotFound $ Db.runDb $ Db.getAnnouncement pId
+        renderPostPage currentUser post form
+    renderPostPage currentUser post form = do
+        user <- Db.runDb $ Db.getUserById $ announcementUserId post
+        comments' <- Db.runDb $ Db.getCommentsForAnnouncement $ announcementId post
+        comments <- mapM (\c@Comment{..} -> (if isJust commentAuthorId then Db.runDb $ Db.getUserById (fromJust commentAuthorId) else return Nothing) >>= \u -> return (c, u)) comments'
+        return $ H.postPage currentUser post user comments form
+    postCommentHandler lu@(LoggedIn currentUser) pId body = do
+        form <- runPostForm "comment" commentForm body
+        post <- grabOrNotFound $ Db.runDb $ Db.getAnnouncement pId
+        case form of
+            (_, Just c) -> do
+                Db.runDb $ Db.postComment (announcementId post) (userId currentUser) (submittedCommentContent c)
+                redirect303 $ postLinkToComments (announcementId post)
+            (view, Nothing) ->
+                renderPostPage (Just lu) post view
 
     rootHandler currentUser = do
         announcement <- Db.runDb Db.getLatestAnnouncement
@@ -168,8 +166,12 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postHandler
     protectedHandlers puzzleId user = submitSingleHandler puzzleId user
                                  :<|> deleteSingleHandler puzzleId user
                                  :<|> updateSingleHandler puzzleId user
-
-
+    grabOrNotFound :: CubemaniaApp (Maybe a) -> CubemaniaApp a
+    grabOrNotFound x = do
+        y <- x
+        case y of
+            Just a -> return a
+            Nothing -> notFound
 
 recordsHandler :: PuzzleId -> Maybe Int -> Maybe UserId -> CubemaniaApp [Record]
 recordsHandler puzzleId _page userId =

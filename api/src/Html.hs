@@ -23,10 +23,12 @@ import Text.Blaze.Html5 as H
 import Text.Blaze.Html5.Attributes as A
 import Text.Blaze.Html.Renderer.Utf8 (renderHtml)
 import Text.Markdown (markdown, def)
+import Text.Digestive (View)
 import qualified Data.Time.Format as DF
 import qualified Data.Aeson as JSON
 import qualified Crypto.Hash.MD5 as MD5
 import Utils
+import Frontend.FormViewHelpers
 
 data Page = Home | Timer | Users | Records deriving (Eq)
 
@@ -46,11 +48,13 @@ navigationLink Users = usersLink Nothing
 navigationLink Records = "/puzzles/3x3x3/records"
 
 
-withLayout :: Maybe (LoggedInUser) -> Page -> T.Text -> Html -> Html
+withLayout :: Maybe LoggedInUser -> Page -> T.Text -> Html -> Html
 withLayout currentUser currentPage title' inner =
     let
       selectedClass item' = if item' == currentPage then "selected" else ""
-      navigationItem item' = li ! class_ (toValue $ (selectedClass item' :: T.Text)) $ a ! href (toValue $ navigationLink item') $ toHtml $ navigationText item'
+      navigationItem item' = li ! class_ (toValue (selectedClass item' :: T.Text)) $
+                                 a ! href (toValue $ navigationLink item') $
+                                     toHtml $ navigationText item'
       sessionNavigation =
           case currentUser of
               Just (LoggedIn u) -> do
@@ -58,7 +62,7 @@ withLayout currentUser currentPage title' inner =
                   li ! class_ "session" $ a ! href (toValue $ userLink (userSlug u)) $ toHtml (userName u <> "'s Profile")
               Nothing ->
                   li ! class_ "session" $ a ! href "/login" $ "Login"
-      navigation = nav ! class_ "main" $ ul $ (mapM_ navigationItem navigationItems) <> sessionNavigation
+      navigation = nav ! class_ "main" $ ul $ mapM_ navigationItem navigationItems <> sessionNavigation
       footer' =
         footer $ p $ do
             "Founded by"
@@ -146,7 +150,7 @@ userPage cu user@User{..} records activity = withLayout cu Users "User" $
                 thead $ tr mempty
                 tbody $ sequence_ $ fmap (\type' -> recordEntry type' (Map.lookup type' records)) allRecordTypes
     posClass :: Int -> T.Text
-    posClass n = "pos" <> (T.pack $ show n)
+    posClass n = "pos" <> T.pack (show n)
     wcaLinkSection :: Maybe (LoggedIn User) -> Html
     wcaLinkSection currentUser =
         case userWca of
@@ -157,9 +161,9 @@ userPage cu user@User{..} records activity = withLayout cu Users "User" $
             Nothing -> if isSelf currentUser then
                 H.div ! A.id "wca" $ do
                     a ! href "http://www.worldcubeassociation.org" ! class_ "logo" $ mempty
-                    a ! href (toValue $ "/users/" <> (fromSlug userSlug) <> "/edit") $ "Link your World Cube Association profile!"
+                    a ! href (toValue $ "/users/" <> fromSlug userSlug <> "/edit") $ "Link your World Cube Association profile!"
                        else
-                return ()
+                empty
     isSelf (Just (LoggedIn cu)) = cu == user
     isSelf _ = False
 
@@ -167,7 +171,7 @@ userPage cu user@User{..} records activity = withLayout cu Users "User" $
 
 rootPage :: Maybe LoggedInUser -> Maybe (Announcement, [Comment]) -> Html
 rootPage currentUser post = withLayout currentUser Home "Home" $ do
-    fromMaybe noAnnouncement $ announcementHtml <$> post
+    fromMaybe empty $ announcementHtml <$> post
     p ! class_ "introduction" $ do
         "You want to keep track of your times, compare yourself with others and become the best?\n  If so, Cubemania is the right place for you: "
         a ! href "/register" $ "Register"
@@ -188,24 +192,26 @@ rootPage currentUser post = withLayout currentUser Home "Home" $ do
             a ! href "/puzzles/3x3x3/records" ! class_ "image" $ img ! alt "Records" ! src "/assets/images/screenshots/records.jpg"
             p "Get the record!"
   where
-    noAnnouncement = return ()
     announcementHtml (Announcement{..}, comments) =
         article ! class_ "announcement" $ do
             strong $ toHtml announcementTitle
             space
             preEscapedToHtml $ renderInlineMarkdown announcementContent
             space
-            a ! href (toValue $ postLinkToComments announcementId) $ toHtml $ ((show $ length comments) <> " Comments »")
+            a ! href (toValue $ postLinkToComments announcementId) $ toHtml $ show (length comments) <> " Comments »"
 
 maybeUserLink :: Maybe User -> Html
-maybeUserLink (Just User{..}) = a ! href (toValue $ userLink userSlug) $ toHtml $ userName
+maybeUserLink (Just User{..}) = a ! href (toValue $ userLink userSlug) $ toHtml userName
 maybeUserLink Nothing         = "Unknown"
+
+empty :: Html
+empty = return ()
 
 data UserImageSize = Small | Large
 
 userImage :: UserImageSize -> User -> Html
 userImage imageSize User{..} =
-    let url email = "http://gravatar.com/avatar/" <> hash email <> ".png?s=" <> (pxSize imageSize)
+    let url email = "http://gravatar.com/avatar/" <> hash email <> ".png?s=" <> pxSize imageSize
         hash email = TE.decodeUtf8 $ encode $ MD5.hash (TE.encodeUtf8 email)
         pxSize Small = "25"
         pxSize Large = "60"
@@ -218,22 +224,36 @@ formatTime = DF.formatTime DF.defaultTimeLocale "%B %d, %Y at %H:%M"
 formatDate :: DF.FormatTime t => t -> String
 formatDate = DF.formatTime DF.defaultTimeLocale "%B %d, %Y"
 
-postPage :: Maybe LoggedInUser -> Announcement -> Maybe User -> [(Comment, Maybe User)] -> Html
-postPage currentUser Announcement{..} author comments = withLayout currentUser Home "Post" $ do
+postPage :: Maybe LoggedInUser -> Announcement -> Maybe User -> [(Comment, Maybe User)] -> View T.Text -> Html
+postPage currentUser Announcement{..} author comments form = withLayout currentUser Home "Post" $ do
     article ! class_ "post" $ do
         h1 $ toHtml announcementTitle
-        section ! class_ "text" $ do
+        section ! class_ "text" $
             markdown def $ LT.fromStrict announcementContent
         H.div ! class_ "meta" $ do
             toHtml $ formatDate announcementCreatedAt
             " · "
             H.cite $ maybeUserLink author
-    H.div ! class_ "comments" $ ol ! class_ "comments" $ do mapM_ comment comments
+    H.div ! class_ "comments" $ do
+        ol ! class_ "comments" $ mapM_ comment comments
+        maybe empty (const (commentForm form)) currentUser
   where
+    commentForm form = let form' = H.toHtml <$> form
+        in
+          H.form
+              ! acceptCharset "UTF-8"
+              ! action (toValue $ postLinkWithComments announcementId)
+              ! class_ "formtastic comment"
+              ! A.id "new_comment"
+              ! method "post"
+              ! novalidate "novalidate" $ do
+              fieldset ! class_ "inputs" $ ol $
+                  textareaWithErrors "content" form' Required
+              fieldset ! class_ "actions" $ ol $ li ! class_ "action input_action " ! A.id "comment_submit_action" $ input ! dataAttribute "disable-with" "Wait..." ! name "commit" ! type_ "submit" ! value "Respond"
     comment (Comment{..}, author) =
-        li ! class_ "comment" ! A.id (toValue $ "comment" <> (show commentId)) $ do
+        li ! class_ "comment" ! A.id (toValue $ "comment" <> show commentId) $ do
             H.cite $ do
-                maybe (return ()) (userImage Small) author
+                maybe empty (userImage Small) author
                 space
                 maybeUserLink author
             small $ toHtml $ Html.formatTime commentCreatedAt

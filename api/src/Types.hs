@@ -356,6 +356,10 @@ instance ToJSON Activity where
     toJSON (Activity m) = object $ (\(k, v) -> (pack $ show k) .= v) <$> Map.toAscList m
 
 
+data SubmittedComment = SubmittedComment
+    { submittedCommentContent :: Text
+    } deriving (Show)
+
 newtype LocalTimeWithFromRow = LocalTimeWithFromRow LocalTime deriving (Generic)
 instance FromRow LocalTimeWithFromRow
 

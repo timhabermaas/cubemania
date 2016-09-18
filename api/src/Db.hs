@@ -21,6 +21,7 @@ module Db
     , getLatestAnnouncement
     , getAnnouncement
     , getCommentsForAnnouncement
+    , postComment
     , getActivity
     ) where
 
@@ -178,6 +179,12 @@ getLatestAnnouncement :: (MonadIO m) => Connection -> m (Maybe Announcement)
 getLatestAnnouncement conn = do
     posts <- liftIO $ query_ conn "SELECT id, title, content, user_id, created_at FROM posts ORDER BY created_at desc LIMIT 1"
     return $ safeHead posts
+
+postComment :: (MonadIO m) => AnnouncementId -> UserId -> Text -> Connection -> m ()
+postComment pId uId content conn = do
+    time <- liftIO getCurrentTime
+    _ <- liftIO $ execute conn "INSERT INTO comments (content, user_id, commentable_id, commentable_type, created_at) VALUES (?, ?, ?, 'Post', ?)" (content, uId, pId, time)
+    return ()
 
 getActivity :: (MonadIO m) => UserId -> Connection -> m (Activity)
 getActivity uid conn = do
