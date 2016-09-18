@@ -139,13 +139,13 @@ instance FromRow Comment where
     fromRow = Comment <$> field <*> field <*> field <*> ((localTimeToUTC utc) <$> field)
 
 data Single = Single
-    { singleId :: SingleId
-    , singleTime :: DurationInMs
-    , singleComment :: Maybe Text
-    , singleScramble :: Text
-    , singlePenalty :: Maybe Penalty
-    , singleCreatedAt :: UTCTime
-    , singleUserId :: UserId
+    { singleId :: !SingleId
+    , singleTime :: !DurationInMs
+    , singleComment :: !(Maybe Text)
+    , singleScramble :: !Text
+    , singlePenalty :: !(Maybe Penalty)
+    , singleCreatedAt :: !UTCTime
+    , singleUserId :: !UserId
     } deriving (Show, Eq)
 
 isDnf :: Single -> Bool
@@ -173,11 +173,10 @@ instance ToJSON Single where
 instance FromRow Single where
     fromRow = Single <$> field <*> field <*> field <*> field <*> field <*> ((localTimeToUTC utc) <$> field) <*> field
 
--- TODO: Add prefix and use custom FromJSON instance.
 data SubmittedSingle = SubmittedSingle
-    { submittedSingleScramble :: Text
-    , submittedSingleTime :: DurationInMs
-    , submittedSinglePenalty :: Maybe Penalty
+    { submittedSingleScramble :: !Text
+    , submittedSingleTime :: !DurationInMs
+    , submittedSinglePenalty :: !(Maybe Penalty)
     } deriving (Show)
 
 instance FromJSON SubmittedSingle where

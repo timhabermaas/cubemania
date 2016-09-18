@@ -8,7 +8,7 @@ module Lib
     ( startApp
     ) where
 
-import qualified Db as Db
+import qualified Db
 import Utils
 
 import Network.Wai
@@ -18,13 +18,12 @@ import Servant
 import Servant.Server.Experimental.Auth (AuthHandler, mkAuthHandler)
 
 import Data.ByteString (split, filter, isPrefixOf)
-import Data.ByteString.Char8 (unpack)
+import Data.ByteString.Char8 (unpack, pack)
 import Data.Char (ord)
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
 import Data.Time.Clock (UTCTime, NominalDiffTime)
 import Data.Time.Clock.POSIX (posixSecondsToUTCTime)
-import Data.ByteString.Char8 (pack)
 import Data.Maybe (fromMaybe, isJust, fromJust)
 import Control.Concurrent (forkIO)
 import Control.Concurrent.STM (atomically)
@@ -32,7 +31,7 @@ import Control.Concurrent.STM.TChan (newBroadcastTChan, dupTChan, writeTChan)
 
 import Types
 import qualified Types.Configuration as Config
-import Types.Stores (newWastedTimeStore)
+import Types.Stores (newWastedTimeStore, getWastedTimeFor)
 import Types.Events
 import Routes
 import qualified Html as H
@@ -54,8 +53,14 @@ startApp dbConnectionString = do
   let c = Config.Configuration conn wastedTimeStore channel
       port = 9090
   putStrLn $ "Starting server on port " ++ show port
+
   wastedTimeChannel <- atomically $ dupTChan channel
   forkIO $ wastedTimeThread wastedTimeChannel wastedTimeStore
+  let makeSubmitEventFromSingle s = SingleSubmitted (singleUserId s) (SubmittedSingle (singleScramble s) (singleTime s) (singlePenalty s))
+  let importEvents = Db.getAllSingles (\single -> atomically $ writeTChan wastedTimeChannel (makeSubmitEventFromSingle single)) conn
+
+  _ <- forkIO (importEvents >> putStrLn "finished importing singles")
+
   run port $ logStdoutDev $ app c
 
 appToServer :: Config.Configuration -> Server CubemaniaAPI
@@ -139,7 +144,9 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postHandler
         user <- grabOrNotFound $ Db.runDb $ Db.getUserBySlug userSlug
         records <- Db.runDb $ Db.getRecordsForUser (userId user)
         activity <- Db.runDb $ Db.getActivity (userId user)
-        return $ H.userPage currentUser user records activity
+        store <- asks Config.wastedTimeStore
+        wastedTime <- fromMaybe 0 <$> (liftIO $ atomically $ getWastedTimeFor store (userId user))
+        return $ H.userPage currentUser user records activity wastedTime
     postHandler currentUser pId = do
         form <- runGetForm "comment" commentForm
         post <- grabOrNotFound $ Db.runDb $ Db.getAnnouncement pId

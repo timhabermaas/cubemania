@@ -2,6 +2,7 @@
 {-# LANGUAGE OverloadedStrings          #-}
 {-# LANGUAGE RecordWildCards            #-}
 {-# LANGUAGE ScopedTypeVariables        #-}
+{-# LANGUAGE BangPatterns               #-}
 
 module Db
     ( matchUsers
@@ -23,6 +24,7 @@ module Db
     , getCommentsForAnnouncement
     , postComment
     , getActivity
+    , getAllSingles
     ) where
 
 import Prelude hiding (id)
@@ -36,7 +38,7 @@ import Data.Time.Calendar (addDays)
 import Control.Monad.Reader (MonadReader, asks)
 import Control.Monad.IO.Class
 import Database.PostgreSQL.Simple.FromRow
-import Database.PostgreSQL.Simple (Connection, query, query_, execute, withTransaction, Only(..))
+import Database.PostgreSQL.Simple (Connection, query, query_, fold_, execute, withTransaction, Only(..))
 import Data.Text (Text)
 
 runDb :: (MonadReader Configuration m, MonadIO m) => (Connection -> m a) -> m a
@@ -192,3 +194,8 @@ getActivity uid conn = do
     let oneYearAgo = addDays (-366) today
     result <- liftIO $ query conn "SELECT date_trunc('day', created_at), COUNT(*) FROM singles WHERE user_id = ? AND (created_at BETWEEN ? AND ?) GROUP BY date_trunc('day', created_at)" (uid, oneYearAgo, today)
     return $ Activity $ Map.fromList $ fmap (\(t, x) -> (t, x)) result
+
+getAllSingles :: (MonadIO m) => (Single -> IO ()) -> Connection -> m ()
+getAllSingles callback conn =
+    liftIO $ withTransaction conn $ do
+        liftIO $ fold_ conn "select id, time, comment, scramble, penalty, created_at, user_id from singles ORDER BY created_at" () (\() !single -> callback single)

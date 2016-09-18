@@ -67,7 +67,7 @@ withLayout currentUser currentPage title' inner =
         footer $ p $ do
             "Founded by"
             space
-            a ! href "http://cubemania.org/users/tim" $ "Tim Habermaas"
+            a ! href "/users/tim" $ "Tim Habermaas"
             ","
             space
             a ! href "http://www.patrickstadler.de" ! A.title "Patrick Stadler's Website" $ "Patrick Stadler"
@@ -111,15 +111,15 @@ usersPage currentUser users maxSinglesCount currentPageNumber query = withLayout
     fontSize :: SimpleUser -> Int -> Float
     fontSize SimpleUser{..} maxSinglesCount' = fromIntegral simpleUserSinglesCount / fromIntegral maxSinglesCount' * 1.4 + 0.6
 
-userPage :: Maybe (LoggedIn User) -> User -> Map.Map (Puzzle, Kind) (Map.Map RecordType DurationInMs) -> Activity -> Html
-userPage cu user@User{..} records activity = withLayout cu Users "User" $
+userPage :: Maybe (LoggedIn User) -> User -> Map.Map (Puzzle, Kind) (Map.Map RecordType DurationInMs) -> Activity -> Int -> Html
+userPage cu user@User{..} records activity wastedTime = withLayout cu Users "User" $
     H.div ! A.id "user" $ do
         H.div ! class_ "admin" $ mempty
         h1 $ do
             userImage Large user
             space
             toHtml userName
-            small "has spent 16 days solving puzzles."
+            small $ toHtml $ "has spent " <> (wastedTimeInText wastedTime) <> " solving puzzles."
         wcaLinkSection cu
         h3 "Activity"
         section ! A.id "activity" ! dataAttribute "activity" activityJSON $ mempty
@@ -127,6 +127,7 @@ userPage cu user@User{..} records activity = withLayout cu Users "User" $
         ul ! class_ "records" $ sequence_ $ Map.elems $ Map.mapWithKey recordWidget records
 
   where
+    wastedTimeInText t = humanizeTimeInterval t
     recordEntry :: RecordType -> Maybe DurationInMs -> Html
     recordEntry type' (Just time) =
         tr $ do
