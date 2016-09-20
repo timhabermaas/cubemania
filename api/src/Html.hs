@@ -114,12 +114,12 @@ usersPage currentUser users maxSinglesCount currentPageNumber query = withLayout
 userPage :: Maybe (LoggedIn User) -> User -> Map.Map (Puzzle, Kind) (Map.Map RecordType DurationInMs) -> Maybe (Map.Map (Puzzle, Kind) (Map.Map RecordType DurationInMs)) -> Activity -> Int -> Html
 userPage cu user@User{..} records ownRecords activity wastedTime = withLayout cu Users "User" $
     H.div ! A.id "user" $ do
-        H.div ! class_ "admin" $ mempty
+        H.div ! class_ "admin" $ adminLink cu
         h1 $ do
             userImage Large user
             space
             toHtml userName
-            small $ toHtml $ "has spent " <> (humanizeTimeInterval wastedTime) <> " solving puzzles."
+            small $ toHtml $ "has spent " <> humanizeTimeInterval wastedTime <> " solving puzzles."
         wcaLinkSection cu
         h3 "Activity"
         section ! A.id "activity" ! dataAttribute "activity" activityJSON $ mempty
@@ -175,6 +175,12 @@ userPage cu user@User{..} records ownRecords activity wastedTime = withLayout cu
                 else
                     thead $ tr mempty
                 tbody $ sequence_ $ fmap (\type' -> recordRow type' (Map.lookup type' records) (ownRecords >>= Map.lookup type') comparison) allRecordTypes
+    adminLink :: Maybe LoggedInUser -> Html
+    adminLink (Just (LoggedIn u))
+        | u == user = a ! href (toValue $ editUserLink userSlug) $ "Edit profile"
+        | otherwise = mempty
+    adminLink Nothing = mempty
+
     posClass :: Int -> T.Text
     posClass n = "pos" <> T.pack (show n)
     wcaLinkSection :: Maybe (LoggedIn User) -> Html

@@ -9,6 +9,7 @@ module Routes
     , api
     , usersLink
     , userLink
+    , editUserLink
     , postLink
     , postLinkToComments
     , postLinkWithComments
@@ -65,6 +66,10 @@ usersLink page = "/users" <> (maybe "" (\page -> "?page=" <> (T.pack $ show $ fr
 
 userLink :: UserSlug -> T.Text
 userLink (UserSlug slug) = "/users/" <> slug
+
+editUserLink :: UserSlug -> T.Text
+editUserLink (UserSlug slug) = "/users/" <> slug <> "/edit"
+
 
 postLinkToComments :: AnnouncementId -> T.Text
 postLinkToComments aId = postLink aId <> "#comments"

@@ -247,7 +247,7 @@ instance FromRow User where
             Just t -> if t == "" then return Nothing else return $ Just t
             Nothing -> return Nothing
 
-newtype LoggedIn a = LoggedIn a deriving (Show)
+newtype LoggedIn a = LoggedIn { getLoggedIn :: a } deriving (Show)
 type LoggedInUser = LoggedIn User
 
 data RecordType = SingleRecord | AverageOf5Record | AverageOf12Record deriving (Enum, Bounded, Ord, Eq)
