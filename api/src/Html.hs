@@ -5,6 +5,7 @@ module Html
     ( usersPage
     , userPage
     , postPage
+    , recordsPage
     , rootPage
     ) where
 
@@ -29,6 +30,7 @@ import qualified Data.Aeson as JSON
 import qualified Crypto.Hash.MD5 as MD5
 import Utils
 import Frontend.FormViewHelpers
+import Frontend.PuzzleNavigation
 
 data Page = Home | Timer | Users | Records deriving (Eq)
 
@@ -47,9 +49,8 @@ navigationLink Timer = "/puzzles/3x3x3/timer"
 navigationLink Users = usersLink Nothing
 navigationLink Records = "/puzzles/3x3x3/records"
 
-
-withLayout :: Maybe LoggedInUser -> Page -> T.Text -> Html -> Html
-withLayout currentUser currentPage title' inner =
+withSubnavigationLayout :: Maybe LoggedInUser -> Page -> T.Text -> Maybe Html -> Html -> Html
+withSubnavigationLayout currentUser currentPage title' subnav inner =
     let
       selectedClass item' = if item' == currentPage then "selected" else ""
       navigationItem item' = li ! class_ (toValue (selectedClass item' :: T.Text)) $
@@ -90,10 +91,14 @@ withLayout currentUser currentPage title' inner =
                   h1 $ a ! href "/" $ "Cubemania"
                   q "Save The World - Solve The Puzzle"
               navigation
+              fromMaybe empty subnav
               H.div ! A.id "flash" ! class_ "flash notice" ! A.style "display:none" $ p mempty
               section ! A.id "content" $ H.div ! class_ "center" $ inner
               footer'
               script ! type_ "text/javascript" $ "var uvOptions = {};\n  (function() {\n    var uv = document.createElement('script'); uv.type = 'text/javascript'; uv.async = true;\n    uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/XmjQy7dHIjHW3AR0O50Cyw.js';\n    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);\n  })();"
+
+withLayout :: Maybe LoggedInUser -> Page -> T.Text -> Html -> Html
+withLayout currentUser currentPage title' inner = withSubnavigationLayout currentUser currentPage title' Nothing inner
 
 usersPage :: Maybe LoggedInUser -> [SimpleUser] -> Int -> PageNumber -> Maybe T.Text -> Html
 usersPage currentUser users maxSinglesCount currentPageNumber query = withLayout currentUser Users "Users" $
@@ -105,7 +110,7 @@ usersPage currentUser users maxSinglesCount currentPageNumber query = withLayout
             H.div ! class_ "pagination" $ a ! href (toValue (usersLink (Just (nextPage currentPageNumber)))) $ "Show more"
   where
     userLi user@SimpleUser{..} = li ! A.style (toValue $ "font-size: " ++ show (fontSize user maxSinglesCount) ++ "em") $ do
-        a ! href (toValue ("/users/" <> simpleUserSlug)) $ toHtml simpleUserName
+        a ! href (toValue $ userLink simpleUserSlug) $ toHtml simpleUserName
         space
         small ! class_ "singles" $ toHtml $ show simpleUserSinglesCount
     fontSize :: SimpleUser -> Int -> Float
@@ -200,6 +205,62 @@ userPage cu user@User{..} records ownRecords activity wastedTime = withLayout cu
     isSelf _ = False
 
     activityJSON = toValue $ TE.decodeUtf8 $ toStrict $ JSON.encode activity
+
+mapFromList :: Ord a => [(a, b)] -> Map.Map a [b]
+mapFromList x = Map.fromListWith (++) (fmap (\(k, p) -> (k, [p])) x)
+
+recordsPage :: Maybe LoggedInUser -> (Puzzle, Kind) -> RecordType -> [(Record, SimpleUser)] -> Int -> Int -> [(Kind, Puzzle)]-> Html
+recordsPage currentUser (puzzle, kind) type' records page recordsCount foo = withSubnavigationLayout currentUser Records (puzzleName puzzle <> " Records") (Just $ puzzleNavigation (mapFromList foo) (puzzle, kind)) $ do
+    p ! class_ "tabs" $
+        mapM_ tabEntry allRecordTypes
+    table ! A.id "records" $ tbody $
+        mapM_ recordEntry $ zip [((page - 1) * 50 + 1)..(page * 50)] records
+    pagination
+  where
+    tabEntry t =
+        a ! href (toValue $ recordsLink (puzzleSlug puzzle) (Just t) Nothing)
+          ! (if t == type' then class_ "selected" else mempty) $ do
+            toHtml t
+            space
+    recordEntry (rank, (Record{..}, SimpleUser{..})) =
+        tr ! class_ (toValue $ "record rank" <> show rank) $ do
+            th $ H.span $ toHtml rank
+            td $ strong $ toHtml $ Utils.formatTime recordTime
+            td $ H.cite $ a ! href (toValue $ userLink simpleUserSlug) $ toHtml simpleUserName
+            td $ small $ toHtml $ formatDate recordSetAt
+            td $ blockquote $ toHtml recordComment
+    pagination =
+        H.div ! class_ "pagination" $ H.div ! class_ "pagination" $ do
+            previousButton
+            maybeSquashButtons firstPages
+            em ! class_ "current" $ toHtml page
+            maybeSquashButtons lastPages
+            nextButton
+    allPages = [1..lastPage]
+    (firstPages, lastPages) = let (a, b) = splitAt page allPages in (init a, b)
+    lastPage = recordsCount `Prelude.div` 50 + 1
+    maybeSquashButtons pages =
+        if length pages > 5 then do
+            mapM_ middleButton $ take 2 pages
+            H.span ! class_ "gap" $ "…"
+            mapM_ middleButton $ drop (length pages - 2) pages
+        else
+            mapM_ middleButton pages
+    middleButton number =
+        if number == page then
+            em ! class_ "current" $ toHtml number
+        else
+            a ! href (toValue $ recordsLink (puzzleSlug puzzle) (Just type') (Just $ PageNumber number)) $ toHtml number
+    previousButton =
+        if page <= 1 then
+            H.span ! class_ "previous_page disabled" $ "← Previous"
+        else
+            a ! class_ "previous_page" ! href (toValue $ recordsLink (puzzleSlug puzzle) (Just type') (Just $ PageNumber (page - 1))) $ "← Previous"
+    nextButton =
+        if page >= lastPage then
+            H.span ! class_ "next_page disabled" $ "Next →"
+        else
+            a ! class_ "next_page" ! rel "next" ! href (toValue $ recordsLink (puzzleSlug puzzle) (Just type') (Just $ PageNumber (page + 1))) $ "Next →"
 
 rootPage :: Maybe LoggedInUser -> Maybe (Announcement, [Comment]) -> Html
 rootPage currentUser post = withLayout currentUser Home "Home" $ do

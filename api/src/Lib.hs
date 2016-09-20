@@ -126,11 +126,11 @@ app :: Config.Configuration -> Application
 app config = serveWithContext api (apiContext config) $ appToServer config
 
 allHandlers :: ServerT CubemaniaAPI CubemaniaApp
-allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postHandler :<|> postCommentHandler :<|> rootHandler
+allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postHandler :<|> postCommentHandler :<|> recordsHandler :<|> rootHandler
   where
     jsonApiHandler = puzzleHandler :<|> usersApiHandler
     puzzleHandler puzzleId = singlesHandler puzzleId
-                        :<|> recordsHandler puzzleId
+                        :<|> recordsApiHandler puzzleId
                         :<|> chartHandler puzzleId
                         :<|> protectedHandlers puzzleId
     usersHandler currentUser query page = do
@@ -140,7 +140,6 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postHandler
             Nothing -> Db.runDb $ Db.getUsers (fromPageNumber pageNumber)
         maxSinglesCount <- Db.runDb Db.maxSinglesCount
         return $ H.usersPage currentUser users (fromMaybe 1 maxSinglesCount) pageNumber query
-    --userHandler :: Maybe LoggedInUser -> UserSlug -> CubemaniaApp Html
     userHandler currentUser userSlug = do
         let maybeUser (Just (LoggedIn u)) = Just u
             maybeUser Nothing = Nothing
@@ -178,6 +177,16 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postHandler
         announcement <- Db.runDb Db.getLatestAnnouncement
         comments <- maybe (return []) (\a -> Db.runDb $ Db.getCommentsForAnnouncement (announcementId a)) announcement
         return $ H.rootPage currentUser ((\a -> (a, comments)) <$> announcement)
+    recordsHandler currentUser slug type' page = do
+        puzzle <- grabOrNotFound $ Db.runDb $ Db.getPuzzleBySlug slug
+        -- TODO: join with puzzle fetch
+        kind <- grabOrNotFound $ Db.runDb $ Db.getKindById $ puzzleKindId puzzle
+        let pageAsNumber = fromMaybe 1 (fromPageNumber <$> page)
+        let recordType = fromMaybe AverageOf5Record type'
+        records <- Db.runDb $ Db.getRecordsForPuzzleAndType (puzzleId puzzle) recordType pageAsNumber
+        recordsCount <- Db.runDb $ Db.getRecordCountForPuzzleAndType (puzzleId puzzle) recordType
+        allPuzzles <- Db.runDb Db.getAllPuzzles
+        pure $ H.recordsPage currentUser (puzzle, kind) recordType records pageAsNumber recordsCount allPuzzles
     protectedHandlers puzzleId user = submitSingleHandler puzzleId user
                                  :<|> deleteSingleHandler puzzleId user
                                  :<|> updateSingleHandler puzzleId user
@@ -188,8 +197,8 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postHandler
             Just a -> return a
             Nothing -> notFound
 
-recordsHandler :: PuzzleId -> Maybe Int -> Maybe UserId -> CubemaniaApp [Record]
-recordsHandler puzzleId _page userId =
+recordsApiHandler :: PuzzleId -> Maybe Int -> Maybe UserId -> CubemaniaApp [Record]
+recordsApiHandler puzzleId _page userId =
     case userId of
         Nothing -> return []
         Just uid -> Db.runDb $ Db.getRecords uid puzzleId

@@ -62,6 +62,8 @@ services:
       - "9090:9090"
     links:
       - db
+    volumes:
+      - ./api/dist:/app
     environment:
       - DATABASE_URL=postgres://postgres@db/cubemania_development
 volumes:

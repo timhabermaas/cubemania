@@ -44,6 +44,21 @@ instance FromHttpApiData PuzzleId where
 instance ToJSON PuzzleId
 instance FromField PuzzleId where
     fromField f s = PuzzleId <$> fromField f s
+instance ToField PuzzleId where
+    toField (PuzzleId id) = toField id
+newtype PuzzleSlug = PuzzleSlug Text deriving (Show, Eq)
+instance FromField PuzzleSlug where
+    fromField f s = PuzzleSlug <$> fromField f s
+instance ToField PuzzleSlug where
+    toField (PuzzleSlug slug) = toField slug
+instance FromHttpApiData PuzzleSlug where
+    parseUrlPiece t = PuzzleSlug <$> parseUrlPiece t
+
+newtype KindId = KindId Int deriving Eq
+instance FromField KindId where
+    fromField f s = KindId <$> fromField f s
+instance ToField KindId where
+    toField (KindId id) = toField id
 
 newtype Limit = Limit Int deriving (Generic)
 instance FromField Limit where
@@ -81,13 +96,14 @@ instance ToField UserId where
     toField (UserId id) = toField id
 instance FromHttpApiData UserId where
     parseUrlPiece u = UserId <$> parseUrlPiece u
-newtype UserSlug = UserSlug Text deriving (Show)
+newtype UserSlug = UserSlug Text deriving (Show, Generic)
 instance ToField UserSlug where
     toField (UserSlug slug) = toField slug
 instance FromField UserSlug where
     fromField f s = UserSlug <$> fromField f s
 instance FromHttpApiData UserSlug where
     parseUrlPiece u = UserSlug <$> parseUrlPiece u
+instance ToJSON UserSlug
 
 fromSlug :: UserSlug -> Text
 fromSlug (UserSlug s) = s
@@ -204,7 +220,7 @@ instance ToJSON RecordSingle where
 
 data SimpleUser = SimpleUser
     { simpleUserId :: UserId
-    , simpleUserSlug :: Text
+    , simpleUserSlug :: UserSlug
     , simpleUserName :: Text
     , simpleUserSinglesCount :: Int
     }
@@ -263,8 +279,12 @@ instance ToMarkup RecordType where
     toMarkup AverageOf12Record = toMarkup ("Average of 12" :: Text)
 
 allRecordTypes :: [RecordType]
-allRecordTypes = [(minBound :: RecordType)..]
+allRecordTypes = [minBound..]
 
+instance ToField RecordType where
+    toField SingleRecord = toField (1 :: Int)
+    toField AverageOf5Record = toField (5 :: Int)
+    toField AverageOf12Record = toField (12 :: Int)
 instance FromField RecordType where
     fromField f s = do
         a <- fromField f s
@@ -279,6 +299,21 @@ instance ToJSON RecordType where
     toJSON AverageOf5Record = String "Average of 5"
     toJSON AverageOf12Record = String "Average of 12"
 
+instance FromHttpApiData RecordType where
+    parseUrlPiece i = do
+        s <- parseUrlPiece i
+        case (s :: String) of
+          "single" -> Right SingleRecord
+          "avg5" -> Right AverageOf5Record
+          "avg12" -> Right AverageOf12Record
+          _ -> Left "is not a valid RecordType"
+
+instance ToHttpApiData RecordType where
+    toQueryParam SingleRecord = toQueryParam ("single" :: String)
+    toQueryParam AverageOf5Record = toQueryParam ("avg5" :: String)
+    toQueryParam AverageOf12Record = toQueryParam ("avg12" :: String)
+
+
 data Record = Record
     { recordId :: Int
     , recordTime :: DurationInMs
@@ -286,11 +321,12 @@ data Record = Record
     , recordPuzzleId :: PuzzleId
     , recordUserId :: UserId
     , recordType :: RecordType
+    , recordSetAt :: UTCTime
     , recordSingles :: [RecordSingle] -- TODO: remove me/use tuple for joins
     }
 
 instance FromRow Record where
-    fromRow = Record <$> field <*> field <*> field <*> field <*> field <*> field <*> pure []
+    fromRow = Record <$> field <*> field <*> field <*> field <*> field <*> field <*> (localTimeToUTC utc <$> field) <*> pure []
 
 instance ToJSON Record where
     toJSON Record{..} = object
@@ -307,15 +343,17 @@ data Puzzle = Puzzle
     { puzzleId :: PuzzleId
     , puzzleName :: Text
     , puzzleCssPosition :: Int
+    , puzzleSlug :: PuzzleSlug
+    , puzzleKindId :: KindId
     } deriving (Eq)
 
 instance FromRow Puzzle where
-    fromRow = Puzzle <$> field <*> field <*> field
+    fromRow = Puzzle <$> field <*> field <*> field <*> field <*> field
 
 instance Ord Puzzle where
     left `compare` right =
         let toTuple p = (puzzleName p, puzzleId p, puzzleCssPosition p)
-        in (toTuple left) `compare` (toTuple right)
+        in toTuple left `compare` toTuple right
 
 
 data Kind = Kind
@@ -328,7 +366,7 @@ data Kind = Kind
 instance Ord Kind where
     left `compare` right =
         let toTuple k = (kindShortName k, kindName k, kindId k, kindCssPosition k)
-        in (toTuple left) `compare` (toTuple right)
+        in toTuple left `compare` toTuple right
 
 instance FromRow Kind where
     fromRow = Kind <$> field <*> field <*> field <*> field
