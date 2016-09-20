@@ -111,35 +111,54 @@ usersPage currentUser users maxSinglesCount currentPageNumber query = withLayout
     fontSize :: SimpleUser -> Int -> Float
     fontSize SimpleUser{..} maxSinglesCount' = fromIntegral simpleUserSinglesCount / fromIntegral maxSinglesCount' * 1.4 + 0.6
 
-userPage :: Maybe (LoggedIn User) -> User -> Map.Map (Puzzle, Kind) (Map.Map RecordType DurationInMs) -> Activity -> Int -> Html
-userPage cu user@User{..} records activity wastedTime = withLayout cu Users "User" $
+userPage :: Maybe (LoggedIn User) -> User -> Map.Map (Puzzle, Kind) (Map.Map RecordType DurationInMs) -> Maybe (Map.Map (Puzzle, Kind) (Map.Map RecordType DurationInMs)) -> Activity -> Int -> Html
+userPage cu user@User{..} records ownRecords activity wastedTime = withLayout cu Users "User" $
     H.div ! A.id "user" $ do
         H.div ! class_ "admin" $ mempty
         h1 $ do
             userImage Large user
             space
             toHtml userName
-            small $ toHtml $ "has spent " <> (wastedTimeInText wastedTime) <> " solving puzzles."
+            small $ toHtml $ "has spent " <> (humanizeTimeInterval wastedTime) <> " solving puzzles."
         wcaLinkSection cu
         h3 "Activity"
         section ! A.id "activity" ! dataAttribute "activity" activityJSON $ mempty
         h3 "Records"
-        ul ! class_ "records" $ sequence_ $ Map.elems $ Map.mapWithKey recordWidget records
+        ul ! class_ "records" $
+            sequence_ $ Map.elems $ Map.mapWithKey (\k v -> recordWidget k v (ownRecords >>= Map.lookup k) (isJust ownRecords)) records
 
   where
-    wastedTimeInText t = humanizeTimeInterval t
-    recordEntry :: RecordType -> Maybe DurationInMs -> Html
-    recordEntry type' (Just time) =
-        tr $ do
-            th ! class_ "type" $ toHtml type'
-            td $ strong $ toHtml $ Utils.formatTime time
-    recordEntry type' Nothing =
-        tr $ do
-            th ! class_ "type" $ toHtml type'
-            td $ small "None"
+    -- TODO: (recordRow _ _ Nothing True) makes no sense, fix the types.
+    --       boolean blindness...
+    recordRow :: RecordType -> Maybe DurationInMs -> Maybe DurationInMs -> Bool -> Html
+    recordRow type' time ownTime comparison =
+        if comparison then
+            tr $ do
+                th ! class_ "type" $ toHtml $ shortRecordTypeName type'
+                recordComparision ownTime time
+                recordEntry time
+        else
+            tr $ do
+                th ! class_ "type" $ toHtml type'
+                recordEntry time
+    recordEntry :: Maybe DurationInMs -> Html
+    recordEntry (Just time) =
+        td $ strong $ toHtml $ Utils.formatTime time
+    recordEntry Nothing =
+        td $ small "None"
+    recordComparision :: Maybe DurationInMs -> Maybe DurationInMs -> Html
+    recordComparision (Just t1) (Just t2)
+        | t1 < t2 = td ! class_ "faster" $ strong $ toHtml $ Utils.formatTime t1
+        | otherwise = td ! class_ "slower" $ strong $ toHtml $ Utils.formatTime t1
+    recordComparision (Just t1) Nothing =
+        td ! class_ "faster" $ strong $ toHtml $ Utils.formatTime t1
+    recordComparision Nothing (Just t2) =
+        td ! class_ "slower" $ small "None"
+    recordComparision Nothing Nothing =
+        recordEntry Nothing
 
-    recordWidget :: (Puzzle, Kind) -> Map.Map RecordType DurationInMs -> Html
-    recordWidget (puzzle, kind) records =
+    recordWidget :: (Puzzle, Kind) -> Map.Map RecordType DurationInMs -> Maybe (Map.Map RecordType DurationInMs) -> Bool -> Html
+    recordWidget (puzzle, kind) records ownRecords comparison =
         li ! class_ "record" $ do
             H.div ! class_ "puzzle" $ do
                 H.div ! class_ (toValue $ "puzzle-image " <> posClass (puzzleCssPosition puzzle)) $ H.div ! class_ (toValue $ "kind-image " <> posClass (kindCssPosition kind)) $ mempty
@@ -148,8 +167,14 @@ userPage cu user@User{..} records activity wastedTime = withLayout cu Users "Use
                     space
                     small $ toHtml $ fromMaybe "" $ kindShortName kind
             table $ do
-                thead $ tr mempty
-                tbody $ sequence_ $ fmap (\type' -> recordEntry type' (Map.lookup type' records)) allRecordTypes
+                if comparison then
+                    thead $ tr $ do
+                        th mempty
+                        th "Me"
+                        th $ toHtml userName
+                else
+                    thead $ tr mempty
+                tbody $ sequence_ $ fmap (\type' -> recordRow type' (Map.lookup type' records) (ownRecords >>= Map.lookup type') comparison) allRecordTypes
     posClass :: Int -> T.Text
     posClass n = "pos" <> T.pack (show n)
     wcaLinkSection :: Maybe (LoggedIn User) -> Html

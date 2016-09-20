@@ -140,13 +140,21 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postHandler
             Nothing -> Db.runDb $ Db.getUsers (fromPageNumber pageNumber)
         maxSinglesCount <- Db.runDb Db.maxSinglesCount
         return $ H.usersPage currentUser users (fromMaybe 1 maxSinglesCount) pageNumber query
+    --userHandler :: Maybe LoggedInUser -> UserSlug -> CubemaniaApp Html
     userHandler currentUser userSlug = do
+        let maybeUser (Just (LoggedIn u)) = Just u
+            maybeUser Nothing = Nothing
         user <- grabOrNotFound $ Db.runDb $ Db.getUserBySlug userSlug
         records <- Db.runDb $ Db.getRecordsForUser (userId user)
+        let u' = maybeUser currentUser
+        ownRecords <- if isJust currentUser && u' /= Just user then
+                          Just <$> (Db.runDb $ Db.getRecordsForUser (userId (fromJust u')))
+                      else
+                          pure Nothing
         activity <- Db.runDb $ Db.getActivity (userId user)
         store <- asks Config.wastedTimeStore
         wastedTime <- fromMaybe 0 <$> (liftIO $ atomically $ getWastedTimeFor store (userId user))
-        return $ H.userPage currentUser user records activity wastedTime
+        return $ H.userPage currentUser user records ownRecords activity wastedTime
     postHandler currentUser pId = do
         form <- runGetForm "comment" commentForm
         post <- grabOrNotFound $ Db.runDb $ Db.getAnnouncement pId

@@ -252,6 +252,11 @@ type LoggedInUser = LoggedIn User
 
 data RecordType = SingleRecord | AverageOf5Record | AverageOf12Record deriving (Enum, Bounded, Ord, Eq)
 
+shortRecordTypeName :: RecordType -> Text
+shortRecordTypeName SingleRecord = "Single"
+shortRecordTypeName AverageOf5Record = "Avg5"
+shortRecordTypeName AverageOf12Record = "Avg12"
+
 instance ToMarkup RecordType where
     toMarkup SingleRecord = toMarkup ("Single" :: Text)
     toMarkup AverageOf5Record = toMarkup ("Average of 5" :: Text)
