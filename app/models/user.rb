@@ -139,6 +139,17 @@ class User < ActiveRecord::Base
     end
   end
 
+  def as_json(*options)
+    {
+      id: id,
+      name: name,
+      singles_count: singles_count,
+      slug: slug,
+      time_zone: time_zone,
+      wca: wca
+    }
+  end
+
   private
     def flush_passwords
       @password = @password_confirmation = nil
