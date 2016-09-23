@@ -45,6 +45,7 @@ type JsonApi = "api" :> PuzzleApi
 type UsersPath = "users" :> QueryParam "q" T.Text :> QueryParam "page" PageNumber :> Get '[HTML] Html
 type UserPath = "users" :> Capture "userId" UserSlug :> Get '[HTML] Html
 type PostPath = "posts" :> Capture "postId" AnnouncementId :> Get '[HTML] Html
+type PostsPath = "posts" :> Get '[HTML] Html
 type RecordsPath = "puzzles" :> Capture "puzzleId" PuzzleSlug :> QueryParam "type" RecordType :> QueryParam "page" PageNumber :> "records" :> Get '[HTML] Html
 type TimerPath = "puzzles" :> Capture "puzzleId" PuzzleSlug :> "timer" :> Get '[HTML] Html
 
@@ -52,6 +53,7 @@ type RootPath = Get '[HTML] Html
 type CubemaniaAPI = JsonApi
                :<|> AuthProtect "cookie-auth-optional" :> UsersPath
                :<|> AuthProtect "cookie-auth-optional" :> UserPath
+               :<|> AuthProtect "cookie-auth-optional" :> PostsPath
                :<|> AuthProtect "cookie-auth-optional" :> PostPath
                :<|> AuthProtect "cookie-auth" :> "posts" :> Capture "postId" AnnouncementId :> "comments" :> ReqBody '[FormUrlEncoded] [(T.Text, T.Text)] :> Post '[HTML] Html
                :<|> AuthProtect "cookie-auth-optional" :> RecordsPath

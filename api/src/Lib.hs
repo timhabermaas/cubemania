@@ -126,7 +126,7 @@ app :: Config.Configuration -> Application
 app config = serveWithContext api (apiContext config) $ appToServer config
 
 allHandlers :: ServerT CubemaniaAPI CubemaniaApp
-allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postHandler :<|> postCommentHandler :<|> recordsHandler :<|> timerHandler :<|> rootHandler
+allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postsHandler :<|> postHandler :<|> postCommentHandler :<|> recordsHandler :<|> timerHandler :<|> rootHandler
   where
     jsonApiHandler = puzzleHandler :<|> usersApiHandler
     puzzleHandler puzzleId = singlesHandler puzzleId
@@ -154,6 +154,13 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postHandler
         store <- asks Config.wastedTimeStore
         wastedTime <- fromMaybe 0 <$> (liftIO $ atomically $ getWastedTimeFor store (userId user))
         return $ H.userPage currentUser user records ownRecords activity wastedTime
+    postsHandler currentUser = do
+        posts <- Db.runDb $ Db.getAnnouncements
+        foo <- mapM (\p -> do
+                      author <- Db.runDb $ Db.getUserById $ announcementUserId p
+                      commentsCount <- length <$> Db.runDb (Db.getCommentsForAnnouncement $ announcementId p)
+                      pure (p, author, commentsCount)) posts
+        pure $ H.postsPage currentUser foo
     postHandler currentUser pId = do
         form <- runGetForm "comment" commentForm
         post <- grabOrNotFound $ Db.runDb $ Db.getAnnouncement pId

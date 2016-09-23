@@ -23,6 +23,7 @@ module Db
     , updateSingle
     , getLatestAnnouncement
     , getAnnouncement
+    , getAnnouncements
     , getCommentsForAnnouncement
     , postComment
     , getActivity
@@ -128,6 +129,10 @@ getAnnouncement :: (MonadIO m) => AnnouncementId -> Connection -> m (Maybe Annou
 getAnnouncement id conn = do
     posts <- liftIO $ query conn "SELECT id, title, content, user_id, created_at FROM posts WHERE id = ?" (Only id)
     return $ safeHead posts
+
+getAnnouncements :: (MonadIO m) => Connection -> m [Announcement]
+getAnnouncements conn =
+    liftIO $ query_ conn "SELECT id, title, content, user_id, created_at FROM posts ORDER BY created_at DESC"
 
 getCommentsForAnnouncement :: (MonadIO m) => AnnouncementId -> Connection -> m [Comment]
 getCommentsForAnnouncement id conn = do

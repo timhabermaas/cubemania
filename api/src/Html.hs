@@ -5,6 +5,7 @@ module Html
     ( usersPage
     , userPage
     , postPage
+    , postsPage
     , recordsPage
     , rootPage
     , timerPage
@@ -318,6 +319,21 @@ formatTime = DF.formatTime DF.defaultTimeLocale "%B %d, %Y at %H:%M"
 
 formatDate :: DF.FormatTime t => t -> String
 formatDate = DF.formatTime DF.defaultTimeLocale "%B %d, %Y"
+
+postsPage :: Maybe LoggedInUser -> [(Announcement, Maybe User, Int)] -> Html
+postsPage currentUser posts = withLayout currentUser Home "Posts" $ do
+    mapM_ singlePost posts
+  where
+    singlePost (Announcement{..}, author, commentsCount) =
+        article ! class_ "post" $ do
+            h1 $ a ! href (toValue $ postLink announcementId) $ toHtml announcementTitle
+            section ! class_ "text" $ markdown def $ LT.fromStrict announcementContent
+            H.div ! class_ "meta" $ do
+                toHtml $ formatDate announcementCreatedAt
+                " · "
+                H.cite $ maybeUserLink author
+                " · "
+                a ! href (toValue $ postLinkToComments announcementId) $ toHtml $ show commentsCount <> " Comments »"
 
 postPage :: Maybe LoggedInUser -> Announcement -> Maybe User -> [(Comment, Maybe User)] -> View T.Text -> Html
 postPage currentUser Announcement{..} author comments form = withLayout currentUser Home "Post" $ do
