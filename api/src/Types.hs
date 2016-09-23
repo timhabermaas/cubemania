@@ -236,12 +236,23 @@ instance ToJSON SimpleUser where
 instance FromRow SimpleUser where
     fromRow = SimpleUser <$> field <*> field <*> field <*> field
 
+data UserRole = AdminRole | ModeratorRole | UserRole | BetaUserRole deriving (Eq, Show)
+instance FromField UserRole where
+    fromField f s = do
+        s <- fromField f s
+        case (s :: String) of
+            "user" -> pure UserRole
+            "moderator" -> pure ModeratorRole
+            "admin" -> pure AdminRole
+            "beta_user" -> pure BetaUserRole
+            _ -> mzero
+
 data User = User
     { userId :: UserId
     , userName :: Text
     , userSlug :: UserSlug
     , userEmail :: Text
-    , userRole :: Text -- TODO: Use sum type
+    , userRole :: UserRole
     , userWca :: Maybe Text
     , userIgnored :: Bool
     , userWastedTime :: Integer
