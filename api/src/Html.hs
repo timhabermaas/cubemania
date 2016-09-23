@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE RecordWildCards   #-}
 
 module Html
     ( usersPage
@@ -7,6 +7,7 @@ module Html
     , postPage
     , recordsPage
     , rootPage
+    , timerPage
     ) where
 
 import Data.Monoid ((<>))
@@ -31,6 +32,7 @@ import qualified Crypto.Hash.MD5 as MD5
 import Utils
 import Frontend.FormViewHelpers
 import Frontend.PuzzleNavigation
+import Frontend.BackboneTemplates
 
 data Page = Home | Timer | Users | Records deriving (Eq)
 
@@ -210,7 +212,7 @@ mapFromList :: Ord a => [(a, b)] -> Map.Map a [b]
 mapFromList x = Map.fromListWith (++) (fmap (\(k, p) -> (k, [p])) x)
 
 recordsPage :: Maybe LoggedInUser -> (Puzzle, Kind) -> RecordType -> [(Record, SimpleUser)] -> Int -> Int -> [(Kind, Puzzle)]-> Html
-recordsPage currentUser (puzzle, kind) type' records page recordsCount foo = withSubnavigationLayout currentUser Records (puzzleName puzzle <> " Records") (Just $ puzzleNavigation (mapFromList foo) (puzzle, kind)) $ do
+recordsPage currentUser (puzzle, kind) type' records page recordsCount foo = withSubnavigationLayout currentUser Records (puzzleName puzzle <> " Records") (Just $ puzzleNavigation (mapFromList foo) (puzzle, kind) (recordsLink Nothing Nothing)) $ do
     p ! class_ "tabs" $
         mapM_ tabEntry allRecordTypes
     table ! A.id "records" $ tbody $
@@ -218,7 +220,7 @@ recordsPage currentUser (puzzle, kind) type' records page recordsCount foo = wit
     pagination
   where
     tabEntry t =
-        a ! href (toValue $ recordsLink (puzzleSlug puzzle) (Just t) Nothing)
+        a ! href (toValue $ recordsLink (Just t) Nothing (puzzleSlug puzzle))
           ! (if t == type' then class_ "selected" else mempty) $ do
             toHtml t
             space
@@ -250,17 +252,17 @@ recordsPage currentUser (puzzle, kind) type' records page recordsCount foo = wit
         if number == page then
             em ! class_ "current" $ toHtml number
         else
-            a ! href (toValue $ recordsLink (puzzleSlug puzzle) (Just type') (Just $ PageNumber number)) $ toHtml number
+            a ! href (toValue $ recordsLink (Just type') (Just $ PageNumber number) (puzzleSlug puzzle)) $ toHtml number
     previousButton =
         if page <= 1 then
             H.span ! class_ "previous_page disabled" $ "← Previous"
         else
-            a ! class_ "previous_page" ! href (toValue $ recordsLink (puzzleSlug puzzle) (Just type') (Just $ PageNumber (page - 1))) $ "← Previous"
+            a ! class_ "previous_page" ! href (toValue $ recordsLink (Just type') (Just $ PageNumber (page - 1)) (puzzleSlug puzzle)) $ "← Previous"
     nextButton =
         if page >= lastPage then
             H.span ! class_ "next_page disabled" $ "Next →"
         else
-            a ! class_ "next_page" ! rel "next" ! href (toValue $ recordsLink (puzzleSlug puzzle) (Just type') (Just $ PageNumber (page + 1))) $ "Next →"
+            a ! class_ "next_page" ! rel "next" ! href (toValue $ recordsLink (Just type') (Just $ PageNumber (page + 1)) (puzzleSlug puzzle)) $ "Next →"
 
 rootPage :: Maybe LoggedInUser -> Maybe (Announcement, [Comment]) -> Html
 rootPage currentUser post = withLayout currentUser Home "Home" $ do
@@ -351,6 +353,15 @@ postPage currentUser Announcement{..} author comments form = withLayout currentU
                 maybeUserLink author
             small $ toHtml $ Html.formatTime commentCreatedAt
             H.div ! class_ "text" $ p $ toHtml commentContent
+
+timerPage :: Maybe LoggedInUser -> (Puzzle, Kind) -> [(Kind, Puzzle)] -> Html
+timerPage currentUser (puzzle, kind) foo = withSubnavigationLayout currentUser Timer (puzzleName puzzle <> " Timer") (Just $ puzzleNavigation (mapFromList foo) (puzzle, kind) timerLink) $ do
+    H.div ! dataAttribute "puzzle" (toValue $ TE.decodeUtf8 $ toStrict $ JSON.encode $ PuzzleWithNestedKind puzzle kind)
+          ! dataAttribute "user-data" (toValue $ TE.decodeUtf8 $ toStrict $ JSON.encode currentUser)
+          ! A.id "backbone-container" $
+        p ! class_ "suggestion" $
+            "Enable JavaScript to fully enjoy Cubemania!"
+    preEscapedToHtml $ backboneTemplates
 
 space :: Html
 space = toHtml (" " :: T.Text) -- Type annotation necessary for ToMarkup class

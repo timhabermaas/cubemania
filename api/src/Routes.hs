@@ -15,6 +15,7 @@ module Routes
     , postLinkWithComments
     , wcaLink
     , recordsLink
+    , timerLink
     ) where
 
 import Types
@@ -45,6 +46,7 @@ type UsersPath = "users" :> QueryParam "q" T.Text :> QueryParam "page" PageNumbe
 type UserPath = "users" :> Capture "userId" UserSlug :> Get '[HTML] Html
 type PostPath = "posts" :> Capture "postId" AnnouncementId :> Get '[HTML] Html
 type RecordsPath = "puzzles" :> Capture "puzzleId" PuzzleSlug :> QueryParam "type" RecordType :> QueryParam "page" PageNumber :> "records" :> Get '[HTML] Html
+type TimerPath = "puzzles" :> Capture "puzzleId" PuzzleSlug :> "timer" :> Get '[HTML] Html
 
 type RootPath = Get '[HTML] Html
 type CubemaniaAPI = JsonApi
@@ -53,6 +55,7 @@ type CubemaniaAPI = JsonApi
                :<|> AuthProtect "cookie-auth-optional" :> PostPath
                :<|> AuthProtect "cookie-auth" :> "posts" :> Capture "postId" AnnouncementId :> "comments" :> ReqBody '[FormUrlEncoded] [(T.Text, T.Text)] :> Post '[HTML] Html
                :<|> AuthProtect "cookie-auth-optional" :> RecordsPath
+               :<|> AuthProtect "cookie-auth-optional" :> TimerPath
                :<|> AuthProtect "cookie-auth-optional" :> RootPath
 
 type instance AuthServerData (AuthProtect "cookie-auth") = LoggedIn User
@@ -87,8 +90,11 @@ postLinkWithComments aId = postLink aId <> "/comments"
 wcaLink :: T.Text -> T.Text
 wcaLink id = "http://www.worldcubeassociation.org/results/p.php?i=" <> id
 
-recordsLink :: PuzzleSlug -> Maybe RecordType -> Maybe PageNumber -> T.Text
-recordsLink (PuzzleSlug slug) type' page =
+timerLink :: PuzzleSlug -> T.Text
+timerLink (PuzzleSlug slug) = "/puzzles/" <> slug <> "/timer"
+
+recordsLink :: Maybe RecordType -> Maybe PageNumber -> PuzzleSlug -> T.Text
+recordsLink type' page (PuzzleSlug slug) =
     "/puzzles/" <> slug <> "/records" <> queryPart type' page
   where
     queryPart (Just type') (Just p) = "?type=" <> toQueryParam type' <> "&page=" <> toQueryParam p

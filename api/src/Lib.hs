@@ -126,7 +126,7 @@ app :: Config.Configuration -> Application
 app config = serveWithContext api (apiContext config) $ appToServer config
 
 allHandlers :: ServerT CubemaniaAPI CubemaniaApp
-allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postHandler :<|> postCommentHandler :<|> recordsHandler :<|> rootHandler
+allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postHandler :<|> postCommentHandler :<|> recordsHandler :<|> timerHandler :<|> rootHandler
   where
     jsonApiHandler = puzzleHandler :<|> usersApiHandler
     puzzleHandler puzzleId = singlesHandler puzzleId
@@ -187,6 +187,11 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postHandler
         recordsCount <- Db.runDb $ Db.getRecordCountForPuzzleAndType (puzzleId puzzle) recordType
         allPuzzles <- Db.runDb Db.getAllPuzzles
         pure $ H.recordsPage currentUser (puzzle, kind) recordType records pageAsNumber recordsCount allPuzzles
+    timerHandler currentUser slug = do
+        puzzle <- grabOrNotFound $ Db.runDb $ Db.getPuzzleBySlug slug
+        kind <- grabOrNotFound $ Db.runDb $ Db.getKindById $ puzzleKindId puzzle
+        allPuzzles <- Db.runDb Db.getAllPuzzles
+        pure $ H.timerPage currentUser (puzzle, kind) allPuzzles
     protectedHandlers puzzleId user = submitSingleHandler puzzleId user
                                  :<|> deleteSingleHandler puzzleId user
                                  :<|> updateSingleHandler puzzleId user

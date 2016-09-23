@@ -46,19 +46,21 @@ instance FromField PuzzleId where
     fromField f s = PuzzleId <$> fromField f s
 instance ToField PuzzleId where
     toField (PuzzleId id) = toField id
-newtype PuzzleSlug = PuzzleSlug Text deriving (Show, Eq)
+newtype PuzzleSlug = PuzzleSlug Text deriving (Show, Eq, Generic)
 instance FromField PuzzleSlug where
     fromField f s = PuzzleSlug <$> fromField f s
 instance ToField PuzzleSlug where
     toField (PuzzleSlug slug) = toField slug
+instance ToJSON PuzzleSlug
 instance FromHttpApiData PuzzleSlug where
     parseUrlPiece t = PuzzleSlug <$> parseUrlPiece t
 
-newtype KindId = KindId Int deriving Eq
+newtype KindId = KindId Int deriving (Eq, Generic)
 instance FromField KindId where
     fromField f s = KindId <$> fromField f s
 instance ToField KindId where
     toField (KindId id) = toField id
+instance ToJSON KindId
 
 newtype Limit = Limit Int deriving (Generic)
 instance FromField Limit where
@@ -261,6 +263,14 @@ data User = User
 instance Eq User where
     (==) u1 u2 = userId u1 == userId u2
 
+instance ToJSON User where
+    toJSON User{..} = object
+        [ "id" .= userId
+        , "name" .= userName
+        , "slug" .= userSlug
+        , "wca" .= userWca
+        ]
+
 hasWcaId :: User -> Bool
 hasWcaId = isJust . userWca
 
@@ -275,6 +285,9 @@ instance FromRow User where
             Nothing -> return Nothing
 
 newtype LoggedIn a = LoggedIn { getLoggedIn :: a } deriving (Show)
+instance ToJSON a => ToJSON (LoggedIn a) where
+    toJSON (LoggedIn x) = toJSON x
+
 type LoggedInUser = LoggedIn User
 
 data RecordType = SingleRecord | AverageOf5Record | AverageOf12Record deriving (Enum, Bounded, Ord, Eq)
@@ -365,6 +378,14 @@ instance Ord Puzzle where
     left `compare` right =
         let toTuple p = (puzzleName p, puzzleId p, puzzleCssPosition p)
         in toTuple left `compare` toTuple right
+instance ToJSON Puzzle where
+    toJSON Puzzle{..} = object
+        [ "id" .= puzzleId
+        , "name" .= puzzleName
+        , "css_position" .= puzzleCssPosition
+        , "slug" .= puzzleSlug
+        , "kind_id" .= puzzleKindId
+        ]
 
 
 data Kind = Kind
@@ -374,6 +395,14 @@ data Kind = Kind
     , kindCssPosition :: Int
     } deriving (Eq)
 
+instance ToJSON Kind where
+    toJSON Kind{..} = object
+        [ "id" .= kindId
+        , "name" .= kindName
+        , "short_name" .= kindShortName
+        , "css_position" .= kindCssPosition
+        ]
+
 instance Ord Kind where
     left `compare` right =
         let toTuple k = (kindShortName k, kindName k, kindId k, kindCssPosition k)
@@ -381,6 +410,16 @@ instance Ord Kind where
 
 instance FromRow Kind where
     fromRow = Kind <$> field <*> field <*> field <*> field
+
+data PuzzleWithNestedKind = PuzzleWithNestedKind Puzzle Kind
+instance ToJSON PuzzleWithNestedKind where
+    toJSON (PuzzleWithNestedKind Puzzle{..} k) = object
+        [ "id" .= puzzleId
+        , "name" .= puzzleName
+        , "css_position" .= puzzleCssPosition
+        , "slug" .= puzzleSlug
+        , "kind" .= (toJSON k)
+        ]
 
 data ChartData = ChartData
     { chartTime :: Double

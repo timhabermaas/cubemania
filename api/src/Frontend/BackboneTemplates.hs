@@ -1,12 +1,16 @@
-<%= content_tag :div, :id => "backbone-container", :data => { :user_data => current_user.to_json, :puzzle => @puzzle.to_json(:include => :kind) } do %>
-  <p class="suggestion">
-    Enable JavaScript to fully enjoy Cubemania!
-  </p>
-<% end %>
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes #-}
 
+module Frontend.BackboneTemplates where
+
+import Data.Text
+import Text.RawString.QQ
+
+backboneTemplates :: Text
+backboneTemplates = [r|
 <script type="text/html" id="template-timer-single">
   <div class="fu">
-    <span class="time <%%= single.get('penalty') %>"><%%= formatTime(single.get("time")) %></span>
+    <span class="time <%= single.get('penalty') %>"><%= formatTime(single.get("time")) %></span>
     <div class="edit">
       <a href="#" class="dnf">DNF</a>
       <a href="#" class="plus2">+2</a>
@@ -28,20 +32,20 @@
 
 <script type="text/html" id="template-timer-timer">
   <small class="scramble">
-    <%%= formatScramble(scramble) %>
+    <%= formatScramble(scramble) %>
   </small>
   <div class="time-container">
     <div class="time">
-      <%%= formatTime(timer.currentTime()) %>
+      <%= formatTime(timer.currentTime()) %>
     </div>
     <p class="help">
-      <%% if (timer.isCountdownRunning() || !timer.hasInspection()) { %>
+      <% if (timer.isCountdownRunning() || !timer.hasInspection()) { %>
         Press Space to start/stop the timer.
-      <%% } else { %>
+      <% } else { %>
         Press Space to start the countdown.
-      <%% } %>
+      <% } %>
     </p>
-    <label class="inspection-toggle"><input type="checkbox" class="inspection-toggle"<%%= timer.hasInspection() ? " checked" : "" %>>15s Inspection</label>
+    <label class="inspection-toggle"><input type="checkbox" class="inspection-toggle"<%= timer.hasInspection() ? " checked" : "" %>>15s Inspection</label>
   </div>
   <form accept-charset="UTF-8" class="formtastic single" id="new_single">
     <fieldset class="inputs">
@@ -91,31 +95,31 @@
 <script type="text/html" id="template-timer-stats">
   <div class="current">
     <h4>Current</h4>
-    <%% for (var count in currentAverages) { %>
-      <%% if (currentAverages.hasOwnProperty(count)) { %>
-        <div class="avg<%%= count %>">
-          <%% if (count === "100") { %>
-            Mean of <%%= count %>:
-          <%% } else { %>
-            Average of <%%= count %>:
-          <%% } %>
-          <strong><%%= formatTime(currentAverages[count]) %></strong>
-          <small><a href="#" class="details" data-count="<%%= count %>">Details</a></small><br />
+    <% for (var count in currentAverages) { %>
+      <% if (currentAverages.hasOwnProperty(count)) { %>
+        <div class="avg<%= count %>">
+          <% if (count === "100") { %>
+            Mean of <%= count %>:
+          <% } else { %>
+            Average of <%= count %>:
+          <% } %>
+          <strong><%= formatTime(currentAverages[count]) %></strong>
+          <small><a href="#" class="details" data-count="<%= count %>">Details</a></small><br />
         </div>
-      <%% } %>
-    <%% } %>
+      <% } %>
+    <% } %>
   </div>
   <!-- TODO: fix semantic of stats (table / dl) -->
   <div class="best">
     <h4>Best</h4>
-    <%% for (var i = 0; i < records.length; i++) { %>
-      <%% var r = records[i]; %>
-      <%% if (_.isObject(r)) { %>
-        <%%= r.capitalizedTitle() %>:
-        <strong><%%= formatTime(r.get("time")) %></strong>
-        <small><a href="<%%= r.getHtmlUrl(userSlug) %>">Details</a></small><br />
-      <%% } %>
-    <%% } %>
+    <% for (var i = 0; i < records.length; i++) { %>
+      <% var r = records[i]; %>
+      <% if (_.isObject(r)) { %>
+        <%= r.capitalizedTitle() %>:
+        <strong><%= formatTime(r.get("time")) %></strong>
+        <small><a href="<%= r.getHtmlUrl(userSlug) %>">Details</a></small><br />
+      <% } %>
+    <% } %>
   </div>
 </script>
 
@@ -130,15 +134,15 @@
       </tr>
     </thead>
     <tbody>
-      <%% for (var i = 0; i < singles.length; i++) { %>
-        <%% var single = singles[i]; %>
-        <tr class="<%%= i % 2 === 0 ? "even" : "odd" %>">
-          <td><%%= i + 1 %>.</td>
-          <td><strong class="time<%%= single.dnf() ? " dnf" : "" %>"><%%=formatTime(single.get("time")) %></strong></td>
-          <td><small><%%= single.get("scramble") %></small></td>
-          <td><%%= single.get("comment") %></td>
+      <% for (var i = 0; i < singles.length; i++) { %>
+        <% var single = singles[i]; %>
+        <tr class="<%= i % 2 === 0 ? "even" : "odd" %>">
+          <td><%= i + 1 %>.</td>
+          <td><strong class="time<%= single.dnf() ? " dnf" : "" %>"><%=formatTime(single.get("time")) %></strong></td>
+          <td><small><%= single.get("scramble") %></small></td>
+          <td><%= single.get("comment") %></td>
         </tr>
-      <%% } %>
+      <% } %>
     </tbody>
   </table>
 </script>
@@ -158,3 +162,4 @@
     </aside>
   </div>
 </script>
+|]
