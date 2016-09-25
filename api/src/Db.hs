@@ -26,6 +26,8 @@ module Db
     , getAnnouncements
     , getCommentsForAnnouncement
     , postComment
+    , postAnnouncement
+    , updateAnnouncement
     , getActivity
     , getAllSingles
     , getPuzzleBySlug
@@ -168,15 +170,15 @@ maxSinglesCount conn = do
       [Only x] -> return $ Just x
       _        -> return Nothing
 
+fromMaybeM :: (Monad m) => m a -> Maybe a -> m a
+fromMaybeM _ (Just x) = return x
+fromMaybeM def Nothing = def
+
 -- TODO: Make (Maybe UTCTime, Maybe UTCTime) to Maybe (UTCTime, UTCTime) ?
 getChartData :: (MonadIO m) => PuzzleId -> UserId -> (Maybe UTCTime, Maybe UTCTime) -> Connection -> m [ChartData]
 getChartData (PuzzleId puzzleId) (UserId userId) (from, to) conn = do
-    startDate <- case from of
-             Just t -> return t
-             Nothing -> liftIO firstSingleDate
-    endDate <- case to of
-             Just t -> return t
-             Nothing -> liftIO getCurrentTime
+    startDate <- liftIO $ fromMaybeM firstSingleDate from
+    endDate <- liftIO $ fromMaybeM getCurrentTime to
     let difference = diffUTCTime endDate startDate
     case groupingForDateDiff difference of
         Just group -> liftIO $ groupSingles (startDate, endDate) group
@@ -211,6 +213,18 @@ postComment :: (MonadIO m) => AnnouncementId -> UserId -> Text -> Connection -> 
 postComment pId uId content conn = do
     time <- liftIO getCurrentTime
     _ <- liftIO $ execute conn "INSERT INTO comments (content, user_id, commentable_id, commentable_type, created_at) VALUES (?, ?, ?, 'Post', ?)" (content, uId, pId, time)
+    return ()
+
+postAnnouncement :: (MonadIO m) => UserId -> SubmittedAnnouncement -> Connection -> m AnnouncementId
+postAnnouncement uId SubmittedAnnouncement{..} conn = do
+    time <- liftIO getCurrentTime
+    [(Only id)] <- liftIO $ query conn "INSERT INTO posts (title, content, user_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?) RETURNING id" (submittedAnnouncementTitle, submittedAnnouncementContent, uId, time, time)
+    pure $ AnnouncementId id
+
+updateAnnouncement :: (MonadIO m) => AnnouncementId -> SubmittedAnnouncement -> Connection -> m ()
+updateAnnouncement aId SubmittedAnnouncement{..} conn = do
+    time <- liftIO getCurrentTime
+    _ <- liftIO $ execute conn "UPDATE posts SET title=?, content=?, updated_at=? WHERE id=?" (submittedAnnouncementTitle, submittedAnnouncementContent, time, aId)
     return ()
 
 getActivity :: (MonadIO m) => UserId -> Connection -> m (Activity)

@@ -45,6 +45,10 @@ type JsonApi = "api" :> PuzzleApi
 type UsersPath = "users" :> QueryParam "q" T.Text :> QueryParam "page" PageNumber :> Get '[HTML] Html
 type UserPath = "users" :> Capture "userId" UserSlug :> Get '[HTML] Html
 type PostPath = "posts" :> Capture "postId" AnnouncementId :> Get '[HTML] Html
+type NewPostPath = "posts" :> "new" :> Get '[HTML] Html
+type EditPostPath = "posts" :> Capture "postId" AnnouncementId :> "edit" :> Get '[HTML] Html
+type UpdatePostPath = "posts" :> Capture "postId" AnnouncementId :> ReqBody '[FormUrlEncoded] [(T.Text, T.Text)] :> Post '[HTML] Html
+type CreatePostPath = "posts" :> ReqBody '[FormUrlEncoded] [(T.Text, T.Text)] :> Post '[HTML] Html
 type PostsPath = "posts" :> Get '[HTML] Html
 type RecordsPath = "puzzles" :> Capture "puzzleId" PuzzleSlug :> QueryParam "type" RecordType :> QueryParam "page" PageNumber :> "records" :> Get '[HTML] Html
 type TimerPath = "puzzles" :> Capture "puzzleId" PuzzleSlug :> "timer" :> Get '[HTML] Html
@@ -55,6 +59,10 @@ type CubemaniaAPI = JsonApi
                :<|> AuthProtect "cookie-auth-optional" :> UserPath
                :<|> AuthProtect "cookie-auth-optional" :> PostsPath
                :<|> AuthProtect "cookie-auth-optional" :> PostPath
+               :<|> AuthProtect "cookie-auth" :> NewPostPath
+               :<|> AuthProtect "cookie-auth" :> CreatePostPath
+               :<|> AuthProtect "cookie-auth" :> EditPostPath
+               :<|> AuthProtect "cookie-auth" :> UpdatePostPath
                :<|> AuthProtect "cookie-auth" :> "posts" :> Capture "postId" AnnouncementId :> "comments" :> ReqBody '[FormUrlEncoded] [(T.Text, T.Text)] :> Post '[HTML] Html
                :<|> AuthProtect "cookie-auth-optional" :> RecordsPath
                :<|> AuthProtect "cookie-auth-optional" :> TimerPath

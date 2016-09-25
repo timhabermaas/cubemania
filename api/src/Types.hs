@@ -146,6 +146,11 @@ data Announcement = Announcement
 instance FromRow Announcement where
     fromRow = Announcement <$> field <*> field <*> field <*> field <*> ((localTimeToUTC utc) <$> field)
 
+data SubmittedAnnouncement = SubmittedAnnouncement
+    { submittedAnnouncementTitle :: Text
+    , submittedAnnouncementContent :: Text
+    }
+
 data Comment = Comment
     { commentId :: CommentId
     , commentContent :: Text

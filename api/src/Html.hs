@@ -6,6 +6,8 @@ module Html
     , userPage
     , postPage
     , postsPage
+    , newPostPage
+    , editPostPage
     , recordsPage
     , rootPage
     , timerPage
@@ -349,7 +351,7 @@ postPage currentUser Announcement{..} author comments form = withLayout currentU
         ol ! class_ "comments" $ mapM_ comment comments
         maybe empty (const (commentForm form)) currentUser
   where
-    commentForm form = let form' = H.toHtml <$> form
+    commentForm form = let form' = convertForm form
         in
           H.form
               ! acceptCharset "UTF-8"
@@ -359,7 +361,7 @@ postPage currentUser Announcement{..} author comments form = withLayout currentU
               ! method "post"
               ! novalidate "novalidate" $ do
               fieldset ! class_ "inputs" $ ol $
-                  textareaWithErrors "content" form' Required
+                  textareaWithErrors "content" "Content" form' Required
               fieldset ! class_ "actions" $ ol $ li ! class_ "action input_action " ! A.id "comment_submit_action" $ input ! dataAttribute "disable-with" "Wait..." ! name "commit" ! type_ "submit" ! value "Respond"
     comment (Comment{..}, author) =
         li ! class_ "comment" ! A.id (toValue $ "comment" <> show commentId) $ do
@@ -369,6 +371,37 @@ postPage currentUser Announcement{..} author comments form = withLayout currentU
                 maybeUserLink author
             small $ toHtml $ Html.formatTime commentCreatedAt
             H.div ! class_ "text" $ p $ toHtml commentContent
+
+newPostPage :: LoggedInUser -> View T.Text -> Html
+newPostPage currentUser form' = withLayout (Just currentUser) Home "New Post" $ do
+    h1 "New Post"
+    H.form ! method "POST"
+           ! action "/posts" $ do
+        fieldset ! class_ "inputs" $
+            ol $ do
+                textFieldWithErrors "title" "Title" (convertForm form') Required
+                textareaWithErrors "content" "Content" (convertForm form') Required
+        fieldset ! class_ "actions" $
+            ol $
+                li ! class_ "action input_action" ! A.id "post_submit_action" $
+                    input ! name "commit" ! type_ "submit" ! value "Create Post"
+
+editPostPage :: LoggedInUser -> AnnouncementId -> View T.Text -> Html
+editPostPage currentUser aId form' = withLayout (Just currentUser) Home "Edit Post" $ do
+    h1 "Edit Post"
+    H.form ! method "POST"
+           ! action (toValue $ postLink aId) $ do
+        fieldset ! class_ "inputs" $
+            ol $ do
+                textFieldWithErrors "title" "Title" (convertForm form') Required
+                textareaWithErrors "content" "Content" (convertForm form') Required
+        fieldset ! class_ "actions" $
+            ol $
+                li ! class_ "action input_action" ! A.id "post_submit_action" $
+                    input ! name "commit" ! type_ "submit" ! value "Update Post"
+
+convertForm :: View T.Text -> View Html
+convertForm = fmap H.toHtml
 
 timerPage :: Maybe LoggedInUser -> (Puzzle, Kind) -> [(Kind, Puzzle)] -> Html
 timerPage currentUser (puzzle, kind) foo = withSubnavigationLayout currentUser Timer (puzzleName puzzle <> " Timer") (Just $ puzzleNavigation (mapFromList foo) (puzzle, kind) timerLink) $ do

@@ -126,7 +126,7 @@ app :: Config.Configuration -> Application
 app config = serveWithContext api (apiContext config) $ appToServer config
 
 allHandlers :: ServerT CubemaniaAPI CubemaniaApp
-allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postsHandler :<|> postHandler :<|> postCommentHandler :<|> recordsHandler :<|> timerHandler :<|> rootHandler
+allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postsHandler :<|> postHandler :<|> newPostHandler :<|> createPostHandler :<|> editPostHandler :<|> updatePostHandler :<|> postCommentHandler :<|> recordsHandler :<|> timerHandler :<|> rootHandler
   where
     jsonApiHandler = puzzleHandler :<|> usersApiHandler
     puzzleHandler puzzleId = singlesHandler puzzleId
@@ -161,6 +161,31 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postsHandle
                       commentsCount <- length <$> Db.runDb (Db.getCommentsForAnnouncement $ announcementId p)
                       pure (p, author, commentsCount)) posts
         pure $ H.postsPage currentUser foo
+    newPostHandler currentUser = do
+        form <- runGetForm "post" postForm
+        return $ H.newPostPage currentUser form
+    createPostHandler cu@(LoggedIn currentUser) body = do
+        form <- runPostForm "post" postForm body
+        case form of
+            (_, Just p) -> do
+                pId <- Db.runDb $ Db.postAnnouncement (userId currentUser) p
+                redirect303 $ postLinkToComments pId
+            (view, Nothing) ->
+                pure $ H.newPostPage cu view
+    editPostHandler currentUser aId = do
+        Announcement{..} <- grabOrNotFound $ Db.runDb $ Db.getAnnouncement aId
+        (view, _) <- runPostForm "post" postForm [("post.title", announcementTitle),
+                                                  ("post.content", announcementContent)]
+        pure $ H.editPostPage currentUser aId view
+    updatePostHandler currentUser aId body = do
+        Announcement{..} <- grabOrNotFound $ Db.runDb $ Db.getAnnouncement aId
+        form <- runPostForm "post" postForm body
+        case form of
+            (_, Just c) -> do
+                Db.runDb $ Db.updateAnnouncement announcementId c
+                redirect303 $ postLink announcementId
+            (view, Nothing) -> do
+                pure $ H.editPostPage currentUser announcementId view
     postHandler currentUser pId = do
         form <- runGetForm "comment" commentForm
         post <- grabOrNotFound $ Db.runDb $ Db.getAnnouncement pId
