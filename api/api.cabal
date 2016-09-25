@@ -55,6 +55,7 @@ library
                      , http-media
                      , http-api-data
                      , digestive-functors
+                     , http-types
   default-language:    Haskell2010
 
 executable api-exe

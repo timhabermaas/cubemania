@@ -16,8 +16,10 @@ import Data.Time.LocalTime (LocalTime, localTimeToUTC, utc)
 import Data.Time.Format (defaultTimeLocale, formatTime)
 import Data.Time.Clock (UTCTime)
 import Data.Maybe (isJust)
+import Data.Monoid ((<>))
 import qualified Data.Map.Strict as Map
 import Data.Word (Word8)
+import Data.Function (on)
 import Database.PostgreSQL.Simple.FromRow
 import Database.PostgreSQL.Simple.FromField
 import Database.PostgreSQL.Simple.ToField
@@ -55,7 +57,7 @@ instance ToJSON PuzzleSlug
 instance FromHttpApiData PuzzleSlug where
     parseUrlPiece t = PuzzleSlug <$> parseUrlPiece t
 
-newtype KindId = KindId Int deriving (Eq, Generic)
+newtype KindId = KindId Int deriving (Eq, Generic, Ord)
 instance FromField KindId where
     fromField f s = KindId <$> fromField f s
 instance ToField KindId where
@@ -213,10 +215,21 @@ data RecordSingle = RecordSingle
     { recordSingleId :: SingleId
     , recordSingleTime :: DurationInMs
     , recordSingleScramble :: Text
+    , recordSingleComment :: Maybe Text
+    , recordSinglePenalty :: Maybe Penalty
     }
 
+instance Ord RecordSingle where
+    compare (RecordSingle _ _ _ _ (Just Dnf)) (RecordSingle _ _ _ _ (Just Dnf)) = EQ
+    compare (RecordSingle _ _ _ _ (Just Dnf)) (RecordSingle _ _ _ _ _) = GT
+    compare (RecordSingle _ _ _ _ _) (RecordSingle _ _ _ _ (Just Dnf)) = LT
+    compare s1 s2 = (recordSingleTime s1) `compare` (recordSingleTime s2)
+
+instance Eq RecordSingle where
+    (==) = (==) `on` recordSingleId
+
 instance FromRow RecordSingle where
-    fromRow = RecordSingle <$> field <*> field <*> field
+    fromRow = RecordSingle <$> field <*> field <*> field <*> field <*> field
 
 instance ToJSON RecordSingle where
     toJSON (RecordSingle{..}) = object
@@ -343,8 +356,18 @@ instance ToHttpApiData RecordType where
     toQueryParam AverageOf12Record = toQueryParam ("avg12" :: String)
 
 
+newtype RecordId = RecordId Int deriving Generic
+
+instance ToJSON RecordId
+instance FromField RecordId where
+    fromField f s = RecordId <$> fromField f s
+instance ToField RecordId where
+    toField (RecordId id) = toField id
+instance FromHttpApiData RecordId where
+    parseUrlPiece t = RecordId <$> parseUrlPiece t
+
 data Record = Record
-    { recordId :: Int
+    { recordId :: RecordId
     , recordTime :: DurationInMs
     , recordComment :: String
     , recordPuzzleId :: PuzzleId
@@ -394,7 +417,7 @@ instance ToJSON Puzzle where
 
 
 data Kind = Kind
-    { kindId :: Int
+    { kindId :: KindId
     , kindName :: Text
     , kindShortName :: Maybe Text
     , kindCssPosition :: Int
@@ -415,6 +438,12 @@ instance Ord Kind where
 
 instance FromRow Kind where
     fromRow = Kind <$> field <*> field <*> field <*> field
+
+fullPuzzleName :: (Puzzle, Kind) -> Text
+fullPuzzleName (Puzzle{..}, Kind{..}) =
+    case kindShortName of
+        Just sName -> puzzleName <> " " <> sName
+        Nothing -> puzzleName
 
 data PuzzleWithNestedKind = PuzzleWithNestedKind Puzzle Kind
 instance ToJSON PuzzleWithNestedKind where

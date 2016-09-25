@@ -1,9 +1,10 @@
 module Main where
 
 import Lib
-import System.Environment (getEnv)
+import System.Environment (getEnv, lookupEnv)
 
 main :: IO ()
 main = do
   connString <- getEnv "DATABASE_URL"
-  startApp connString
+  appId <- lookupEnv "FACEBOOK_APP_ID"
+  startApp connString appId

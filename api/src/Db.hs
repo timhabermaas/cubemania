@@ -6,6 +6,7 @@
 
 module Db
     ( matchUsers
+    , getRecordById
     , getRecords
     , getRecordsForPuzzleAndType
     , getRecordCountForPuzzleAndType
@@ -30,6 +31,7 @@ module Db
     , updateAnnouncement
     , getActivity
     , getAllSingles
+    , getPuzzleKindById
     , getPuzzleBySlug
     , getKindById
     , getAllPuzzles
@@ -66,6 +68,14 @@ getSingle (SingleId id) conn = do
       Just x -> return x
       Nothing -> error "nope"
 
+getRecordById :: (MonadIO m) => RecordId -> Connection -> m (Maybe (Record, [RecordSingle]))
+getRecordById recordId conn = do
+    records <- liftIO $ query conn "SELECT id, time, comment, puzzle_id, user_id, amount, updated_at FROM records WHERE id = ?" (Only recordId)
+    case safeHead records of
+        Just record -> do
+            newRecord <- liftIO $ grabSingles conn record
+            pure $ Just (record, (recordSingles newRecord))
+        Nothing -> pure $ Nothing
 
 getRecords :: (MonadIO m) => UserId -> PuzzleId -> Connection -> m [Record]
 getRecords (UserId uid) (PuzzleId pid) conn = do
@@ -86,7 +96,7 @@ getRecordCountForPuzzleAndType pId type' conn = do
 
 grabSingles :: Connection -> Record -> IO Record
 grabSingles conn r = do
-    singles <- query conn "SELECT singles.id, singles.time, singles.scramble FROM singles INNER JOIN records_singles ON singles.id = records_singles.single_id WHERE records_singles.record_id = ?" (Only $ recordId r)
+    singles <- query conn "SELECT singles.id, singles.time, singles.scramble, singles.comment, singles.penalty FROM singles INNER JOIN records_singles ON singles.id = records_singles.single_id WHERE records_singles.record_id = ?" (Only $ recordId r)
     return $ r { recordSingles = singles }
 
 postSingle :: (MonadIO m) => PuzzleId -> UserId -> SubmittedSingle -> Connection -> m SingleId
@@ -243,6 +253,23 @@ getPuzzleBySlug :: (MonadIO m) => PuzzleSlug -> Connection -> m (Maybe Puzzle)
 getPuzzleBySlug pSlug conn = do
     puzzles <- liftIO $ query conn "SELECT id, name, css_position, slug, kind_id FROM puzzles WHERE slug = ?" (Only pSlug)
     pure $ safeHead puzzles
+
+getPuzzleById :: (MonadIO m) => PuzzleId -> Connection -> m (Maybe Puzzle)
+getPuzzleById puzzleId conn = do
+    puzzles <- liftIO $ query conn "SELECT id, name, css_position, slug, kind_id FROM puzzles WHERE id = ?" (Only puzzleId)
+    pure $ safeHead puzzles
+
+getPuzzleKindById :: (MonadIO m) => PuzzleId -> Connection -> m (Maybe (Puzzle, Kind))
+getPuzzleKindById puzzleId conn = do
+    puzzle <- getPuzzleById puzzleId conn
+    -- TODO: MaybeT?
+    case puzzle of
+        Just p -> do
+            kind <- getKindById (puzzleKindId p) conn
+            case kind of
+                Just k -> pure $ Just (p, k)
+                Nothing -> pure Nothing
+        Nothing -> pure Nothing
 
 getKindById :: (MonadIO m) => KindId -> Connection -> m (Maybe Kind)
 getKindById kId conn = do

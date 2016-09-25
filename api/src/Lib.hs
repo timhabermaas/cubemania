@@ -45,12 +45,12 @@ import Database.PostgreSQL.Simple (connectPostgreSQL)
 import Types.AppMonad
 
 
-startApp :: String -> IO ()
-startApp dbConnectionString = do
+startApp :: String -> Maybe String -> IO ()
+startApp dbConnectionString facebookAppId = do
   conn <- connectPostgreSQL $ pack dbConnectionString
   channel <- atomically $ newBroadcastTChan
   wastedTimeStore <- atomically $ newWastedTimeStore
-  let c = Config.Configuration conn wastedTimeStore channel
+  let c = Config.Configuration conn wastedTimeStore channel facebookAppId
       port = 9090
   putStrLn $ "Starting server on port " ++ show port
 
@@ -126,7 +126,7 @@ app :: Config.Configuration -> Application
 app config = serveWithContext api (apiContext config) $ appToServer config
 
 allHandlers :: ServerT CubemaniaAPI CubemaniaApp
-allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postsHandler :<|> postHandler :<|> newPostHandler :<|> createPostHandler :<|> editPostHandler :<|> updatePostHandler :<|> postCommentHandler :<|> recordsHandler :<|> timerHandler :<|> rootHandler
+allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postsHandler :<|> postHandler :<|> newPostHandler :<|> createPostHandler :<|> editPostHandler :<|> updatePostHandler :<|> postCommentHandler :<|> recordsHandler :<|> recordHandler :<|> shareRecordHandler :<|> timerHandler :<|> rootHandler
   where
     jsonApiHandler = puzzleHandler :<|> usersApiHandler
     puzzleHandler puzzleId = singlesHandler puzzleId
@@ -219,6 +219,22 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postsHandle
         recordsCount <- Db.runDb $ Db.getRecordCountForPuzzleAndType (puzzleId puzzle) recordType
         allPuzzles <- Db.runDb Db.getAllPuzzles
         pure $ H.recordsPage currentUser (puzzle, kind) recordType records pageAsNumber recordsCount allPuzzles
+    recordHandler currentUser userSlug recordId = do
+        user <- grabOrNotFound $ Db.runDb $ Db.getUserBySlug userSlug
+        (record, singles) <- grabOrNotFound $ Db.runDb $ Db.getRecordById recordId
+        unless ((recordUserId record) == userId user) $
+            notFound
+        puzzleKind <- grabOrNotFound $ Db.runDb $ Db.getPuzzleKindById (recordPuzzleId record)
+        pure $ H.recordShowPage currentUser user record singles puzzleKind
+    shareRecordHandler (LoggedIn currentUser) userSlug recordId = do
+        user <- grabOrNotFound $ Db.runDb $ Db.getUserBySlug userSlug
+        (record, singles) <- grabOrNotFound $ Db.runDb $ Db.getRecordById recordId
+        pk <- grabOrNotFound $ Db.runDb $ Db.getPuzzleKindById $ recordPuzzleId record
+        if user == currentUser then do
+            appId <- fromMaybe "" <$> asks Config.facebookAppId
+            redirect303 $ facebookShareLink appId user (record, singles) pk
+        else
+            unauthorized
     timerHandler currentUser slug = do
         puzzle <- grabOrNotFound $ Db.runDb $ Db.getPuzzleBySlug slug
         kind <- grabOrNotFound $ Db.runDb $ Db.getKindById $ puzzleKindId puzzle

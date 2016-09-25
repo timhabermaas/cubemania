@@ -9,6 +9,7 @@ module Html
     , newPostPage
     , editPostPage
     , recordsPage
+    , recordShowPage
     , rootPage
     , timerPage
     ) where
@@ -173,9 +174,7 @@ userPage cu user@User{..} records ownRecords activity wastedTime = withLayout cu
             H.div ! class_ "puzzle" $ do
                 H.div ! class_ (toValue $ "puzzle-image " <> posClass (puzzleCssPosition puzzle)) $ H.div ! class_ (toValue $ "kind-image " <> posClass (kindCssPosition kind)) $ mempty
                 H.span $ do
-                    toHtml $ puzzleName puzzle
-                    space
-                    small $ toHtml $ fromMaybe "" $ kindShortName kind
+                    toHtml $ fullPuzzleName (puzzle, kind)
             table $ do
                 if comparison then
                     thead $ tr $ do
@@ -215,7 +214,7 @@ mapFromList :: Ord a => [(a, b)] -> Map.Map a [b]
 mapFromList x = Map.fromListWith (++) (fmap (\(k, p) -> (k, [p])) x)
 
 recordsPage :: Maybe LoggedInUser -> (Puzzle, Kind) -> RecordType -> [(Record, SimpleUser)] -> Int -> Int -> [(Kind, Puzzle)]-> Html
-recordsPage currentUser (puzzle, kind) type' records page recordsCount foo = withSubnavigationLayout currentUser Records (puzzleName puzzle <> " Records") (Just $ puzzleNavigation (mapFromList foo) (puzzle, kind) (recordsLink Nothing Nothing)) $ do
+recordsPage currentUser (puzzle, kind) type' records page recordsCount foo = withSubnavigationLayout currentUser Records (fullPuzzleName (puzzle, kind) <> " Records") (Just $ puzzleNavigation (mapFromList foo) (puzzle, kind) (recordsLink Nothing Nothing)) $ do
     p ! class_ "tabs" $
         mapM_ tabEntry allRecordTypes
     table ! A.id "records" $ tbody $
@@ -266,6 +265,53 @@ recordsPage currentUser (puzzle, kind) type' records page recordsCount foo = wit
             H.span ! class_ "next_page disabled" $ "Next →"
         else
             a ! class_ "next_page" ! rel "next" ! href (toValue $ recordsLink (Just type') (Just $ PageNumber (page + 1)) (puzzleSlug puzzle)) $ "Next →"
+
+recordShowPage :: Maybe LoggedInUser -> User -> Record -> [RecordSingle] -> (Puzzle, Kind) -> Html
+recordShowPage currentUser User{..} Record{..} singles pk@(Puzzle{..}, Kind{..}) = withLayout currentUser Records "Record" $ do
+    h1 $ do
+        a ! href (toValue $ userLink userSlug) $
+            toHtml (userName <> "'s")
+        space
+        (toMarkup recordType) <> " Record"
+    article ! A.id "record" $ do
+        header $ do
+            h2 $ toHtml $ Utils.formatTime recordTime
+            small $ toHtml $ Html.formatTime recordSetAt
+            H.div ! class_ (toValue $ "puzzle pos" <> show puzzleCssPosition) $
+                H.div ! class_ (toValue $ "kind pos" <> show kindCssPosition) $
+                    toHtml $ fullPuzzleName pk
+        table ! A.id "singles" $ do
+            thead $ tr $ do
+                th "Solve"
+                th "Time"
+                th "Scramble"
+                th "Comment"
+            tbody $ do
+                sequence_ $ mapWithIndex (\s i -> singleEntry s i) singles
+    bottomLine currentUser
+  where
+    mapWithIndex :: (a -> Int -> b) -> [a] -> [b]
+    mapWithIndex f xs = let mapWithIndex' f (x:xs) i = (f x i):(mapWithIndex' f xs (i + 1))
+                            mapWithIndex' _ [] _ = []
+                        in mapWithIndex' f xs 0
+    singleEntry :: RecordSingle -> Int -> Html
+    singleEntry RecordSingle{..} row =
+        tr ! oddEvenClass row $ do
+            td $ toHtml (row + 1)
+            td $ strong ! timeClass recordSinglePenalty $ toHtml $ Utils.formatTime recordSingleTime
+            td $ small $ toHtml recordSingleScramble
+            td $ toHtml $ fromMaybe "" recordSingleComment
+    timeClass (Just Dnf) = class_ "time dnf"
+    timeClass _ = class_ "time"
+    oddEvenClass i
+      | even i = class_ "even"
+      | otherwise = class_ "odd"
+    bottomLine (Just (LoggedIn u)) =
+        p ! class_ "suggestion" $
+            a ! href (toValue $ shareRecordLink userSlug recordId) $ "Post on Facebook!"
+    bottomLine Nothing =
+        p ! class_ "challenge" $
+            a ! href (toValue $ timerLink puzzleSlug) $ "Can you beat tim?"
 
 rootPage :: Maybe LoggedInUser -> Maybe (Announcement, [Comment]) -> Html
 rootPage currentUser post = withLayout currentUser Home "Home" $ do
@@ -404,7 +450,7 @@ convertForm :: View T.Text -> View Html
 convertForm = fmap H.toHtml
 
 timerPage :: Maybe LoggedInUser -> (Puzzle, Kind) -> [(Kind, Puzzle)] -> Html
-timerPage currentUser (puzzle, kind) foo = withSubnavigationLayout currentUser Timer (puzzleName puzzle <> " Timer") (Just $ puzzleNavigation (mapFromList foo) (puzzle, kind) timerLink) $ do
+timerPage currentUser (puzzle, kind) foo = withSubnavigationLayout currentUser Timer (fullPuzzleName (puzzle, kind) <> " Timer") (Just $ puzzleNavigation (mapFromList foo) (puzzle, kind) timerLink) $ do
     H.div ! dataAttribute "puzzle" (toValue $ TE.decodeUtf8 $ toStrict $ JSON.encode $ PuzzleWithNestedKind puzzle kind)
           ! dataAttribute "user-data" (toValue $ TE.decodeUtf8 $ toStrict $ JSON.encode currentUser)
           ! A.id "backbone-container" $
