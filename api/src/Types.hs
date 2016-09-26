@@ -211,32 +211,19 @@ instance FromJSON SubmittedSingle where
                              v .:? "penalty"
     parseJSON _          = mempty
 
-data RecordSingle = RecordSingle
-    { recordSingleId :: SingleId
-    , recordSingleTime :: DurationInMs
-    , recordSingleScramble :: Text
-    , recordSingleComment :: Maybe Text
-    , recordSinglePenalty :: Maybe Penalty
-    }
+newtype RecordWithSingles = RecordWithSingles (Record, [Single])
 
-instance Ord RecordSingle where
-    compare (RecordSingle _ _ _ _ (Just Dnf)) (RecordSingle _ _ _ _ (Just Dnf)) = EQ
-    compare (RecordSingle _ _ _ _ (Just Dnf)) (RecordSingle _ _ _ _ _) = GT
-    compare (RecordSingle _ _ _ _ _) (RecordSingle _ _ _ _ (Just Dnf)) = LT
-    compare s1 s2 = (recordSingleTime s1) `compare` (recordSingleTime s2)
+instance ToJSON RecordWithSingles where
+    toJSON (RecordWithSingles (Record{..}, singles)) = object
+        [ "id" .= recordId
+        , "time" .= recordTime
+        , "set_at" .= (0 :: Int) -- TODO: fix me
+        , "comment" .=  recordComment
+        , "puzzle_id" .= recordPuzzleId
+        , "type_full_name" .= recordType
+        , "singles" .= singles
+        ]
 
-instance Eq RecordSingle where
-    (==) = (==) `on` recordSingleId
-
-instance FromRow RecordSingle where
-    fromRow = RecordSingle <$> field <*> field <*> field <*> field <*> field
-
-instance ToJSON RecordSingle where
-    toJSON (RecordSingle{..}) = object
-      [ "id" .= recordSingleId
-      , "time" .= recordSingleTime
-      , "scramble" .= recordSingleScramble
-      ]
 
 data SimpleUser = SimpleUser
     { simpleUserId :: UserId
@@ -374,22 +361,11 @@ data Record = Record
     , recordUserId :: UserId
     , recordType :: RecordType
     , recordSetAt :: UTCTime
-    , recordSingles :: [RecordSingle] -- TODO: remove me/use tuple for joins
     }
 
 instance FromRow Record where
-    fromRow = Record <$> field <*> field <*> field <*> field <*> field <*> field <*> (localTimeToUTC utc <$> field) <*> pure []
+    fromRow = Record <$> field <*> field <*> field <*> field <*> field <*> field <*> (localTimeToUTC utc <$> field)
 
-instance ToJSON Record where
-    toJSON Record{..} = object
-        [ "id" .= recordId
-        , "time" .= recordTime
-        , "set_at" .= (0 :: Int)
-        , "comment" .=  recordComment
-        , "puzzle_id" .= recordPuzzleId
-        , "type_full_name" .= recordType
-        , "singles" .= recordSingles
-        ]
 
 data Puzzle = Puzzle
     { puzzleId :: PuzzleId

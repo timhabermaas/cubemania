@@ -44,7 +44,7 @@ type ProtectedAPI = AuthProtect "cookie-auth" :> (
 
 type PuzzleApi = "puzzles" :> Capture "puzzleId" PuzzleId :>
                 ("singles" :> QueryParam "user_id" UserId :> QueryParam "limit" Limit :> Get '[JSON] [Single]
-            :<|> "records" :> QueryParam "page" Int :> QueryParam "user_id" UserId :> Get '[JSON] [Record]
+            :<|> "records" :> QueryParam "page" Int :> QueryParam "user_id" UserId :> Get '[JSON] [RecordWithSingles]
             :<|> "singles" :> "chart.json" :> QueryParam "from" Float :> QueryParam "to" Float :> QueryParam "user_id" UserId :> Get '[JSON] [ChartData]
             :<|> ProtectedAPI)
 type JsonApi = "api" :> PuzzleApi
@@ -130,7 +130,7 @@ recordLink (UserSlug userSlug) (RecordId recordId) = "/users/" <> userSlug <> "/
 shareRecordLink :: UserSlug -> RecordId -> T.Text
 shareRecordLink (UserSlug u) (RecordId rId) = "/users/" <> u <> "/records/" <> T.pack (show rId) <> "/share"
 
-facebookShareLink :: String -> User -> (Record, [RecordSingle]) -> (Puzzle, Kind) -> T.Text
+facebookShareLink :: String -> User -> (Record, [Single]) -> (Puzzle, Kind) -> T.Text
 facebookShareLink appId User{..} (Record{..}, singles) (puzzle, kind) =
     "http://www.facebook.com/dialog/feed" <> TE.decodeUtf8 (URI.renderSimpleQuery True facebookParams)
   where
@@ -143,8 +143,8 @@ facebookShareLink appId User{..} (Record{..}, singles) (puzzle, kind) =
         , ("redirect_uri", TE.encodeUtf8 ("https://www.cubemania.org" <> recordLink userSlug recordId))
         ]
     name = userName <> "has a new " <> fullPuzzleName (puzzle, kind) <> " record: " <> formatTime recordTime
-    description SingleRecord = recordSingleScramble $ singles !! 0
+    description SingleRecord = singleScramble $ singles !! 0
     description _ = T.intercalate " " $ fmap (\s -> if minimum singles == s || maximum singles == s then "(" <> formatTimeWithDnf s <> ")" else formatTimeWithDnf s) singles
     formatTimeWithDnf s
-        | recordSinglePenalty s == Just Dnf = "DNF"
-        | otherwise = Utils.formatTime $ recordSingleTime s
+        | singlePenalty s == Just Dnf = "DNF"
+        | otherwise = Utils.formatTime $ singleTime s

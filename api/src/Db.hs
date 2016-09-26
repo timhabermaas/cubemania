@@ -68,19 +68,19 @@ getSingle (SingleId id) conn = do
       Just x -> return x
       Nothing -> error "nope"
 
-getRecordById :: (MonadIO m) => RecordId -> Connection -> m (Maybe (Record, [RecordSingle]))
+getRecordById :: (MonadIO m) => RecordId -> Connection -> m (Maybe (Record, [Single]))
 getRecordById recordId conn = do
     records <- liftIO $ query conn "SELECT id, time, comment, puzzle_id, user_id, amount, updated_at FROM records WHERE id = ?" (Only recordId)
     case safeHead records of
         Just record -> do
-            newRecord <- liftIO $ grabSingles conn record
-            pure $ Just (record, (recordSingles newRecord))
+            singles <- liftIO $ grabSingles conn record
+            pure $ Just (record, singles)
         Nothing -> pure $ Nothing
 
-getRecords :: (MonadIO m) => UserId -> PuzzleId -> Connection -> m [Record]
+getRecords :: (MonadIO m) => UserId -> PuzzleId -> Connection -> m [(Record, [Single])]
 getRecords (UserId uid) (PuzzleId pid) conn = do
     records <- liftIO $ query conn "select id, time, comment, puzzle_id, user_id, amount, updated_at from records where user_id = ? and puzzle_id = ?" (uid, pid)
-    liftIO $ mapM (grabSingles conn) records
+    liftIO $ mapM (\r -> do singles <- grabSingles conn r; pure (r, singles)) records
 
 getRecordsForPuzzleAndType :: (MonadIO m) => PuzzleId -> RecordType -> Int -> Connection -> m [(Record, SimpleUser)]
 getRecordsForPuzzleAndType pId type' page conn = do
@@ -94,10 +94,9 @@ getRecordCountForPuzzleAndType pId type' conn = do
     return i
 
 
-grabSingles :: Connection -> Record -> IO Record
+grabSingles :: Connection -> Record -> IO [Single]
 grabSingles conn r = do
-    singles <- query conn "SELECT singles.id, singles.time, singles.scramble, singles.comment, singles.penalty FROM singles INNER JOIN records_singles ON singles.id = records_singles.single_id WHERE records_singles.record_id = ?" (Only $ recordId r)
-    return $ r { recordSingles = singles }
+    query conn "SELECT singles.id, singles.time, singles.comment, singles.scramble, singles.penalty, singles.created_at, singles.user_id FROM singles INNER JOIN records_singles ON singles.id = records_singles.single_id WHERE records_singles.record_id = ?" (Only $ recordId r)
 
 postSingle :: (MonadIO m) => PuzzleId -> UserId -> SubmittedSingle -> Connection -> m SingleId
 postSingle (PuzzleId pid) (UserId userId) (SubmittedSingle s t _p) conn = do

@@ -250,11 +250,13 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postsHandle
             Just a -> return a
             Nothing -> notFound
 
-recordsApiHandler :: PuzzleId -> Maybe Int -> Maybe UserId -> CubemaniaApp [Record]
+recordsApiHandler :: PuzzleId -> Maybe Int -> Maybe UserId -> CubemaniaApp [RecordWithSingles]
 recordsApiHandler puzzleId _page userId =
     case userId of
         Nothing -> return []
-        Just uid -> Db.runDb $ Db.getRecords uid puzzleId
+        Just uid -> do
+            list <- Db.runDb $ Db.getRecords uid puzzleId
+            pure $ RecordWithSingles <$> list
 
 singlesHandler :: PuzzleId -> Maybe UserId -> Maybe Limit -> CubemaniaApp [Single]
 singlesHandler puzzleId userId limit = do

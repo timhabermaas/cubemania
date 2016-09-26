@@ -266,7 +266,7 @@ recordsPage currentUser (puzzle, kind) type' records page recordsCount foo = wit
         else
             a ! class_ "next_page" ! rel "next" ! href (toValue $ recordsLink (Just type') (Just $ PageNumber (page + 1)) (puzzleSlug puzzle)) $ "Next →"
 
-recordShowPage :: Maybe LoggedInUser -> User -> Record -> [RecordSingle] -> (Puzzle, Kind) -> Html
+recordShowPage :: Maybe LoggedInUser -> User -> Record -> [Single] -> (Puzzle, Kind) -> Html
 recordShowPage currentUser User{..} Record{..} singles pk@(Puzzle{..}, Kind{..}) = withLayout currentUser Records "Record" $ do
     h1 $ do
         a ! href (toValue $ userLink userSlug) $
@@ -294,13 +294,13 @@ recordShowPage currentUser User{..} Record{..} singles pk@(Puzzle{..}, Kind{..})
     mapWithIndex f xs = let mapWithIndex' f (x:xs) i = (f x i):(mapWithIndex' f xs (i + 1))
                             mapWithIndex' _ [] _ = []
                         in mapWithIndex' f xs 0
-    singleEntry :: RecordSingle -> Int -> Html
-    singleEntry RecordSingle{..} row =
+    singleEntry :: Single -> Int -> Html
+    singleEntry Single{..} row =
         tr ! oddEvenClass row $ do
             td $ toHtml (row + 1)
-            td $ strong ! timeClass recordSinglePenalty $ toHtml $ Utils.formatTime recordSingleTime
-            td $ small $ toHtml recordSingleScramble
-            td $ toHtml $ fromMaybe "" recordSingleComment
+            td $ strong ! timeClass singlePenalty $ toHtml $ Utils.formatTime singleTime
+            td $ small $ toHtml singleScramble
+            td $ toHtml $ fromMaybe "" singleComment
     timeClass (Just Dnf) = class_ "time dnf"
     timeClass _ = class_ "time"
     oddEvenClass i
