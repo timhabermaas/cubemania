@@ -41,25 +41,26 @@ import Frontend.Forms
 import Control.Monad.IO.Class
 import Control.Monad.Reader
 import Control.Monad.Except
-import Database.PostgreSQL.Simple (connectPostgreSQL)
+import Database.PostgreSQL.Simple (connectPostgreSQL, close)
+import Data.Pool (createPool, withResource)
 import Types.AppMonad
 
 
 startApp :: String -> Maybe String -> IO ()
 startApp dbConnectionString facebookAppId = do
-  conn <- connectPostgreSQL $ pack dbConnectionString
-  channel <- atomically $ newBroadcastTChan
-  wastedTimeStore <- atomically $ newWastedTimeStore
-  let c = Config.Configuration conn wastedTimeStore channel facebookAppId
+  pool <- createPool (connectPostgreSQL $ pack dbConnectionString) close 1 10 10
+  channel <- atomically newBroadcastTChan
+  wastedTimeStore <- atomically newWastedTimeStore
+  let c = Config.Configuration pool wastedTimeStore channel facebookAppId
       port = 9090
   putStrLn $ "Starting server on port " ++ show port
 
   wastedTimeChannel <- atomically $ dupTChan channel
   forkIO $ wastedTimeThread wastedTimeChannel wastedTimeStore
   let makeSubmitEventFromSingle s = SingleSubmitted (singleUserId s) (SubmittedSingle (singleScramble s) (singleTime s) (singlePenalty s))
-  let importEvents = Db.getAllSingles (\single -> atomically $ writeTChan wastedTimeChannel (makeSubmitEventFromSingle single)) conn
+  let importEvents conn = Db.getAllSingles (\single -> atomically $ writeTChan wastedTimeChannel (makeSubmitEventFromSingle single)) conn
 
-  _ <- forkIO (importEvents >> putStrLn "finished importing singles")
+  _ <- forkIO (withResource pool importEvents >> putStrLn "finished importing singles")
 
   run port $ logStdoutDev $ app c
 

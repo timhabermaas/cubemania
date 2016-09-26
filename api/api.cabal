@@ -56,6 +56,7 @@ library
                      , http-api-data
                      , digestive-functors
                      , http-types
+                     , resource-pool
   default-language:    Haskell2010
 
 executable api-exe

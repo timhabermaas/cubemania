@@ -50,11 +50,12 @@ import Control.Monad.IO.Class
 import Database.PostgreSQL.Simple.FromRow
 import Database.PostgreSQL.Simple (Connection, query, query_, fold_, execute, withTransaction, Only(..))
 import Data.Text (Text)
+import Data.Pool (withResource)
 
-runDb :: (MonadReader Configuration m, MonadIO m) => (Connection -> m a) -> m a
+runDb :: (MonadReader Configuration m, MonadIO m) => (Connection -> IO a) -> m a
 runDb q = do
-    conn <- asks getPool
-    q conn
+    pool <- asks getPool
+    liftIO $ withResource pool q
 
 getSingles :: (MonadIO m) => PuzzleId -> UserId -> Limit -> Connection -> m [Single]
 getSingles (PuzzleId pid) (UserId uid) (Limit limit) conn = do
@@ -245,7 +246,7 @@ getActivity uid conn = do
 
 getAllSingles :: (MonadIO m) => (Single -> IO ()) -> Connection -> m ()
 getAllSingles callback conn =
-    liftIO $ withTransaction conn $ do
+    liftIO $ withTransaction conn $
         liftIO $ fold_ conn "select id, time, comment, scramble, penalty, created_at, user_id from singles ORDER BY created_at" () (\() !single -> callback single)
 
 getPuzzleBySlug :: (MonadIO m) => PuzzleSlug -> Connection -> m (Maybe Puzzle)
