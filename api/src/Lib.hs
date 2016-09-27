@@ -73,32 +73,21 @@ unauthorized = throwError (err401 { errBody = "Missing auth cookie" })
 redirect303 :: MonadError ServantErr m => T.Text -> m a
 redirect303 url = throwError $ err303 { errHeaders = [("Location", TE.encodeUtf8 url)] }
 
-authHandler :: Config.Configuration -> AuthHandler Request (LoggedIn User)
+authHandler :: Config.Configuration -> AuthHandler Request LoggedInUser
 authHandler configuration =
     mkAuthHandler $ (runCubemania configuration) . handler
   where
+    handler :: Request -> CubemaniaApp LoggedInUser
     handler req = do
-      let userId = parseSessionCookie req
-      case userId of
-        Just u -> do
-          -- TODO: use maybe
-          user <- Db.runDb $ Db.getUserById u
-          case user of
-            Just u -> return $ LoggedIn u
-            Nothing -> unauthorized
-        Nothing -> unauthorized
+      maybeUser <- authHandlerOptional' req
+      maybe unauthorized return maybeUser
 
 parseSessionCookie :: Request -> Maybe UserId
-parseSessionCookie req =
-     case lookup "Cookie" (requestHeaders req) of
-       Just x ->
-         case bar2 x >>= listToPair of
-           Just (_key, value) ->
-             case safeRead $ unpack value of
-               Just x' -> Just $ UserId x'
-               Nothing -> Nothing
-           Nothing -> Nothing
-       Nothing -> Nothing
+parseSessionCookie req = do
+    x <- lookup "Cookie" (requestHeaders req)
+    (_key, value) <- bar2 x >>= listToPair
+    x' <- safeRead $ unpack value
+    pure $ UserId x'
   where
     foo x = split (fromIntegral $ ord ';') x
     bar x = Data.ByteString.filter (\x' -> fromIntegral x' /= ord ' ') <$> foo x
@@ -111,13 +100,14 @@ parseSessionCookie req =
 
 authHandlerOptional :: Config.Configuration -> AuthHandler Request (Maybe (LoggedIn User))
 authHandlerOptional configuration =
-    mkAuthHandler ((runCubemania configuration) . handler)
-  where
-    handler req = do
-        case parseSessionCookie req of
-          Just u -> do
-            (fmap LoggedIn) <$> (Db.runDb $ Db.getUserById u)
-          Nothing -> return Nothing
+    mkAuthHandler ((runCubemania configuration) . authHandlerOptional')
+
+authHandlerOptional' :: Request -> CubemaniaApp (Maybe LoggedInUser)
+authHandlerOptional' req = do
+    case parseSessionCookie req of
+      Just u -> do
+        (fmap LoggedIn) <$> (Db.runDb $ Db.getUserById u)
+      Nothing -> return Nothing
 
 
 apiContext :: Config.Configuration -> Context (AuthHandler Request (Maybe (LoggedIn User))  ': AuthHandler Request (LoggedIn User) ': '[])
