@@ -16,6 +16,12 @@ import Network.Wai.Handler.Warp
 import Network.Wai.Middleware.RequestLogger (logStdoutDev)
 import Servant
 import Servant.Server.Experimental.Auth (AuthHandler, mkAuthHandler)
+import System.Metrics
+import GHC.Stats
+import qualified Data.HashMap.Strict as M
+-- TODO: import qualified because of names like port, host, ...
+import System.Remote.Monitoring.Statsd (forkStatsd, defaultStatsdOptions, StatsdOptions(..))
+import System.Remote.Monitoring (forkServer)
 
 import Data.ByteString (split, filter, isPrefixOf)
 import Data.ByteString.Char8 (unpack, pack)
@@ -48,6 +54,11 @@ import Types.AppMonad
 
 startApp :: String -> Maybe String -> IO ()
 startApp dbConnectionString facebookAppId = do
+  -- Send GHC stats to statsd
+  store <- newStore
+  registerGcMetrics store
+  forkStatsd (defaultStatsdOptions { host = "statsd", port = 8125 }) store
+
   pool <- createPool (connectPostgreSQL $ pack dbConnectionString) close 1 10 10
   channel <- atomically newBroadcastTChan
   wastedTimeStore <- atomically newWastedTimeStore
