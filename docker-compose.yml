@@ -1,0 +1,61 @@
+version: '2'
+services:
+  db:
+    image: postgres:9.5.3
+    ports:
+      - "7070:5432"
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
+  nginx:
+    restart: always
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    links:
+      - web
+    ports:
+      - "443:443"
+      - "8080:80"
+    volumes:
+      - ./public:/home/assets
+      - ~/Documents/certs:/cert
+  jobs:
+    build: .
+    command: ./start_jobs.sh
+    volumes:
+      - .:/cubemania
+    links:
+      - db
+    environment:
+      RAILS_ENV: production
+      DATABASE_URL: postgresql://postgres@db/cubemania_production
+  web:
+    build: .
+    command: bundle exec unicorn -p 3000 -c ./config/unicorn.rb
+    volumes:
+      - .:/cubemania
+    ports:
+      - "3000:3000"
+    links:
+      - db
+      - cache
+    depends_on:
+      - jobs
+    environment:
+      RAILS_ENV: production
+      DATABASE_URL: postgresql://postgres@db/cubemania_production
+  cache:
+    image: memcached:alpine
+    command: memcached -m 64
+
+  backup:
+    build:
+      context: backup
+      dockerfile: Dockerfile
+    volumes:
+      - ~/.tarsnap:/root/keys
+      - ~/.tarsnap/cache:/root/tarsnap-cache
+    links:
+      - db
+volumes:
+  postgres-volume:
