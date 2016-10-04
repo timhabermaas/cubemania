@@ -1,6 +1,8 @@
 /.bundle
 .DS_Store
 
+.sass-cache
+
 # Ignore the default SQLite database.
 db/*.sqlite3
 
@@ -15,5 +17,4 @@ db/*.sqlite3
 /public/javascripts/compiled
 /spec/javascripts/compiled
 
-config/database.yml
 /public/system
