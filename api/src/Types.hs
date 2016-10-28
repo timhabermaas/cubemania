@@ -15,11 +15,9 @@ import Data.Char (chr)
 import Data.Time.LocalTime (LocalTime, localTimeToUTC, utc)
 import Data.Time.Format (defaultTimeLocale, formatTime)
 import Data.Time.Clock (UTCTime)
-import Data.Maybe (isJust)
 import Data.Monoid ((<>))
 import qualified Data.Map.Strict as Map
 import Data.Word (Word8)
-import Data.Function (on)
 import Database.PostgreSQL.Simple.FromRow
 import Database.PostgreSQL.Simple.FromField
 import Database.PostgreSQL.Simple.ToField
@@ -224,6 +222,17 @@ instance ToJSON RecordWithSingles where
         , "singles" .= singles
         ]
 
+newtype ClearPassword = ClearPassword Text deriving (Eq)
+newtype HashedPassword = HashedPassword BS.ByteString deriving (Eq, Show)
+newtype Salt = Salt BS.ByteString
+
+data SubmittedUser = SubmittedUser
+    { submittedUserName :: Text
+    , submittedUserEmail :: Text
+    , submittedUserWca :: Text
+    , submittedUserTimeZone :: Text
+    , submittedPassword :: ClearPassword
+    }
 
 data SimpleUser = SimpleUser
     { simpleUserId :: UserId
@@ -275,9 +284,6 @@ instance ToJSON User where
         , "slug" .= userSlug
         , "wca" .= userWca
         ]
-
-hasWcaId :: User -> Bool
-hasWcaId = isJust . userWca
 
 instance FromRow User where
     fromRow = User <$> field <*> field <*> field <*> field <*> field <*> wcaField <*> field <*> field

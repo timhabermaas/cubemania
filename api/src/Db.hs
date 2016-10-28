@@ -17,6 +17,8 @@ module Db
     , getUsers
     , getUserBySlug
     , getUserById
+    , getUserByName
+    , getUserByEmail
     , getRecordsForUser
     , maxSinglesCount
     , postSingle
@@ -28,6 +30,7 @@ module Db
     , getCommentsForAnnouncement
     , postComment
     , postAnnouncement
+    , createUser
     , updateAnnouncement
     , getActivity
     , getAllSingles
@@ -45,10 +48,12 @@ import Data.Monoid ((<>))
 import qualified Data.Map.Strict as Map
 import Data.Time.Clock (UTCTime, getCurrentTime, diffUTCTime, NominalDiffTime, utctDay)
 import Data.Time.Calendar (addDays)
+import Data.Int (Int64)
 import Control.Monad.Reader (MonadReader, asks)
 import Control.Monad.IO.Class
-import Database.PostgreSQL.Simple.FromRow
-import Database.PostgreSQL.Simple (Connection, query, query_, fold_, execute, withTransaction, Only(..))
+import Database.PostgreSQL.Simple.FromRow (FromRow, fromRow)
+import Database.PostgreSQL.Simple.ToRow (ToRow)
+import Database.PostgreSQL.Simple (Connection, query, query_, formatQuery, fold_, execute, withTransaction, Only(..), Query)
 import Data.Text (Text)
 import Data.Pool (withResource)
 
@@ -59,19 +64,19 @@ runDb q = do
 
 getSingles :: (MonadIO m) => PuzzleId -> UserId -> Limit -> Connection -> m [Single]
 getSingles (PuzzleId pid) (UserId uid) (Limit limit) conn = do
-    singles <- liftIO $ query conn "select id, time, comment, scramble, penalty, created_at, user_id from singles where puzzle_id = ? and user_id = ? ORDER BY created_at DESC LIMIT ?" (pid, uid, limit)
+    singles <- myQuery conn "select id, time, comment, scramble, penalty, created_at, user_id from singles where puzzle_id = ? and user_id = ? ORDER BY created_at DESC LIMIT ?" (pid, uid, limit)
     return singles
 
 getSingle :: (MonadIO m) => SingleId -> Connection -> m Single
 getSingle (SingleId id) conn = do
-    result <- liftIO $ query conn "SELECT id, time, comment, scramble, penalty, created_at, user_id FROM singles WHERE id = ?" (Only id)
+    result <- myQuery conn "SELECT id, time, comment, scramble, penalty, created_at, user_id FROM singles WHERE id = ?" (Only id)
     case safeHead result of
       Just x -> return x
       Nothing -> error "nope"
 
 getRecordById :: (MonadIO m) => RecordId -> Connection -> m (Maybe (Record, [Single]))
 getRecordById recordId conn = do
-    records <- liftIO $ query conn "SELECT id, time, comment, puzzle_id, user_id, amount, updated_at FROM records WHERE id = ?" (Only recordId)
+    records <- myQuery conn "SELECT id, time, comment, puzzle_id, user_id, amount, updated_at FROM records WHERE id = ?" (Only recordId)
     case safeHead records of
         Just record -> do
             singles <- liftIO $ grabSingles conn record
@@ -80,31 +85,31 @@ getRecordById recordId conn = do
 
 getRecords :: (MonadIO m) => UserId -> PuzzleId -> Connection -> m [(Record, [Single])]
 getRecords (UserId uid) (PuzzleId pid) conn = do
-    records <- liftIO $ query conn "select id, time, comment, puzzle_id, user_id, amount, updated_at from records where user_id = ? and puzzle_id = ?" (uid, pid)
-    liftIO $ mapM (\r -> do singles <- grabSingles conn r; pure (r, singles)) records
+    records <- myQuery conn "select id, time, comment, puzzle_id, user_id, amount, updated_at from records where user_id = ? and puzzle_id = ?" (uid, pid)
+    mapM (\r -> do singles <- grabSingles conn r; pure (r, singles)) records
 
 getRecordsForPuzzleAndType :: (MonadIO m) => PuzzleId -> RecordType -> Int -> Connection -> m [(Record, SimpleUser)]
 getRecordsForPuzzleAndType pId type' page conn = do
     let offset = (page - 1) * 50
-    foo <- liftIO $ query conn "SELECT records.id, records.time, records.comment, records.puzzle_id, records.user_id, records.amount, records.updated_at, users.id, users.slug, users.name, users.singles_count FROM records LEFT OUTER JOIN users ON users.id = records.user_id WHERE records.puzzle_id = ? AND records.amount = ? AND users.ignored = 'f' ORDER BY records.time OFFSET ? LIMIT 50" (pId, type', offset)
+    foo <- myQuery conn "SELECT records.id, records.time, records.comment, records.puzzle_id, records.user_id, records.amount, records.updated_at, users.id, users.slug, users.name, users.singles_count FROM records LEFT OUTER JOIN users ON users.id = records.user_id WHERE records.puzzle_id = ? AND records.amount = ? AND users.ignored = 'f' ORDER BY records.time OFFSET ? LIMIT 50" (pId, type', offset)
     return $ unwrapJoinedResult2 <$> foo
 
 getRecordCountForPuzzleAndType :: (MonadIO m) => PuzzleId -> RecordType -> Connection -> m Int
 getRecordCountForPuzzleAndType pId type' conn = do
-    [Only i] <- liftIO $ query conn "SELECT COUNT(DISTINCT records.id) FROM records LEFT OUTER JOIN users ON users.id = records.user_id WHERE records.puzzle_id = ? AND users.ignored = 'f' AND records.amount = ?" (pId, type')
+    [Only i] <- myQuery conn "SELECT COUNT(DISTINCT records.id) FROM records LEFT OUTER JOIN users ON users.id = records.user_id WHERE records.puzzle_id = ? AND users.ignored = 'f' AND records.amount = ?" (pId, type')
     return i
 
 
-grabSingles :: Connection -> Record -> IO [Single]
+grabSingles :: (MonadIO m) => Connection -> Record -> m [Single]
 grabSingles conn r = do
-    query conn "SELECT singles.id, singles.time, singles.comment, singles.scramble, singles.penalty, singles.created_at, singles.user_id FROM singles INNER JOIN records_singles ON singles.id = records_singles.single_id WHERE records_singles.record_id = ?" (Only $ recordId r)
+    myQuery conn "SELECT singles.id, singles.time, singles.comment, singles.scramble, singles.penalty, singles.created_at, singles.user_id FROM singles INNER JOIN records_singles ON singles.id = records_singles.single_id WHERE records_singles.record_id = ?" (Only $ recordId r)
 
 postSingle :: (MonadIO m) => PuzzleId -> UserId -> SubmittedSingle -> Connection -> m SingleId
 postSingle (PuzzleId pid) (UserId userId) (SubmittedSingle s t _p) conn = do
     result :: [Only Int] <- liftIO $ withTransaction conn $ do
         time <- getCurrentTime
-        _ <- execute conn "UPDATE users SET singles_count = COALESCE(singles_count, 0) + 1 WHERE users.id = ?" (Only userId)
-        query conn "INSERT INTO singles (time, puzzle_id, user_id, scramble, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?) RETURNING id" (t, pid, userId, s, time, time)
+        _ <- myExecute conn "UPDATE users SET singles_count = COALESCE(singles_count, 0) + 1 WHERE users.id = ?" (Only userId)
+        myQuery conn "INSERT INTO singles (time, puzzle_id, user_id, scramble, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?) RETURNING id" (t, pid, userId, s, time, time)
     case safeHead result of
         Just (Only x) -> return $ SingleId $ x
         Nothing -> error "not gonna happen"
@@ -112,43 +117,53 @@ postSingle (PuzzleId pid) (UserId userId) (SubmittedSingle s t _p) conn = do
 updateSingle :: (MonadIO m) => SingleId -> SubmittedSingle -> Connection -> m SingleId
 updateSingle (SingleId sid) s conn = do
     time' <- liftIO getCurrentTime
-    liftIO $ execute conn "UPDATE singles SET time=?, updated_at=?, penalty=? WHERE id = ?" (submittedSingleTime s, time', submittedSinglePenalty s, sid)
+    myExecute conn "UPDATE singles SET time=?, updated_at=?, penalty=? WHERE id = ?" (submittedSingleTime s, time', submittedSinglePenalty s, sid)
     return $ SingleId sid
 
 deleteSingle :: (MonadIO m) => SingleId -> Connection -> m ()
 deleteSingle s@(SingleId singleId) conn = do
     liftIO $ withTransaction conn $ do
         (UserId userId) <- singleUserId <$> getSingle s conn
-        _ <- execute conn "UPDATE users SET singles_count = COALESCE(singles_count, 0) - 1 WHERE users.id = ?" (Only userId)
-        _ <- execute conn "DELETE FROM singles WHERE id = ?" (Only singleId)
+        _ <- myExecute conn "UPDATE users SET singles_count = COALESCE(singles_count, 0) - 1 WHERE users.id = ?" (Only userId)
+        _ <- myExecute conn "DELETE FROM singles WHERE id = ?" (Only singleId)
         return ()
 
 matchUsers :: (MonadIO m) => Text -> Connection -> m [SimpleUser]
 matchUsers q conn =
-    liftIO $ query conn "SELECT id, slug, name, singles_count FROM users WHERE lower(name) LIKE ? ORDER BY singles_count DESC LIMIT 200" (Only $ "%" <> q <> "%")
+    myQuery conn "SELECT id, slug, name, singles_count FROM users WHERE lower(name) LIKE ? ORDER BY singles_count DESC LIMIT 200" (Only $ "%" <> q <> "%")
 
 getUserBySlug :: (MonadIO m) => UserSlug -> Connection -> m (Maybe User)
 getUserBySlug slug conn = do
-    users <- liftIO $ query conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time FROM users WHERE slug = ?" (Only slug)
+    users <- myQuery conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time FROM users WHERE slug = ?" (Only slug)
+    return $ safeHead users
+
+getUserByName :: (MonadIO m) => Text -> Connection -> m (Maybe User)
+getUserByName name conn = do
+    users <- myQuery conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time FROM users WHERE lower(name) = lower(?)" (Only name)
+    return $ safeHead users
+
+getUserByEmail :: (MonadIO m) => Text -> Connection -> m (Maybe User)
+getUserByEmail email conn = do
+    users <- myQuery conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time FROM users WHERE lower(email) = lower(?)" (Only email)
     return $ safeHead users
 
 getUserById :: (MonadIO m) => UserId -> Connection -> m (Maybe User)
 getUserById id conn = do
-    users <- liftIO $ query conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time FROM users WHERE id = ?" (Only id)
+    users <- myQuery conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time FROM users WHERE id = ?" (Only id)
     return $ safeHead users
 
 getAnnouncement :: (MonadIO m) => AnnouncementId -> Connection -> m (Maybe Announcement)
 getAnnouncement id conn = do
-    posts <- liftIO $ query conn "SELECT id, title, content, user_id, created_at FROM posts WHERE id = ?" (Only id)
+    posts <- myQuery conn "SELECT id, title, content, user_id, created_at FROM posts WHERE id = ?" (Only id)
     return $ safeHead posts
 
 getAnnouncements :: (MonadIO m) => Connection -> m [Announcement]
 getAnnouncements conn =
-    liftIO $ query_ conn "SELECT id, title, content, user_id, created_at FROM posts ORDER BY created_at DESC"
+    myQuery_ conn "SELECT id, title, content, user_id, created_at FROM posts ORDER BY created_at DESC"
 
 getCommentsForAnnouncement :: (MonadIO m) => AnnouncementId -> Connection -> m [Comment]
 getCommentsForAnnouncement id conn = do
-    liftIO $ query conn "SELECT id, content, user_id, created_at FROM comments WHERE commentable_id = ? AND commentable_type = 'Post' ORDER BY created_at" (Only id)
+    myQuery conn "SELECT id, content, user_id, created_at FROM comments WHERE commentable_id = ? AND commentable_type = 'Post' ORDER BY created_at" (Only id)
 
 data JoinedResult2 a b = JoinedResult2 { unwrapJoinedResult2 :: (a, b) }
 instance (FromRow a, FromRow b) => FromRow (JoinedResult2 a b) where
@@ -160,7 +175,7 @@ instance FromRow JoinedRecordResult where
 
 getRecordsForUser :: (MonadIO m) => UserId -> Connection -> m (Map.Map (Puzzle, Kind) (Map.Map RecordType DurationInMs))
 getRecordsForUser uid conn = do
-    result <- liftIO $ query conn "SELECT puzzles.id, puzzles.name, puzzles.css_position, puzzles.slug, puzzles.kind_id, kinds.id, kinds.name, kinds.short_name, kinds.css_position, records.id, records.time, records.comment, records.puzzle_id, records.user_id, records.amount, records.updated_at FROM records LEFT OUTER JOIN puzzles ON puzzles.id = records.puzzle_id LEFT OUTER JOIN kinds ON kinds.id = puzzles.kind_id WHERE records.user_id = ? ORDER BY puzzles.name, kinds.name" (Only uid)
+    result <- myQuery conn "SELECT puzzles.id, puzzles.name, puzzles.css_position, puzzles.slug, puzzles.kind_id, kinds.id, kinds.name, kinds.short_name, kinds.css_position, records.id, records.time, records.comment, records.puzzle_id, records.user_id, records.amount, records.updated_at FROM records LEFT OUTER JOIN puzzles ON puzzles.id = records.puzzle_id LEFT OUTER JOIN kinds ON kinds.id = puzzles.kind_id WHERE records.user_id = ? ORDER BY puzzles.name, kinds.name" (Only uid)
     return $ groupByPuzzle (unwrapJoinedRecordResult <$> result)
   where
     groupByPuzzle :: [(Puzzle, Kind, Record)] -> Map.Map (Puzzle, Kind) (Map.Map RecordType DurationInMs)
@@ -171,11 +186,11 @@ getRecordsForUser uid conn = do
 getUsers :: (MonadIO m) => Int -> Connection -> m [SimpleUser]
 getUsers page conn = do
     let offset = (page - 1) * 200
-    liftIO $ query conn "SELECT id, slug, name, singles_count FROM users ORDER BY singles_count DESC LIMIT 200 OFFSET ?" (Only offset)
+    myQuery conn "SELECT id, slug, name, singles_count FROM users ORDER BY singles_count DESC LIMIT 200 OFFSET ?" (Only offset)
 
 maxSinglesCount :: (MonadIO m) => Connection -> m (Maybe Int)
 maxSinglesCount conn = do
-    counts <- liftIO $ query_ conn "SELECT singles_count FROM users ORDER BY singles_count DESC LIMIT 1"
+    counts <- myQuery_ conn "SELECT singles_count FROM users ORDER BY singles_count DESC LIMIT 1"
     case counts of
       [Only x] -> return $ Just x
       _        -> return Nothing
@@ -208,40 +223,46 @@ getChartData (PuzzleId puzzleId) (UserId userId) (from, to) conn = do
             else
               Nothing
     groupSingles :: (UTCTime, UTCTime) -> Text -> IO [ChartData]
-    groupSingles (from', to') grouping = query conn "SELECT AVG(time) as time, string_agg(comment, '\n') AS comment, date_trunc(?, created_at) as created_at FROM singles WHERE (penalty IS NULL OR penalty NOT LIKE 'dnf') AND puzzle_id = ? AND user_id = ? AND created_at BETWEEN ? AND ? GROUP BY date_trunc(?, created_at) ORDER BY created_at" (grouping, puzzleId, userId, from', to', grouping)
+    groupSingles (from', to') grouping = myQuery conn "SELECT AVG(time) as time, string_agg(comment, '\n') AS comment, date_trunc(?, created_at) as created_at FROM singles WHERE (penalty IS NULL OR penalty NOT LIKE 'dnf') AND puzzle_id = ? AND user_id = ? AND created_at BETWEEN ? AND ? GROUP BY date_trunc(?, created_at) ORDER BY created_at" (grouping, puzzleId, userId, from', to', grouping)
     fetchSingles :: (UTCTime, UTCTime) -> IO [ChartData]
-    fetchSingles (from', to') = query conn "SELECT time, comment, created_at FROM singles WHERE (penalty IS NULL OR penalty NOT LIKE 'dnf') AND puzzle_id = ? AND user_id = ? AND created_at BETWEEN ? AND ? ORDER BY created_at" (puzzleId, userId, from', to')
+    fetchSingles (from', to') = myQuery conn "SELECT time, comment, created_at FROM singles WHERE (penalty IS NULL OR penalty NOT LIKE 'dnf') AND puzzle_id = ? AND user_id = ? AND created_at BETWEEN ? AND ? ORDER BY created_at" (puzzleId, userId, from', to')
     firstSingleDate :: IO UTCTime
-    firstSingleDate = (localTimeToUTCTime . head) <$> query conn "SELECT created_at FROM singles WHERE puzzle_id = ? AND user_id = ? ORDER BY created_at LIMIT 1" (puzzleId, userId)
+    firstSingleDate = (localTimeToUTCTime . head) <$> myQuery conn "SELECT created_at FROM singles WHERE puzzle_id = ? AND user_id = ? ORDER BY created_at LIMIT 1" (puzzleId, userId)
 
 getLatestAnnouncement :: (MonadIO m) => Connection -> m (Maybe Announcement)
 getLatestAnnouncement conn = do
-    posts <- liftIO $ query_ conn "SELECT id, title, content, user_id, created_at FROM posts ORDER BY created_at desc LIMIT 1"
+    posts <- myQuery_ conn "SELECT id, title, content, user_id, created_at FROM posts ORDER BY created_at desc LIMIT 1"
     return $ safeHead posts
 
 postComment :: (MonadIO m) => AnnouncementId -> UserId -> Text -> Connection -> m ()
 postComment pId uId content conn = do
     time <- liftIO getCurrentTime
-    _ <- liftIO $ execute conn "INSERT INTO comments (content, user_id, commentable_id, commentable_type, created_at) VALUES (?, ?, ?, 'Post', ?)" (content, uId, pId, time)
+    _ <- myExecute conn "INSERT INTO comments (content, user_id, commentable_id, commentable_type, created_at) VALUES (?, ?, ?, 'Post', ?)" (content, uId, pId, time)
     return ()
 
 postAnnouncement :: (MonadIO m) => UserId -> SubmittedAnnouncement -> Connection -> m AnnouncementId
 postAnnouncement uId SubmittedAnnouncement{..} conn = do
     time <- liftIO getCurrentTime
-    [(Only id)] <- liftIO $ query conn "INSERT INTO posts (title, content, user_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?) RETURNING id" (submittedAnnouncementTitle, submittedAnnouncementContent, uId, time, time)
+    [(Only id)] <- myQuery conn "INSERT INTO posts (title, content, user_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?) RETURNING id" (submittedAnnouncementTitle, submittedAnnouncementContent, uId, time, time)
     pure $ AnnouncementId id
+
+createUser :: (MonadIO m) => SubmittedUser -> Salt -> HashedPassword -> Connection -> m UserId
+createUser SubmittedUser{..} (Salt salt) (HashedPassword hashedPw) conn = do
+    time <- liftIO getCurrentTime
+    [(Only id)] <- myQuery conn "INSERT INTO users (name, slug, email, salt, encrypted_password, time_zone, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id" (submittedUserName, submittedUserName, submittedUserEmail, salt, hashedPw, submittedUserTimeZone, time, time)
+    pure $ UserId id
 
 updateAnnouncement :: (MonadIO m) => AnnouncementId -> SubmittedAnnouncement -> Connection -> m ()
 updateAnnouncement aId SubmittedAnnouncement{..} conn = do
     time <- liftIO getCurrentTime
-    _ <- liftIO $ execute conn "UPDATE posts SET title=?, content=?, updated_at=? WHERE id=?" (submittedAnnouncementTitle, submittedAnnouncementContent, time, aId)
+    _ <- myExecute conn "UPDATE posts SET title=?, content=?, updated_at=? WHERE id=?" (submittedAnnouncementTitle, submittedAnnouncementContent, time, aId)
     return ()
 
 getActivity :: (MonadIO m) => UserId -> Connection -> m (Activity)
 getActivity uid conn = do
     today <- liftIO $ utctDay <$> getCurrentTime
     let oneYearAgo = addDays (-366) today
-    result <- liftIO $ query conn "SELECT date_trunc('day', created_at), COUNT(*) FROM singles WHERE user_id = ? AND (created_at BETWEEN ? AND ?) GROUP BY date_trunc('day', created_at)" (uid, oneYearAgo, today)
+    result <- myQuery conn "SELECT date_trunc('day', created_at), COUNT(*) FROM singles WHERE user_id = ? AND (created_at BETWEEN ? AND ?) GROUP BY date_trunc('day', created_at)" (uid, oneYearAgo, today)
     return $ Activity $ Map.fromList $ fmap (\(t, x) -> (t, x)) result
 
 getAllSingles :: (MonadIO m) => (Single -> IO ()) -> Connection -> m ()
@@ -251,12 +272,12 @@ getAllSingles callback conn =
 
 getPuzzleBySlug :: (MonadIO m) => PuzzleSlug -> Connection -> m (Maybe Puzzle)
 getPuzzleBySlug pSlug conn = do
-    puzzles <- liftIO $ query conn "SELECT id, name, css_position, slug, kind_id FROM puzzles WHERE slug = ?" (Only pSlug)
+    puzzles <- myQuery conn "SELECT id, name, css_position, slug, kind_id FROM puzzles WHERE slug = ?" (Only pSlug)
     pure $ safeHead puzzles
 
 getPuzzleById :: (MonadIO m) => PuzzleId -> Connection -> m (Maybe Puzzle)
 getPuzzleById puzzleId conn = do
-    puzzles <- liftIO $ query conn "SELECT id, name, css_position, slug, kind_id FROM puzzles WHERE id = ?" (Only puzzleId)
+    puzzles <- myQuery conn "SELECT id, name, css_position, slug, kind_id FROM puzzles WHERE id = ?" (Only puzzleId)
     pure $ safeHead puzzles
 
 getPuzzleKindById :: (MonadIO m) => PuzzleId -> Connection -> m (Maybe (Puzzle, Kind))
@@ -273,10 +294,25 @@ getPuzzleKindById puzzleId conn = do
 
 getKindById :: (MonadIO m) => KindId -> Connection -> m (Maybe Kind)
 getKindById kId conn = do
-    kinds <- liftIO $ query conn "SELECT id, name, short_name, css_position FROM kinds WHERE id = ?" (Only kId)
+    kinds <- myQuery conn "SELECT id, name, short_name, css_position FROM kinds WHERE id = ?" (Only kId)
     pure $ safeHead kinds
 
 getAllPuzzles :: (MonadIO m) => Connection -> m [(Kind, Puzzle)]
 getAllPuzzles conn = do
-    foo <- liftIO $ query_ conn "SELECT kinds.id, kinds.name, kinds.short_name, kinds.css_position, puzzles.id, puzzles.name, puzzles.css_position, puzzles.slug, puzzles.kind_id FROM puzzles LEFT OUTER JOIN kinds ON kinds.id = puzzles.kind_id ORDER BY puzzles.name"
+    foo <- myQuery_ conn "SELECT kinds.id, kinds.name, kinds.short_name, kinds.css_position, puzzles.id, puzzles.name, puzzles.css_position, puzzles.slug, puzzles.kind_id FROM puzzles LEFT OUTER JOIN kinds ON kinds.id = puzzles.kind_id ORDER BY puzzles.name"
     return $ unwrapJoinedResult2 <$> foo
+
+myQuery :: (ToRow q, FromRow r, MonadIO m) => Connection -> Query -> q -> m [r]
+myQuery conn q params = liftIO $ do
+    formatQuery conn q params >>= print
+    query conn q params
+
+myQuery_ :: (FromRow r, MonadIO m) => Connection -> Query -> m [r]
+myQuery_ conn q = liftIO $ do
+    formatQuery conn q () >>= print
+    query_ conn q
+
+myExecute :: (ToRow q, MonadIO m) => Connection -> Query -> q -> m Int64
+myExecute conn q params = liftIO $ do
+    formatQuery conn q params >>= print
+    execute conn q params

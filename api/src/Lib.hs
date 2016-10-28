@@ -13,15 +13,12 @@ import Utils
 
 import Network.Wai
 import Network.Wai.Handler.Warp
-import Network.Wai.Middleware.RequestLogger (logStdoutDev)
+import Network.Wai.Middleware.RequestLogger (logStdoutDev, logStdout)
 import Servant
 import Servant.Server.Experimental.Auth (AuthHandler, mkAuthHandler)
 import System.Metrics
-import GHC.Stats
-import qualified Data.HashMap.Strict as M
 -- TODO: import qualified because of names like port, host, ...
 import System.Remote.Monitoring.Statsd (forkStatsd, defaultStatsdOptions, StatsdOptions(..))
-import System.Remote.Monitoring (forkServer)
 
 import Data.ByteString (split, filter, isPrefixOf)
 import Data.ByteString.Char8 (unpack, pack)
@@ -52,17 +49,20 @@ import Data.Pool (createPool, withResource)
 import Types.AppMonad
 
 
-startApp :: String -> Maybe String -> IO ()
-startApp dbConnectionString facebookAppId = do
+startApp :: String -> Maybe String -> Maybe String -> IO ()
+startApp dbConnectionString facebookAppId env = do
   -- Send GHC stats to statsd
   store <- newStore
   registerGcMetrics store
-  forkStatsd (defaultStatsdOptions { host = "statsd", port = 8125 }) store
+  --forkStatsd (defaultStatsdOptions { host = "statsd", port = 8125 }) store
 
   pool <- createPool (connectPostgreSQL $ pack dbConnectionString) close 1 10 10
   channel <- atomically newBroadcastTChan
   wastedTimeStore <- atomically newWastedTimeStore
-  let c = Config.Configuration pool wastedTimeStore channel facebookAppId
+  let env' = case env of
+                 (Just "production") -> Config.Production
+                 _                   -> Config.Development
+      c = Config.Configuration pool wastedTimeStore channel facebookAppId env'
       port = 9090
   putStrLn $ "Starting server on port " ++ show port
 
@@ -73,7 +73,11 @@ startApp dbConnectionString facebookAppId = do
 
   _ <- forkIO (withResource pool importEvents >> putStrLn "finished importing singles")
 
-  run port $ logStdoutDev $ app c
+  let logger = if env' == Config.Production then
+                   logStdout
+               else
+                   logStdoutDev
+  run port $ logger $ app c
 
 appToServer :: Config.Configuration -> Server CubemaniaAPI
 appToServer cfg = enter (convertApp cfg) allHandlers
@@ -111,13 +115,12 @@ parseSessionCookie req = do
 
 authHandlerOptional :: Config.Configuration -> AuthHandler Request (Maybe (LoggedIn User))
 authHandlerOptional configuration =
-    mkAuthHandler ((runCubemania configuration) . authHandlerOptional')
+    mkAuthHandler (runCubemania configuration . authHandlerOptional')
 
 authHandlerOptional' :: Request -> CubemaniaApp (Maybe LoggedInUser)
-authHandlerOptional' req = do
+authHandlerOptional' req =
     case parseSessionCookie req of
-      Just u -> do
-        (fmap LoggedIn) <$> (Db.runDb $ Db.getUserById u)
+      Just u -> fmap LoggedIn <$> Db.runDb (Db.getUserById u)
       Nothing -> return Nothing
 
 
@@ -128,7 +131,7 @@ app :: Config.Configuration -> Application
 app config = serveWithContext api (apiContext config) $ appToServer config
 
 allHandlers :: ServerT CubemaniaAPI CubemaniaApp
-allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postsHandler :<|> postHandler :<|> newPostHandler :<|> createPostHandler :<|> editPostHandler :<|> updatePostHandler :<|> postCommentHandler :<|> recordsHandler :<|> recordHandler :<|> shareRecordHandler :<|> timerHandler :<|> rootHandler
+allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postsHandler :<|> postHandler :<|> newPostHandler :<|> createPostHandler :<|> editPostHandler :<|> updatePostHandler :<|> postCommentHandler :<|> recordsHandler :<|> recordHandler :<|> shareRecordHandler :<|> timerHandler :<|> getRegisterHandler :<|> registerHandler :<|> rootHandler
   where
     jsonApiHandler = puzzleHandler :<|> usersApiHandler
     puzzleHandler puzzleId = singlesHandler puzzleId
@@ -206,7 +209,18 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postsHandle
                 redirect303 $ postLinkToComments (announcementId post)
             (view, Nothing) ->
                 renderPostPage (Just lu) post view
-
+    getRegisterHandler currentUser = do
+        form <- runGetForm "user" registerForm
+        return $ H.registerPage currentUser form
+    registerHandler currentUser body = do
+        form <- runPostForm "user" registerForm body
+        case form of
+            (_, Just u) -> do
+                (pw, salt) <- hashNewPassword $ submittedPassword u
+                Db.runDb $ Db.createUser u salt pw
+                redirect303 $ "/"
+            (view, Nothing) ->
+                return $ H.registerPage currentUser view
     rootHandler currentUser = do
         announcement <- Db.runDb Db.getLatestAnnouncement
         comments <- maybe (return []) (\a -> Db.runDb $ Db.getCommentsForAnnouncement (announcementId a)) announcement

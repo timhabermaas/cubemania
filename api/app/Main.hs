@@ -7,4 +7,5 @@ main :: IO ()
 main = do
   connString <- getEnv "DATABASE_URL"
   appId <- lookupEnv "FACEBOOK_APP_ID"
-  startApp connString appId
+  environment <- lookupEnv "ENV"
+  startApp connString appId environment

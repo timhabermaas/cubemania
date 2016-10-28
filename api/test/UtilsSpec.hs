@@ -4,9 +4,16 @@ module UtilsSpec where
 
 import Test.Hspec
 import Utils
+import Types
 
 spec :: Spec
 spec = do
+    describe "hashPassword" $ do
+        it "works" $ do
+            hashPassword (Salt "xS2D5Mty") (ClearPassword "password123") `shouldBe` (HashedPassword "560a8ac8a1290f8525669d93556226cf115cdad92236f16ca0158dae2cd14d8e")
+    describe "gravatarHash" $ do
+        it "works" $ do
+            gravatarHash "foo@bar.com" `shouldBe` "f3ada405ce890b6f8204094deb12d8a8"
     describe "formatTime" $ do
         context "when time is less than a minute" $ do
             it "displays the time in seconds" $

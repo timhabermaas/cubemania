@@ -62,6 +62,8 @@ type RecordPath = "users" :> Capture "userSlug" UserSlug :> "records" :> Capture
 type ShareRecordPath = "users" :> Capture "userSlug" UserSlug :> "records" :> Capture "recordId" RecordId :> "share" :> Get '[HTML] Html
 type RecordsPath = "puzzles" :> Capture "puzzleId" PuzzleSlug :> QueryParam "type" RecordType :> QueryParam "page" PageNumber :> "records" :> Get '[HTML] Html
 type TimerPath = "puzzles" :> Capture "puzzleId" PuzzleSlug :> "timer" :> Get '[HTML] Html
+type GetRegisterPath = "register" :> Get '[HTML] Html
+type RegisterPath = "users" :> ReqBody '[FormUrlEncoded] [(T.Text, T.Text)] :> Post '[HTML] Html
 
 type RootPath = Get '[HTML] Html
 type CubemaniaAPI = JsonApi
@@ -78,6 +80,8 @@ type CubemaniaAPI = JsonApi
                :<|> AuthProtect "cookie-auth-optional" :> RecordPath
                :<|> AuthProtect "cookie-auth" :> ShareRecordPath
                :<|> AuthProtect "cookie-auth-optional" :> TimerPath
+               :<|> AuthProtect "cookie-auth-optional" :> GetRegisterPath
+               :<|> AuthProtect "cookie-auth-optional" :> RegisterPath
                :<|> AuthProtect "cookie-auth-optional" :> RootPath
 
 type instance AuthServerData (AuthProtect "cookie-auth") = LoggedIn User

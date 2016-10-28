@@ -5,12 +5,22 @@ module Utils
     , humanizeTimeInterval
     , safeRead
     , safeHead
+    , hashPassword
+    , hashNewPassword
+    , newSalt
+    , gravatarHash
     ) where
 
 import Data.Text (Text, pack)
+import qualified Data.Text.Encoding as TE
+import qualified Data.ByteString.Char8 as BS
 import Text.Printf (printf)
 import Data.Monoid ((<>))
+import Crypto.Hash
+import Crypto.Random.Entropy
 import Types
+import Control.Monad.IO.Class
+import qualified Data.ByteString.Base64 as Base64
 
 safeHead :: [a] -> Maybe a
 safeHead [] = Nothing
@@ -44,3 +54,18 @@ pluralize :: (Integral a, Show a) => a -> Text -> Text
 pluralize x t = (pack $ show x) <> " " <> t <> suffix
   where
     suffix = if x > 1 then "s" else ""
+
+gravatarHash :: Text -> Text
+gravatarHash email = pack $ show $ (hash (TE.encodeUtf8 email) :: Digest MD5)
+
+hashPassword :: Salt -> ClearPassword -> HashedPassword
+hashPassword (Salt salt) (ClearPassword password) = HashedPassword $ BS.pack $ show $ (hash ((TE.encodeUtf8 password) <> salt) :: Digest SHA256)
+
+newSalt :: MonadIO m => m Salt
+newSalt = liftIO $ Salt . Base64.encode <$> getEntropy 6
+
+hashNewPassword :: MonadIO m => ClearPassword -> m (HashedPassword, Salt)
+hashNewPassword password = do
+    salt <- newSalt
+    let hashedPassword = hashPassword salt password
+    return (hashedPassword, salt)

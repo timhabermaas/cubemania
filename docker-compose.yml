@@ -65,6 +65,6 @@ services:
     volumes:
       - ./api/dist:/app
     environment:
-      - DATABASE_URL=postgres://postgres@db/cubemania_development
+      - DATABASE_URL=postgres://postgres@db/cubemania_production
 volumes:
   postgres-volume:
