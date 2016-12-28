@@ -1,6 +1,7 @@
 FROM nginx
 
 COPY public/ /home/assets
+COPY nginx/static/ /home/static
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
 
 VOLUME /cert
