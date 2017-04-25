@@ -11,6 +11,7 @@ import Data.Aeson (ToJSON(..), FromJSON(..), Value(..), (.=), object, (.:), (.:?
 import Servant (FromHttpApiData(..))
 import Web.HttpApiData (ToHttpApiData, toQueryParam)
 import Data.Text (Text, pack)
+import Data.String (IsString, fromString)
 import Data.Char (chr)
 import Data.Time.LocalTime (LocalTime, localTimeToUTC, utc)
 import Data.Time.Format (defaultTimeLocale, formatTime)
@@ -18,6 +19,7 @@ import Data.Time.Clock (UTCTime)
 import Data.Monoid ((<>))
 import qualified Data.Map.Strict as Map
 import Data.Word (Word8)
+import Data.UUID (UUID, toText)
 import Database.PostgreSQL.Simple.FromRow
 import Database.PostgreSQL.Simple.FromField
 import Database.PostgreSQL.Simple.ToField
@@ -94,6 +96,7 @@ instance FromField UserId where
     fromField f s = UserId <$> fromField f s
 instance FromRow UserId
 instance ToJSON UserId
+instance FromJSON UserId
 instance ToField UserId where
     toField (UserId id) = toField id
 instance FromHttpApiData UserId where
@@ -224,7 +227,14 @@ instance ToJSON RecordWithSingles where
 
 newtype ClearPassword = ClearPassword Text deriving (Eq)
 newtype HashedPassword = HashedPassword BS.ByteString deriving (Eq, Show)
-newtype Salt = Salt BS.ByteString
+
+instance FromField HashedPassword where
+    fromField f s = HashedPassword <$> fromField f s
+
+newtype Salt = Salt BS.ByteString deriving (Show)
+
+instance FromField Salt where
+    fromField f s = Salt <$> fromField f s
 
 data SubmittedUser = SubmittedUser
     { submittedUserName :: Text
@@ -272,6 +282,8 @@ data User = User
     , userWca :: Maybe Text
     , userIgnored :: Bool
     , userWastedTime :: Integer
+    , userSalt :: Salt
+    , userPassword :: HashedPassword
     } deriving (Show)
 
 instance Eq User where
@@ -286,7 +298,7 @@ instance ToJSON User where
         ]
 
 instance FromRow User where
-    fromRow = User <$> field <*> field <*> field <*> field <*> field <*> wcaField <*> field <*> field
+    fromRow = User <$> field <*> field <*> field <*> field <*> field <*> wcaField <*> field <*> field <*> field <*> field
       where
       -- converting empty string to Nothing. :(
       wcaField = do
@@ -295,11 +307,15 @@ instance FromRow User where
             Just t -> if t == "" then return Nothing else return $ Just t
             Nothing -> return Nothing
 
-newtype LoggedIn a = LoggedIn { getLoggedIn :: a } deriving (Show)
-instance ToJSON a => ToJSON (LoggedIn a) where
-    toJSON (LoggedIn x) = toJSON x
+--data SessionData = SessionData { getCurrentUser :: User, getSessionId' :: SessionId }
+data LoggedIn a = LoggedIn { getLoggedIn :: a, getSessionId :: SessionId }
 
 type LoggedInUser = LoggedIn User
+
+data SubmittedLogin = SubmittedLogin
+    { submittedLoginName :: Text
+    , submittedLoginPassword :: ClearPassword
+    }
 
 data RecordType = SingleRecord | AverageOf5Record | AverageOf12Record deriving (Enum, Bounded, Ord, Eq)
 
@@ -473,3 +489,22 @@ instance FromRow LocalTimeWithFromRow
 
 localTimeToUTCTime :: LocalTimeWithFromRow -> UTCTime
 localTimeToUTCTime (LocalTimeWithFromRow t) = localTimeToUTC utc t
+
+newtype SessionId = SessionId UUID
+
+instance ToField SessionId where
+    toField (SessionId uuid) = toField $ toText uuid
+
+data SerializedSessionData = SerializedSessionData
+    { sessionDataUserId :: UserId
+    } deriving (Generic)
+
+instance FromJSON SerializedSessionData
+instance ToJSON SerializedSessionData
+
+newtype FlashMessage = FlashMessage Text
+instance ToMarkup FlashMessage where
+    toMarkup (FlashMessage t) = toMarkup t
+
+instance IsString FlashMessage where
+    fromString s = FlashMessage $ pack s

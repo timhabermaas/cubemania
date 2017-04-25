@@ -7,8 +7,10 @@ module Utils
     , safeHead
     , hashPassword
     , hashNewPassword
+    , authenticate
     , newSalt
     , gravatarHash
+    , sessionIdFromByteString
     ) where
 
 import Data.Text (Text, pack)
@@ -61,6 +63,9 @@ gravatarHash email = pack $ show $ (hash (TE.encodeUtf8 email) :: Digest MD5)
 hashPassword :: Salt -> ClearPassword -> HashedPassword
 hashPassword (Salt salt) (ClearPassword password) = HashedPassword $ BS.pack $ show $ (hash ((TE.encodeUtf8 password) <> salt) :: Digest SHA256)
 
+authenticate :: (Salt, ClearPassword) -> HashedPassword -> Bool
+authenticate (s, cp) hp = hashPassword s cp == hp
+
 newSalt :: MonadIO m => m Salt
 newSalt = liftIO $ Salt . Base64.encode <$> getEntropy 6
 
@@ -69,3 +74,6 @@ hashNewPassword password = do
     salt <- newSalt
     let hashedPassword = hashPassword salt password
     return (hashedPassword, salt)
+
+sessionIdFromByteString :: BS.ByteString -> Maybe SessionId
+sessionIdFromByteString = fmap SessionId . safeRead . BS.unpack

@@ -5,6 +5,7 @@ module Frontend.Forms
     ( commentForm
     , Frontend.Forms.postForm
     , registerForm
+    , loginForm
     , runGetForm
     , runPostForm
     ) where
@@ -48,6 +49,10 @@ registerForm =
       | otherwise = DF.Error "must match password"
     validateUniqueUserName = DF.validateM (\name -> maybe (DF.Success name) (const $ DF.Error "already exists") <$> (Db.runDb $ Db.getUserByName name))
     validateUniqueEmail = DF.validateM (\email -> maybe (DF.Success email) (const $ DF.Error "already exists") <$> (Db.runDb $ Db.getUserByEmail email))
+
+loginForm :: (Monad m) => DF.Form T.Text m SubmittedLogin
+loginForm = SubmittedLogin <$> "name" .: mustBePresent (text Nothing)
+                           <*> "password" .: (ClearPassword <$> mustBePresent (text Nothing))
 
 
 

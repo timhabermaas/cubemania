@@ -38,6 +38,9 @@ module Db
     , getPuzzleBySlug
     , getKindById
     , getAllPuzzles
+    , createSession
+    , deleteSession
+    , readSession
     ) where
 
 import Prelude hiding (id)
@@ -49,12 +52,16 @@ import qualified Data.Map.Strict as Map
 import Data.Time.Clock (UTCTime, getCurrentTime, diffUTCTime, NominalDiffTime, utctDay)
 import Data.Time.Calendar (addDays)
 import Data.Int (Int64)
+import Data.Aeson (encode, decode)
+import System.Random
 import Control.Monad.Reader (MonadReader, asks)
 import Control.Monad.IO.Class
 import Database.PostgreSQL.Simple.FromRow (FromRow, fromRow)
 import Database.PostgreSQL.Simple.ToRow (ToRow)
 import Database.PostgreSQL.Simple (Connection, query, query_, formatQuery, fold_, execute, withTransaction, Only(..), Query)
 import Data.Text (Text)
+import Data.Text.Encoding (encodeUtf8)
+import Data.ByteString.Lazy (fromStrict)
 import Data.Pool (withResource)
 
 runDb :: (MonadReader Configuration m, MonadIO m) => (Connection -> IO a) -> m a
@@ -134,22 +141,22 @@ matchUsers q conn =
 
 getUserBySlug :: (MonadIO m) => UserSlug -> Connection -> m (Maybe User)
 getUserBySlug slug conn = do
-    users <- myQuery conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time FROM users WHERE slug = ?" (Only slug)
+    users <- myQuery conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time, salt, encrypted_password FROM users WHERE slug = ?" (Only slug)
     return $ safeHead users
 
 getUserByName :: (MonadIO m) => Text -> Connection -> m (Maybe User)
 getUserByName name conn = do
-    users <- myQuery conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time FROM users WHERE lower(name) = lower(?)" (Only name)
+    users <- myQuery conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time, salt, encrypted_password FROM users WHERE lower(name) = lower(?)" (Only name)
     return $ safeHead users
 
 getUserByEmail :: (MonadIO m) => Text -> Connection -> m (Maybe User)
 getUserByEmail email conn = do
-    users <- myQuery conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time FROM users WHERE lower(email) = lower(?)" (Only email)
+    users <- myQuery conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time, salt, encrypted_password FROM users WHERE lower(email) = lower(?)" (Only email)
     return $ safeHead users
 
 getUserById :: (MonadIO m) => UserId -> Connection -> m (Maybe User)
 getUserById id conn = do
-    users <- myQuery conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time FROM users WHERE id = ?" (Only id)
+    users <- myQuery conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time, salt, encrypted_password FROM users WHERE id = ?" (Only id)
     return $ safeHead users
 
 getAnnouncement :: (MonadIO m) => AnnouncementId -> Connection -> m (Maybe Announcement)
@@ -301,6 +308,28 @@ getAllPuzzles :: (MonadIO m) => Connection -> m [(Kind, Puzzle)]
 getAllPuzzles conn = do
     foo <- myQuery_ conn "SELECT kinds.id, kinds.name, kinds.short_name, kinds.css_position, puzzles.id, puzzles.name, puzzles.css_position, puzzles.slug, puzzles.kind_id FROM puzzles LEFT OUTER JOIN kinds ON kinds.id = puzzles.kind_id ORDER BY puzzles.name"
     return $ unwrapJoinedResult2 <$> foo
+
+createSession :: (MonadIO m) => SerializedSessionData -> Connection -> m SessionId
+createSession sessionData conn = do
+    sessionId <- liftIO (SessionId <$> randomIO)
+    time <- liftIO getCurrentTime
+    _ <- myExecute conn "INSERT INTO sessions (session_id, data, created_at, updated_at) VALUES (?, ?, ?, ?)" (sessionId, encode sessionData, time, time)
+    return sessionId
+
+deleteSession :: (MonadIO m) => SessionId -> Connection -> m ()
+deleteSession sessionId conn = do
+    myExecute conn "DELETE FROM sessions WHERE session_id = ?" (Only sessionId)
+    return ()
+
+readSession :: (MonadIO m) => SessionId -> Connection -> m (Maybe SerializedSessionData)
+readSession sessionId conn = do
+    sessionData <- myQuery conn "SELECT data FROM sessions WHERE session_id = ?" (Only sessionId)
+    case safeHead sessionData of
+        Just (Only text) -> do
+            -- TODO: Add FrowField SessionData instance which converts directly from JSON text to value.
+            return $ decode (fromStrict (encodeUtf8 text))
+        Nothing ->
+            return Nothing
 
 myQuery :: (ToRow q, FromRow r, MonadIO m) => Connection -> Query -> q -> m [r]
 myQuery conn q params = liftIO $ do

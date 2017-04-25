@@ -273,7 +273,15 @@ jQuery(function() {
       Chart.prototype.fetchDataForChart = function(userId, from, to, callback) {
         var puzzleId;
         puzzleId = Cubemania.currentPuzzle.getId();
-        return $.getJSON("/api/puzzles/" + puzzleId + "/singles/chart.json?from=" + from + "&to=" + to + "&user_id=" + userId, (function(_this) {
+        var fromParam = "";
+        var toParam = "";
+        if (from) {
+          fromParam += "from=" + from + "&"
+        }
+        if (to) {
+          toParam += "to=" + to + "&"
+        }
+        return $.getJSON("/api/puzzles/" + puzzleId + "/singles/chart.json?" + fromParam + toParam + "&user_id=" + userId, (function(_this) {
           return function(data) {
             return callback(_this.generateChartDataFromApiData(data));
           };

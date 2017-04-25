@@ -13,6 +13,8 @@ module Html
     , rootPage
     , timerPage
     , registerPage
+    , loginPage
+    , Page
     ) where
 
 import Data.Monoid ((<>))
@@ -21,9 +23,8 @@ import Routes
 import Data.Maybe (fromMaybe, isJust)
 import qualified Data.Map.Strict as Map
 import Data.ByteString.Lazy (toStrict)
-import Data.ByteString.Char8 (pack)
-import Data.ByteString.Base16 (encode)
 import Control.Monad (forM_, unless)
+import Control.Monad.Reader (Reader, ask)
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
 import qualified Data.Text.Lazy as LT
@@ -34,31 +35,32 @@ import Text.Markdown (markdown, def)
 import Text.Digestive (View)
 import qualified Data.Time.Format as DF
 import qualified Data.Aeson as JSON
-import qualified Crypto.Hash as CH
 import Utils
 import Frontend.FormViewHelpers
 import Frontend.PuzzleNavigation
 import Frontend.BackboneTemplates
 
-data Page = Home | Timer | Users | Records deriving (Eq)
+data NavigationPage = Home | Timer | Users | Records deriving (Eq)
 
-navigationItems :: [Page]
+navigationItems :: [NavigationPage]
 navigationItems = [Home, Timer, Users, Records]
 
-navigationText :: Page -> T.Text
+navigationText :: NavigationPage -> T.Text
 navigationText Home = "Home"
 navigationText Timer = "Timer"
 navigationText Users = "Users"
 navigationText Records = "Records"
 
-navigationLink :: Page -> T.Text
+navigationLink :: NavigationPage -> T.Text
 navigationLink Home = "/"
 navigationLink Timer = "/puzzles/3x3x3/timer"
 navigationLink Users = usersLink Nothing
 navigationLink Records = "/puzzles/3x3x3/records"
 
-withSubnavigationLayout :: Maybe LoggedInUser -> Page -> T.Text -> Maybe Html -> Html -> Html
-withSubnavigationLayout currentUser currentPage title' subnav inner =
+type Page = Reader (Maybe FlashMessage) Html
+
+withSubnavigationLayout :: Maybe LoggedInUser -> NavigationPage -> T.Text -> Maybe Html -> (Maybe FlashMessage) -> Html -> Html
+withSubnavigationLayout currentUser currentPage title' subnav flash inner =
     let
       selectedClass item' = if item' == currentPage then "selected" else ""
       navigationItem item' = li ! class_ (toValue (selectedClass item' :: T.Text)) $
@@ -66,12 +68,14 @@ withSubnavigationLayout currentUser currentPage title' subnav inner =
                                      toHtml $ navigationText item'
       sessionNavigation =
           case currentUser of
-              Just (LoggedIn u) -> do
+              Just (LoggedIn u _) -> do
                   li ! class_ "session" $ a ! href "/logout" $ "Logout"
                   li ! class_ "session" $ a ! href (toValue $ userLink (userSlug u)) $ toHtml (userName u <> "'s Profile")
               Nothing ->
                   li ! class_ "session" $ a ! href "/login" $ "Login"
       navigation = nav ! class_ "main" $ ul $ mapM_ navigationItem navigationItems <> sessionNavigation
+      flashMessage message =
+          H.div ! A.id "flash" ! class_ "flash notice" $ p (toHtml message)
       footer' =
         footer $ p $ do
             "Founded by"
@@ -100,16 +104,17 @@ withSubnavigationLayout currentUser currentPage title' subnav inner =
                   q "Save The World - Solve The Puzzle"
               navigation
               fromMaybe empty subnav
-              H.div ! A.id "flash" ! class_ "flash notice" ! A.style "display:none" $ p mempty
+              --flashMessage "foo"
+              maybe empty flashMessage flash
               section ! A.id "content" $ H.div ! class_ "center" $ inner
               footer'
               script ! type_ "text/javascript" $ "var uvOptions = {};\n  (function() {\n    var uv = document.createElement('script'); uv.type = 'text/javascript'; uv.async = true;\n    uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/XmjQy7dHIjHW3AR0O50Cyw.js';\n    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);\n  })();"
 
-withLayout :: Maybe LoggedInUser -> Page -> T.Text -> Html -> Html
-withLayout currentUser currentPage title' inner = withSubnavigationLayout currentUser currentPage title' Nothing inner
+withLayout :: Maybe LoggedInUser -> NavigationPage -> T.Text -> (Maybe FlashMessage) -> Html -> Html
+withLayout currentUser currentPage title' flash inner = withSubnavigationLayout currentUser currentPage title' Nothing flash inner
 
 usersPage :: Maybe LoggedInUser -> [SimpleUser] -> Int -> PageNumber -> Maybe T.Text -> Html
-usersPage currentUser users maxSinglesCount currentPageNumber query = withLayout currentUser Users "Users" $
+usersPage currentUser users maxSinglesCount currentPageNumber query = withLayout currentUser Users "Users" Nothing $
     H.div ! class_ "users-container" $ do
         H.form ! acceptCharset "UTF-8" ! action (toValue (usersLink Nothing)) ! A.id "users-search" ! method "get" $
             input ! A.id "q" ! required "required" ! name "q" ! placeholder "Search" ! type_ "search" ! value (toValue (fromMaybe "" query))
@@ -125,7 +130,7 @@ usersPage currentUser users maxSinglesCount currentPageNumber query = withLayout
     fontSize SimpleUser{..} maxSinglesCount' = fromIntegral simpleUserSinglesCount / fromIntegral maxSinglesCount' * 1.4 + 0.6
 
 userPage :: Maybe (LoggedIn User) -> User -> Map.Map (Puzzle, Kind) (Map.Map RecordType DurationInMs) -> Maybe (Map.Map (Puzzle, Kind) (Map.Map RecordType DurationInMs)) -> Activity -> Int -> Html
-userPage cu user@User{..} records ownRecords activity wastedTime = withLayout cu Users "User" $
+userPage cu user@User{..} records ownRecords activity wastedTime = withLayout cu Users "User" Nothing $
     H.div ! A.id "user" $ do
         H.div ! class_ "admin" $ adminLink cu
         h1 $ do
@@ -165,7 +170,7 @@ userPage cu user@User{..} records ownRecords activity wastedTime = withLayout cu
         | otherwise = td ! class_ "slower" $ strong $ toHtml $ Utils.formatTime t1
     recordComparision (Just t1) Nothing =
         td ! class_ "faster" $ strong $ toHtml $ Utils.formatTime t1
-    recordComparision Nothing (Just t2) =
+    recordComparision Nothing (Just _) =
         td ! class_ "slower" $ small "None"
     recordComparision Nothing Nothing =
         recordEntry Nothing
@@ -187,7 +192,7 @@ userPage cu user@User{..} records ownRecords activity wastedTime = withLayout cu
                     thead $ tr mempty
                 tbody $ sequence_ $ fmap (\type' -> recordRow type' (Map.lookup type' records) (ownRecords >>= Map.lookup type') comparison) allRecordTypes
     adminLink :: Maybe LoggedInUser -> Html
-    adminLink (Just (LoggedIn u))
+    adminLink (Just (LoggedIn u _))
         | u == user = a ! href (toValue $ editUserLink userSlug) $ "Edit profile"
         | otherwise = mempty
     adminLink Nothing = mempty
@@ -207,7 +212,7 @@ userPage cu user@User{..} records ownRecords activity wastedTime = withLayout cu
                     a ! href (toValue $ "/users/" <> fromSlug userSlug <> "/edit") $ "Link your World Cube Association profile!"
                        else
                 empty
-    isSelf (Just (LoggedIn cu)) = cu == user
+    isSelf (Just (LoggedIn cu _)) = cu == user
     isSelf _ = False
 
     activityJSON = toValue $ TE.decodeUtf8 $ toStrict $ JSON.encode activity
@@ -216,18 +221,18 @@ mapFromList :: Ord a => [(a, b)] -> Map.Map a [b]
 mapFromList x = Map.fromListWith (++) (fmap (\(k, p) -> (k, [p])) x)
 
 recordsPage :: Maybe LoggedInUser -> (Puzzle, Kind) -> RecordType -> [(Record, SimpleUser)] -> Int -> Int -> [(Kind, Puzzle)]-> Html
-recordsPage currentUser (puzzle, kind) type' records page recordsCount foo = withSubnavigationLayout currentUser Records (fullPuzzleName (puzzle, kind) <> " Records") (Just $ puzzleNavigation (mapFromList foo) (puzzle, kind) (recordsLink Nothing Nothing)) $ do
+recordsPage currentUser (puzzle, kind) type' records page recordsCount foo = withSubnavigationLayout currentUser Records (fullPuzzleName (puzzle, kind) <> " Records") (Just $ puzzleNavigation (mapFromList foo) (puzzle, kind) (recordsLink Nothing Nothing)) Nothing $ do
     p ! class_ "tabs" $
         mapM_ tabEntry allRecordTypes
     table ! A.id "records" $ tbody $
         mapM_ recordEntry $ zip [((page - 1) * 50 + 1)..(page * 50)] records
     pagination
   where
-    tabEntry t =
+    tabEntry t = do
         a ! href (toValue $ recordsLink (Just t) Nothing (puzzleSlug puzzle))
           ! (if t == type' then class_ "selected" else mempty) $ do
             toHtml t
-            space
+        space
     recordEntry (rank, (Record{..}, SimpleUser{..})) =
         tr ! class_ (toValue $ "record rank" <> show rank) $ do
             th $ H.span $ toHtml rank
@@ -269,7 +274,7 @@ recordsPage currentUser (puzzle, kind) type' records page recordsCount foo = wit
             a ! class_ "next_page" ! rel "next" ! href (toValue $ recordsLink (Just type') (Just $ PageNumber (page + 1)) (puzzleSlug puzzle)) $ "Next →"
 
 recordShowPage :: Maybe LoggedInUser -> User -> Record -> [Single] -> (Puzzle, Kind) -> Html
-recordShowPage currentUser User{..} Record{..} singles pk@(Puzzle{..}, Kind{..}) = withLayout currentUser Records "Record" $ do
+recordShowPage currentUser User{..} Record{..} singles pk@(Puzzle{..}, Kind{..}) = withLayout currentUser Records "Record" Nothing $ do
     h1 $ do
         a ! href (toValue $ userLink userSlug) $
             toHtml (userName <> "'s")
@@ -308,35 +313,37 @@ recordShowPage currentUser User{..} Record{..} singles pk@(Puzzle{..}, Kind{..})
     oddEvenClass i
       | even i = class_ "even"
       | otherwise = class_ "odd"
-    bottomLine (Just (LoggedIn u)) =
+    bottomLine (Just (LoggedIn u _)) =
         p ! class_ "suggestion" $
             a ! href (toValue $ shareRecordLink userSlug recordId) $ "Post on Facebook!"
     bottomLine Nothing =
         p ! class_ "challenge" $
             a ! href (toValue $ timerLink puzzleSlug) $ "Can you beat tim?"
 
-rootPage :: Maybe LoggedInUser -> Maybe (Announcement, [Comment]) -> Html
-rootPage currentUser post = withLayout currentUser Home "Home" $ do
-    fromMaybe empty $ announcementHtml <$> post
-    p ! class_ "introduction" $ do
-        "You want to keep track of your times, compare yourself with others and become the best?\n  If so, Cubemania is the right place for you: "
-        a ! href "/register" $ "Register"
-        " now and get the record!"
-    ul ! A.id "features" $ do
-        li ! class_ "odd" $ do
-            a ! href "/puzzles/3x3x3/timer" ! class_ "image" $ img ! alt "Timer" ! src "/assets/images/screenshots/timer.jpg"
-            br
-            p "Stop your times and submit your averages."
-        li $ do
-            a ! href "/users/tim" ! class_ "image" $ img ! alt "Puzzles" ! src "/assets/images/screenshots/puzzles.jpg"
-            br
-            p "Organize your times properly."
-        li ! class_ "odd" $ do
-            a ! href "/puzzles/3x3x3/timer" ! class_ "image" $ img ! alt "Chart" ! src "/assets/images/screenshots/chart.jpg"
-            p "Keep track of your progress and compare yourself with other cubers."
-        li $ do
-            a ! href "/puzzles/3x3x3/records" ! class_ "image" $ img ! alt "Records" ! src "/assets/images/screenshots/records.jpg"
-            p "Get the record!"
+rootPage :: Maybe LoggedInUser -> Maybe (Announcement, [Comment]) -> Page-- Html
+rootPage currentUser post = do
+    flash <- ask
+    return $ withLayout currentUser Home "Home" flash $ do
+        fromMaybe empty $ announcementHtml <$> post
+        p ! class_ "introduction" $ do
+            "You want to keep track of your times, compare yourself with others and become the best?\n  If so, Cubemania is the right place for you: "
+            a ! href "/register" $ "Register"
+            " now and get the record!"
+        ul ! A.id "features" $ do
+            li ! class_ "odd" $ do
+                a ! href "/puzzles/3x3x3/timer" ! class_ "image" $ img ! alt "Timer" ! src "/assets/images/screenshots/timer.jpg"
+                br
+                p "Stop your times and submit your averages."
+            li $ do
+                a ! href "/users/tim" ! class_ "image" $ img ! alt "Puzzles" ! src "/assets/images/screenshots/puzzles.jpg"
+                br
+                p "Organize your times properly."
+            li ! class_ "odd" $ do
+                a ! href "/puzzles/3x3x3/timer" ! class_ "image" $ img ! alt "Chart" ! src "/assets/images/screenshots/chart.jpg"
+                p "Keep track of your progress and compare yourself with other cubers."
+            li $ do
+                a ! href "/puzzles/3x3x3/records" ! class_ "image" $ img ! alt "Records" ! src "/assets/images/screenshots/records.jpg"
+                p "Get the record!"
   where
     announcementHtml (Announcement{..}, comments) =
         article ! class_ "announcement" $ do
@@ -370,7 +377,7 @@ formatDate :: DF.FormatTime t => t -> String
 formatDate = DF.formatTime DF.defaultTimeLocale "%B %d, %Y"
 
 postsPage :: Maybe LoggedInUser -> [(Announcement, Maybe User, Int)] -> Html
-postsPage currentUser posts = withLayout currentUser Home "Posts" $ do
+postsPage currentUser posts = withLayout currentUser Home "Posts" Nothing $ do
     mapM_ singlePost posts
   where
     singlePost (Announcement{..}, author, commentsCount) =
@@ -385,7 +392,7 @@ postsPage currentUser posts = withLayout currentUser Home "Posts" $ do
                 a ! href (toValue $ postLinkToComments announcementId) $ toHtml $ show commentsCount <> " Comments »"
 
 postPage :: Maybe LoggedInUser -> Announcement -> Maybe User -> [(Comment, Maybe User)] -> View T.Text -> Html
-postPage currentUser Announcement{..} author comments form = withLayout currentUser Home "Post" $ do
+postPage currentUser Announcement{..} author comments form = withLayout currentUser Home "Post" Nothing $ do
     article ! class_ "post" $ do
         h1 $ toHtml announcementTitle
         section ! class_ "text" $
@@ -421,7 +428,7 @@ postPage currentUser Announcement{..} author comments form = withLayout currentU
             H.div ! class_ "text" $ p $ toHtml commentContent
 
 newPostPage :: LoggedInUser -> View T.Text -> Html
-newPostPage currentUser form' = withLayout (Just currentUser) Home "New Post" $ do
+newPostPage currentUser form' = withLayout (Just currentUser) Home "New Post" Nothing $ do
     h1 "New Post"
     H.form ! method "POST"
            ! action "/posts" $ do
@@ -435,7 +442,7 @@ newPostPage currentUser form' = withLayout (Just currentUser) Home "New Post" $ 
                     input ! name "commit" ! type_ "submit" ! value "Create Post"
 
 editPostPage :: LoggedInUser -> AnnouncementId -> View T.Text -> Html
-editPostPage currentUser aId form' = withLayout (Just currentUser) Home "Edit Post" $ do
+editPostPage currentUser aId form' = withLayout (Just currentUser) Home "Edit Post" Nothing $ do
     h1 "Edit Post"
     H.form ! method "POST"
            ! action (toValue $ postLink aId) $ do
@@ -452,16 +459,16 @@ convertForm :: View T.Text -> View Html
 convertForm = fmap H.toHtml
 
 timerPage :: Maybe LoggedInUser -> (Puzzle, Kind) -> [(Kind, Puzzle)] -> Html
-timerPage currentUser (puzzle, kind) foo = withSubnavigationLayout currentUser Timer (fullPuzzleName (puzzle, kind) <> " Timer") (Just $ puzzleNavigation (mapFromList foo) (puzzle, kind) timerLink) $ do
+timerPage currentUser (puzzle, kind) foo = withSubnavigationLayout currentUser Timer (fullPuzzleName (puzzle, kind) <> " Timer") (Just $ puzzleNavigation (mapFromList foo) (puzzle, kind) timerLink) Nothing $ do
     H.div ! dataAttribute "puzzle" (toValue $ TE.decodeUtf8 $ toStrict $ JSON.encode $ PuzzleWithNestedKind puzzle kind)
-          ! dataAttribute "user-data" (toValue $ TE.decodeUtf8 $ toStrict $ JSON.encode currentUser)
+          ! dataAttribute "user-data" (toValue $ TE.decodeUtf8 $ toStrict $ JSON.encode $ getLoggedIn <$> currentUser)
           ! A.id "backbone-container" $
         p ! class_ "suggestion" $
             "Enable JavaScript to fully enjoy Cubemania!"
     preEscapedToHtml $ backboneTemplates
 
 registerPage :: Maybe LoggedInUser -> View T.Text -> Html
-registerPage currentUser form' = withLayout currentUser Users "Register" $ do
+registerPage currentUser form' = withLayout currentUser Users "Register" Nothing $ do
     h1 "Register"
     H.form ! acceptCharset "UTF-8" ! action "/users" ! class_ "formtastic user" ! A.id "new_user" ! method "post" ! novalidate "novalidate" $ do
         fieldset ! class_ "inputs" $ ol $ do
@@ -623,6 +630,23 @@ registerPage currentUser form' = withLayout currentUser Users "Register" $ do
                     option ! value "Samoa" $ "(GMT+13:00) Samoa"
                     option ! value "Tokelau Is." $ "(GMT+13:00) Tokelau Is."
         fieldset ! class_ "actions" $ ol $ li ! class_ "action input_action " ! A.id "user_submit_action" $ input ! name "commit" ! type_ "submit" ! value "Register"
+
+loginPage :: Maybe LoggedInUser -> View T.Text -> Page
+loginPage currentUser form' = do
+    flash <- ask
+    return $ withLayout currentUser Users "Login" flash $ do
+        h1 "Login"
+        H.form ! acceptCharset "UTF-8" ! action "/session" ! class_ "formtastic login" ! A.id "new_login" ! method "post" ! novalidate "novalidate" $ do
+            fieldset ! class_ "inputs" $ ol $ do
+                textFieldWithErrors "name" "Name" (convertForm form') Required
+                passwordFieldWithErrors "password" "Password" (convertForm form')
+            fieldset ! class_ "actions" $ ol $ li ! class_ "action input_action " ! A.id "login_submit_action" $ input ! name "commit" ! type_ "submit" ! value "Login"
+        a ! href "/register" $ "Register"
+        space
+        "·"
+        space
+        a ! href "/reset_password/new" $ "Forgot your password?"
+
 
 space :: Html
 space = toHtml (" " :: T.Text) -- Type annotation necessary for ToMarkup class

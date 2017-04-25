@@ -6,7 +6,7 @@
 {-# LANGUAGE RecordWildCards            #-}
 
 module Routes
-    ( CubemaniaAPI
+    ( CubemaniaRoutes
     , api
     , usersLink
     , userLink
@@ -64,30 +64,40 @@ type RecordsPath = "puzzles" :> Capture "puzzleId" PuzzleSlug :> QueryParam "typ
 type TimerPath = "puzzles" :> Capture "puzzleId" PuzzleSlug :> "timer" :> Get '[HTML] Html
 type GetRegisterPath = "register" :> Get '[HTML] Html
 type RegisterPath = "users" :> ReqBody '[FormUrlEncoded] [(T.Text, T.Text)] :> Post '[HTML] Html
+type GetLoginPath = "login" :> Get '[HTML] Html
+type LoginPath = "session" :> ReqBody '[FormUrlEncoded] [(T.Text, T.Text)] :> Post '[HTML] Html--(Headers '[Header "Set-Cookie" T.Text] Html)
+-- TODO: Replace with POST
+type LogoutPath = "logout" :> Get '[HTML] Html
 
-type RootPath = Get '[HTML] Html
-type CubemaniaAPI = JsonApi
-               :<|> AuthProtect "cookie-auth-optional" :> UsersPath
-               :<|> AuthProtect "cookie-auth-optional" :> UserPath
-               :<|> AuthProtect "cookie-auth-optional" :> PostsPath
-               :<|> AuthProtect "cookie-auth-optional" :> PostPath
-               :<|> AuthProtect "cookie-auth" :> NewPostPath
-               :<|> AuthProtect "cookie-auth" :> CreatePostPath
-               :<|> AuthProtect "cookie-auth" :> EditPostPath
-               :<|> AuthProtect "cookie-auth" :> UpdatePostPath
-               :<|> AuthProtect "cookie-auth" :> "posts" :> Capture "postId" AnnouncementId :> "comments" :> ReqBody '[FormUrlEncoded] [(T.Text, T.Text)] :> Post '[HTML] Html
-               :<|> AuthProtect "cookie-auth-optional" :> RecordsPath
-               :<|> AuthProtect "cookie-auth-optional" :> RecordPath
-               :<|> AuthProtect "cookie-auth" :> ShareRecordPath
-               :<|> AuthProtect "cookie-auth-optional" :> TimerPath
-               :<|> AuthProtect "cookie-auth-optional" :> GetRegisterPath
-               :<|> AuthProtect "cookie-auth-optional" :> RegisterPath
-               :<|> AuthProtect "cookie-auth-optional" :> RootPath
+type RootPath = Header "Cookie" T.Text :> Get '[HTML] (Headers '[Header "Set-Cookie" T.Text] Html)
+type CubemaniaRoutes
+    = JsonApi
+ :<|> AuthProtect "flash-message" :> (
+ AuthProtect "cookie-auth-optional" :> UsersPath
+ :<|> AuthProtect "cookie-auth-optional" :> UserPath
+ :<|> AuthProtect "cookie-auth-optional" :> PostsPath
+ :<|> AuthProtect "cookie-auth-optional" :> PostPath
+ :<|> AuthProtect "cookie-auth" :> NewPostPath
+ :<|> AuthProtect "cookie-auth" :> CreatePostPath
+ :<|> AuthProtect "cookie-auth" :> EditPostPath
+ :<|> AuthProtect "cookie-auth" :> UpdatePostPath
+ :<|> AuthProtect "cookie-auth" :> "posts" :> Capture "postId" AnnouncementId :> "comments" :> ReqBody '[FormUrlEncoded] [(T.Text, T.Text)] :> Post '[HTML] Html
+ :<|> AuthProtect "cookie-auth-optional" :> RecordsPath
+ :<|> AuthProtect "cookie-auth-optional" :> RecordPath
+ :<|> AuthProtect "cookie-auth" :> ShareRecordPath
+ :<|> AuthProtect "cookie-auth-optional" :> TimerPath
+ :<|> AuthProtect "cookie-auth-optional" :> GetRegisterPath
+ :<|> AuthProtect "cookie-auth-optional" :> RegisterPath
+ :<|> AuthProtect "cookie-auth-optional" :> GetLoginPath
+ :<|> AuthProtect "cookie-auth-optional" :> LoginPath
+ :<|> AuthProtect "cookie-auth" :> LogoutPath
+ :<|> AuthProtect "cookie-auth-optional" :> RootPath)
 
 type instance AuthServerData (AuthProtect "cookie-auth") = LoggedIn User
 type instance AuthServerData (AuthProtect "cookie-auth-optional") = Maybe (LoggedIn User)
+type instance AuthServerData (AuthProtect "flash-message") = Maybe FlashMessage
 
-api :: Proxy CubemaniaAPI
+api :: Proxy CubemaniaRoutes
 api = Proxy
 
 --linkTo :: Proxy UsersPath -> MkLink UsersPath

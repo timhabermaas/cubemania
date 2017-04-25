@@ -14,12 +14,12 @@ import Servant
 
 newtype CubemaniaApp a
   = CubemaniaApp
-  ( ReaderT Configuration (ExceptT ServantErr IO) a
+  ( ReaderT Configuration Handler a
   ) deriving (Functor, Applicative, Monad, MonadReader Configuration,
               MonadError ServantErr, MonadIO)
 
-runCubemania :: Configuration -> CubemaniaApp a -> ExceptT ServantErr IO a
+runCubemania :: Configuration -> CubemaniaApp a -> Handler a
 runCubemania config (CubemaniaApp app) = runReaderT app config
 
-convertApp :: Configuration -> CubemaniaApp :~> ExceptT ServantErr IO
-convertApp cfg = Nat $ runCubemania cfg
+convertApp :: Configuration -> CubemaniaApp :~> Handler
+convertApp cfg = NT $ runCubemania cfg

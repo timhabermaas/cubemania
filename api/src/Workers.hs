@@ -17,6 +17,4 @@ wastedTimeThread channel store = do
             addWastedTime store userId (submittedSingleTime single)
           SingleDeleted single ->
             removeWastedTime store (singleUserId single) (singleTime single)
-          _ ->
-            return ()
     wastedTimeThread channel store

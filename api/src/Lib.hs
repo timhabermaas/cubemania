@@ -14,20 +14,26 @@ import Utils
 import Network.Wai
 import Network.Wai.Handler.Warp
 import Network.Wai.Middleware.RequestLogger (logStdoutDev, logStdout)
+import Web.Cookie (parseCookies)
 import Servant
 import Servant.Server.Experimental.Auth (AuthHandler, mkAuthHandler)
 import System.Metrics
 -- TODO: import qualified because of names like port, host, ...
 import System.Remote.Monitoring.Statsd (forkStatsd, defaultStatsdOptions, StatsdOptions(..))
 
-import Data.ByteString (split, filter, isPrefixOf)
+import Data.ByteString (ByteString, split, filter, isPrefixOf, null)
 import Data.ByteString.Char8 (unpack, pack)
+import qualified Data.CaseInsensitive as CI
 import Data.Char (ord)
+import Data.Bifunctor (bimap)
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
 import Data.Time.Clock (UTCTime, NominalDiffTime)
 import Data.Time.Clock.POSIX (posixSecondsToUTCTime)
+import Data.UUID (toText)
+import Data.Monoid ((<>))
 import Data.Maybe (fromMaybe, isJust, fromJust)
+import Data.List (intercalate)
 import Control.Concurrent (forkIO)
 import Control.Concurrent.STM (atomically)
 import Control.Concurrent.STM.TChan (newBroadcastTChan, dupTChan, writeTChan)
@@ -79,74 +85,108 @@ startApp dbConnectionString facebookAppId env = do
                    logStdoutDev
   run port $ logger $ app c
 
-appToServer :: Config.Configuration -> Server CubemaniaAPI
+appToServer :: Config.Configuration -> Server CubemaniaRoutes
 appToServer cfg = enter (convertApp cfg) allHandlers
 
 unauthorized :: MonadError ServantErr m => m a
 unauthorized = throwError (err401 { errBody = "Missing auth cookie" })
 
+unsetFlashMessage :: T.Text
+unsetFlashMessage = "flash-message="
+
 redirect303 :: MonadError ServantErr m => T.Text -> m a
 redirect303 url = throwError $ err303 { errHeaders = [("Location", TE.encodeUtf8 url)] }
 
+redirect303WithCookies :: MonadError ServantErr m => T.Text -> [(T.Text, T.Text)] -> m a
+redirect303WithCookies url headers =
+    throwError $ err303 { errHeaders = ("Location", TE.encodeUtf8 url) : (createCookieHeader <$> headers) }
+  where
+    createCookieHeader (k, v) = ("Set-Cookie", TE.encodeUtf8 $ k <> "=" <> v)
+
 authHandler :: Config.Configuration -> AuthHandler Request LoggedInUser
 authHandler configuration =
-    mkAuthHandler $ (runCubemania configuration) . handler
+    mkAuthHandler $ runCubemania configuration . handler
   where
     handler :: Request -> CubemaniaApp LoggedInUser
     handler req = do
       maybeUser <- authHandlerOptional' req
       maybe unauthorized return maybeUser
 
-parseSessionCookie :: Request -> Maybe UserId
-parseSessionCookie req = do
-    x <- lookup "Cookie" (requestHeaders req)
-    (_key, value) <- bar2 x >>= listToPair
-    x' <- safeRead $ unpack value
-    pure $ UserId x'
-  where
-    foo x = split (fromIntegral $ ord ';') x
-    bar x = Data.ByteString.filter (\x' -> fromIntegral x' /= ord ' ') <$> foo x
-    bar2 x = safeHead $ split (fromIntegral $ ord '=') <$> Prelude.filter (isPrefixOf "current_user_id") (bar x)
-
-    listToPair :: [a] -> Maybe (a, a)
-    listToPair [a, b] = Just (a, b)
-    listToPair _      = Nothing
+getCookieFromRequest :: Request -> ByteString -> Maybe ByteString
+getCookieFromRequest req s = do
+    cookieValue <- lookup "Cookie" (requestHeaders req)
+    let cookies = parseCookies cookieValue
+    -- Pretend empty cookies aren't valid.
+    -- TODO: Handle deleting cookies properly by setting expires flag.
+    mfilter (not . Data.ByteString.null) $ snd <$> (safeHead $ Prelude.filter (\(l, _) -> l == s) cookies)
 
 
 authHandlerOptional :: Config.Configuration -> AuthHandler Request (Maybe (LoggedIn User))
 authHandlerOptional configuration =
-    mkAuthHandler (runCubemania configuration . authHandlerOptional')
+    mkAuthHandler $ runCubemania configuration . authHandlerOptional'
 
 authHandlerOptional' :: Request -> CubemaniaApp (Maybe LoggedInUser)
-authHandlerOptional' req =
-    case parseSessionCookie req of
-      Just u -> fmap LoggedIn <$> Db.runDb (Db.getUserById u)
+authHandlerOptional' req = do
+    case getCookieFromRequest req "my-session" >>= sessionIdFromByteString of
+      Just s -> do
+          session <- Db.runDb $ Db.readSession s
+          case session of
+              Just (SerializedSessionData userId) ->
+                  fmap (\u -> LoggedIn u s) <$> Db.runDb (Db.getUserById userId)
+              Nothing -> return Nothing
       Nothing -> return Nothing
 
+flashHandler :: AuthHandler Request (Maybe FlashMessage)
+flashHandler = mkAuthHandler $ foo
+  where
+    foo req = do
+        case getCookieFromRequest req "flash-message" of
+            Just s -> pure $ Just $ FlashMessage $ TE.decodeUtf8 s
+            Nothing -> pure Nothing
 
-apiContext :: Config.Configuration -> Context (AuthHandler Request (Maybe (LoggedIn User))  ': AuthHandler Request (LoggedIn User) ': '[])
-apiContext config = (authHandlerOptional config) :. (authHandler config)  :. EmptyContext
+apiContext :: Config.Configuration -> Context (AuthHandler Request (Maybe (LoggedIn User))  ': AuthHandler Request (LoggedIn User) ': AuthHandler Request (Maybe FlashMessage) ': '[])
+apiContext config = (authHandlerOptional config) :. (authHandler config)  :. (flashHandler) :. EmptyContext
 
 app :: Config.Configuration -> Application
 app config = serveWithContext api (apiContext config) $ appToServer config
 
-allHandlers :: ServerT CubemaniaAPI CubemaniaApp
-allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postsHandler :<|> postHandler :<|> newPostHandler :<|> createPostHandler :<|> editPostHandler :<|> updatePostHandler :<|> postCommentHandler :<|> recordsHandler :<|> recordHandler :<|> shareRecordHandler :<|> timerHandler :<|> getRegisterHandler :<|> registerHandler :<|> rootHandler
+allHandlers :: ServerT CubemaniaRoutes CubemaniaApp
+allHandlers
+    = jsonApiHandler
+ :<|> (\flashMessage -> usersHandler flashMessage
+                   :<|> userHandler flashMessage
+                   :<|> postsHandler flashMessage
+                   :<|> postHandler flashMessage
+                   :<|> newPostHandler flashMessage
+                   :<|> createPostHandler flashMessage
+                   :<|> editPostHandler flashMessage
+                   :<|> updatePostHandler flashMessage
+                   :<|> postCommentHandler flashMessage
+                   :<|> recordsHandler flashMessage
+                   :<|> recordHandler flashMessage
+                   :<|> shareRecordHandler flashMessage
+                   :<|> timerHandler flashMessage
+                   :<|> getRegisterHandler flashMessage
+                   :<|> registerHandler flashMessage
+                   :<|> getLoginHandler flashMessage
+                   :<|> loginHandler flashMessage
+                   :<|> logoutHandler flashMessage
+                   :<|> rootHandler flashMessage)
   where
     jsonApiHandler = puzzleHandler :<|> usersApiHandler
     puzzleHandler puzzleId = singlesHandler puzzleId
                         :<|> recordsApiHandler puzzleId
                         :<|> chartHandler puzzleId
                         :<|> protectedHandlers puzzleId
-    usersHandler currentUser query page = do
+    usersHandler flashMessage currentUser query page = do
         let pageNumber = fromMaybe (PageNumber 1) page
         users <- case query of
             Just q -> Db.runDb $ Db.matchUsers q
             Nothing -> Db.runDb $ Db.getUsers (fromPageNumber pageNumber)
         maxSinglesCount <- Db.runDb Db.maxSinglesCount
         return $ H.usersPage currentUser users (fromMaybe 1 maxSinglesCount) pageNumber query
-    userHandler currentUser userSlug = do
-        let maybeUser (Just (LoggedIn u)) = Just u
+    userHandler flashMessage currentUser userSlug = do
+        let maybeUser (Just (LoggedIn u _)) = Just u
             maybeUser Nothing = Nothing
         user <- grabOrNotFound $ Db.runDb $ Db.getUserBySlug userSlug
         records <- Db.runDb $ Db.getRecordsForUser (userId user)
@@ -159,17 +199,17 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postsHandle
         store <- asks Config.wastedTimeStore
         wastedTime <- fromMaybe 0 <$> (liftIO $ atomically $ getWastedTimeFor store (userId user))
         return $ H.userPage currentUser user records ownRecords activity wastedTime
-    postsHandler currentUser = do
+    postsHandler flashMessage currentUser = do
         posts <- Db.runDb $ Db.getAnnouncements
         foo <- mapM (\p -> do
                       author <- Db.runDb $ Db.getUserById $ announcementUserId p
                       commentsCount <- length <$> Db.runDb (Db.getCommentsForAnnouncement $ announcementId p)
                       pure (p, author, commentsCount)) posts
         pure $ H.postsPage currentUser foo
-    newPostHandler currentUser = do
+    newPostHandler flashMessage currentUser = do
         form <- runGetForm "post" postForm
         return $ H.newPostPage currentUser form
-    createPostHandler cu@(LoggedIn currentUser) body = do
+    createPostHandler flashMessage cu@(LoggedIn currentUser _) body = do
         form <- runPostForm "post" postForm body
         case form of
             (_, Just p) -> do
@@ -177,12 +217,12 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postsHandle
                 redirect303 $ postLinkToComments pId
             (view, Nothing) ->
                 pure $ H.newPostPage cu view
-    editPostHandler currentUser aId = do
+    editPostHandler flashMessage currentUser aId = do
         Announcement{..} <- grabOrNotFound $ Db.runDb $ Db.getAnnouncement aId
         (view, _) <- runPostForm "post" postForm [("post.title", announcementTitle),
                                                   ("post.content", announcementContent)]
         pure $ H.editPostPage currentUser aId view
-    updatePostHandler currentUser aId body = do
+    updatePostHandler flashMessage currentUser aId body = do
         Announcement{..} <- grabOrNotFound $ Db.runDb $ Db.getAnnouncement aId
         form <- runPostForm "post" postForm body
         case form of
@@ -191,7 +231,7 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postsHandle
                 redirect303 $ postLink announcementId
             (view, Nothing) -> do
                 pure $ H.editPostPage currentUser announcementId view
-    postHandler currentUser pId = do
+    postHandler flashMessage currentUser pId = do
         form <- runGetForm "comment" commentForm
         post <- grabOrNotFound $ Db.runDb $ Db.getAnnouncement pId
         renderPostPage currentUser post form
@@ -200,7 +240,7 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postsHandle
         comments' <- Db.runDb $ Db.getCommentsForAnnouncement $ announcementId post
         comments <- mapM (\c@Comment{..} -> (if isJust commentAuthorId then Db.runDb $ Db.getUserById (fromJust commentAuthorId) else return Nothing) >>= \u -> return (c, u)) comments'
         return $ H.postPage currentUser post user comments form
-    postCommentHandler lu@(LoggedIn currentUser) pId body = do
+    postCommentHandler flashMessage lu@(LoggedIn currentUser _) pId body = do
         form <- runPostForm "comment" commentForm body
         post <- grabOrNotFound $ Db.runDb $ Db.getAnnouncement pId
         case form of
@@ -209,10 +249,10 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postsHandle
                 redirect303 $ postLinkToComments (announcementId post)
             (view, Nothing) ->
                 renderPostPage (Just lu) post view
-    getRegisterHandler currentUser = do
+    getRegisterHandler flashMessage currentUser = do
         form <- runGetForm "user" registerForm
         return $ H.registerPage currentUser form
-    registerHandler currentUser body = do
+    registerHandler flashMessage currentUser body = do
         form <- runPostForm "user" registerForm body
         case form of
             (_, Just u) -> do
@@ -221,11 +261,35 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postsHandle
                 redirect303 $ "/"
             (view, Nothing) ->
                 return $ H.registerPage currentUser view
-    rootHandler currentUser = do
+    getLoginHandler flashMessage currentUser = do
+        form <- runGetForm "login" loginForm
+        return $ runReader (H.loginPage currentUser form) Nothing
+    logoutHandler flashMessage (LoggedIn user sessionId) = do
+        Db.runDb $ Db.deleteSession sessionId
+        redirect303WithCookies "/" [("my-session", ""), ("flash-message", "You are now logged out.")]
+    loginHandler flashMessage currentUser body = do
+        form <- runPostForm "login" loginForm body
+        case form of
+            (view, Just loginData) -> do
+                user <- Db.runDb $ Db.getUserByName (submittedLoginName loginData)
+                let errorMessage = "Username and password do not match."
+                case user of
+                    Just u ->
+                        if authenticate (userSalt u, submittedLoginPassword loginData) (userPassword u) then do
+                            -- TODO: Flash message
+                            (SessionId sessionId) <- Db.runDb $ Db.createSession (SerializedSessionData (userId u))
+                            redirect303WithCookies "/" [("flash-message", "Hello " <> (userName u) <> ", you are now logged in."), ("my-session", toText sessionId)]
+                        else
+                            return $ renderFlashPage (H.loginPage currentUser view) errorMessage
+                    Nothing -> do
+                        return $ renderFlashPage (H.loginPage currentUser view) errorMessage
+            (view, Nothing) ->
+                return $ renderPage $ H.loginPage currentUser view
+    rootHandler flashMessage currentUser cookie = do
         announcement <- Db.runDb Db.getLatestAnnouncement
         comments <- maybe (return []) (\a -> Db.runDb $ Db.getCommentsForAnnouncement (announcementId a)) announcement
-        return $ H.rootPage currentUser ((\a -> (a, comments)) <$> announcement)
-    recordsHandler currentUser slug type' page = do
+        return $ addHeader unsetFlashMessage (runReader (H.rootPage currentUser ((\a -> (a, comments)) <$> announcement)) flashMessage)
+    recordsHandler flashMessage currentUser slug type' page = do
         puzzle <- grabOrNotFound $ Db.runDb $ Db.getPuzzleBySlug slug
         -- TODO: join with puzzle fetch
         kind <- grabOrNotFound $ Db.runDb $ Db.getKindById $ puzzleKindId puzzle
@@ -235,14 +299,14 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postsHandle
         recordsCount <- Db.runDb $ Db.getRecordCountForPuzzleAndType (puzzleId puzzle) recordType
         allPuzzles <- Db.runDb Db.getAllPuzzles
         pure $ H.recordsPage currentUser (puzzle, kind) recordType records pageAsNumber recordsCount allPuzzles
-    recordHandler currentUser userSlug recordId = do
+    recordHandler flashMessage currentUser userSlug recordId = do
         user <- grabOrNotFound $ Db.runDb $ Db.getUserBySlug userSlug
         (record, singles) <- grabOrNotFound $ Db.runDb $ Db.getRecordById recordId
         unless ((recordUserId record) == userId user) $
             notFound
         puzzleKind <- grabOrNotFound $ Db.runDb $ Db.getPuzzleKindById (recordPuzzleId record)
         pure $ H.recordShowPage currentUser user record singles puzzleKind
-    shareRecordHandler (LoggedIn currentUser) userSlug recordId = do
+    shareRecordHandler flashMessage (LoggedIn currentUser _) userSlug recordId = do
         user <- grabOrNotFound $ Db.runDb $ Db.getUserBySlug userSlug
         (record, singles) <- grabOrNotFound $ Db.runDb $ Db.getRecordById recordId
         pk <- grabOrNotFound $ Db.runDb $ Db.getPuzzleKindById $ recordPuzzleId record
@@ -251,7 +315,7 @@ allHandlers = jsonApiHandler :<|> usersHandler :<|> userHandler :<|> postsHandle
             redirect303 $ facebookShareLink appId user (record, singles) pk
         else
             unauthorized
-    timerHandler currentUser slug = do
+    timerHandler flashMessage currentUser slug = do
         puzzle <- grabOrNotFound $ Db.runDb $ Db.getPuzzleBySlug slug
         kind <- grabOrNotFound $ Db.runDb $ Db.getKindById $ puzzleKindId puzzle
         allPuzzles <- Db.runDb Db.getAllPuzzles
@@ -281,7 +345,7 @@ singlesHandler puzzleId userId limit = do
         Just uid -> Db.runDb $ Db.getSingles puzzleId uid $ fromMaybe (Limit 150) limit
 
 submitSingleHandler :: PuzzleId -> LoggedIn User -> SubmittedSingle -> CubemaniaApp (Headers '[Header "X-NewRecord" String] Single)
-submitSingleHandler p (LoggedIn user) s = do
+submitSingleHandler p (LoggedIn user _) s = do
     -- TODO: DB transaction
     singleId' <- Db.runDb $ Db.postSingle p (userId user) s
     single <- Db.runDb $ Db.getSingle singleId'
@@ -289,7 +353,7 @@ submitSingleHandler p (LoggedIn user) s = do
     return $ addHeader "true" single
 
 updateSingleHandler :: PuzzleId -> LoggedIn User -> SingleId -> SubmittedSingle -> CubemaniaApp NoContent
-updateSingleHandler _puzzleId (LoggedIn user) singleId' s = do
+updateSingleHandler _puzzleId (LoggedIn user _) singleId' s = do
     single <- Db.runDb $ Db.getSingle singleId'
     if singleUserId single == userId user then
       do
@@ -299,7 +363,7 @@ updateSingleHandler _puzzleId (LoggedIn user) singleId' s = do
       unauthorized
 
 deleteSingleHandler :: PuzzleId -> LoggedIn User -> SingleId -> CubemaniaApp NoContent
-deleteSingleHandler _puzzleId (LoggedIn user) singleId' = do
+deleteSingleHandler _puzzleId (LoggedIn user _) singleId' = do
     single <- Db.runDb $ Db.getSingle singleId'
     if (singleUserId single) == (userId user) then
       do
@@ -331,3 +395,6 @@ publishEvent :: (MonadReader Config.Configuration m, MonadIO m) => Event -> m ()
 publishEvent event = do
     chan <- asks Config.eventChannel
     liftIO $ atomically $ writeTChan chan event
+
+renderPage page = runReader page Nothing
+renderFlashPage page message = runReader page $ Just message
