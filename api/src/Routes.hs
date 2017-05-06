@@ -56,6 +56,7 @@ type PostPath = "posts" :> Capture "postId" AnnouncementId :> Get '[HTML] Html
 type NewPostPath = "posts" :> "new" :> Get '[HTML] Html
 type EditPostPath = "posts" :> Capture "postId" AnnouncementId :> "edit" :> Get '[HTML] Html
 type UpdatePostPath = "posts" :> Capture "postId" AnnouncementId :> ReqBody '[FormUrlEncoded] [(T.Text, T.Text)] :> Post '[HTML] Html
+type CreateCommentPath = "posts" :> Capture "postId" AnnouncementId :> "comments" :> ReqBody '[FormUrlEncoded] [(T.Text, T.Text)] :> Post '[HTML] Html
 type CreatePostPath = "posts" :> ReqBody '[FormUrlEncoded] [(T.Text, T.Text)] :> Post '[HTML] Html
 type PostsPath = "posts" :> Get '[HTML] Html
 type RecordPath = "users" :> Capture "userSlug" UserSlug :> "records" :> Capture "recordId" RecordId :> Get '[HTML] Html
@@ -81,7 +82,7 @@ type CubemaniaRoutes
  :<|> AuthProtect "cookie-auth" :> CreatePostPath
  :<|> AuthProtect "cookie-auth" :> EditPostPath
  :<|> AuthProtect "cookie-auth" :> UpdatePostPath
- :<|> AuthProtect "cookie-auth" :> "posts" :> Capture "postId" AnnouncementId :> "comments" :> ReqBody '[FormUrlEncoded] [(T.Text, T.Text)] :> Post '[HTML] Html
+ :<|> AuthProtect "cookie-auth" :> CreateCommentPath
  :<|> AuthProtect "cookie-auth-optional" :> RecordsPath
  :<|> AuthProtect "cookie-auth-optional" :> RecordPath
  :<|> AuthProtect "cookie-auth" :> ShareRecordPath

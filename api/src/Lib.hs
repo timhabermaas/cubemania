@@ -23,8 +23,10 @@ import System.Remote.Monitoring.Statsd (forkStatsd, defaultStatsdOptions, Statsd
 
 import Data.ByteString (ByteString, split, filter, isPrefixOf, null)
 import Data.ByteString.Char8 (unpack, pack)
+import Data.ByteString.Base64 as Base64
 import qualified Data.CaseInsensitive as CI
 import Data.Char (ord)
+import Data.Either.Combinators (rightToMaybe)
 import Data.Bifunctor (bimap)
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as TE
@@ -91,6 +93,9 @@ appToServer cfg = enter (convertApp cfg) allHandlers
 unauthorized :: MonadError ServantErr m => m a
 unauthorized = throwError (err401 { errBody = "Missing auth cookie" })
 
+unauthorizedWeb :: MonadError ServantErr m => m a
+unauthorizedWeb = redirect303WithCookies "/" [("flash-message", "Please login or <a href=\"/register\">register</a> to continue.")]
+
 unsetFlashMessage :: T.Text
 unsetFlashMessage = "flash-message="
 
@@ -99,9 +104,9 @@ redirect303 url = throwError $ err303 { errHeaders = [("Location", TE.encodeUtf8
 
 redirect303WithCookies :: MonadError ServantErr m => T.Text -> [(T.Text, T.Text)] -> m a
 redirect303WithCookies url headers =
-    throwError $ err303 { errHeaders = ("Location", TE.encodeUtf8 url) : (createCookieHeader <$> headers) }
+    throwError $ err303 { errHeaders = ("Location", TE.encodeUtf8 url) : (createCookieHeader . (bimap TE.encodeUtf8 TE.encodeUtf8) <$> headers) }
   where
-    createCookieHeader (k, v) = ("Set-Cookie", TE.encodeUtf8 $ k <> "=" <> v)
+    createCookieHeader (k, v) = ("Set-Cookie", k <> "=" <> Base64.encode v <> "; Path=/")
 
 authHandler :: Config.Configuration -> AuthHandler Request LoggedInUser
 authHandler configuration =
@@ -110,7 +115,7 @@ authHandler configuration =
     handler :: Request -> CubemaniaApp LoggedInUser
     handler req = do
       maybeUser <- authHandlerOptional' req
-      maybe unauthorized return maybeUser
+      maybe unauthorizedWeb return maybeUser
 
 getCookieFromRequest :: Request -> ByteString -> Maybe ByteString
 getCookieFromRequest req s = do
@@ -118,8 +123,9 @@ getCookieFromRequest req s = do
     let cookies = parseCookies cookieValue
     -- Pretend empty cookies aren't valid.
     -- TODO: Handle deleting cookies properly by setting expires flag.
-    mfilter (not . Data.ByteString.null) $ snd <$> (safeHead $ Prelude.filter (\(l, _) -> l == s) cookies)
-
+    rawValue <- snd <$> (safeHead $ Prelude.filter (\(l, _) -> l == s) cookies)
+    decodedValue <- rightToMaybe $ Base64.decode rawValue
+    mfilter (not . Data.ByteString.null) (Just decodedValue)
 
 authHandlerOptional :: Config.Configuration -> AuthHandler Request (Maybe (LoggedIn User))
 authHandlerOptional configuration =
@@ -207,9 +213,11 @@ allHandlers
                       pure (p, author, commentsCount)) posts
         pure $ H.postsPage currentUser foo
     newPostHandler flashMessage currentUser = do
+        mustBeAdmin currentUser
         form <- runGetForm "post" postForm
         return $ H.newPostPage currentUser form
     createPostHandler flashMessage cu@(LoggedIn currentUser _) body = do
+        mustBeAdmin cu
         form <- runPostForm "post" postForm body
         case form of
             (_, Just p) -> do
@@ -218,11 +226,13 @@ allHandlers
             (view, Nothing) ->
                 pure $ H.newPostPage cu view
     editPostHandler flashMessage currentUser aId = do
+        mustBeAdmin currentUser
         Announcement{..} <- grabOrNotFound $ Db.runDb $ Db.getAnnouncement aId
         (view, _) <- runPostForm "post" postForm [("post.title", announcementTitle),
                                                   ("post.content", announcementContent)]
         pure $ H.editPostPage currentUser aId view
     updatePostHandler flashMessage currentUser aId body = do
+        mustBeAdmin currentUser
         Announcement{..} <- grabOrNotFound $ Db.runDb $ Db.getAnnouncement aId
         form <- runPostForm "post" postForm body
         case form of
@@ -250,24 +260,30 @@ allHandlers
             (view, Nothing) ->
                 renderPostPage (Just lu) post view
     getRegisterHandler flashMessage currentUser = do
+        mustBeLoggedOut currentUser
         form <- runGetForm "user" registerForm
         return $ H.registerPage currentUser form
     registerHandler flashMessage currentUser body = do
+        mustBeLoggedOut currentUser
         form <- runPostForm "user" registerForm body
         case form of
             (_, Just u) -> do
                 (pw, salt) <- hashNewPassword $ submittedPassword u
-                Db.runDb $ Db.createUser u salt pw
-                redirect303 $ "/"
+                userId <- Db.runDb $ Db.createUser u salt pw
+                (SessionId sessionId) <- Db.runDb $ Db.createSession (SerializedSessionData userId)
+                redirect303WithCookies "/" [("flash-message", "Hello " <> submittedUserName u <> ", you are now registered."), ("my-session", toText sessionId)]
+                --redirect303 $ "/"
             (view, Nothing) ->
                 return $ H.registerPage currentUser view
     getLoginHandler flashMessage currentUser = do
+        mustBeLoggedOut currentUser
         form <- runGetForm "login" loginForm
         return $ runReader (H.loginPage currentUser form) Nothing
     logoutHandler flashMessage (LoggedIn user sessionId) = do
         Db.runDb $ Db.deleteSession sessionId
         redirect303WithCookies "/" [("my-session", ""), ("flash-message", "You are now logged out.")]
     loginHandler flashMessage currentUser body = do
+        mustBeLoggedOut currentUser
         form <- runPostForm "login" loginForm body
         case form of
             (view, Just loginData) -> do
@@ -276,9 +292,8 @@ allHandlers
                 case user of
                     Just u ->
                         if authenticate (userSalt u, submittedLoginPassword loginData) (userPassword u) then do
-                            -- TODO: Flash message
                             (SessionId sessionId) <- Db.runDb $ Db.createSession (SerializedSessionData (userId u))
-                            redirect303WithCookies "/" [("flash-message", "Hello " <> (userName u) <> ", you are now logged in."), ("my-session", toText sessionId)]
+                            redirect303WithCookies "/" [("flash-message", "Hello " <> userName u <> ", you are now logged in."), ("my-session", toText sessionId)]
                         else
                             return $ renderFlashPage (H.loginPage currentUser view) errorMessage
                     Nothing -> do
@@ -314,7 +329,7 @@ allHandlers
             appId <- fromMaybe "" <$> asks Config.facebookAppId
             redirect303 $ facebookShareLink appId user (record, singles) pk
         else
-            unauthorized
+            unauthorizedWeb
     timerHandler flashMessage currentUser slug = do
         puzzle <- grabOrNotFound $ Db.runDb $ Db.getPuzzleBySlug slug
         kind <- grabOrNotFound $ Db.runDb $ Db.getKindById $ puzzleKindId puzzle
@@ -365,13 +380,12 @@ updateSingleHandler _puzzleId (LoggedIn user _) singleId' s = do
 deleteSingleHandler :: PuzzleId -> LoggedIn User -> SingleId -> CubemaniaApp NoContent
 deleteSingleHandler _puzzleId (LoggedIn user _) singleId' = do
     single <- Db.runDb $ Db.getSingle singleId'
-    if (singleUserId single) == (userId user) then
-      do
+    if (singleUserId single) == (userId user) then do
         Db.runDb $ Db.deleteSingle singleId'
         publishEvent (SingleDeleted single)
         return NoContent
     else
-      unauthorized
+        unauthorized
 
 chartHandler :: PuzzleId -> Maybe Float -> Maybe Float -> Maybe UserId -> CubemaniaApp [ChartData]
 chartHandler puzzleId from to userId = do
@@ -398,3 +412,13 @@ publishEvent event = do
 
 renderPage page = runReader page Nothing
 renderFlashPage page message = runReader page $ Just message
+
+mustBeAdmin :: (MonadError ServantErr m) => LoggedIn User -> m ()
+mustBeAdmin (LoggedIn User{..} _) =
+    case userRole of
+        AdminRole -> pure ()
+        _ -> redirect303WithCookies "/" [("flash-message", "You do not have the necessary permissions!")]
+
+mustBeLoggedOut :: (MonadError ServantErr m) => Maybe (LoggedIn User) -> m ()
+mustBeLoggedOut Nothing = pure ()
+mustBeLoggedOut _ = redirect303WithCookies "/" [("flash-message", "You must logout before you can login or register.")]
