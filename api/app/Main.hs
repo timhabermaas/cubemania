@@ -8,4 +8,5 @@ main = do
   connString <- getEnv "DATABASE_URL"
   appId <- lookupEnv "FACEBOOK_APP_ID"
   environment <- lookupEnv "ENV"
-  startApp connString appId environment
+  emailPassword <- lookupEnv "EMAIL_PASSWORD"
+  startApp connString appId environment emailPassword

@@ -226,6 +226,8 @@ instance ToJSON RecordWithSingles where
         ]
 
 newtype ClearPassword = ClearPassword Text deriving (Eq)
+instance Show ClearPassword where
+    show _ = ""
 newtype HashedPassword = HashedPassword BS.ByteString deriving (Eq, Show)
 
 instance FromField HashedPassword where
@@ -242,7 +244,7 @@ data SubmittedUser = SubmittedUser
     , submittedUserWca :: Text
     , submittedUserTimeZone :: Text
     , submittedPassword :: ClearPassword
-    }
+    } deriving Show
 
 data SimpleUser = SimpleUser
     { simpleUserId :: UserId

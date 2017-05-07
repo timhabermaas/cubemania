@@ -4,4 +4,4 @@ module Types.Events
 
 import Types
 
-data Event = SingleSubmitted UserId SubmittedSingle | SingleDeleted Single deriving (Show)
+data Event = UserRegistered SubmittedUser | SingleSubmitted UserId SubmittedSingle | SingleDeleted Single deriving (Show)

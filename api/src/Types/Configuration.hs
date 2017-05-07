@@ -8,6 +8,7 @@ import Control.Concurrent.STM.TChan (TChan)
 import Types.Stores (WastedTimeStore)
 import Types.Events
 import Data.Pool
+import qualified Data.Text as T
 
 data Environment = Development | Production deriving (Eq)
 
@@ -17,4 +18,5 @@ data Configuration = Configuration
   , eventChannel :: TChan Event
   , facebookAppId :: Maybe String
   , environment :: Environment
+  , emailPassword :: T.Text
   }

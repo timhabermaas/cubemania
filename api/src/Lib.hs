@@ -10,6 +10,7 @@ module Lib
 
 import qualified Db
 import Utils
+import Mailer
 
 import Network.Wai
 import Network.Wai.Handler.Warp
@@ -46,7 +47,7 @@ import Types.Stores (newWastedTimeStore, getWastedTimeFor)
 import Types.Events
 import Routes
 import qualified Html as H
-import Workers (wastedTimeThread)
+import Workers (wastedTimeThread, emailWorkerThread)
 import Frontend.Forms
 
 import Control.Monad.IO.Class
@@ -57,8 +58,8 @@ import Data.Pool (createPool, withResource)
 import Types.AppMonad
 
 
-startApp :: String -> Maybe String -> Maybe String -> IO ()
-startApp dbConnectionString facebookAppId env = do
+startApp :: String -> Maybe String -> Maybe String -> Maybe String -> IO ()
+startApp dbConnectionString facebookAppId env emailPassword = do
   -- Send GHC stats to statsd
   store <- newStore
   registerGcMetrics store
@@ -70,12 +71,14 @@ startApp dbConnectionString facebookAppId env = do
   let env' = case env of
                  (Just "production") -> Config.Production
                  _                   -> Config.Development
-      c = Config.Configuration pool wastedTimeStore channel facebookAppId env'
+      c = Config.Configuration pool wastedTimeStore channel facebookAppId env' (T.pack $ fromMaybe "" emailPassword)
       port = 9090
   putStrLn $ "Starting server on port " ++ show port
 
   wastedTimeChannel <- atomically $ dupTChan channel
+  emailChannel <- atomically $ dupTChan channel
   forkIO $ wastedTimeThread wastedTimeChannel wastedTimeStore
+  forkIO $ emailWorkerThread emailChannel c
   let makeSubmitEventFromSingle s = SingleSubmitted (singleUserId s) (SubmittedSingle (singleScramble s) (singleTime s) (singlePenalty s))
   let importEvents conn = Db.getAllSingles (\single -> atomically $ writeTChan wastedTimeChannel (makeSubmitEventFromSingle single)) conn
 
@@ -271,8 +274,8 @@ allHandlers
                 (pw, salt) <- hashNewPassword $ submittedPassword u
                 userId <- Db.runDb $ Db.createUser u salt pw
                 (SessionId sessionId) <- Db.runDb $ Db.createSession (SerializedSessionData userId)
+                publishEvent $ UserRegistered u
                 redirect303WithCookies "/" [("flash-message", "Hello " <> submittedUserName u <> ", you are now registered."), ("my-session", toText sessionId)]
-                --redirect303 $ "/"
             (view, Nothing) ->
                 return $ H.registerPage currentUser view
     getLoginHandler flashMessage currentUser = do

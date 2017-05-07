@@ -24,10 +24,12 @@ library
                      , Routes
                      , RecordCalculation
                      , Workers
+                     , Mailer
                      , Types.Configuration
                      , Types.Stores
                      , Types.Events
                      , Types.AppMonad
+                     , Types.TimeZones
                      , Frontend.Forms
                      , Frontend.FormViewHelpers
                      , Frontend.PuzzleNavigation
@@ -67,6 +69,8 @@ library
                      , base64-bytestring
                      , uuid
                      , random
+                     , mime-mail
+                     , smtps-gmail
   default-language:    Haskell2010
 
 executable api-exe

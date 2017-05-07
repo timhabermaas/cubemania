@@ -12,6 +12,7 @@ module Frontend.Forms
 
 import Types
 import Types.Configuration
+import Types.TimeZones
 import Db
 import Text.Digestive as DF
 import Control.Monad.IO.Class
@@ -39,7 +40,7 @@ registerForm =
                              <*> "email" .: validateUniqueEmail (mustBePresent (text Nothing))
                              -- TODO: regex
                              <*> "wcaId" .: text Nothing
-                             <*> pure ""-- "time_zone" .: text Nothing
+                             <*> "timeZone" .: text Nothing
                              <*> "password" .: validatePassword
     botCheck = "bot" .: check "bots are not allowed" (== "") (text Nothing)
     -- TODO: Da wir nur die Fehler von "password" bei p2 anzeigen, gibt's da kein "mustBePresent" mehr...
