@@ -52,6 +52,7 @@ type JsonApi = "api" :> PuzzleApi
 
 type UsersPath = "users" :> QueryParam "q" T.Text :> QueryParam "page" PageNumber :> Get '[HTML] Html
 type UserPath = "users" :> Capture "userId" UserSlug :> Get '[HTML] Html
+type EditUserPath = "users" :> Capture "userId" UserSlug :> "edit" :> Get '[HTML] Html
 type PostPath = "posts" :> Capture "postId" AnnouncementId :> Get '[HTML] Html
 type NewPostPath = "posts" :> "new" :> Get '[HTML] Html
 type EditPostPath = "posts" :> Capture "postId" AnnouncementId :> "edit" :> Get '[HTML] Html
@@ -83,6 +84,7 @@ type CubemaniaRoutes
  :<|> AuthProtect "cookie-auth" :> EditPostPath
  :<|> AuthProtect "cookie-auth" :> UpdatePostPath
  :<|> AuthProtect "cookie-auth" :> CreateCommentPath
+ :<|> AuthProtect "cookie-auth" :> EditUserPath
  :<|> AuthProtect "cookie-auth-optional" :> RecordsPath
  :<|> AuthProtect "cookie-auth-optional" :> RecordPath
  :<|> AuthProtect "cookie-auth" :> ShareRecordPath
@@ -101,11 +103,7 @@ type instance AuthServerData (AuthProtect "flash-message") = Maybe FlashMessage
 api :: Proxy CubemaniaRoutes
 api = Proxy
 
---linkTo :: Proxy UsersPath -> MkLink UsersPath
---linkTo = safeLink api
-
 usersLink :: Maybe PageNumber -> T.Text
---usersLink page = "/" `T.append` (T.pack . show $ linkTo (Proxy :: Proxy UsersPath) Nothing page)
 usersLink page = "/users" <> (maybe "" (\page -> "?page=" <> (T.pack $ show $ fromPageNumber page)) page)
 
 userLink :: UserSlug -> T.Text

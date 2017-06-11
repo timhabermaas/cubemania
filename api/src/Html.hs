@@ -14,6 +14,7 @@ module Html
     , timerPage
     , registerPage
     , loginPage
+    , editUserPage
     , Page
     ) where
 
@@ -466,7 +467,14 @@ timerPage currentUser (puzzle, kind) foo = withSubnavigationLayout currentUser T
           ! A.id "backbone-container" $
         p ! class_ "suggestion" $
             "Enable JavaScript to fully enjoy Cubemania!"
-    preEscapedToHtml $ backboneTemplates
+    preEscapedToHtml backboneTemplates
+
+timeZoneField :: Html
+timeZoneField =
+    li ! class_ "time_zone input optional" ! A.id "user_time_zone_input" $ do
+        H.label ! class_ " label" ! for "user_time_zone" $ "Time zone"
+        select ! A.id "user_time_zone" ! name "user.timeZone" $
+            mapM_ (\(v, l) -> option ! value (toValue v) $ toMarkup l) timeZones
 
 registerPage :: Maybe LoggedInUser -> View T.Text -> Html
 registerPage currentUser form' = withLayout currentUser Users "Register" Nothing $ do
@@ -479,11 +487,34 @@ registerPage currentUser form' = withLayout currentUser Users "Register" Nothing
             textFieldWithErrors "wcaId" "WCA ID (optional)" (convertForm form') Optional
             passwordFieldWithErrors "password.p1" "Password" (convertForm form')
             passwordFieldWithDifferentErrors "password.p2" ["password", "password.p2"] "Confirmation" (convertForm form')
-            li ! class_ "time_zone input optional" ! A.id "user_time_zone_input" $ do
-                H.label ! class_ " label" ! for "user_time_zone" $ "Time zone"
-                select ! A.id "user_time_zone" ! name "user.timeZone" $
-                    mapM_ (\(v, l) -> option ! value (toValue v) $ toMarkup l) timeZones
+            timeZoneField
         fieldset ! class_ "actions" $ ol $ li ! class_ "action input_action " ! A.id "user_submit_action" $ input ! name "commit" ! type_ "submit" ! value "Register"
+
+editUserPage :: LoggedInUser -> View T.Text -> Html
+editUserPage currentUser@(LoggedIn user _) form' = withLayout (Just currentUser) Users "Edit Profile" Nothing $ do
+    h1 $ toMarkup $ "Update " <> userName user <> "'s Profile"
+    H.form ! acceptCharset "UTF-8" ! action (toValue $ userLink $ userSlug user) ! class_ "formtastic user" ! method "post" ! novalidate "novalidate" $ do
+        fieldset ! class_ "inputs" $ ol $ do
+            textFieldWithErrors "name" "Name" (convertForm form') Required
+            textFieldWithErrors "email" "Email" (convertForm form') Required
+            textFieldWithErrors "wcaId" "WCA ID (optional)" (convertForm form') Optional
+            H.div ! class_ "profile-image-edit" $ do
+                userImage Small user
+                a ! href "http://gravatar.com/" $ "Change your avatar on gravatar"
+            timeZoneField
+            checkbox "receiveEmail" "Receive Emails" (convertForm form')
+            li ! class_ "boolean input optional" ! A.id "user_ignored_input" $ do
+                input ! name "user[ignored]" ! type_ "hidden" ! value "0"
+                H.label ! class_ "" ! for "user_ignored" $ do
+                    input ! A.id "user_ignored" ! name "user[ignored]" ! type_ "checkbox" ! value "1"
+                    "Ignored"
+            passwordFieldWithErrors "password.p1" "Password" (convertForm form')
+            passwordFieldWithDifferentErrors "password.p2" ["password", "password.p2"] "Confirmation" (convertForm form')
+        fieldset ! class_ "actions" $ ol $ do
+            li ! class_ "action input_action " ! A.id "user_submit_action" $ input ! name "commit" ! type_ "submit" ! value "Update"
+            -- TODO: Destroy
+            a ! href "/users/tim" ! dataAttribute "confirm" "Are you sure?" ! dataAttribute "method" "delete" ! rel "nofollow" $ "Destroy"
+
 
 loginPage :: Maybe LoggedInUser -> View T.Text -> Page
 loginPage currentUser form' = do

@@ -259,6 +259,10 @@ createUser SubmittedUser{..} (Salt salt) (HashedPassword hashedPw) conn = do
     [(Only id)] <- myQuery conn "INSERT INTO users (name, slug, email, salt, encrypted_password, time_zone, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id" (submittedUserName, submittedUserName, submittedUserEmail, salt, hashedPw, submittedUserTimeZone, time, time)
     pure $ UserId id
 
+-- Split into updating password and setting user information
+updateUser :: (MonadIO m) => SubmittedEditUser -> Maybe Salt -> Maybe HashedPassword -> Connection -> m UserId
+updateUser = undefined
+
 updateAnnouncement :: (MonadIO m) => AnnouncementId -> SubmittedAnnouncement -> Connection -> m ()
 updateAnnouncement aId SubmittedAnnouncement{..} conn = do
     time <- liftIO getCurrentTime

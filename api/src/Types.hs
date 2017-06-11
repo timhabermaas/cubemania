@@ -25,7 +25,7 @@ import Database.PostgreSQL.Simple.FromField
 import Database.PostgreSQL.Simple.ToField
 import qualified Data.ByteString as BS
 import Control.Monad (mzero)
-import Text.Blaze.Html (ToMarkup(..))
+import Text.Blaze.Html (ToMarkup(..), ToValue(..))
 
 type DurationInMs = Int
 
@@ -246,6 +246,15 @@ data SubmittedUser = SubmittedUser
     , submittedPassword :: ClearPassword
     } deriving Show
 
+data SubmittedEditUser = SubmittedEditUser
+    { submittedEditUserName :: Text
+    , submittedEditUserEmail :: Text
+    , submittedEditUserWca :: Text
+    , submittedEditUserTimeZone :: Text
+    , submittedEditPassword :: ClearPassword -- TODO: Maybe
+    , submittedEditReceiveEmail :: Bool
+    }
+
 data SimpleUser = SimpleUser
     { simpleUserId :: UserId
     , simpleUserSlug :: UserSlug
@@ -309,7 +318,7 @@ instance FromRow User where
             Just t -> if t == "" then return Nothing else return $ Just t
             Nothing -> return Nothing
 
---data SessionData = SessionData { getCurrentUser :: User, getSessionId' :: SessionId }
+-- TODO: Rename to SessionData?
 data LoggedIn a = LoggedIn { getLoggedIn :: a, getSessionId :: SessionId }
 
 type LoggedInUser = LoggedIn User

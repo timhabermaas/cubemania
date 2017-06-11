@@ -6,6 +6,7 @@ module Frontend.FormViewHelpers
     , textFieldWithDifferentErrors
     , passwordFieldWithErrors
     , passwordFieldWithDifferentErrors
+    , checkbox
     , FieldRequired(..)
     ) where
 
@@ -18,7 +19,16 @@ import Control.Monad (join)
 
 data FieldRequired = Required | Optional
 
+checkbox :: T.Text -> T.Text -> View Html -> Html
+checkbox ref labelName view =
+    let ref' = toValue $ absoluteRef ref view
+    in
+        li ! class_ "boolean input optional" $ do
+            H.label ! class_ "" ! for "user_wants_emails" $ do
+                input ! A.id ref' ! name ref' ! type_ "checkbox"
+                toMarkup labelName
 
+-- TODO: Can this be replaced with childErrors from Text.Digestive.View?
 textFieldWithDifferentErrors' :: T.Text -> [T.Text] -> T.Text -> View Html -> FieldRequired -> T.Text -> Html
 textFieldWithDifferentErrors' fieldName errorNames labelName form' required type' =
     let errorClass = if hasErrors form' then " error" else ""

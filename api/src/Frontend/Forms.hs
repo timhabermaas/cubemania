@@ -5,6 +5,7 @@ module Frontend.Forms
     ( commentForm
     , Frontend.Forms.postForm
     , registerForm
+    , editUserForm
     , loginForm
     , runGetForm
     , runPostForm
@@ -12,7 +13,6 @@ module Frontend.Forms
 
 import Types
 import Types.Configuration
-import Types.TimeZones
 import Db
 import Text.Digestive as DF
 import Control.Monad.IO.Class
@@ -32,6 +32,30 @@ postForm :: Monad m => DF.Form T.Text m SubmittedAnnouncement
 postForm = SubmittedAnnouncement <$> "title" .: mustBePresent (text Nothing)
                                  <*> "content" .: mustBePresent (text Nothing)
 
+editUserForm :: (Monad m, MonadIO m, MonadReader Configuration m) => DF.Form T.Text m SubmittedEditUser
+editUserForm =
+    SubmittedEditUser <$> "name" .: validateUniqueUserName (mustBePresent (text Nothing))
+                      <*> "email" .: validateUniqueEmail (mustBePresent (text Nothing))
+                      <*> "wcaId" .: text Nothing
+                      <*> "timeZone" .: text Nothing
+                      <*> "password" .: validatePassword
+                      <*> "receiveEmail" .: DF.bool Nothing
+
+-- TODO: Da wir nur die Fehler von "password" bei p2 anzeigen, gibt's da kein "mustBePresent" mehr...
+validatePassword :: (Monad m) => DF.Form T.Text m ClearPassword
+validatePassword =
+    validate equalityCheck $ (,) <$> "p1" .: mustBePresent (text Nothing) <*> "p2" .: mustBePresent (text Nothing)
+  where
+    equalityCheck (p1, p2)
+      | p1 == p2 = DF.Success $ ClearPassword p1
+      | otherwise = DF.Error "must match password"
+
+validateUniqueUserName :: (Monad m, MonadIO m, MonadReader Configuration m) => DF.Form T.Text m T.Text -> DF.Form T.Text m T.Text
+validateUniqueUserName = DF.validateM (\name -> maybe (DF.Success name) (const $ DF.Error "already exists") <$> (Db.runDb $ Db.getUserByName name))
+
+validateUniqueEmail :: (Monad m, MonadIO m, MonadReader Configuration m) => DF.Form T.Text m T.Text -> DF.Form T.Text m T.Text
+validateUniqueEmail = DF.validateM (\email -> maybe (DF.Success email) (const $ DF.Error "already exists") <$> (Db.runDb $ Db.getUserByEmail email))
+
 registerForm :: (Monad m, MonadIO m, MonadReader Configuration m) => DF.Form T.Text m SubmittedUser
 registerForm =
     snd <$> ((,) <$> botCheck <*> userForm)
@@ -43,13 +67,6 @@ registerForm =
                              <*> "timeZone" .: text Nothing
                              <*> "password" .: validatePassword
     botCheck = "bot" .: check "bots are not allowed" (== "") (text Nothing)
-    -- TODO: Da wir nur die Fehler von "password" bei p2 anzeigen, gibt's da kein "mustBePresent" mehr...
-    validatePassword = validate equalityCheck $ (,) <$> "p1" .: mustBePresent (text Nothing) <*> "p2" .: mustBePresent (text Nothing)
-    equalityCheck (p1, p2)
-      | p1 == p2 = DF.Success $ ClearPassword p1
-      | otherwise = DF.Error "must match password"
-    validateUniqueUserName = DF.validateM (\name -> maybe (DF.Success name) (const $ DF.Error "already exists") <$> (Db.runDb $ Db.getUserByName name))
-    validateUniqueEmail = DF.validateM (\email -> maybe (DF.Success email) (const $ DF.Error "already exists") <$> (Db.runDb $ Db.getUserByEmail email))
 
 loginForm :: (Monad m) => DF.Form T.Text m SubmittedLogin
 loginForm = SubmittedLogin <$> "name" .: mustBePresent (text Nothing)

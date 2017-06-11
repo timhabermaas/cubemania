@@ -171,6 +171,7 @@ allHandlers
                    :<|> editPostHandler flashMessage
                    :<|> updatePostHandler flashMessage
                    :<|> postCommentHandler flashMessage
+                   :<|> editUserHandler flashMessage
                    :<|> recordsHandler flashMessage
                    :<|> recordHandler flashMessage
                    :<|> shareRecordHandler flashMessage
@@ -262,6 +263,11 @@ allHandlers
                 redirect303 $ postLinkToComments (announcementId post)
             (view, Nothing) ->
                 renderPostPage (Just lu) post view
+    editUserHandler flashMessage currentUser userSlug = do
+        user <- grabOrNotFound $ Db.runDb $ Db.getUserBySlug userSlug
+        mustBeSelf currentUser user
+        form <- runGetForm "user" editUserForm
+        return $ H.editUserPage currentUser form
     getRegisterHandler flashMessage currentUser = do
         mustBeLoggedOut currentUser
         form <- runGetForm "user" registerForm
@@ -425,3 +431,10 @@ mustBeAdmin (LoggedIn User{..} _) =
 mustBeLoggedOut :: (MonadError ServantErr m) => Maybe (LoggedIn User) -> m ()
 mustBeLoggedOut Nothing = pure ()
 mustBeLoggedOut _ = redirect303WithCookies "/" [("flash-message", "You must logout before you can login or register.")]
+
+mustBeSelf :: (MonadError ServantErr m) => LoggedIn User -> User -> m ()
+mustBeSelf (LoggedIn cu _) u =
+    if cu == u then
+        pure ()
+    else
+        redirect303WithCookies "/" [("flash-message", "You do not have the necessary permissions!")]
