@@ -177,8 +177,8 @@ class Cubemania.Views.Chart extends Backbone.View
 
   subtitle: (data = []) ->
     if data.length > 0
-      from = formatDate(new Date(data[data.length - 1].x))
-      to = formatDate(new Date(data[0].x))
+      from = formatDate(new Date(data[0].x))
+      to = formatDate(new Date(data[data.length - 1].x))
       "from #{from} to #{to}"
     else
       "from ? to ?"
