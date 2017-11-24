@@ -11,20 +11,24 @@ import qualified Data.Map.Strict as Map
 import Control.Concurrent.STM
 import Types
 
-newtype WastedTimeStore = WastedTimeStore (TVar (Map.Map UserId Int))
+newtype WastedTimeStore = WastedTimeStore (TVar (Map.Map UserId Integer))
 
 newWastedTimeStore :: STM WastedTimeStore
 newWastedTimeStore = WastedTimeStore <$> newTVar Map.empty
 
 addWastedTime :: WastedTimeStore -> UserId -> Int -> STM ()
 addWastedTime (WastedTimeStore t) uId time =
-    modifyTVar' t (\map -> Map.alter (\oldTime -> Just $ maybe time (+time) oldTime) uId map)
+    modifyTVar' t (\map -> Map.alter (\oldTime -> Just $ maybe time' (+time') oldTime) uId map)
+  where
+    time' = fromIntegral time
 
 removeWastedTime :: WastedTimeStore -> UserId -> Int -> STM ()
 removeWastedTime (WastedTimeStore t) uId time =
-    modifyTVar' t (\map -> Map.alter (\oldTime -> Just $ maybe time (flip (-) time) oldTime) uId map)
+    modifyTVar' t (\map -> Map.alter (\oldTime -> Just $ maybe time' (flip (-) time') oldTime) uId map)
+  where
+    time' = fromIntegral time
 
-getWastedTimeFor :: WastedTimeStore -> UserId -> STM (Maybe Int)
+getWastedTimeFor :: WastedTimeStore -> UserId -> STM (Maybe Integer)
 getWastedTimeFor (WastedTimeStore t) uId = do
     map <- readTVar t
     return $ Map.lookup uId map

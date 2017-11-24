@@ -46,7 +46,7 @@ formatTime time
 msToDays t = (fromIntegral t) / (24 * 60 * 60 * 1000)
 msToHours t = (fromIntegral t) / (60 * 60 * 1000)
 
-humanizeTimeInterval :: DurationInMs -> Text
+humanizeTimeInterval :: Integer -> Text
 humanizeTimeInterval t
     | msToDays t >= 0.5 = pluralize (round $ msToDays t) "day"
     | msToHours t >= 0.5 = pluralize (round $ msToHours t) "hour"

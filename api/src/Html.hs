@@ -131,7 +131,7 @@ usersPage currentUser users maxSinglesCount currentPageNumber query = withLayout
     fontSize :: SimpleUser -> Int -> Float
     fontSize SimpleUser{..} maxSinglesCount' = fromIntegral simpleUserSinglesCount / fromIntegral maxSinglesCount' * 1.4 + 0.6
 
-userPage :: Maybe (LoggedIn User) -> User -> Map.Map (Puzzle, Kind) (Map.Map RecordType DurationInMs) -> Maybe (Map.Map (Puzzle, Kind) (Map.Map RecordType DurationInMs)) -> Activity -> Int -> Html
+userPage :: Maybe (LoggedIn User) -> User -> Map.Map (Puzzle, Kind) (Map.Map RecordType DurationInMs) -> Maybe (Map.Map (Puzzle, Kind) (Map.Map RecordType DurationInMs)) -> Activity -> Integer -> Html
 userPage cu user@User{..} records ownRecords activity wastedTime = withLayout cu Users "User" Nothing $
     H.div ! A.id "user" $ do
         H.div ! class_ "admin" $ adminLink cu
