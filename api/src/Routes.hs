@@ -70,6 +70,8 @@ type GetLoginPath = "login" :> Get '[HTML] Html
 type LoginPath = "session" :> ReqBody '[FormUrlEncoded] [(T.Text, T.Text)] :> Post '[HTML] Html--(Headers '[Header "Set-Cookie" T.Text] Html)
 -- TODO: Replace with POST
 type LogoutPath = "logout" :> Get '[HTML] Html
+type GetResetPasswordPath = "reset_password" :> "new" :> Get '[HTML] Html
+type ResetPasswordPath = "reset_password" :> ReqBody '[FormUrlEncoded] [(T.Text, T.Text)] :> Post '[HTML] Html
 
 type RootPath = Header "Cookie" T.Text :> Get '[HTML] (Headers '[Header "Set-Cookie" T.Text] Html)
 type CubemaniaRoutes
@@ -94,6 +96,8 @@ type CubemaniaRoutes
  :<|> AuthProtect "cookie-auth-optional" :> GetLoginPath
  :<|> AuthProtect "cookie-auth-optional" :> LoginPath
  :<|> AuthProtect "cookie-auth" :> LogoutPath
+ :<|> AuthProtect "cookie-auth-optional" :> GetResetPasswordPath
+ :<|> AuthProtect "cookie-auth-optional" :> ResetPasswordPath
  :<|> AuthProtect "cookie-auth-optional" :> RootPath)
 
 type instance AuthServerData (AuthProtect "cookie-auth") = LoggedIn User

@@ -21,5 +21,5 @@ newtype CubemaniaApp a
 runCubemania :: Configuration -> CubemaniaApp a -> Handler a
 runCubemania config (CubemaniaApp app) = runReaderT app config
 
-convertApp :: Configuration -> CubemaniaApp :~> Handler
-convertApp cfg = NT $ runCubemania cfg
+convertApp :: Configuration -> CubemaniaApp a -> Handler a
+convertApp cfg = runCubemania cfg

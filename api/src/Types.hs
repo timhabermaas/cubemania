@@ -25,7 +25,7 @@ import Database.PostgreSQL.Simple.FromField
 import Database.PostgreSQL.Simple.ToField
 import qualified Data.ByteString as BS
 import Control.Monad (mzero)
-import Text.Blaze.Html (ToMarkup(..), ToValue(..))
+import Text.Blaze.Html (ToMarkup(..))
 
 type DurationInMs = Int
 
@@ -232,15 +232,26 @@ newtype HashedPassword = HashedPassword BS.ByteString deriving (Eq, Show)
 
 instance FromField HashedPassword where
     fromField f s = HashedPassword <$> fromField f s
+instance ToField HashedPassword where
+    toField (HashedPassword pw) = toField pw
 
 newtype Salt = Salt BS.ByteString deriving (Show)
 
 instance FromField Salt where
     fromField f s = Salt <$> fromField f s
+instance ToField Salt where
+    toField (Salt s) = toField s
+
+newtype Email = Email Text deriving (Show)
+
+instance ToField Email where
+    toField (Email t) = toField t
+instance FromField Email where
+    fromField f s = Email <$> fromField f s
 
 data SubmittedUser = SubmittedUser
     { submittedUserName :: Text
-    , submittedUserEmail :: Text
+    , submittedUserEmail :: Email
     , submittedUserWca :: Text
     , submittedUserTimeZone :: Text
     , submittedPassword :: ClearPassword
@@ -248,7 +259,7 @@ data SubmittedUser = SubmittedUser
 
 data SubmittedEditUser = SubmittedEditUser
     { submittedEditUserName :: Text
-    , submittedEditUserEmail :: Text
+    , submittedEditUserEmail :: Email
     , submittedEditUserWca :: Text
     , submittedEditUserTimeZone :: Text
     , submittedEditPassword :: ClearPassword -- TODO: Maybe
@@ -288,7 +299,7 @@ data User = User
     { userId :: UserId
     , userName :: Text
     , userSlug :: UserSlug
-    , userEmail :: Text
+    , userEmail :: Email
     , userRole :: UserRole
     , userWca :: Maybe Text
     , userIgnored :: Bool
@@ -326,6 +337,10 @@ type LoggedInUser = LoggedIn User
 data SubmittedLogin = SubmittedLogin
     { submittedLoginName :: Text
     , submittedLoginPassword :: ClearPassword
+    }
+
+data SubmittedResetPassword = SubmittedResetPassword
+    { submittedResetPasswordEmail :: Email
     }
 
 data RecordType = SingleRecord | AverageOf5Record | AverageOf12Record deriving (Enum, Bounded, Ord, Eq)

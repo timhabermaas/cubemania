@@ -8,6 +8,7 @@ module Html
     , postsPage
     , newPostPage
     , editPostPage
+    , newResetPasswordPage
     , recordsPage
     , recordShowPage
     , rootPage
@@ -366,7 +367,7 @@ data UserImageSize = Small | Large
 
 userImage :: UserImageSize -> User -> Html
 userImage imageSize User{..} =
-    let url email = "http://gravatar.com/avatar/" <> gravatarHash email <> ".png?s=" <> pxSize imageSize
+    let url (Email email) = "http://gravatar.com/avatar/" <> gravatarHash email <> ".png?s=" <> pxSize imageSize
         pxSize Small = "25"
         pxSize Large = "60"
     in
@@ -532,6 +533,16 @@ loginPage currentUser form' = do
         space
         a ! href "/reset_password/new" $ "Forgot your password?"
 
+newResetPasswordPage :: Maybe LoggedInUser -> View T.Text -> Page
+newResetPasswordPage currentUser form' = do
+    flash <- ask
+    return $ withLayout currentUser Users "Reset Password" flash $ do
+        h1 "Reset Password"
+        H.form ! acceptCharset "UTF-8" ! action "/reset_password" ! class_ "formtastic reset_password" ! method "post" ! novalidate "novalidate" $ do
+            fieldset ! class_ "inputs" $ ol $ do
+                textFieldWithErrors "email" "Email" (convertForm form') Required
+            fieldset ! class_ "actions" $ ol $ do
+                li ! class_ "action input_action " ! A.id "reset_password_submit_action" $ input ! dataAttribute "disable-with" "Please Wait..." ! name "commit" ! type_ "submit" ! value "Reset"
 
 space :: Html
 space = toHtml (" " :: T.Text) -- Type annotation necessary for ToMarkup class

@@ -19,6 +19,7 @@ module Db
     , getUserById
     , getUserByName
     , getUserByEmail
+    , updateUserPassword
     , getRecordsForUser
     , maxSinglesCount
     , postSingle
@@ -149,8 +150,8 @@ getUserByName name conn = do
     users <- myQuery conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time, salt, encrypted_password FROM users WHERE lower(name) = lower(?)" (Only name)
     return $ safeHead users
 
-getUserByEmail :: (MonadIO m) => Text -> Connection -> m (Maybe User)
-getUserByEmail email conn = do
+getUserByEmail :: (MonadIO m) => Email -> Connection -> m (Maybe User)
+getUserByEmail (Email email) conn = do
     users <- myQuery conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time, salt, encrypted_password FROM users WHERE lower(email) = lower(?)" (Only email)
     return $ safeHead users
 
@@ -158,6 +159,11 @@ getUserById :: (MonadIO m) => UserId -> Connection -> m (Maybe User)
 getUserById id conn = do
     users <- myQuery conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time, salt, encrypted_password FROM users WHERE id = ?" (Only id)
     return $ safeHead users
+
+updateUserPassword :: (MonadIO m) => UserId -> Salt -> HashedPassword -> Connection -> m ()
+updateUserPassword id salt pw conn = do
+    myExecute conn "UPDATE users SET salt = ?, encrypted_password = ? WHERE id = ?" (salt, pw, id)
+    return ()
 
 getAnnouncement :: (MonadIO m) => AnnouncementId -> Connection -> m (Maybe Announcement)
 getAnnouncement id conn = do
@@ -254,9 +260,9 @@ postAnnouncement uId SubmittedAnnouncement{..} conn = do
     pure $ AnnouncementId id
 
 createUser :: (MonadIO m) => SubmittedUser -> Salt -> HashedPassword -> Connection -> m UserId
-createUser SubmittedUser{..} (Salt salt) (HashedPassword hashedPw) conn = do
+createUser SubmittedUser{..} salt pw conn = do
     time <- liftIO getCurrentTime
-    [(Only id)] <- myQuery conn "INSERT INTO users (name, slug, email, salt, encrypted_password, time_zone, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id" (submittedUserName, submittedUserName, submittedUserEmail, salt, hashedPw, submittedUserTimeZone, time, time)
+    [(Only id)] <- myQuery conn "INSERT INTO users (name, slug, email, salt, encrypted_password, time_zone, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id" (submittedUserName, submittedUserName, submittedUserEmail, salt, pw, submittedUserTimeZone, time, time)
     pure $ UserId id
 
 -- Split into updating password and setting user information

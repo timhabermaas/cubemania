@@ -7,6 +7,7 @@ module Frontend.Forms
     , registerForm
     , editUserForm
     , loginForm
+    , resetPasswordForm
     , runGetForm
     , runPostForm
     ) where
@@ -53,8 +54,8 @@ validatePassword =
 validateUniqueUserName :: (Monad m, MonadIO m, MonadReader Configuration m) => DF.Form T.Text m T.Text -> DF.Form T.Text m T.Text
 validateUniqueUserName = DF.validateM (\name -> maybe (DF.Success name) (const $ DF.Error "already exists") <$> (Db.runDb $ Db.getUserByName name))
 
-validateUniqueEmail :: (Monad m, MonadIO m, MonadReader Configuration m) => DF.Form T.Text m T.Text -> DF.Form T.Text m T.Text
-validateUniqueEmail = DF.validateM (\email -> maybe (DF.Success email) (const $ DF.Error "already exists") <$> (Db.runDb $ Db.getUserByEmail email))
+validateUniqueEmail :: (Monad m, MonadIO m, MonadReader Configuration m) => DF.Form T.Text m T.Text -> DF.Form T.Text m Email
+validateUniqueEmail = DF.validateM (\email -> maybe (DF.Success $ Email email) (const $ DF.Error "already exists") <$> (Db.runDb $ Db.getUserByEmail (Email email)))
 
 registerForm :: (Monad m, MonadIO m, MonadReader Configuration m) => DF.Form T.Text m SubmittedUser
 registerForm =
@@ -71,6 +72,9 @@ registerForm =
 loginForm :: (Monad m) => DF.Form T.Text m SubmittedLogin
 loginForm = SubmittedLogin <$> "name" .: mustBePresent (text Nothing)
                            <*> "password" .: (ClearPassword <$> mustBePresent (text Nothing))
+
+resetPasswordForm :: (Monad m) => DF.Form T.Text m SubmittedResetPassword
+resetPasswordForm = SubmittedResetPassword <$> "email" .: (Email <$> mustBePresent (text Nothing))
 
 
 

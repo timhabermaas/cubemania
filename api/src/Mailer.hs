@@ -4,16 +4,17 @@
 module Mailer
     ( sendMail
     , registerMail
+    , resetPasswordMail
     ) where
 
 import Control.Monad.Reader
 import qualified Data.Text as T
 import qualified Data.Text.Lazy as TL
-import qualified Data.ByteString.Lazy as BSL
 import Network.Mail.Mime
 import Types.Configuration
 import Network.Mail.Client.Gmail
 import Data.Monoid ((<>))
+import Types
 
 
 data Mail = Mail { mailTo :: Address, mailSubject :: T.Text, mailContent :: T.Text }
@@ -21,8 +22,23 @@ data Mail = Mail { mailTo :: Address, mailSubject :: T.Text, mailContent :: T.Te
 unlinesText :: [T.Text] -> T.Text
 unlinesText = T.intercalate "\n"
 
-registerMail :: T.Text -> T.Text -> Mailer.Mail
-registerMail email userName =
+resetPasswordMail :: Email -> T.Text -> ClearPassword -> Mailer.Mail
+resetPasswordMail (Email email) userName (ClearPassword pw) =
+    Mailer.Mail (Address (Just userName) email) "New Password for Cubemania" $
+      unlinesText
+        [ "Hi " <> userName <> ","
+        , ""
+        , "your new password is:"
+        , pw
+        , ""
+        , "Your username: " <> userName
+        , ""
+        , "You can now login at https://www.cubemania.org/login using your new password."
+        , "Happy cubing :)."
+        ]
+
+registerMail :: Email -> T.Text -> Mailer.Mail
+registerMail (Email email) userName =
     Mailer.Mail (Address (Just userName) email) "Welcome to Cubemania!" $
       unlinesText [ "Hi " <> userName <> ","
       , ""
