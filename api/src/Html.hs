@@ -78,7 +78,7 @@ withSubnavigationLayout currentUser currentPage title' subnav flash inner =
                   li ! class_ "session" $ a ! href "/login" $ "Login"
       navigation = nav ! class_ "main" $ ul $ mapM_ navigationItem navigationItems <> sessionNavigation
       flashMessage message =
-          H.div ! A.id "flash" ! class_ "flash notice" $ p (toHtml message)
+          H.div ! A.id "flash" ! class_ "flash notice" $ p (preEscapedToHtml message)
       footer' =
         footer $ p $ do
             "Founded by"
@@ -107,7 +107,6 @@ withSubnavigationLayout currentUser currentPage title' subnav flash inner =
                   q "Save The World - Solve The Puzzle"
               navigation
               fromMaybe empty subnav
-              --flashMessage "foo"
               maybe empty flashMessage flash
               section ! A.id "content" $ H.div ! class_ "center" $ inner
               footer'
@@ -282,7 +281,7 @@ recordShowPage currentUser User{..} Record{..} singles pk@(Puzzle{..}, Kind{..})
         a ! href (toValue $ userLink userSlug) $
             toHtml (userName <> "'s")
         space
-        (toMarkup recordType) <> " Record"
+        toMarkup recordType <> " Record"
     article ! A.id "record" $ do
         header $ do
             h2 $ toHtml $ Utils.formatTime recordTime
@@ -297,11 +296,11 @@ recordShowPage currentUser User{..} Record{..} singles pk@(Puzzle{..}, Kind{..})
                 th "Scramble"
                 th "Comment"
             tbody $ do
-                sequence_ $ mapWithIndex (\s i -> singleEntry s i) singles
+                sequence_ $ mapWithIndex singleEntry singles
     bottomLine currentUser
   where
     mapWithIndex :: (a -> Int -> b) -> [a] -> [b]
-    mapWithIndex f xs = let mapWithIndex' f (x:xs) i = (f x i):(mapWithIndex' f xs (i + 1))
+    mapWithIndex f xs = let mapWithIndex' f (x:xs) i = f x i : mapWithIndex' f xs (i + 1)
                             mapWithIndex' _ [] _ = []
                         in mapWithIndex' f xs 0
     singleEntry :: Single -> Int -> Html
@@ -327,7 +326,7 @@ rootPage :: Maybe LoggedInUser -> Maybe (Announcement, [Comment]) -> Page-- Html
 rootPage currentUser post = do
     flash <- ask
     return $ withLayout currentUser Home "Home" flash $ do
-        fromMaybe empty $ announcementHtml <$> post
+        maybe empty announcementHtml post
         p ! class_ "introduction" $ do
             "You want to keep track of your times, compare yourself with others and become the best?\n  If so, Cubemania is the right place for you: "
             a ! href "/register" $ "Register"

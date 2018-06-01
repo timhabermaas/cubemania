@@ -4,7 +4,6 @@
 module Types.AppMonad
     ( CubemaniaApp
     , runCubemania
-    , convertApp
     ) where
 
 import Control.Monad.Reader
@@ -20,6 +19,3 @@ newtype CubemaniaApp a
 
 runCubemania :: Configuration -> CubemaniaApp a -> Handler a
 runCubemania config (CubemaniaApp app) = runReaderT app config
-
-convertApp :: Configuration -> CubemaniaApp a -> Handler a
-convertApp cfg = runCubemania cfg

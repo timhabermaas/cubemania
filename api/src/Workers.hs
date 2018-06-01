@@ -26,12 +26,12 @@ emailWorkerThread channel config = do
         action <- atomically $ do
             event <- readTChan channel
             case event of
-                  UserRegistered SubmittedUser{..} -> do
-                      if submittedUserName == "blub3" then
-                          fail "foo"
-                      else
-                          pure $ (flip runReaderT) config $ sendMail $ registerMail submittedUserEmail submittedUserName
-                  _ -> pure $ (pure () :: IO ())
+                UserRegistered SubmittedUser{..} -> do
+                    pure $ (flip runReaderT) config $ sendMail $ registerMail submittedUserEmail submittedUserName
+                UserPasswordReseted email name password -> do
+                    pure $ (flip runReaderT) config $ sendMail $ resetPasswordMail email name password
+                _ -> pure $ (pure () :: IO ())
+
         action
 
 wastedTimeThread :: TChan Event -> WastedTimeStore -> IO ()

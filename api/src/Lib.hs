@@ -9,7 +9,6 @@ module Lib
     ) where
 
 import qualified Db
-import qualified Mailer
 import Utils
 
 import Network.Wai
@@ -103,7 +102,7 @@ redirect303 url = throwError $ err303 { errHeaders = [("Location", TE.encodeUtf8
 
 redirect303WithCookies :: MonadError ServantErr m => T.Text -> [(T.Text, T.Text)] -> m a
 redirect303WithCookies url headers =
-    throwError $ err303 { errHeaders = ("Location", TE.encodeUtf8 url) : (createCookieHeader . (bimap TE.encodeUtf8 TE.encodeUtf8) <$> headers) }
+    throwError $ err303 { errHeaders = ("Location", TE.encodeUtf8 url) : (createCookieHeader . bimap TE.encodeUtf8 TE.encodeUtf8 <$> headers) }
   where
     createCookieHeader (k, v) = ("Set-Cookie", k <> "=" <> Base64.encode v <> "; Path=/")
 
@@ -166,7 +165,7 @@ app :: Config.Configuration -> Application
 app config = serveWithContext api (apiContext config) $ appToServer config
 
 appToServer :: Config.Configuration -> Server CubemaniaRoutes
-appToServer cfg = hoistServerWithContext api apiContextProxy (convertApp cfg) allHandlers
+appToServer cfg = hoistServerWithContext api apiContextProxy (runCubemania cfg) allHandlers
 
 allHandlers :: ServerT CubemaniaRoutes CubemaniaApp
 allHandlers
@@ -314,7 +313,7 @@ allHandlers
                         generatedPw <- ClearPassword . T.pack <$> (liftIO $ sequence $ take 12 $ repeat $ randomRIO ('a', 'z'))
                         (pw, salt) <- hashNewPassword generatedPw
                         Db.runDb $ Db.updateUserPassword (userId u) salt pw
-                        Mailer.sendMail $ Mailer.resetPasswordMail (userEmail u) (userName u) generatedPw
+                        publishEvent $ UserPasswordReseted (userEmail u) (userName u) generatedPw
 
                         redirect303WithCookies "/" [("flash-message", "Email sent successfully.")]
                     Nothing -> do
@@ -403,7 +402,7 @@ singlesHandler puzzleId userId limit = do
 
 submitSingleHandler :: PuzzleId -> LoggedIn User -> SubmittedSingle -> CubemaniaApp (Headers '[Header "X-NewRecord" String] Single)
 submitSingleHandler p (LoggedIn user _) s = do
-    -- TODO: DB transaction
+    -- TODO: Second query necessary?
     singleId' <- Db.runDb $ Db.postSingle p (userId user) s
     single <- Db.runDb $ Db.getSingle singleId'
     publishEvent (SingleSubmitted (userId user) s)
