@@ -222,7 +222,7 @@ userPage cu user@User{..} records ownRecords activity wastedTime = withLayout cu
 mapFromList :: Ord a => [(a, b)] -> Map.Map a [b]
 mapFromList x = Map.fromListWith (++) (fmap (\(k, p) -> (k, [p])) x)
 
-recordsPage :: Maybe LoggedInUser -> (Puzzle, Kind) -> RecordType -> [(Record, SimpleUser)] -> Int -> Int -> [(Kind, Puzzle)]-> Html
+recordsPage :: Maybe LoggedInUser -> (Puzzle, Kind) -> RecordType -> [(DbEntry Record, SimpleUser)] -> Int -> Int -> [(Kind, Puzzle)]-> Html
 recordsPage currentUser (puzzle, kind) type' records page recordsCount foo = withSubnavigationLayout currentUser Records (fullPuzzleName (puzzle, kind) <> " Records") (Just $ puzzleNavigation (mapFromList foo) (puzzle, kind) (recordsLink Nothing Nothing)) Nothing $ do
     p ! class_ "tabs" $
         mapM_ tabEntry allRecordTypes
@@ -235,7 +235,7 @@ recordsPage currentUser (puzzle, kind) type' records page recordsCount foo = wit
           ! (if t == type' then class_ "selected" else mempty) $ do
             toHtml t
         space
-    recordEntry (rank, (Record{..}, SimpleUser{..})) =
+    recordEntry (rank, (DbEntry _ Record{..}, SimpleUser{..})) =
         tr ! class_ (toValue $ "record rank" <> show rank) $ do
             th $ H.span $ toHtml rank
             td $ strong $ toHtml $ Utils.formatTime recordTime
@@ -275,8 +275,8 @@ recordsPage currentUser (puzzle, kind) type' records page recordsCount foo = wit
         else
             a ! class_ "next_page" ! rel "next" ! href (toValue $ recordsLink (Just type') (Just $ PageNumber (page + 1)) (puzzleSlug puzzle)) $ "Next →"
 
-recordShowPage :: Maybe LoggedInUser -> User -> Record -> [Single] -> (Puzzle, Kind) -> Html
-recordShowPage currentUser User{..} Record{..} singles pk@(Puzzle{..}, Kind{..}) = withLayout currentUser Records "Record" Nothing $ do
+recordShowPage :: Maybe LoggedInUser -> User -> DbEntry Record -> [Single] -> (Puzzle, Kind) -> Html
+recordShowPage currentUser User{..} (DbEntry recordId Record{..}) singles pk@(Puzzle{..}, Kind{..}) = withLayout currentUser Records "Record" Nothing $ do
     h1 $ do
         a ! href (toValue $ userLink userSlug) $
             toHtml (userName <> "'s")

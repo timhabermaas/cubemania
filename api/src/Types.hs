@@ -2,6 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE FlexibleInstances #-}
 
 module Types where
 
@@ -23,6 +24,7 @@ import Data.UUID (UUID, toText)
 import Database.PostgreSQL.Simple.FromRow
 import Database.PostgreSQL.Simple.FromField
 import Database.PostgreSQL.Simple.ToField
+import Database.PostgreSQL.Simple.ToRow
 import qualified Data.ByteString as BS
 import Control.Monad (mzero)
 import Text.Blaze.Html (ToMarkup(..))
@@ -40,7 +42,7 @@ instance ToHttpApiData PageNumber where
 instance FromHttpApiData PageNumber where
     parseUrlPiece t = PageNumber <$> parseUrlPiece t
 
-newtype PuzzleId = PuzzleId Int deriving (Generic, Eq, Ord)
+newtype PuzzleId = PuzzleId Int deriving (Generic, Eq, Ord, Show)
 instance FromHttpApiData PuzzleId where
     parseUrlPiece t = PuzzleId <$> parseUrlPiece t
 instance ToJSON PuzzleId
@@ -64,9 +66,7 @@ instance ToField KindId where
     toField (KindId id) = toField id
 instance ToJSON KindId
 
-newtype Limit = Limit Int deriving (Generic)
-instance FromField Limit where
-    fromField f s = Limit <$> fromField f s
+data Limit = Limit Int | NoLimit deriving (Generic)
 instance FromHttpApiData Limit where
     parseUrlPiece t = Limit <$> parseUrlPiece t
 
@@ -87,6 +87,8 @@ instance FromField CommentId where
 newtype SingleId = SingleId Int deriving (Generic, Show, Eq)
 instance FromField SingleId where
     fromField f s = SingleId <$> fromField f s
+instance ToField SingleId where
+    toField (SingleId id) = toField id
 instance FromHttpApiData SingleId where
   parseUrlPiece s = SingleId <$> parseUrlPiece s
 instance ToJSON SingleId
@@ -172,20 +174,21 @@ data Single = Single
     , singlePenalty :: !(Maybe Penalty)
     , singleCreatedAt :: !UTCTime
     , singleUserId :: !UserId
+    , singlePuzzleId :: !PuzzleId
     } deriving (Show, Eq)
 
 isDnf :: Single -> Bool
-isDnf (Single _ _ _ _ (Just Dnf) _ _) = True
+isDnf (Single _ _ _ _ (Just Dnf) _ _ _) = True
 isDnf _ = False
 
 instance Ord Single where
-    compare (Single _ _ _ _ (Just Dnf) _ _) (Single _ _ _ _ (Just Dnf) _ _) = EQ
-    compare (Single _ _ _ _ (Just Dnf) _ _) (Single _ _ _ _ _ _ _) = GT
-    compare (Single _ _ _ _ _ _ _) (Single _ _ _ _ (Just Dnf) _ _) = LT
-    compare s1 s2 = (singleTime s1) `compare` (singleTime s2)
+    compare (Single _ _ _ _ (Just Dnf) _ _ _) (Single _ _ _ _ (Just Dnf) _ _ _) = EQ
+    compare (Single _ _ _ _ (Just Dnf) _ _ _) Single{}  = GT
+    compare Single{} (Single _ _ _ _ (Just Dnf) _ _ _) = LT
+    compare s1 s2 = singleTime s1 `compare` singleTime s2
 
 instance ToJSON Single where
-    toJSON (Single {..}) = object
+    toJSON Single{..} = object
       [ "id" .= singleId
       , "time" .= singleTime
       , "comment" .= singleComment
@@ -197,7 +200,7 @@ instance ToJSON Single where
 
 
 instance FromRow Single where
-    fromRow = Single <$> field <*> field <*> field <*> field <*> field <*> ((localTimeToUTC utc) <$> field) <*> field
+    fromRow = Single <$> field <*> field <*> field <*> field <*> field <*> ((localTimeToUTC utc) <$> field) <*> field <*> field
 
 data SubmittedSingle = SubmittedSingle
     { submittedSingleScramble :: !Text
@@ -212,11 +215,11 @@ instance FromJSON SubmittedSingle where
                              v .:? "penalty"
     parseJSON _          = mempty
 
-newtype RecordWithSingles = RecordWithSingles (Record, [Single])
+newtype RecordWithSingles = RecordWithSingles (DbEntry Record, [Single])
 
 instance ToJSON RecordWithSingles where
-    toJSON (RecordWithSingles (Record{..}, singles)) = object
-        [ "id" .= recordId
+    toJSON (RecordWithSingles (DbEntry id (Record{..}), singles)) = object
+        [ "id" .= id
         , "time" .= recordTime
         , "set_at" .= (0 :: Int) -- TODO: fix me
         , "comment" .=  recordComment
@@ -343,7 +346,16 @@ data SubmittedResetPassword = SubmittedResetPassword
     { submittedResetPasswordEmail :: Email
     }
 
-data RecordType = SingleRecord | AverageOf5Record | AverageOf12Record deriving (Enum, Bounded, Ord, Eq)
+data RecordType
+    = SingleRecord
+    | AverageOf5Record
+    | AverageOf12Record
+    deriving (Enum, Bounded, Ord, Eq, Show)
+
+singleCount :: RecordType -> Int
+singleCount SingleRecord      = 1
+singleCount AverageOf5Record  = 5
+singleCount AverageOf12Record = 12
 
 shortRecordTypeName :: RecordType -> Text
 shortRecordTypeName SingleRecord = "Single"
@@ -391,28 +403,50 @@ instance ToHttpApiData RecordType where
     toQueryParam AverageOf12Record = toQueryParam ("avg12" :: String)
 
 
-newtype RecordId = RecordId Int deriving Generic
+newtype Id a = Id Int deriving (Show, Generic)
+instance ToJSON (Id a)
+instance FromField (Id a) where
+    fromField f s = Id <$> fromField f s
+instance ToField (Id a) where
+    toField (Id id) = toField id
+instance FromRow (Id a) where
+    fromRow = Id <$> field
+instance FromHttpApiData (Id a) where
+    parseUrlPiece t = Id <$> parseUrlPiece t
 
-instance ToJSON RecordId
-instance FromField RecordId where
-    fromField f s = RecordId <$> fromField f s
-instance ToField RecordId where
-    toField (RecordId id) = toField id
-instance FromHttpApiData RecordId where
-    parseUrlPiece t = RecordId <$> parseUrlPiece t
+data DbEntry a = DbEntry (Id a) a
+dbEntryId (DbEntry id _) = id
+dbEntryRow (DbEntry _ r) = r
 
+instance Show a => Show (DbEntry a) where
+    show (DbEntry (Id id) x) = "DbEntry (Id " ++ show id ++ ") (" ++ show x ++ ")"
+
+-- TODO: Use DbEntity a = DbEntity (Id a) a
 data Record = Record
-    { recordId :: RecordId
-    , recordTime :: DurationInMs
-    , recordComment :: String
-    , recordPuzzleId :: PuzzleId
-    , recordUserId :: UserId
-    , recordType :: RecordType
-    , recordSetAt :: UTCTime
-    }
+    { recordTime :: !DurationInMs
+    , recordComment :: !String
+    , recordPuzzleId :: !PuzzleId
+    , recordUserId :: !UserId
+    , recordType :: !RecordType
+    , recordSetAt :: !UTCTime
+    } deriving (Show)
 
-instance FromRow Record where
-    fromRow = Record <$> field <*> field <*> field <*> field <*> field <*> field <*> (localTimeToUTC utc <$> field)
+instance ToRow Record where
+    toRow Record{..} =
+        [ toField recordTime,
+          toField recordComment,
+          toField recordPuzzleId,
+          toField recordUserId,
+          toField recordType,
+          toField recordSetAt
+        ]
+
+instance FromRow (DbEntry Record) where
+    fromRow = do
+        id <- field
+        inner <- Record <$> field <*> field <*> field <*> field <*> field <*> (localTimeToUTC utc <$> field)
+        pure $ DbEntry id inner
+
 
 
 data Puzzle = Puzzle

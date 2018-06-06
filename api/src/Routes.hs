@@ -60,8 +60,8 @@ type UpdatePostPath = "posts" :> Capture "postId" AnnouncementId :> ReqBody '[Fo
 type CreateCommentPath = "posts" :> Capture "postId" AnnouncementId :> "comments" :> ReqBody '[FormUrlEncoded] [(T.Text, T.Text)] :> Post '[HTML] Html
 type CreatePostPath = "posts" :> ReqBody '[FormUrlEncoded] [(T.Text, T.Text)] :> Post '[HTML] Html
 type PostsPath = "posts" :> Get '[HTML] Html
-type RecordPath = "users" :> Capture "userSlug" UserSlug :> "records" :> Capture "recordId" RecordId :> Get '[HTML] Html
-type ShareRecordPath = "users" :> Capture "userSlug" UserSlug :> "records" :> Capture "recordId" RecordId :> "share" :> Get '[HTML] Html
+type RecordPath = "users" :> Capture "userSlug" UserSlug :> "records" :> Capture "recordId" (Id Record) :> Get '[HTML] Html
+type ShareRecordPath = "users" :> Capture "userSlug" UserSlug :> "records" :> Capture "recordId" (Id Record) :> "share" :> Get '[HTML] Html
 type RecordsPath = "puzzles" :> Capture "puzzleId" PuzzleSlug :> QueryParam "type" RecordType :> QueryParam "page" PageNumber :> "records" :> Get '[HTML] Html
 type TimerPath = "puzzles" :> Capture "puzzleId" PuzzleSlug :> "timer" :> Get '[HTML] Html
 type GetRegisterPath = "register" :> Get '[HTML] Html
@@ -141,14 +141,14 @@ recordsLink type' page (PuzzleSlug slug) =
     queryPart (Just type') Nothing = "?type=" <> toQueryParam type'
     queryPart Nothing Nothing = ""
 
-recordLink :: UserSlug -> RecordId -> T.Text
-recordLink (UserSlug userSlug) (RecordId recordId) = "/users/" <> userSlug <> "/records/" <> T.pack (show recordId)
+recordLink :: UserSlug -> Id Record -> T.Text
+recordLink (UserSlug userSlug) (Id recordId) = "/users/" <> userSlug <> "/records/" <> T.pack (show recordId)
 
-shareRecordLink :: UserSlug -> RecordId -> T.Text
-shareRecordLink (UserSlug u) (RecordId rId) = "/users/" <> u <> "/records/" <> T.pack (show rId) <> "/share"
+shareRecordLink :: UserSlug -> Id Record -> T.Text
+shareRecordLink (UserSlug u) (Id rId) = "/users/" <> u <> "/records/" <> T.pack (show rId) <> "/share"
 
-facebookShareLink :: String -> User -> (Record, [Single]) -> (Puzzle, Kind) -> T.Text
-facebookShareLink appId User{..} (Record{..}, singles) (puzzle, kind) =
+facebookShareLink :: String -> User -> (DbEntry Record, [Single]) -> (Puzzle, Kind) -> T.Text
+facebookShareLink appId User{..} (DbEntry recordId Record{..}, singles) (puzzle, kind) =
     "http://www.facebook.com/dialog/feed" <> TE.decodeUtf8 (URI.renderSimpleQuery True facebookParams)
   where
     facebookParams =

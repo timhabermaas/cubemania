@@ -44,7 +44,7 @@ import Types.Stores (newWastedTimeStore, getWastedTimeFor)
 import Types.Events
 import Routes
 import qualified Html as H
-import Workers (wastedTimeThread, emailWorkerThread)
+import Workers (wastedTimeThread, emailWorkerThread, recordWorkerThread)
 import Frontend.Forms
 
 import Control.Monad.IO.Class
@@ -74,12 +74,16 @@ startApp dbConnectionString facebookAppId env emailPassword = do
 
   wastedTimeChannel <- atomically $ dupTChan channel
   emailChannel <- atomically $ dupTChan channel
+  recordChannel <- atomically $ dupTChan channel
   forkIO $ wastedTimeThread wastedTimeChannel wastedTimeStore
   forkIO $ emailWorkerThread emailChannel c
-  let makeSubmitEventFromSingle s = SingleSubmitted (singleUserId s) (SubmittedSingle (singleScramble s) (singleTime s) (singlePenalty s))
+  forkIO $ recordWorkerThread recordChannel c
+  let makeSubmitEventFromSingle s = SingleSubmitted (singleUserId s) (singlePuzzleId s) (SubmittedSingle (singleScramble s) (singleTime s) (singlePenalty s))
   let importEvents conn = Db.getAllSingles (\single -> atomically $ writeTChan wastedTimeChannel (makeSubmitEventFromSingle single)) conn
 
-  _ <- forkIO (withResource pool importEvents >> putStrLn "finished importing singles")
+  -- TODO: This causes issues, because it will trigger all event handlers, not just the wasted time calculation
+  -- Alternative: For each user calculate the sum and put it into wasted time store.
+  -- _ <- forkIO (withResource pool importEvents >> putStrLn "finished importing singles")
 
   let logger = if env' == Config.Production then
                    logStdout
@@ -357,15 +361,15 @@ allHandlers
         pure $ H.recordsPage currentUser (puzzle, kind) recordType records pageAsNumber recordsCount allPuzzles
     recordHandler _flashMessage currentUser userSlug recordId = do
         user <- grabOrNotFound $ Db.runDb $ Db.getUserBySlug userSlug
-        (record, singles) <- grabOrNotFound $ Db.runDb $ Db.getRecordById recordId
-        unless ((recordUserId record) == userId user) $
+        (record@(DbEntry _ innerRecord), singles) <- grabOrNotFound $ Db.runDb $ Db.getRecordById recordId
+        unless ((recordUserId innerRecord) == userId user) $
             notFound
-        puzzleKind <- grabOrNotFound $ Db.runDb $ Db.getPuzzleKindById (recordPuzzleId record)
+        puzzleKind <- grabOrNotFound $ Db.runDb $ Db.getPuzzleKindById (recordPuzzleId innerRecord)
         pure $ H.recordShowPage currentUser user record singles puzzleKind
     shareRecordHandler _flashMessage (LoggedIn currentUser _) userSlug recordId = do
         user <- grabOrNotFound $ Db.runDb $ Db.getUserBySlug userSlug
-        (record, singles) <- grabOrNotFound $ Db.runDb $ Db.getRecordById recordId
-        pk <- grabOrNotFound $ Db.runDb $ Db.getPuzzleKindById $ recordPuzzleId record
+        (record@(DbEntry _ innerRecord), singles) <- grabOrNotFound $ Db.runDb $ Db.getRecordById recordId
+        pk <- grabOrNotFound $ Db.runDb $ Db.getPuzzleKindById $ recordPuzzleId innerRecord
         if user == currentUser then do
             appId <- fromMaybe "" <$> asks Config.facebookAppId
             redirect303 $ facebookShareLink appId user (record, singles) pk
@@ -403,9 +407,11 @@ singlesHandler puzzleId userId limit = do
 submitSingleHandler :: PuzzleId -> LoggedIn User -> SubmittedSingle -> CubemaniaApp (Headers '[Header "X-NewRecord" String] Single)
 submitSingleHandler p (LoggedIn user _) s = do
     -- TODO: Second query necessary?
+    --       We can construct the Single from SubmittedSingle and user/puzzle id
+    --       This would also get rid of explicitely passing the user id
     singleId' <- Db.runDb $ Db.postSingle p (userId user) s
     single <- Db.runDb $ Db.getSingle singleId'
-    publishEvent (SingleSubmitted (userId user) s)
+    publishEvent (SingleSubmitted (userId user) (singlePuzzleId single) s)
     return $ addHeader "true" single
 
 updateSingleHandler :: PuzzleId -> LoggedIn User -> SingleId -> SubmittedSingle -> CubemaniaApp NoContent
@@ -421,8 +427,9 @@ updateSingleHandler _puzzleId (LoggedIn user _) singleId' s = do
 deleteSingleHandler :: PuzzleId -> LoggedIn User -> SingleId -> CubemaniaApp NoContent
 deleteSingleHandler _puzzleId (LoggedIn user _) singleId' = do
     single <- Db.runDb $ Db.getSingle singleId'
-    if (singleUserId single) == (userId user) then do
-        Db.runDb $ Db.deleteSingle singleId'
+    if singleUserId single == userId user then do
+        Db.runDb (\c -> Db.withTransaction c $ do
+            Db.deleteSingle singleId' c)
         publishEvent (SingleDeleted single)
         return NoContent
     else

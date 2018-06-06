@@ -7,7 +7,7 @@ import Types
 
 data Event
     = UserRegistered SubmittedUser
-    | SingleSubmitted UserId SubmittedSingle
+    | SingleSubmitted UserId PuzzleId SubmittedSingle
     | SingleDeleted Single
     | UserPasswordReseted Email Text ClearPassword
     deriving (Show)
