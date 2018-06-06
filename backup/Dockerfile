@@ -11,4 +11,7 @@ COPY crontab /var/spool/cron/crontabs/root
 
 VOLUME /root/keys
 VOLUME /root/tarsnap-cache
+
+WORKDIR /root
+
 CMD crond -l 2 -f
