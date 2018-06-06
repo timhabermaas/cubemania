@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20161002105813) do
+ActiveRecord::Schema.define(:version => 20180604072050) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id",                  :null => false
@@ -109,6 +109,7 @@ ActiveRecord::Schema.define(:version => 20161002105813) do
   end
 
   add_index "records", ["puzzle_id", "amount", "time"], :name => "index_records_on_puzzle_id_and_amount_and_time"
+  add_index "records", ["puzzle_id", "amount", "user_id"], :name => "index_unique_records_on_puzzle_id_amount_user_id", :unique => true
 
   create_table "records_singles", :id => false, :force => true do |t|
     t.integer "record_id", :null => false
