@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20180604072050) do
+ActiveRecord::Schema.define(:version => 20180608163513) do
 
   create_table "activities", :force => true do |t|
     t.integer  "trackable_id",                  :null => false
@@ -149,7 +149,7 @@ ActiveRecord::Schema.define(:version => 20180604072050) do
     t.datetime "created_at",                                            :null => false
     t.string   "role",               :limit => 16,  :default => "user"
     t.string   "wca"
-    t.string   "time_zone",          :limit => 100, :default => "UTC"
+    t.string   "time_zone",          :limit => 100, :default => "UTC",  :null => false
     t.boolean  "ignored",                           :default => false,  :null => false
     t.datetime "updated_at",                                            :null => false
     t.boolean  "wants_emails",                      :default => false,  :null => false
