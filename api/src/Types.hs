@@ -66,6 +66,9 @@ instance ToField KindId where
     toField (KindId id) = toField id
 instance ToJSON KindId
 
+-- TODO: Create generic slug data type, makes slug generation easier.
+-- newtype Slug a = Slug Text deriving (Eq, Generic, Ord)
+
 data Limit = Limit Int | NoLimit deriving (Generic)
 instance FromHttpApiData Limit where
     parseUrlPiece t = Limit <$> parseUrlPiece t
@@ -245,7 +248,7 @@ instance FromField Salt where
 instance ToField Salt where
     toField (Salt s) = toField s
 
-newtype Email = Email Text deriving (Show)
+newtype Email = Email Text deriving (Show, Eq)
 
 instance ToField Email where
     toField (Email t) = toField t
@@ -265,8 +268,8 @@ data SubmittedEditUser = SubmittedEditUser
     , submittedEditUserEmail :: Email
     , submittedEditUserWca :: Text
     , submittedEditUserTimeZone :: Text
-    , submittedEditPassword :: ClearPassword -- TODO: Maybe
-    , submittedEditReceiveEmail :: Bool
+    , submittedEditUserPassword :: Maybe ClearPassword
+    , submittedEditUserIgnored :: Maybe Bool
     }
 
 data SimpleUser = SimpleUser
@@ -309,7 +312,14 @@ data User = User
     , userWastedTime :: Integer
     , userSalt :: Salt
     , userPassword :: HashedPassword
+    , userTimeZone :: Text
     } deriving (Show)
+
+loggedInUserIsAdmin :: LoggedIn User -> Bool
+loggedInUserIsAdmin (LoggedIn u _) = userIsAdmin u
+
+userIsAdmin :: User -> Bool
+userIsAdmin User{..} = userRole == AdminRole
 
 instance Eq User where
     (==) u1 u2 = userId u1 == userId u2
@@ -323,7 +333,7 @@ instance ToJSON User where
         ]
 
 instance FromRow User where
-    fromRow = User <$> field <*> field <*> field <*> field <*> field <*> wcaField <*> field <*> field <*> field <*> field
+    fromRow = User <$> field <*> field <*> field <*> field <*> field <*> wcaField <*> field <*> field <*> field <*> field <*> field
       where
       -- converting empty string to Nothing. :(
       wcaField = do
@@ -562,7 +572,7 @@ data SerializedSessionData = SerializedSessionData
 instance FromJSON SerializedSessionData
 instance ToJSON SerializedSessionData
 
-newtype FlashMessage = FlashMessage Text
+newtype FlashMessage = FlashMessage Text deriving (Show)
 instance ToMarkup FlashMessage where
     toMarkup (FlashMessage t) = toMarkup t
 

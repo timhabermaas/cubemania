@@ -13,7 +13,7 @@ module Frontend.FormViewHelpers
 import qualified Data.Text as T
 import Text.Blaze.Html5 as H
 import Text.Blaze.Html5.Attributes as A
-import Text.Digestive (View, fieldInputText, absoluteRef, errors)
+import Text.Digestive (View, fieldInputText, fieldInputBool, absoluteRef, errors)
 import Data.Monoid ((<>))
 import Control.Monad (join)
 
@@ -22,10 +22,11 @@ data FieldRequired = Required | Optional
 checkbox :: T.Text -> T.Text -> View Html -> Html
 checkbox ref labelName view =
     let ref' = toValue $ absoluteRef ref view
+        checkedAttribute = if fieldInputBool ref view then A.checked "" else mempty
     in
         li ! class_ "boolean input optional" $ do
             H.label ! class_ "" ! for "user_wants_emails" $ do
-                input ! A.id ref' ! name ref' ! type_ "checkbox"
+                input ! A.id ref' ! name ref' ! type_ "checkbox" ! checkedAttribute
                 toMarkup labelName
 
 -- TODO: Can this be replaced with childErrors from Text.Digestive.View?

@@ -79,6 +79,8 @@ withSubnavigationLayout currentUser currentPage title' subnav flash inner =
       navigation = nav ! class_ "main" $ ul $ mapM_ navigationItem navigationItems <> sessionNavigation
       flashMessage message =
           H.div ! A.id "flash" ! class_ "flash notice" $ p (preEscapedToHtml message)
+      hiddenFlashMessage =
+          H.div ! A.id "flash" ! class_ "flash notice" ! A.style "display:none" $ empty
       footer' =
         footer $ p $ do
             "Founded by"
@@ -107,7 +109,7 @@ withSubnavigationLayout currentUser currentPage title' subnav flash inner =
                   q "Save The World - Solve The Puzzle"
               navigation
               fromMaybe empty subnav
-              maybe empty flashMessage flash
+              maybe hiddenFlashMessage flashMessage flash
               section ! A.id "content" $ H.div ! class_ "center" $ inner
               footer'
               script ! type_ "text/javascript" $ "var uvOptions = {};\n  (function() {\n    var uv = document.createElement('script'); uv.type = 'text/javascript'; uv.async = true;\n    uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/XmjQy7dHIjHW3AR0O50Cyw.js';\n    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);\n  })();"
@@ -131,8 +133,8 @@ usersPage currentUser users maxSinglesCount currentPageNumber query = withLayout
     fontSize :: SimpleUser -> Int -> Float
     fontSize SimpleUser{..} maxSinglesCount' = fromIntegral simpleUserSinglesCount / fromIntegral maxSinglesCount' * 1.4 + 0.6
 
-userPage :: Maybe (LoggedIn User) -> User -> Map.Map (Puzzle, Kind) (Map.Map RecordType DurationInMs) -> Maybe (Map.Map (Puzzle, Kind) (Map.Map RecordType DurationInMs)) -> Activity -> Integer -> Html
-userPage cu user@User{..} records ownRecords activity wastedTime = withLayout cu Users "User" Nothing $
+userPage :: Maybe FlashMessage -> Maybe (LoggedIn User) -> User -> Map.Map (Puzzle, Kind) (Map.Map RecordType DurationInMs) -> Maybe (Map.Map (Puzzle, Kind) (Map.Map RecordType DurationInMs)) -> Activity -> Integer -> Html
+userPage flashMessage cu user@User{..} records ownRecords activity wastedTime = withLayout cu Users "User" flashMessage $
     H.div ! A.id "user" $ do
         H.div ! class_ "admin" $ adminLink cu
         h1 $ do
@@ -469,6 +471,7 @@ timerPage currentUser (puzzle, kind) foo = withSubnavigationLayout currentUser T
             "Enable JavaScript to fully enjoy Cubemania!"
     preEscapedToHtml backboneTemplates
 
+-- TODO: Select correct option
 timeZoneField :: Html
 timeZoneField =
     li ! class_ "time_zone input optional" ! A.id "user_time_zone_input" $ do
@@ -490,8 +493,8 @@ registerPage currentUser form' = withLayout currentUser Users "Register" Nothing
             timeZoneField
         fieldset ! class_ "actions" $ ol $ li ! class_ "action input_action " ! A.id "user_submit_action" $ input ! name "commit" ! type_ "submit" ! value "Register"
 
-editUserPage :: LoggedInUser -> View T.Text -> Html
-editUserPage currentUser@(LoggedIn user _) form' = withLayout (Just currentUser) Users "Edit Profile" Nothing $ do
+editUserPage :: LoggedInUser -> User -> View T.Text -> Html
+editUserPage currentUser user form' = withLayout (Just currentUser) Users "Edit Profile" Nothing $ do
     h1 $ toMarkup $ "Update " <> userName user <> "'s Profile"
     H.form ! acceptCharset "UTF-8" ! action (toValue $ userLink $ userSlug user) ! class_ "formtastic user" ! method "post" ! novalidate "novalidate" $ do
         fieldset ! class_ "inputs" $ ol $ do
@@ -502,12 +505,10 @@ editUserPage currentUser@(LoggedIn user _) form' = withLayout (Just currentUser)
                 userImage Small user
                 a ! href "http://gravatar.com/" $ "Change your avatar on gravatar"
             timeZoneField
-            checkbox "receiveEmail" "Receive Emails" (convertForm form')
-            li ! class_ "boolean input optional" ! A.id "user_ignored_input" $ do
-                input ! name "user[ignored]" ! type_ "hidden" ! value "0"
-                H.label ! class_ "" ! for "user_ignored" $ do
-                    input ! A.id "user_ignored" ! name "user[ignored]" ! type_ "checkbox" ! value "1"
-                    "Ignored"
+            if loggedInUserIsAdmin currentUser then
+                checkbox "ignored" "Ignored" (convertForm form')
+            else
+                empty
             passwordFieldWithErrors "password.p1" "Password" (convertForm form')
             passwordFieldWithDifferentErrors "password.p2" ["password", "password.p2"] "Confirmation" (convertForm form')
         fieldset ! class_ "actions" $ ol $ do

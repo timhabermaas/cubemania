@@ -184,6 +184,7 @@ allHandlers
                    :<|> updatePostHandler flashMessage
                    :<|> postCommentHandler flashMessage
                    :<|> editUserHandler flashMessage
+                   :<|> updateUserHandler flashMessage
                    :<|> recordsHandler flashMessage
                    :<|> recordHandler flashMessage
                    :<|> shareRecordHandler flashMessage
@@ -209,7 +210,7 @@ allHandlers
             Nothing -> Db.runDb $ Db.getUsers (fromPageNumber pageNumber)
         maxSinglesCount <- Db.runDb Db.maxSinglesCount
         return $ H.usersPage currentUser users (fromMaybe 1 maxSinglesCount) pageNumber query
-    userHandler _flashMessage currentUser userSlug = do
+    userHandler flashMessage currentUser _cookie userSlug = do
         let maybeUser (Just (LoggedIn u _)) = Just u
             maybeUser Nothing = Nothing
         user <- grabOrNotFound $ Db.runDb $ Db.getUserBySlug userSlug
@@ -222,7 +223,7 @@ allHandlers
         activity <- Db.runDb $ Db.getActivity (userId user)
         store <- asks Config.wastedTimeStore
         wastedTime <- fromMaybe 0 <$> (liftIO $ atomically $ getWastedTimeFor store (userId user))
-        return $ H.userPage currentUser user records ownRecords activity wastedTime
+        return $ addHeader unsetFlashMessage $ H.userPage flashMessage currentUser user records ownRecords activity wastedTime
     postsHandler _flashMessage currentUser = do
         posts <- Db.runDb $ Db.getAnnouncements
         foo <- mapM (\p -> do
@@ -279,9 +280,26 @@ allHandlers
                 renderPostPage (Just lu) post view
     editUserHandler _flashMessage currentUser userSlug = do
         user <- grabOrNotFound $ Db.runDb $ Db.getUserBySlug userSlug
-        mustBeSelf currentUser user
-        form <- runGetForm "user" editUserForm
-        return $ H.editUserPage currentUser form
+        mustSatisfyEither (mustBeSelf currentUser user) (mustBeAdmin currentUser)
+        form <- runGetForm "user" (editUserForm (Just user) (loggedInUserIsAdmin currentUser))
+        return $ H.editUserPage currentUser user form
+    updateUserHandler _flashMessage currentUser slug body = do
+        user <- grabOrNotFound $ Db.runDb $ Db.getUserBySlug slug
+        mustSatisfyEither (mustBeSelf currentUser user) (mustBeAdmin currentUser)
+        form <- runPostForm "user" (editUserForm (Just user) (loggedInUserIsAdmin currentUser)) body
+        case form of
+            (_, Just seu@SubmittedEditUser{..}) -> do
+                Db.runDb $ \c -> Db.withTransaction c $ do
+                    case submittedEditUserPassword of
+                        Just password -> do
+                            (pw, salt) <- hashNewPassword password
+                            Db.updateUserPassword (userId user) salt pw c
+                        Nothing ->
+                            pure ()
+                    Db.updateUser seu (userId user) c
+                redirect303WithCookies "/" [("flash-message", "Profile successfully updated.")]
+            (view, Nothing) ->
+                return $ H.editUserPage currentUser user view
     getRegisterHandler _flashMessage currentUser = do
         mustBeLoggedOut currentUser
         form <- runGetForm "user" registerForm
@@ -428,8 +446,7 @@ deleteSingleHandler :: PuzzleId -> LoggedIn User -> SingleId -> CubemaniaApp NoC
 deleteSingleHandler _puzzleId (LoggedIn user _) singleId' = do
     single <- Db.runDb $ Db.getSingle singleId'
     if singleUserId single == userId user then do
-        Db.runDb (\c -> Db.withTransaction c $ do
-            Db.deleteSingle singleId' c)
+        Db.runDb $ Db.deleteSingle singleId'
         publishEvent (SingleDeleted single)
         return NoContent
     else
@@ -463,6 +480,11 @@ renderPage page = runReader page Nothing
 
 renderFlashPage :: Reader (Maybe a) b -> a -> b
 renderFlashPage page message = runReader page $ Just message
+
+-- TODO: Use custom error message
+mustSatisfyEither :: (MonadError ServantErr m) => m () -> m () -> m ()
+mustSatisfyEither x y = do
+    catchError x $ const y
 
 mustBeAdmin :: (MonadError ServantErr m) => LoggedIn User -> m ()
 mustBeAdmin (LoggedIn User{..} _) =

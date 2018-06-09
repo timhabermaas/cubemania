@@ -51,8 +51,9 @@ type JsonApi = "api" :> PuzzleApi
           :<|> "api" :> "users" :> QueryParam "q" T.Text :> Get '[JSON] [SimpleUser]
 
 type UsersPath = "users" :> QueryParam "q" T.Text :> QueryParam "page" PageNumber :> Get '[HTML] Html
-type UserPath = "users" :> Capture "userId" UserSlug :> Get '[HTML] Html
+type UserPath = Header "Cookie" T.Text :> "users" :> Capture "userId" UserSlug :> Get '[HTML] (Headers '[Header "Set-Cookie" T.Text] Html)
 type EditUserPath = "users" :> Capture "userId" UserSlug :> "edit" :> Get '[HTML] Html
+type UpdateUserPath = "users" :> Capture "userId" UserSlug :> ReqBody '[FormUrlEncoded] [(T.Text, T.Text)] :> Post '[HTML] Html
 type PostPath = "posts" :> Capture "postId" AnnouncementId :> Get '[HTML] Html
 type NewPostPath = "posts" :> "new" :> Get '[HTML] Html
 type EditPostPath = "posts" :> Capture "postId" AnnouncementId :> "edit" :> Get '[HTML] Html
@@ -87,6 +88,7 @@ type CubemaniaRoutes
  :<|> AuthProtect "cookie-auth" :> UpdatePostPath
  :<|> AuthProtect "cookie-auth" :> CreateCommentPath
  :<|> AuthProtect "cookie-auth" :> EditUserPath
+ :<|> AuthProtect "cookie-auth" :> UpdateUserPath
  :<|> AuthProtect "cookie-auth-optional" :> RecordsPath
  :<|> AuthProtect "cookie-auth-optional" :> RecordPath
  :<|> AuthProtect "cookie-auth" :> ShareRecordPath

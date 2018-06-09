@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings          #-}
 {-# LANGUAGE FlexibleContexts           #-}
+{-# LANGUAGE RecordWildCards            #-}
 
 module Frontend.Forms
     ( commentForm
@@ -13,9 +14,11 @@ module Frontend.Forms
     ) where
 
 import Types
+import Types.TimeZones
 import Types.Configuration
 import Db
 import Text.Digestive as DF
+import Control.Monad (join)
 import Control.Monad.IO.Class
 import Control.Monad.Reader (MonadReader)
 import qualified Data.Text as T
@@ -33,41 +36,79 @@ postForm :: Monad m => DF.Form T.Text m SubmittedAnnouncement
 postForm = SubmittedAnnouncement <$> "title" .: mustBePresent (text Nothing)
                                  <*> "content" .: mustBePresent (text Nothing)
 
-editUserForm :: (Monad m, MonadIO m, MonadReader Configuration m) => DF.Form T.Text m SubmittedEditUser
-editUserForm =
-    SubmittedEditUser <$> "name" .: validateUniqueUserName (mustBePresent (text Nothing))
-                      <*> "email" .: validateUniqueEmail (mustBePresent (text Nothing))
-                      <*> "wcaId" .: text Nothing
-                      <*> "timeZone" .: text Nothing
-                      <*> "password" .: validatePassword
-                      <*> "receiveEmail" .: DF.bool Nothing
+editUserForm :: (Monad m, MonadIO m, MonadReader Configuration m) => Maybe User -> Bool -> DF.Form T.Text m SubmittedEditUser
+editUserForm user isAdmin =
+    let emailText = (\(Email e) -> e) <$> userEmail <$> user
+        ignoredField =
+            if isAdmin then
+                Just <$> (DF.bool (userIgnored <$> user))
+            else
+                pure Nothing
+    in
+        SubmittedEditUser <$> "name" .: validateUniqueUserNameIfChanged (userName <$> user) (validateSimpleCharacters (mustBePresent (text $ userName <$> user)))
+                          <*> "email" .: validateUniqueEmailIfChanged (userEmail <$> user) (mustBePresent (text emailText))
+                          <*> "wcaId" .: text (join $ userWca <$> user)
+                          <*> "timeZone" .: timeZone (userTimeZone <$> user)
+                          <*> "password" .: validateOptionalPassword
+                          <*> "ignored" .: ignoredField
+
+validateSimpleCharacters :: (Monad m) => DF.Form T.Text m T.Text -> DF.Form T.Text m T.Text
+validateSimpleCharacters form =
+    let allowedCharacters = ['a'..'z'] ++ ['A'..'Z'] ++ ['_'] ++ ['0'..'9']
+        errorMessage = "may only contain letters (a-Z), underscore (_) and digits (0-9)"
+        validText t = T.all (\c -> c `elem` allowedCharacters) t
+    in
+        validate (\t -> if validText t then DF.Success t else DF.Error errorMessage) form
 
 -- TODO: Da wir nur die Fehler von "password" bei p2 anzeigen, gibt's da kein "mustBePresent" mehr...
 validatePassword :: (Monad m) => DF.Form T.Text m ClearPassword
 validatePassword =
-    validate equalityCheck $ (,) <$> "p1" .: mustBePresent (text Nothing) <*> "p2" .: mustBePresent (text Nothing)
+    validateEqual ("p1" .: mustBePresent (text Nothing)) ("p2" .: mustBePresent (text Nothing)) (\x _ -> ClearPassword x)
+
+validateOptionalPassword :: (Monad m) => DF.Form T.Text m (Maybe ClearPassword)
+validateOptionalPassword =
+    validateEqual ("p1" .: text Nothing) ("p2" .: text Nothing) (\x _ -> Just $ ClearPassword x)
+
+validateEqual :: (Monad m) => DF.Form T.Text m T.Text -> DF.Form T.Text m T.Text -> (T.Text -> T.Text -> a) -> DF.Form T.Text m a
+validateEqual f1 f2 fun =
+    validate equalityCheck $ (,) <$> f1 <*> f2
   where
-    equalityCheck (p1, p2)
-      | p1 == p2 = DF.Success $ ClearPassword p1
+    equalityCheck (x, y)
+      | x == y = DF.Success $ fun x y
       | otherwise = DF.Error "must match password"
 
-validateUniqueUserName :: (Monad m, MonadIO m, MonadReader Configuration m) => DF.Form T.Text m T.Text -> DF.Form T.Text m T.Text
-validateUniqueUserName = DF.validateM (\name -> maybe (DF.Success name) (const $ DF.Error "already exists") <$> (Db.runDb $ Db.getUserByName name))
+validateUniqueUserNameIfChanged :: (Monad m, MonadIO m, MonadReader Configuration m) => Maybe T.Text -> DF.Form T.Text m T.Text -> DF.Form T.Text m T.Text
+validateUniqueUserNameIfChanged oldName =
+    DF.validateM $ \name ->
+        if Just name == oldName then
+            pure $ DF.Success name
+        else do
+            user <- Db.runDb $ Db.getUserByName name
+            pure $ maybe (DF.Success name) (const $ DF.Error "already exists") user
 
-validateUniqueEmail :: (Monad m, MonadIO m, MonadReader Configuration m) => DF.Form T.Text m T.Text -> DF.Form T.Text m Email
-validateUniqueEmail = DF.validateM (\email -> maybe (DF.Success $ Email email) (const $ DF.Error "already exists") <$> (Db.runDb $ Db.getUserByEmail (Email email)))
+validateUniqueEmailIfChanged :: (Monad m, MonadIO m, MonadReader Configuration m) => Maybe Email -> DF.Form T.Text m T.Text -> DF.Form T.Text m Email
+validateUniqueEmailIfChanged oldEmail =
+    DF.validateM $ \email ->
+        if Just (Email email) == oldEmail then
+            pure $ DF.Success $ Email email
+        else do
+            user <- Db.runDb $ Db.getUserByEmail (Email email)
+            pure $ maybe (DF.Success $ Email email) (const $ DF.Error "already exists") user
 
 registerForm :: (Monad m, MonadIO m, MonadReader Configuration m) => DF.Form T.Text m SubmittedUser
 registerForm =
     snd <$> ((,) <$> botCheck <*> userForm)
   where
-    userForm = SubmittedUser <$> "name" .: validateUniqueUserName (mustBePresent (text Nothing))
-                             <*> "email" .: validateUniqueEmail (mustBePresent (text Nothing))
+    userForm = SubmittedUser <$> "name" .: validateUniqueUserNameIfChanged Nothing (validateSimpleCharacters (mustBePresent (text Nothing)))
+                             <*> "email" .: validateUniqueEmailIfChanged Nothing (mustBePresent (text Nothing))
                              -- TODO: regex
                              <*> "wcaId" .: text Nothing
-                             <*> "timeZone" .: text Nothing
+                             <*> "timeZone" .: timeZone Nothing
                              <*> "password" .: validatePassword
     botCheck = "bot" .: check "bots are not allowed" (== "") (text Nothing)
+
+timeZone :: (Monad m) => Maybe T.Text -> DF.Form T.Text m T.Text
+timeZone def = choice timeZones def
 
 loginForm :: (Monad m) => DF.Form T.Text m SubmittedLogin
 loginForm = SubmittedLogin <$> "name" .: mustBePresent (text Nothing)

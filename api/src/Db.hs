@@ -36,6 +36,7 @@ module Db
     , postComment
     , postAnnouncement
     , createUser
+    , updateUser
     , updateAnnouncement
     , getActivity
     , getAllSingles
@@ -68,6 +69,7 @@ import Database.PostgreSQL.Simple.ToRow (ToRow)
 import Database.PostgreSQL.Simple (Connection, query, query_, formatQuery, formatMany, fold_, execute, executeMany, Only(..), Query, In(..))
 import qualified Database.PostgreSQL.Simple as PSQL
 import Data.Text (Text)
+import qualified Data.Text as T
 import Data.Text.Encoding (encodeUtf8)
 import Data.ByteString.Lazy (fromStrict)
 import Data.Pool (withResource)
@@ -177,22 +179,22 @@ matchUsers q conn =
 
 getUserBySlug :: (MonadIO m) => UserSlug -> Connection -> m (Maybe User)
 getUserBySlug slug conn = do
-    users <- myQuery conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time, salt, encrypted_password FROM users WHERE slug = ?" (Only slug)
+    users <- myQuery conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time, salt, encrypted_password, time_zone FROM users WHERE slug = ?" (Only slug)
     return $ safeHead users
 
 getUserByName :: (MonadIO m) => Text -> Connection -> m (Maybe User)
 getUserByName name conn = do
-    users <- myQuery conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time, salt, encrypted_password FROM users WHERE lower(name) = lower(?)" (Only name)
-    return $ safeHead users
+    users <- myQuery conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time, salt, encrypted_password, time_zone FROM users WHERE lower(name) = lower(?)" (Only name)
+    pure $ safeHead users
 
 getUserByEmail :: (MonadIO m) => Email -> Connection -> m (Maybe User)
 getUserByEmail (Email email) conn = do
-    users <- myQuery conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time, salt, encrypted_password FROM users WHERE lower(email) = lower(?)" (Only email)
+    users <- myQuery conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time, salt, encrypted_password, time_zone FROM users WHERE lower(email) = lower(?)" (Only email)
     return $ safeHead users
 
 getUserById :: (MonadIO m) => UserId -> Connection -> m (Maybe User)
 getUserById id conn = do
-    users <- myQuery conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time, salt, encrypted_password FROM users WHERE id = ?" (Only id)
+    users <- myQuery conn "SELECT id, name, slug, email, role, wca, ignored, wasted_time, salt, encrypted_password, time_zone FROM users WHERE id = ?" (Only id)
     return $ safeHead users
 
 updateUserPassword :: (MonadIO m) => UserId -> Salt -> HashedPassword -> Connection -> m ()
@@ -294,15 +296,24 @@ postAnnouncement uId SubmittedAnnouncement{..} conn = do
     [(Only id)] <- myQuery conn "INSERT INTO posts (title, content, user_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?) RETURNING id" (submittedAnnouncementTitle, submittedAnnouncementContent, uId, time, time)
     pure $ AnnouncementId id
 
+-- TODO: Add wca
 createUser :: (MonadIO m) => SubmittedUser -> Salt -> HashedPassword -> Connection -> m UserId
 createUser SubmittedUser{..} salt pw conn = do
     time <- liftIO getCurrentTime
-    [(Only id)] <- myQuery conn "INSERT INTO users (name, slug, email, salt, encrypted_password, time_zone, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id" (submittedUserName, submittedUserName, submittedUserEmail, salt, pw, submittedUserTimeZone, time, time)
+    [(Only id)] <- myQuery conn "INSERT INTO users (name, slug, email, salt, encrypted_password, time_zone, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id" (submittedUserName, getSlugFromName submittedUserName, submittedUserEmail, salt, pw, submittedUserTimeZone, time, time)
     pure $ UserId id
 
--- Split into updating password and setting user information
-updateUser :: (MonadIO m) => SubmittedEditUser -> Maybe Salt -> Maybe HashedPassword -> Connection -> m UserId
-updateUser = undefined
+-- TODO: ClearPassword is passed to Db layer, avoid.
+updateUser :: (MonadIO m) => SubmittedEditUser -> UserId -> Connection -> m ()
+updateUser SubmittedEditUser{..} userId conn = do
+    time <- liftIO getCurrentTime
+    myExecute conn "UPDATE users SET name = ?, slug = ?, email = ?, time_zone = ?, wca = ?, updated_at = ? WHERE id = ?" (submittedEditUserName, getSlugFromName submittedEditUserName, submittedEditUserEmail, submittedEditUserTimeZone, submittedEditUserWca, time, userId)
+    case submittedEditUserIgnored of
+        Just ignored -> do
+            myExecute conn "UPDATE users SET ignored = ? WHERE id = ?" (ignored, userId)
+            pure ()
+        Nothing -> pure ()
+    pure ()
 
 updateAnnouncement :: (MonadIO m) => AnnouncementId -> SubmittedAnnouncement -> Connection -> m ()
 updateAnnouncement aId SubmittedAnnouncement{..} conn = do
@@ -398,3 +409,6 @@ myExecuteMany conn q params = liftIO $ do
 
 withTransaction :: (MonadIO m) => Connection -> IO a -> m a
 withTransaction conn action = liftIO $ PSQL.withTransaction conn action
+
+getSlugFromName :: Text -> UserSlug
+getSlugFromName text = UserSlug $ T.toLower text
