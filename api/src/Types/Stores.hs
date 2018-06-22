@@ -13,22 +13,22 @@ import Types
 
 newtype WastedTimeStore = WastedTimeStore (TVar (Map.Map UserId Integer))
 
-newWastedTimeStore :: STM WastedTimeStore
-newWastedTimeStore = WastedTimeStore <$> newTVar Map.empty
+newWastedTimeStore :: Map.Map UserId Integer -> STM WastedTimeStore
+newWastedTimeStore initialMap = WastedTimeStore <$> newTVar initialMap
 
 addWastedTime :: WastedTimeStore -> UserId -> Int -> STM ()
-addWastedTime (WastedTimeStore t) uId time =
-    modifyTVar' t (\map -> Map.alter (\oldTime -> Just $ maybe time' (+time') oldTime) uId map)
+addWastedTime (WastedTimeStore s) uId time =
+    modifyTVar' s (\map -> Map.alter (\oldTime -> Just $ maybe time' (+time') oldTime) uId map)
   where
     time' = fromIntegral time
 
 removeWastedTime :: WastedTimeStore -> UserId -> Int -> STM ()
-removeWastedTime (WastedTimeStore t) uId time =
-    modifyTVar' t (\map -> Map.alter (\oldTime -> Just $ maybe time' (flip (-) time') oldTime) uId map)
+removeWastedTime (WastedTimeStore s) uId time =
+    modifyTVar' s (\map -> Map.alter (\oldTime -> Just $ maybe time' (flip (-) time') oldTime) uId map)
   where
     time' = fromIntegral time
 
 getWastedTimeFor :: WastedTimeStore -> UserId -> STM (Maybe Integer)
-getWastedTimeFor (WastedTimeStore t) uId = do
-    map <- readTVar t
+getWastedTimeFor (WastedTimeStore s) uId = do
+    map <- readTVar s
     return $ Map.lookup uId map

@@ -64,7 +64,11 @@ startApp dbConnectionString facebookAppId env emailPassword = do
 
   pool <- createPool (connectPostgreSQL $ pack dbConnectionString) close 1 10 10
   channel <- atomically newBroadcastTChan
-  wastedTimeStore <- atomically newWastedTimeStore
+
+  -- Loading wasted times into store
+  initialWastedTimes <- Db.withPool pool Db.getWastedTimePerUser
+  wastedTimeStore <- atomically $ newWastedTimeStore initialWastedTimes
+
   let env' = case env of
                  (Just "production") -> Config.Production
                  _                   -> Config.Development
@@ -78,12 +82,7 @@ startApp dbConnectionString facebookAppId env emailPassword = do
   forkIO $ wastedTimeThread wastedTimeChannel wastedTimeStore
   forkIO $ emailWorkerThread emailChannel c
   forkIO $ recordWorkerThread recordChannel c
-  let makeSubmitEventFromSingle s = SingleSubmitted (singleUserId s) (singlePuzzleId s) (SubmittedSingle (singleScramble s) (singleTime s) (singlePenalty s))
-  let importEvents conn = Db.getAllSingles (\single -> atomically $ writeTChan wastedTimeChannel (makeSubmitEventFromSingle single)) conn
 
-  -- TODO: This causes issues, because it will trigger all event handlers, not just the wasted time calculation
-  -- Alternative: For each user calculate the sum and put it into wasted time store.
-  -- _ <- forkIO (withResource pool importEvents >> putStrLn "finished importing singles")
 
   let logger = if env' == Config.Production then
                    logStdout

@@ -44,6 +44,7 @@ module Db
     , getPuzzleBySlug
     , getKindById
     , getAllPuzzles
+    , getWastedTimePerUser
     , createSession
     , deleteSession
     , readSession
@@ -364,6 +365,10 @@ getAllPuzzles :: (MonadIO m) => Connection -> m [(Kind, Puzzle)]
 getAllPuzzles conn = do
     foo <- myQuery_ conn "SELECT kinds.id, kinds.name, kinds.short_name, kinds.css_position, puzzles.id, puzzles.name, puzzles.css_position, puzzles.slug, puzzles.kind_id FROM puzzles LEFT OUTER JOIN kinds ON kinds.id = puzzles.kind_id ORDER BY puzzles.name"
     return $ unwrapJoinedResult2 <$> foo
+
+getWastedTimePerUser :: (MonadIO m) => Connection -> m (Map.Map UserId Integer)
+getWastedTimePerUser conn =
+    Map.fromList <$> myQuery_ conn "SELECT user_id, SUM(time) FROM singles GROUP BY user_id"
 
 createSession :: (MonadIO m) => SerializedSessionData -> Connection -> m SessionId
 createSession sessionData conn = do
