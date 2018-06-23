@@ -6,6 +6,7 @@ module Frontend.FormViewHelpers
     , textFieldWithDifferentErrors
     , passwordFieldWithErrors
     , passwordFieldWithDifferentErrors
+    , timeZoneField
     , checkbox
     , FieldRequired(..)
     ) where
@@ -13,7 +14,7 @@ module Frontend.FormViewHelpers
 import qualified Data.Text as T
 import Text.Blaze.Html5 as H
 import Text.Blaze.Html5.Attributes as A
-import Text.Digestive (View, fieldInputText, fieldInputBool, absoluteRef, errors)
+import Text.Digestive (View, fieldInputText, fieldInputBool, fieldInputChoice, absoluteRef, errors)
 import Data.Monoid ((<>))
 import Control.Monad (join)
 
@@ -62,6 +63,15 @@ passwordFieldWithErrors fieldName labelName form' = textFieldWithDifferentErrors
 passwordFieldWithDifferentErrors :: T.Text -> [T.Text] -> T.Text -> View Html -> Html
 passwordFieldWithDifferentErrors fieldName errorNames labelName form' = textFieldWithDifferentErrors' fieldName errorNames labelName form' Required "password"
 
+timeZoneField :: T.Text -> T.Text -> View Html -> Html
+timeZoneField fieldName labelName form' =
+    li ! class_ "time_zone input optional" ! A.id "user_time_zone_input" $ do
+        H.label ! class_ " label" ! for ref $ toMarkup labelName
+        select ! A.id ref ! name ref $
+            mapM_ entry (fieldInputChoice fieldName form')
+  where
+    ref = toValue $ absoluteRef fieldName form'
+    entry (v, l, selected) = option ! value (toValue v) ! (if selected then A.selected "" else mempty) $ l
 
 textareaWithErrors :: T.Text -> T.Text -> View Html -> FieldRequired -> Html
 textareaWithErrors fieldName labelName form' isRequired =

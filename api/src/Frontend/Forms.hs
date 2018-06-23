@@ -108,7 +108,10 @@ registerForm =
     botCheck = "bot" .: check "bots are not allowed" (== "") (text Nothing)
 
 timeZone :: (Monad m) => Maybe T.Text -> DF.Form T.Text m T.Text
-timeZone def = choice timeZones def
+-- Digestive Functor uses values [0..] by default. `choiceWith` lets
+-- you set custom values, but it is not clear to me what the "second"
+-- element of the tuple is.
+timeZone def = choiceWith (fmap (\(v, l) -> (v, (v, l))) timeZones) def
 
 loginForm :: (Monad m) => DF.Form T.Text m SubmittedLogin
 loginForm = SubmittedLogin <$> "name" .: mustBePresent (text Nothing)

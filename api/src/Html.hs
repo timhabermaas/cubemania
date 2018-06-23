@@ -471,14 +471,6 @@ timerPage currentUser (puzzle, kind) foo = withSubnavigationLayout currentUser T
             "Enable JavaScript to fully enjoy Cubemania!"
     preEscapedToHtml backboneTemplates
 
--- TODO: Select correct option
-timeZoneField :: Html
-timeZoneField =
-    li ! class_ "time_zone input optional" ! A.id "user_time_zone_input" $ do
-        H.label ! class_ " label" ! for "user_time_zone" $ "Time zone"
-        select ! A.id "user_time_zone" ! name "user.timeZone" $
-            mapM_ (\(v, l) -> option ! value (toValue v) $ toMarkup l) timeZones
-
 registerPage :: Maybe LoggedInUser -> View T.Text -> Html
 registerPage currentUser form' = withLayout currentUser Users "Register" Nothing $ do
     h1 "Register"
@@ -490,7 +482,7 @@ registerPage currentUser form' = withLayout currentUser Users "Register" Nothing
             textFieldWithErrors "wcaId" "WCA ID (optional)" (convertForm form') Optional
             passwordFieldWithErrors "password.p1" "Password" (convertForm form')
             passwordFieldWithDifferentErrors "password.p2" ["password", "password.p2"] "Confirmation" (convertForm form')
-            timeZoneField
+            timeZoneField "timeZone" "Time zone" (convertForm form')
         fieldset ! class_ "actions" $ ol $ li ! class_ "action input_action " ! A.id "user_submit_action" $ input ! name "commit" ! type_ "submit" ! value "Register"
 
 editUserPage :: LoggedInUser -> User -> View T.Text -> Html
@@ -504,7 +496,7 @@ editUserPage currentUser user form' = withLayout (Just currentUser) Users "Edit 
             H.div ! class_ "profile-image-edit" $ do
                 userImage Small user
                 a ! href "http://gravatar.com/" $ "Change your avatar on gravatar"
-            timeZoneField
+            timeZoneField "timeZone" "Time zone" (convertForm form')
             if loggedInUserIsAdmin currentUser then
                 checkbox "ignored" "Ignored" (convertForm form')
             else
