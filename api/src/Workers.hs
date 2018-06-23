@@ -57,7 +57,7 @@ recordWorkerThread channel Configuration{..} = forever $ do
                 -- Returning an IO action because we are operating within STM where we don't have access to IO.
                 pure $ do
                     forM_ allRecordTypes $ \recordType -> do
-                        -- TODO: Make more resiliant, worker shouldn't crash when DB connection lost.
+                        -- TODO: Make more resiliant, worker shouldn't crash when DB connection is lost.
                         recentSingles <- Db.withPool getPool (\c -> Db.getSingles puzzleId userId (Limit $ singleCount recordType) c)
                         currentRecord <- Db.withPool getPool $ Db.getRecordForUserAndPuzzleAndType userId puzzleId recordType
                         let newBestTime = RC.newRecord recentSingles recordType (recordTime <$> dbEntryRow <$> currentRecord)
@@ -66,7 +66,7 @@ recordWorkerThread channel Configuration{..} = forever $ do
                                 let setAt = singleCreatedAt $ head recentSingles
                                 let newRecord = Record { recordTime = time, recordComment = "", recordPuzzleId = puzzleId, recordUserId = userId, recordType = recordType, recordSetAt = setAt }
                                 -- Partial function is safe: We can't get a new record with zero singles
-                                Db.withPool getPool $ Db.saveRecord newRecord recentSingles
+                                Db.withPool getPool $ Db.saveRecord newRecord (singleId <$> recentSingles)
                                 pure ()
                             Nothing ->
                                 pure ()
@@ -78,12 +78,13 @@ recordWorkerThread channel Configuration{..} = forever $ do
                     allSingles <- Db.withPool getPool $ Db.getSingles puzzleId userId NoLimit
                     -- TODO: Avoid iterating through singles three times by
                     --       passing `Map RecordType (Maybe (DurationInMs, [Single])) around
+                    --       Alternatively: Create a thread per record type.
                     forM_ allRecordTypes $ \recordType -> do
                         case RC.calculateRecord allSingles recordType of
                             Just (newRecordTime, singles) -> do
                                 let setAt = singleCreatedAt $ head singles
                                 let newDBRecord = Record { recordTime = newRecordTime, recordComment = "", recordPuzzleId = puzzleId, recordUserId = userId, recordType = recordType, recordSetAt = setAt }
-                                Db.withPool getPool $ Db.saveRecord newDBRecord singles
+                                Db.withPool getPool $ Db.saveRecord newDBRecord (singleId <$> singles)
                                 pure ()
                             Nothing -> pure ()
                     pure ()

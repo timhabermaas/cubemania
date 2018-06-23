@@ -110,7 +110,7 @@ api :: Proxy CubemaniaRoutes
 api = Proxy
 
 usersLink :: Maybe PageNumber -> T.Text
-usersLink page = "/users" <> (maybe "" (\page -> "?page=" <> (T.pack $ show $ fromPageNumber page)) page)
+usersLink page = "/users" <> (maybe "" (\p -> "?page=" <> (T.pack $ show $ fromPageNumber p)) page)
 
 userLink :: UserSlug -> T.Text
 userLink (UserSlug slug) = "/users/" <> slug
@@ -138,9 +138,9 @@ recordsLink :: Maybe RecordType -> Maybe PageNumber -> PuzzleSlug -> T.Text
 recordsLink type' page (PuzzleSlug slug) =
     "/puzzles/" <> slug <> "/records" <> queryPart type' page
   where
-    queryPart (Just type') (Just p) = "?type=" <> toQueryParam type' <> "&page=" <> toQueryParam p
+    queryPart (Just t) (Just p) = "?type=" <> toQueryParam t <> "&page=" <> toQueryParam p
     queryPart Nothing (Just p) = "?page=" <> toQueryParam p
-    queryPart (Just type') Nothing = "?type=" <> toQueryParam type'
+    queryPart (Just t) Nothing = "?type=" <> toQueryParam t
     queryPart Nothing Nothing = ""
 
 recordLink :: UserSlug -> Id Record -> T.Text

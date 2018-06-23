@@ -20,7 +20,7 @@ import Servant.Server.Experimental.Auth (AuthHandler, mkAuthHandler)
 import System.Random
 import System.Metrics
 -- TODO: import qualified because of names like port, host, ...
-import System.Remote.Monitoring.Statsd (forkStatsd, defaultStatsdOptions, StatsdOptions(..))
+--import System.Remote.Monitoring.Statsd (forkStatsd, defaultStatsdOptions, StatsdOptions(..))
 
 import Data.ByteString (ByteString, null)
 import Data.ByteString.Char8 (pack)
@@ -51,7 +51,7 @@ import Control.Monad.IO.Class
 import Control.Monad.Reader
 import Control.Monad.Except
 import Database.PostgreSQL.Simple (connectPostgreSQL, close)
-import Data.Pool (createPool, withResource)
+import Data.Pool (createPool)
 import Types.AppMonad
 
 
@@ -66,6 +66,9 @@ startApp dbConnectionString facebookAppId env emailPassword = do
   channel <- atomically newBroadcastTChan
 
   -- Loading wasted times into store
+  -- TODO: Make this asynchronous to make server start faster after deployments
+  --       This probably (check!) leads to race conditions if users immediately
+  --       submit new singles which increment the wasted time.
   initialWastedTimes <- Db.withPool pool Db.getWastedTimePerUser
   wastedTimeStore <- atomically $ newWastedTimeStore initialWastedTimes
 

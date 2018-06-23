@@ -14,6 +14,8 @@ services:
     links:
       - web
       - api
+    depends_on:
+      - api
     ports:
       - "443:443"
       - "8080:80"

@@ -31,7 +31,7 @@ checkbox ref labelName view =
 
 -- TODO: Can this be replaced with childErrors from Text.Digestive.View?
 textFieldWithDifferentErrors' :: T.Text -> [T.Text] -> T.Text -> View Html -> FieldRequired -> T.Text -> Html
-textFieldWithDifferentErrors' fieldName errorNames labelName form' required type' =
+textFieldWithDifferentErrors' fieldName errorNames labelName form' isRequired type' =
     let errorClass = if hasErrors form' then " error" else ""
         hasErrors form'' = not $ null $ (join $ fmap (\en -> errors en form'') errorNames)
         errorList = mapM_ (p ! class_ "inline-errors") (join $ fmap (\en -> errors en form') errorNames)
@@ -42,15 +42,15 @@ textFieldWithDifferentErrors' fieldName errorNames labelName form' required type
             H.label ! A.class_ "label"
                     ! A.for (H.toValue (absoluteRef fieldName form')) $ do
                 toHtml labelName
-                labelAnnotation required
+                labelAnnotation isRequired
             input ! name (toValue $ absoluteRef fieldName form')
                   ! type_ (toValue type')
                   ! value (toValue $ fieldInputText fieldName form')
             errorList
 
 textFieldWithDifferentErrors :: T.Text -> [T.Text] -> T.Text -> View Html -> FieldRequired -> Html
-textFieldWithDifferentErrors fieldName errorNames labelName form' required =
-    textFieldWithDifferentErrors' fieldName errorNames labelName form' required "text"
+textFieldWithDifferentErrors fieldName errorNames labelName form' isRequired =
+    textFieldWithDifferentErrors' fieldName errorNames labelName form' isRequired "text"
 
 
 textFieldWithErrors :: T.Text -> T.Text -> View Html -> FieldRequired -> Html
@@ -64,7 +64,7 @@ passwordFieldWithDifferentErrors fieldName errorNames labelName form' = textFiel
 
 
 textareaWithErrors :: T.Text -> T.Text -> View Html -> FieldRequired -> Html
-textareaWithErrors fieldName labelName form' required =
+textareaWithErrors fieldName labelName form' isRequired =
     let errorClass = if hasErrors form' then " error" else ""
         hasErrors = not . null . errors fieldName
         errorList = mapM_ (p ! class_ "inline-errors") (errors fieldName form')
@@ -75,7 +75,7 @@ textareaWithErrors fieldName labelName form' required =
             H.label ! A.class_ "label"
                     ! A.for (H.toValue (absoluteRef fieldName form')) $ do
                 toHtml labelName
-                labelAnnotation required
+                labelAnnotation isRequired
             textarea ! name (toValue $ absoluteRef fieldName form')
                      ! rows "4" $
                 toHtml $ fieldInputText fieldName form'

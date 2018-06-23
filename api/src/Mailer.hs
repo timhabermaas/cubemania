@@ -23,24 +23,24 @@ unlinesText :: [T.Text] -> T.Text
 unlinesText = T.intercalate "\n"
 
 resetPasswordMail :: Email -> T.Text -> ClearPassword -> Mailer.Mail
-resetPasswordMail (Email email) userName (ClearPassword pw) =
-    Mailer.Mail (Address (Just userName) email) "New Password for Cubemania" $
+resetPasswordMail (Email email) name (ClearPassword pw) =
+    Mailer.Mail (Address (Just name) email) "New Password for Cubemania" $
       unlinesText
-        [ "Hi " <> userName <> ","
+        [ "Hi " <> name <> ","
         , ""
         , "your new password is:"
         , pw
         , ""
-        , "Your username: " <> userName
+        , "Your username: " <> name
         , ""
         , "You can now login at https://www.cubemania.org/login using your new password."
         , "Happy cubing :)."
         ]
 
 registerMail :: Email -> T.Text -> Mailer.Mail
-registerMail (Email email) userName =
-    Mailer.Mail (Address (Just userName) email) "Welcome to Cubemania!" $
-      unlinesText [ "Hi " <> userName <> ","
+registerMail (Email email) name =
+    Mailer.Mail (Address (Just name) email) "Welcome to Cubemania!" $
+      unlinesText [ "Hi " <> name <> ","
       , ""
       , "thanks for signing up to cubemania.org."
       , ""

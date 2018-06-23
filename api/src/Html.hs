@@ -153,19 +153,19 @@ userPage flashMessage cu user@User{..} records ownRecords activity wastedTime = 
     -- TODO: (recordRow _ _ Nothing True) makes no sense, fix the types.
     --       boolean blindness...
     recordRow :: RecordType -> Maybe DurationInMs -> Maybe DurationInMs -> Bool -> Html
-    recordRow type' time ownTime comparison =
+    recordRow type' duration ownTime comparison =
         if comparison then
             tr $ do
                 th ! class_ "type" $ toHtml $ shortRecordTypeName type'
-                recordComparision ownTime time
-                recordEntry time
+                recordComparision ownTime duration
+                recordEntry duration
         else
             tr $ do
                 th ! class_ "type" $ toHtml type'
-                recordEntry time
+                recordEntry duration
     recordEntry :: Maybe DurationInMs -> Html
-    recordEntry (Just time) =
-        td $ strong $ toHtml $ Utils.formatTime time
+    recordEntry (Just duration) =
+        td $ strong $ toHtml $ Utils.formatTime duration
     recordEntry Nothing =
         td $ small "None"
     recordComparision :: Maybe DurationInMs -> Maybe DurationInMs -> Html
@@ -180,7 +180,7 @@ userPage flashMessage cu user@User{..} records ownRecords activity wastedTime = 
         recordEntry Nothing
 
     recordWidget :: (Puzzle, Kind) -> Map.Map RecordType DurationInMs -> Maybe (Map.Map RecordType DurationInMs) -> Bool -> Html
-    recordWidget (puzzle, kind) records ownRecords comparison =
+    recordWidget (puzzle, kind) recordMap myRecords comparison =
         li ! class_ "record" $ do
             H.div ! class_ "puzzle" $ do
                 H.div ! class_ (toValue $ "puzzle-image " <> posClass (puzzleCssPosition puzzle)) $ H.div ! class_ (toValue $ "kind-image " <> posClass (kindCssPosition kind)) $ mempty
@@ -194,7 +194,7 @@ userPage flashMessage cu user@User{..} records ownRecords activity wastedTime = 
                         th $ toHtml userName
                 else
                     thead $ tr mempty
-                tbody $ sequence_ $ fmap (\type' -> recordRow type' (Map.lookup type' records) (ownRecords >>= Map.lookup type') comparison) allRecordTypes
+                tbody $ sequence_ $ fmap (\type' -> recordRow type' (Map.lookup type' recordMap) (myRecords >>= Map.lookup type') comparison) allRecordTypes
     adminLink :: Maybe LoggedInUser -> Html
     adminLink (Just (LoggedIn u _))
         | u == user = a ! href (toValue $ editUserLink userSlug) $ "Edit profile"
@@ -222,7 +222,7 @@ userPage flashMessage cu user@User{..} records ownRecords activity wastedTime = 
     activityJSON = toValue $ TE.decodeUtf8 $ toStrict $ JSON.encode activity
 
 mapFromList :: Ord a => [(a, b)] -> Map.Map a [b]
-mapFromList x = Map.fromListWith (++) (fmap (\(k, p) -> (k, [p])) x)
+mapFromList x = Map.fromListWith (++) (fmap (\(kind, puzzle) -> (kind, [puzzle])) x)
 
 recordsPage :: Maybe LoggedInUser -> (Puzzle, Kind) -> RecordType -> [(DbEntry Record, SimpleUser)] -> Int -> Int -> [(Kind, Puzzle)]-> Html
 recordsPage currentUser (puzzle, kind) type' records page recordsCount foo = withSubnavigationLayout currentUser Records (fullPuzzleName (puzzle, kind) <> " Records") (Just $ puzzleNavigation (mapFromList foo) (puzzle, kind) (recordsLink Nothing Nothing)) Nothing $ do
@@ -252,7 +252,7 @@ recordsPage currentUser (puzzle, kind) type' records page recordsCount foo = wit
             maybeSquashButtons lastPages
             nextButton
     allPages = [1..lastPage]
-    (firstPages, lastPages) = let (a, b) = splitAt page allPages in (init a, b)
+    (firstPages, lastPages) = let (x, y) = splitAt page allPages in (init x, y)
     lastPage = recordsCount `Prelude.div` 50 + 1
     maybeSquashButtons pages =
         if length pages > 5 then do
@@ -302,9 +302,9 @@ recordShowPage currentUser User{..} (DbEntry recordId Record{..}) singles pk@(Pu
     bottomLine currentUser
   where
     mapWithIndex :: (a -> Int -> b) -> [a] -> [b]
-    mapWithIndex f xs = let mapWithIndex' f (x:xs) i = f x i : mapWithIndex' f xs (i + 1)
-                            mapWithIndex' _ [] _ = []
-                        in mapWithIndex' f xs 0
+    mapWithIndex fun xs = let mapWithIndex' f (x:xs) index = f x index : mapWithIndex' f xs (index + 1)
+                              mapWithIndex' _ [] _ = []
+                          in mapWithIndex' fun xs 0
     singleEntry :: Single -> Int -> Html
     singleEntry Single{..} row =
         tr ! oddEvenClass row $ do
@@ -314,10 +314,10 @@ recordShowPage currentUser User{..} (DbEntry recordId Record{..}) singles pk@(Pu
             td $ toHtml $ fromMaybe "" singleComment
     timeClass (Just Dnf) = class_ "time dnf"
     timeClass _ = class_ "time"
-    oddEvenClass i
-      | even i = class_ "even"
+    oddEvenClass n
+      | even n = class_ "even"
       | otherwise = class_ "odd"
-    bottomLine (Just (LoggedIn u _)) =
+    bottomLine (Just (LoggedIn _ _)) =
         p ! class_ "suggestion" $
             a ! href (toValue $ shareRecordLink userSlug recordId) $ "Post on Facebook!"
     bottomLine Nothing =
@@ -396,7 +396,7 @@ postsPage currentUser posts = withLayout currentUser Home "Posts" Nothing $ do
                 a ! href (toValue $ postLinkToComments announcementId) $ toHtml $ show commentsCount <> " Comments »"
 
 postPage :: Maybe LoggedInUser -> Announcement -> Maybe User -> [(Comment, Maybe User)] -> View T.Text -> Html
-postPage currentUser Announcement{..} author comments form = withLayout currentUser Home "Post" Nothing $ do
+postPage currentUser Announcement{..} author comments view = withLayout currentUser Home "Post" Nothing $ do
     article ! class_ "post" $ do
         h1 $ toHtml announcementTitle
         section ! class_ "text" $
@@ -407,7 +407,7 @@ postPage currentUser Announcement{..} author comments form = withLayout currentU
             H.cite $ maybeUserLink author
     H.div ! class_ "comments" $ do
         ol ! class_ "comments" $ mapM_ comment comments
-        maybe empty (const (commentForm form)) currentUser
+        maybe empty (const (commentForm view)) currentUser
   where
     commentForm form = let form' = convertForm form
         in

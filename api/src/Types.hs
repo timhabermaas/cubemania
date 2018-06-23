@@ -32,8 +32,8 @@ import Text.Blaze.Html (ToMarkup(..))
 type DurationInMs = Int
 
 newtype PageNumber = PageNumber Int
-fromPageNumber :: Num a => PageNumber -> a
-fromPageNumber (PageNumber x) = fromIntegral x
+fromPageNumber :: PageNumber -> Int
+fromPageNumber (PageNumber x) = x
 nextPage :: PageNumber -> PageNumber
 nextPage (PageNumber x) = PageNumber (succ x)
 
@@ -295,8 +295,8 @@ instance FromRow SimpleUser where
 data UserRole = AdminRole | ModeratorRole | UserRole | BetaUserRole deriving (Eq, Show)
 instance FromField UserRole where
     fromField f s = do
-        s <- fromField f s
-        case (s :: String) of
+        value <- fromField f s
+        case (value :: String) of
             "user" -> pure UserRole
             "moderator" -> pure ModeratorRole
             "admin" -> pure AdminRole
@@ -427,7 +427,9 @@ instance FromHttpApiData (Id a) where
     parseUrlPiece t = Id <$> parseUrlPiece t
 
 data DbEntry a = DbEntry (Id a) a
+dbEntryId :: DbEntry a -> Id a
 dbEntryId (DbEntry id _) = id
+dbEntryRow :: DbEntry a -> a
 dbEntryRow (DbEntry _ r) = r
 
 instance Show a => Show (DbEntry a) where

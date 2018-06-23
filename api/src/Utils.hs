@@ -36,20 +36,22 @@ safeRead x =
 
 formatTime :: DurationInMs -> Text
 formatTime time
-    | (round $ (((fromIntegral time) / 1000) :: Float)) < 60 = let s = ((fromIntegral time) / 1000)
+    | (round $ (((fromIntegral time) / 1000 :: Double)) :: Int) < 60 = let s = ((fromIntegral time) / 1000)
                      in  pack $ printf "%.2fs" (s :: Float)
-    | otherwise    = let hs = round $ ((fromIntegral time) / 10) :: Int
-                         min = floor $ (fromIntegral hs) / 6000 :: Int
-                         s' = fromIntegral (hs - (fromIntegral $ min * 6000)) / 100
-                     in  pack $ printf "%d:%05.2fmin" min (s' :: Float)
+    | otherwise    = let hs = round $ ((fromIntegral time :: Double) / 10) :: Int
+                         minutes = floor $ (fromIntegral hs :: Double) / 6000 :: Int
+                         s' = fromIntegral (hs - (fromIntegral $ minutes * 6000)) / 100
+                     in  pack $ printf "%d:%05.2fmin" minutes (s' :: Double)
 
+msToDays :: (Integral a2) => a2 -> Double
 msToDays t = (fromIntegral t) / (24 * 60 * 60 * 1000)
+msToHours :: (Integral a2) => a2 -> Double
 msToHours t = (fromIntegral t) / (60 * 60 * 1000)
 
 humanizeTimeInterval :: Integer -> Text
 humanizeTimeInterval t
-    | msToDays t >= 0.5 = pluralize (round $ msToDays t) "day"
-    | msToHours t >= 0.5 = pluralize (round $ msToHours t) "hour"
+    | msToDays t >= 0.5 = pluralize (round $ msToDays t :: Int) "day"
+    | msToHours t >= 0.5 = pluralize (round $ msToHours t :: Int) "hour"
     | otherwise = "less than an hour"
 
 pluralize :: (Integral a, Show a) => a -> Text -> Text
