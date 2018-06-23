@@ -9,7 +9,7 @@ RUN apt-get -y update && apt-get install -y \
   libpq-dev \
   nodejs
 
-RUN gem install bundler
+RUN gem install bundler -v 1.11.2
 
 RUN mkdir /cubemania
 WORKDIR /cubemania

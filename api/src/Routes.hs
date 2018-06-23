@@ -11,6 +11,7 @@ module Routes
     , usersLink
     , userLink
     , editUserLink
+    , deleteUserLink
     , postLink
     , postLinkToComments
     , postLinkWithComments
@@ -54,6 +55,7 @@ type UsersPath = "users" :> QueryParam "q" T.Text :> QueryParam "page" PageNumbe
 type UserPath = Header "Cookie" T.Text :> "users" :> Capture "userId" UserSlug :> Get '[HTML] (Headers '[Header "Set-Cookie" T.Text] Html)
 type EditUserPath = "users" :> Capture "userId" UserSlug :> "edit" :> Get '[HTML] Html
 type UpdateUserPath = "users" :> Capture "userId" UserSlug :> ReqBody '[FormUrlEncoded] [(T.Text, T.Text)] :> Post '[HTML] Html
+type DeleteUserPath = "users" :> Capture "userId" UserSlug :> "delete" :> Post '[HTML] Html
 type PostPath = "posts" :> Capture "postId" AnnouncementId :> Get '[HTML] Html
 type NewPostPath = "posts" :> "new" :> Get '[HTML] Html
 type EditPostPath = "posts" :> Capture "postId" AnnouncementId :> "edit" :> Get '[HTML] Html
@@ -89,6 +91,7 @@ type CubemaniaRoutes
  :<|> AuthProtect "cookie-auth" :> CreateCommentPath
  :<|> AuthProtect "cookie-auth" :> EditUserPath
  :<|> AuthProtect "cookie-auth" :> UpdateUserPath
+ :<|> AuthProtect "cookie-auth" :> DeleteUserPath
  :<|> AuthProtect "cookie-auth-optional" :> RecordsPath
  :<|> AuthProtect "cookie-auth-optional" :> RecordPath
  :<|> AuthProtect "cookie-auth" :> ShareRecordPath
@@ -117,6 +120,9 @@ userLink (UserSlug slug) = "/users/" <> slug
 
 editUserLink :: UserSlug -> T.Text
 editUserLink (UserSlug slug) = "/users/" <> slug <> "/edit"
+
+deleteUserLink :: UserSlug -> T.Text
+deleteUserLink (UserSlug slug) = "/users/" <> slug <> "/delete"
 
 
 postLinkToComments :: AnnouncementId -> T.Text

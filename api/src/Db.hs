@@ -37,6 +37,7 @@ module Db
     , postAnnouncement
     , createUser
     , updateUser
+    , deleteUser
     , updateAnnouncement
     , getActivity
     , getAllSingles
@@ -314,6 +315,18 @@ updateUser SubmittedEditUser{..} userId conn = do
             myExecute conn "UPDATE users SET ignored = ? WHERE id = ?" (ignored, userId)
             pure ()
         Nothing -> pure ()
+    pure ()
+
+-- TODO: Nullify some foreign keys, delete records_singles
+-- TODO: Use cascading DELETEs in PostgreSQL
+deleteUser :: (MonadIO m) => UserId -> Connection -> m ()
+deleteUser userId conn = do
+    withTransaction conn $ do
+        myExecute conn "DELETE FROM users WHERE id = ?" (Only userId)
+        myExecute conn "DELETE FROM singles WHERE user_id = ?" (Only userId)
+        recordIds :: [Only Int] <- myQuery conn "SELECT id FROM records WHERE user_id = ?" (Only userId)
+        myExecute conn "DELETE FROM records WHERE user_id = ?" (Only userId)
+        myExecute conn "DELETE FROM records_singles WHERE record_id IN ?" (Only $ In $ fmap (\(Only x) -> x) recordIds)
     pure ()
 
 updateAnnouncement :: (MonadIO m) => AnnouncementId -> SubmittedAnnouncement -> Connection -> m ()

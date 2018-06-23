@@ -187,6 +187,7 @@ allHandlers
                    :<|> postCommentHandler flashMessage
                    :<|> editUserHandler flashMessage
                    :<|> updateUserHandler flashMessage
+                   :<|> deleteUserHandler flashMessage
                    :<|> recordsHandler flashMessage
                    :<|> recordHandler flashMessage
                    :<|> shareRecordHandler flashMessage
@@ -302,6 +303,12 @@ allHandlers
                 redirect303WithCookies "/" [("flash-message", "Profile successfully updated.")]
             (view, Nothing) ->
                 return $ H.editUserPage currentUser user view
+    deleteUserHandler _flashMessage currentUser slug = do
+        user <- grabOrNotFound $ Db.runDb $ Db.getUserBySlug slug
+        mustSatisfyEither (mustBeSelf currentUser user) (mustBeAdmin currentUser)
+        Db.runDb $ Db.deleteUser (userId user)
+        redirect303WithCookies "/" [("flash-message", "Profile successfully deleted.")]
+
     getRegisterHandler _flashMessage currentUser = do
         mustBeLoggedOut currentUser
         form <- runGetForm "user" registerForm

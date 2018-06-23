@@ -21,7 +21,6 @@ module Html
 
 import Data.Monoid ((<>))
 import Types
-import Types.TimeZones
 import Routes
 import Data.Maybe (fromMaybe, isJust)
 import qualified Data.Map.Strict as Map
@@ -505,8 +504,8 @@ editUserPage currentUser user form' = withLayout (Just currentUser) Users "Edit 
             passwordFieldWithDifferentErrors "password.p2" ["password", "password.p2"] "Confirmation" (convertForm form')
         fieldset ! class_ "actions" $ ol $ do
             li ! class_ "action input_action " ! A.id "user_submit_action" $ input ! name "commit" ! type_ "submit" ! value "Update"
-            -- TODO: Destroy
-            a ! href "/users/tim" ! dataAttribute "confirm" "Are you sure?" ! dataAttribute "method" "delete" ! rel "nofollow" $ "Destroy"
+    H.form ! action (toValue $ deleteUserLink $ userSlug user) ! method "post" $ do
+        input ! class_ "skip-margin" ! type_ "submit" ! dataAttribute "confirm" "Are you sure?" ! value "Delete profile"
 
 
 loginPage :: Maybe LoggedInUser -> View T.Text -> Page

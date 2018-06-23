@@ -279,8 +279,5 @@ DEPENDENCIES
   unicorn
   will_paginate
 
-RUBY VERSION
-   ruby 1.9.3p484
-
 BUNDLED WITH
    1.12.5

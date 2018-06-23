@@ -28,6 +28,9 @@ form {
   input[type=submit] {
     display: block;
     margin-left: 160px;
+    &.skip-margin {
+      margin-left: 0px;
+    }
   }
   .bot {
     display: none;
