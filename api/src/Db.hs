@@ -135,12 +135,12 @@ deleteAllRecordsForUserAndPuzzle uId pId conn = do
     myExecute conn "DELETE FROM records WHERE id IN ?" (Only $ In recordIds)
     pure ()
 
-saveRecord :: (MonadIO m) => Record -> [Single] -> Connection -> m (Id Record)
-saveRecord Record{..} singles conn = do
+saveRecord :: (MonadIO m) => Record -> [SingleId] -> Connection -> m (Id Record)
+saveRecord Record{..} singleIds conn = do
     time <- liftIO getCurrentTime
     liftIO $ withTransaction conn $ do
         [recordId :: Id Record] <- myQuery conn "INSERT INTO records (time, comment, puzzle_id, user_id, amount, set_at, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT (puzzle_id, amount, user_id) DO UPDATE SET time = EXCLUDED.time, comment = EXCLUDED.comment, set_at = EXCLUDED.set_at, created_at = EXCLUDED.created_at, updated_at = EXCLUDED.updated_at RETURNING id" (recordTime, recordComment, recordPuzzleId, recordUserId, recordType, recordSetAt, time, time)
-        let recordSinglePairs = (\Single{..} -> (recordId, singleId)) <$> singles
+        let recordSinglePairs = (\sId -> (recordId, sId)) <$> singleIds
         -- Delete all existing single -> record associations for that record.
         myExecute conn "DELETE FROM records_singles WHERE record_id = ?" (Only recordId)
         myExecuteMany conn "INSERT INTO records_singles (record_id, single_id) VALUES (?, ?)" recordSinglePairs
@@ -151,7 +151,7 @@ grabSingles conn rId = do
     myQuery conn "SELECT singles.id, singles.time, singles.comment, singles.scramble, singles.penalty, singles.created_at, singles.user_id, singles.puzzle_id FROM singles INNER JOIN records_singles ON singles.id = records_singles.single_id WHERE records_singles.record_id = ? ORDER BY singles.created_at" (Only rId)
 
 postSingle :: (MonadIO m) => PuzzleId -> UserId -> SubmittedSingle -> Connection -> m SingleId
-postSingle (PuzzleId pid) (UserId userId) (SubmittedSingle s t _p) conn = do
+postSingle (PuzzleId pid) (UserId userId) (SubmittedSingle s t _p _c) conn = do
     result :: [Only Int] <- liftIO $ withTransaction conn $ do
         time <- getCurrentTime
         _ <- myExecute conn "UPDATE users SET singles_count = COALESCE(singles_count, 0) + 1 WHERE users.id = ?" (Only userId)
@@ -161,10 +161,10 @@ postSingle (PuzzleId pid) (UserId userId) (SubmittedSingle s t _p) conn = do
         Nothing -> error "not gonna happen"
 
 updateSingle :: (MonadIO m) => SingleId -> SubmittedSingle -> Connection -> m SingleId
-updateSingle (SingleId sid) s conn = do
-    time' <- liftIO getCurrentTime
-    myExecute conn "UPDATE singles SET time=?, updated_at=?, penalty=? WHERE id = ?" (submittedSingleTime s, time', submittedSinglePenalty s, sid)
-    return $ SingleId sid
+updateSingle sId s conn = do
+    time <- liftIO getCurrentTime
+    myExecute conn "UPDATE singles SET time=?, updated_at=?, penalty=?, comment=? WHERE id = ?" (submittedSingleTime s, time, submittedSinglePenalty s, submittedSingleComment s, sId)
+    return $ sId
 
 deleteSingle :: (MonadIO m) => SingleId -> Connection -> m ()
 deleteSingle s@(SingleId singleId) conn = do

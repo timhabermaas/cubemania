@@ -209,13 +209,15 @@ data SubmittedSingle = SubmittedSingle
     { submittedSingleScramble :: !Text
     , submittedSingleTime :: !DurationInMs
     , submittedSinglePenalty :: !(Maybe Penalty)
+    , submittedSingleComment :: !(Maybe Text)
     } deriving (Show)
 
 instance FromJSON SubmittedSingle where
     parseJSON (Object v) = SubmittedSingle <$>
                              v .: "scramble" <*>
                              v .: "time" <*>
-                             v .:? "penalty"
+                             v .:? "penalty" <*>
+                             v .:? "comment"
     parseJSON _          = mempty
 
 newtype RecordWithSingles = RecordWithSingles (DbEntry Record, [Single])
