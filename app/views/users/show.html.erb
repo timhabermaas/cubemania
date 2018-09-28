@@ -16,9 +16,11 @@
   <% end %>
   <h1>
     <%= render :partial => "identity", :locals => { :user => @user, :size => :large, :link => false } %>
-    <small>
-      has spent <%= distance_of_time_in_words @user.wasted_time %> solving puzzles.
-    </small>
+    <% if @user.wasted_time >= 0 %>
+      <small>
+        has spent <%= distance_of_time_in_words @user.wasted_time %> solving puzzles.
+      </small>
+    <% end %>
   </h1>
 
   <% if @user.wca? %>
