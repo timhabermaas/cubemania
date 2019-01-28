@@ -1,0 +1,38 @@
+div.flash {
+  background: #e4ff33 url(#{$image-path}/notice.gif) top repeat-x;
+  position: relative;
+  p {
+    color: #2f2f2f;
+    padding: 9px 0;
+    text-align: center;
+    strong {
+      font-weight: bold;
+    }
+    a {
+      color: #2f2f2f;
+      text-decoration: underline;
+    }
+    a:hover {
+      background-color: #2f2f2f;
+      color: $yellow;
+      text-decoration: none;
+    }
+  }
+
+  a.close {
+    display: block;
+    position: absolute;
+    width: 21px;
+    height: 21px;
+    right: 75px;
+    top: 50%;
+    margin-top: -10px;
+    text-indent: -9999px;
+    background: $yellow url(#{$image-path}/close_button.gif) center no-repeat;
+  }
+  a.close:hover {
+    background-color: red;
+    border-color: black;
+    color: black;
+  }
+}

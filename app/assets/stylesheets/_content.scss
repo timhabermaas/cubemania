@@ -1,0 +1,159 @@
+#content, div.fancybox-inner {
+  color: white;
+  background: #5C7DA0 url(#{$image-path}/content.gif) repeat-x;
+  .center {
+    @include center($width);
+    padding: 32px 16px;
+  }
+
+  h1 {
+    font-size: 2.5em;
+    margin-bottom: 1em;
+    color: $yellow;
+  }
+  h2 {
+    font-size: 1.25em;
+    margin-bottom: 0.25em;
+    padding-bottom: 0.25em;
+    color: $yellow;
+  }
+  h3 {
+    font-size: 1.25em;
+    margin: 1em 0;
+    color: $yellow;
+  }
+  h4 {
+    font-size: 1.125em;
+    margin-bottom: 1em;
+    color: $yellow;
+  }
+  strong {
+    font-weight: bold;
+  }
+  em, i {
+    font-style: italic;
+  }
+  small {
+    color: $greyblue;
+    font-size: 0.75em;
+  }
+
+  a, a:visited {
+    color: $yellow;
+  }
+  a:hover, a:active {
+    color: #2F2F2F;
+    background-color: $yellow;
+  }
+  .text {
+    p, blockquote, ul, ol {
+      margin-bottom: 1em;
+    }
+    a {
+      text-decoration: underline;
+    }
+    ul, ol {
+      list-style-position: inside;
+    }
+    ul {
+      list-style-type: disc;
+    }
+    ol {
+      list-style-type: decimal;
+    }
+    li {
+      margin-bottom: 0.25em;
+    }
+  }
+
+  .challenge, .suggestion {
+    font-size: 2em;
+    text-align: center;
+  }
+  .challenge {
+    margin: 1em 0;
+  }
+  .help {
+    font-size: 0.75em;
+    color: $greyblue;
+    text-align: center;
+    margin-bottom: 0.75em;
+  }
+
+  .pagination {
+    margin-top: 2em;
+    text-align: center;
+    span, a, em {
+      padding: 0.25em;
+    }
+    .disabled {
+      color: #83A1BF;
+    }
+    .current {
+      background-color: $yellow;
+      color: #2f2f2f;
+    }
+  }
+
+  .admin {
+    text-align: right;
+    margin-bottom: 1em;
+    div.form {
+      background-color: $darkblue;
+      text-align: left;
+      padding: 1em;
+      margin-top: 1em;
+    }
+  }
+
+  .time.dnf {
+    color: #83a1bf;
+    color: rgba(255, 255, 255, 0.3);
+    text-decoration: line-through;
+  }
+  .time.best {
+    color: rgba(0, 255, 0, 0.6);
+  }
+  .time.worst {
+    color: rgba(255, 0, 0, 0.7);
+  }
+  .time.worst.dnf {
+    color: rgba(255, 0, 0, 0.3);
+  }
+
+  table {
+    .odd {
+      background-color: $darkblue;
+    }
+    small {
+      font-size: 1em;
+      white-space: nowrap;
+    }
+    cite {
+      text-transform: capitalize;
+      white-space: nowrap;
+    }
+  }
+  thead {
+    color: $yellow
+  }
+  th, td {
+    text-align: center;
+    padding: 0.25em 1em;
+    vertical-align: middle;
+  }
+  td {
+    padding-left: 1em;
+  }
+
+
+  @import "content/home";
+  @import "content/users";
+  @import "content/user";
+  @import "content/records";
+  @import "content/record";
+  @import "content/posts";
+  @import "content/timer";
+  @import "content/profile-image";
+  @import "content/feed";
+}

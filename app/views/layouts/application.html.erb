@@ -6,9 +6,12 @@
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
     <title><%= page_title %> &middot; Cubemania</title>
-
-    <%= stylesheet_link_tag "application" %>
-    <%= javascript_include_tag "application" %>
+    <link href="/assets/app.css" media="screen" rel="stylesheet" type="text/css">
+    <% if Rails.env.production? %>
+      <script src="/assets/app.min.js" type="text/javascript"></script>
+    <% else %>
+      <script src="/assets/app.js" type="text/javascript"></script>
+    <% end %>
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->

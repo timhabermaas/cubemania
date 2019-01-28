@@ -1,0 +1,47 @@
+p.tabs {
+  text-align: center;
+  margin-bottom: 2em;
+  .selected {
+    font-weight: bold;
+  }
+}
+
+#records {
+  margin: 0 auto;
+  .rank1, .rank2, .rank3 {
+    margin-bottom: 1em;
+    th {
+      width: 42px;
+      text-indent: -9999px;
+      background-repeat: no-repeat;
+      background-position: center center;
+    }
+  }
+  .rank1 {
+    th {
+      background-image: url(#{$image-path}/rank1.gif);
+    }
+    strong, cite, small {
+      font-size: 2em;
+      line-height: 2.25em;
+    }
+  }
+  .rank2 {
+    th {
+      background-image: url(#{$image-path}/rank2.gif);
+    }
+    strong, cite, small {
+      font-size: 1.5em;
+      line-height: 2em;
+    }
+  }
+  .rank3 {
+    th {
+      background-image: url(#{$image-path}/rank3.gif);
+    }
+    strong, cite, small {
+      font-size: 1.25em;
+      line-height: 1.75em;
+    }
+  }
+}

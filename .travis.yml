@@ -1,0 +1,31 @@
+language: c
+
+sudo: false
+
+addons:
+  apt:
+    packages:
+    - libgmp-dev
+
+cache:
+  directories:
+    - $HOME/.stack
+
+matrix:
+  include:
+    # - env: ARGS="--resolver nightly"
+     - env: ARGS="" # take the resolver specified in stack.yaml
+  allow_failures:
+    - env: ARGS="--resolver nightly"
+
+before_install:
+  - mkdir -p ~/.local/bin
+  - export PATH=$HOME/.local/bin:$PATH
+  - travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
+
+install:
+  - cd api
+  - stack --no-terminal --install-ghc $ARGS test --bench --only-dependencies
+
+script:
+  - stack --no-terminal $ARGS test

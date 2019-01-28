@@ -1,0 +1,177 @@
+#timer-left {
+  margin-bottom: 2em;
+
+  #timer {
+    background-color: $darkblue;
+    text-align: center;
+    border-radius: 10px;
+    display: inline-block;
+    vertical-align: middle;
+    width: 566px;
+    padding: 8px 16px 1.5em 16px;
+
+    #new_single {
+      display: none;
+    }
+    .scramble {
+      text-align: center;
+      font-size: 0.9em;
+      margin-bottom: 1em;
+    }
+    .time {
+      font-weight: bold;
+      font-size: 550%;
+    }
+    .time.starting {
+      color: #44d944;
+    }
+    div.add_comment {
+      margin-bottom: 1em;
+      display: none;
+      div.bubble {
+        display: inline-block;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        padding-right: 6px;
+        padding-left: 6px;
+        border-radius: 5px;
+        margin: 0 auto;
+        background-color: $yellow;
+        position: relative;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        a {
+          color: #212121;
+        }
+        a:hover {
+          text-decoration: underline;
+        }
+      }
+      div.bubble:after {
+        content: "";
+        position: absolute;
+        top: -8px;
+        left: 50%;
+        margin-left: -8px;
+        width: 0;
+        border-width: 0 8px 8px;
+        border-style: solid;
+        border-color: $yellow transparent;
+      }
+      form {
+        margin-bottom: -0.5em;
+        display: none;
+      }
+    }
+
+    form {
+      margin-top: 1em;
+      margin-bottom: 1em;
+      label {
+        display: none;
+      }
+      li {
+        text-align: center;
+        margin-bottom: 1em;
+      }
+      input[type=submit] {
+        display: inline-block;
+        font-size: 150%;
+        margin: 0;
+      }
+      input[type=text] {
+        font-size: 200%;
+        font-weight: bold;
+        text-align: center;
+        width: 7em;
+      }
+    }
+    p.help {
+      margin-top: -0.5em;
+    }
+    label.inspection-toggle {
+      display: block;
+      margin-bottom: 1.5em;
+    }
+  }
+
+  #stats {
+    h4 {
+      font-weight: bold;
+      margin-bottom: 0.2em;
+    }
+    text-align: center;
+    width: 286px;
+    padding: 16px;
+    padding-top: 8px;
+    margin-left: 38px;
+    display: inline-block;
+    border-radius: 10px;
+    background-color: $darkblue;
+    vertical-align: middle;
+    .current {
+      margin-bottom: 0.5em;
+    }
+  }
+
+}
+#times {
+  #chart-container {
+    p.tabs {
+      margin-bottom: 0.5em;
+    }
+    #chart {
+      margin-bottom: 0.5em;
+    }
+    width: 598px;
+    float: left;
+    ul {
+      margin: 0 auto;
+      width: 50%;
+    }
+    p.help {
+      margin-bottom: 2em;
+    }
+  }
+  #singles {
+    width: 286px;
+    float: right;
+    background-color: $darkblue;
+    border-radius: 10px;
+    padding: 16px;
+    ol {
+      list-style-type: decimal;
+      list-style-position: outside;
+      padding-left: 2em;
+      li {
+        margin-bottom: 0.4em;
+        .fu {
+          text-align: right;
+        }
+        .time.plus2:after {
+          content: "+";
+        }
+      }
+    }
+    .details {
+      display: none;
+    }
+    .edit {
+      font-size: 0.75em;
+      display: inline;
+      .delete {
+        color: red;
+      }
+      .delete:hover {
+        background-color: red;
+        color: #ccc;
+      }
+    }
+    .load-more {
+      text-align: center;
+      margin-top: 1em;
+    }
+  }
+}
+#times:after {
+  @include clear-fix;
+}

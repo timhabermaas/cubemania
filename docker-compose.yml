@@ -13,6 +13,9 @@ services:
       dockerfile: nginx/Dockerfile
     links:
       - web
+      - api
+    depends_on:
+      - api
     ports:
       - "443:443"
       - "8080:80"
@@ -55,7 +58,13 @@ services:
     volumes:
       - ~/.tarsnap:/root/keys
       - ~/.tarsnap/cache:/root/tarsnap-cache
+  api:
+    build: ./api/
+    ports:
+      - "9090:9090"
     links:
       - db
+    environment:
+      - DATABASE_URL=postgres://postgres@db/cubemania_production
 volumes:
   postgres-volume:

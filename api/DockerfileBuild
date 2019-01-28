@@ -1,0 +1,8 @@
+FROM fpco/stack-build
+
+RUN apt-get update
+RUN apt-get install --reinstall krb5-multidev -y
+RUN apt-get install --reinstall libssl-dev -y
+RUN apt-get install --reinstall libpq-dev -y
+
+WORKDIR /src

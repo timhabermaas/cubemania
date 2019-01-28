@@ -8,12 +8,10 @@ gem 'rails', '3.2.22.2'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'
-  gem 'coffee-rails', '~> 3.2.1'
 
   gem 'uglifier', '>= 1.0.3'
 end
 
-gem 'jquery-rails'
 gem 'ejs', '~> 1.0.0'
 gem 'eco', '~> 1.0.0'
 
@@ -54,7 +52,6 @@ group :development, :test do
   gem 'launchy'
   gem 'factory_girl_rails'
   gem 'jasmine'
-  gem 'guard-coffeescript'
   gem 'guard-rspec'
   gem 'guard-spork'
   gem 'rb-fsevent'

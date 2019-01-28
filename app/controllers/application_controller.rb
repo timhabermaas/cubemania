@@ -16,10 +16,20 @@ class ApplicationController < ActionController::Base
     redirect_to root_path
   end
 
+  before_filter :set_servant_cookie
+
   before_filter :store_return_to
   around_filter :set_time_zone
 
 private
+  def set_servant_cookie
+    if logged_in?
+      cookies[:current_user_id] = current_user.id
+    else
+      cookies[:current_user_id] = nil
+    end
+  end
+
   def store_return_to
     store_location params[:return_to] unless params[:return_to].nil?
   end

@@ -4,23 +4,13 @@ Backbone:
 Human Time:
   move code to Backbone; add tests
 
-Redesign:
-  inaktive user anzeigen überflüssig mit neuem system :)
-  Import for cct session?
 Chart:
-  Small chart for scrolling and zooming
   Threshold at where your best x averages lie below
 Chart Types (different page):
   Time Distribution (http://www.facebook.com/album.php?aid=85369&id=1376617312)
   Punch Card (http://code.google.com/apis/chart/image/docs/user_submitted_gallery.html)
 Timer:
   allow to stop timer with all keys
-  don't display destroy links for singles which belong to a competition
-Code:
-  extract puzzle divs into helper
-  extract single display into helper (for dnf stuff) (<%= single(single, 'li') do %>)
-Security:
-  remove competition.sticky from attributes hash with before_filter
 
 
 General:
@@ -32,13 +22,6 @@ Random ideas:
   Achievments
 
 Enhancements:
-
-  Protect Attributes (User Update, Competition Update) # override User#write_attribute <--- nope, that's an ugly solution. take a look at the competitions and
-                                                         users controller. the code is already in there:
-                                                               #protect :sticky, :but => :admin, :only => [:create, :update]
-                                                         read it like: protect attribute sticky from everyone but admins (only necessary for create and update)
-                                                         the protect method should be put into the authentication plugin. would also be nice to split the
-                                                         authentication class into authentication and authorization.
   Clocks Create: Slide Notice Up / Down
   ESL-like awards: Most solves/day, ...
   Users: Display ranking for each puzzle (puzzle.records.average.index(User.find_by_name('tim').averages.record(2) + 1)
