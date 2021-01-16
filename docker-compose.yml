@@ -1,9 +1,9 @@
-version: '2'
+version: "3.7"
 services:
   db:
     image: postgres:9.5.3
     ports:
-      - "7070:5432"
+      - "5432:5432"
     volumes:
       - postgres-volume:/var/lib/postgresql/data
   nginx:
@@ -19,6 +19,27 @@ services:
     volumes:
       - ./public:/home/assets
       - ~/Documents/certs:/cert
+  records:
+    build:
+      context: ./records
+      dockerfile: Dockerfile
+  records-build:
+    build:
+      context: ./records
+      dockerfile: Dockerfile
+      target: builder
+    depends_on:
+      - db
+    volumes:
+      - ./records:/home/rust/src/records
+  record-job:
+    build:
+      context: ./record-job
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    volumes:
+      - ./record-job:/root/record-job
   jobs:
     build: .
     command: ./start_jobs.sh
@@ -36,11 +57,11 @@ services:
       - .:/cubemania
     ports:
       - "3000:3000"
-    links:
+    depends_on:
+      #- jobs
+      - records
       - db
       - cache
-    depends_on:
-      - jobs
     environment:
       RAILS_ENV: production
       DATABASE_URL: postgresql://postgres@db/cubemania_production

@@ -15,7 +15,7 @@ RUN apt-get -y update && apt-get install -y \
 
 RUN cd /tmp; wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p551.tar.gz; tar -xvzf ruby-1.9.3-p551.tar.gz; cd ruby-1.9.3-p551/; ./configure --prefix=/usr/local; make; make install
 
-RUN gem install bundler
+RUN gem install bundler -v 1.11.2
 
 RUN mkdir /cubemania
 WORKDIR /cubemania
