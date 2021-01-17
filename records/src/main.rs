@@ -1,19 +1,16 @@
-use actix_web::middleware::Logger;
 use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
 use chrono::TimeZone;
 use chrono::{DateTime, NaiveDateTime, Utc};
-//use log::{error, info, warn};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
-use std::error;
 use tracing::subscriber::set_global_default;
-use tracing::{error, info, info_span, span, warn, Instrument, Level};
+use tracing::{debug, info};
+use tracing_actix_web::TracingLogger;
 use tracing_bunyan_formatter::{BunyanFormattingLayer, JsonStorageLayer};
 use tracing_log::LogTracer;
 use tracing_subscriber::{layer::SubscriberExt, EnvFilter, Registry};
-use tracing_actix_web::TracingLogger;
 
 #[derive(Debug)]
 struct Single {
@@ -23,6 +20,20 @@ struct Single {
     comment: String,
 }
 
+#[tracing::instrument(skip(pool))]
+async fn fetch_singles(
+    pool: &PgPool,
+    user_id: u32,
+    puzzle_id: u32,
+) -> Result<Vec<SingleResult>, sqlx::Error> {
+    sqlx::query_as(
+        "SELECT id, comment, time, created_at FROM singles WHERE puzzle_id = $1 AND user_id = $2 ORDER BY created_at",
+    )
+    .bind(puzzle_id)
+    .bind(user_id)
+    .fetch_all(pool )
+    .await
+}
 /*
 fn get_all_singles(
     client: &mut Client,
@@ -108,6 +119,7 @@ struct CsvRow<'a> {
     created_at: NaiveDateTime,
 }
 
+#[tracing::instrument(skip(singles))]
 fn create_csv_from_singles(singles: &[SingleResult]) -> Result<String, csv::Error> {
     let mut buffer = vec![];
     {
@@ -126,13 +138,14 @@ fn create_csv_from_singles(singles: &[SingleResult]) -> Result<String, csv::Erro
 
         wtr.flush()?;
     }
+    info!("CSV file successfully created, bytes={}", buffer.len());
     Ok(String::from_utf8_lossy(&buffer).into_owned())
 }
 
 // TODO: We can probably use a stream here? Does actix support some kind of streamed response?
 
 #[tracing::instrument(
-    skip(q, pool), 
+    skip(q, pool),
     fields(puzzle_id = q.puzzle_id, user_id = q.user_id)
 )]
 async fn singles_csv(
@@ -140,20 +153,14 @@ async fn singles_csv(
     pool: web::Data<PgPool>,
 ) -> impl Responder {
     // TODO: proper error handling
-    let result: Vec<SingleResult> = sqlx::query_as(
-        "SELECT id, comment, time, created_at FROM singles WHERE puzzle_id = $1 AND user_id = $2 ORDER BY created_at",
-    )
-    .bind(q.puzzle_id)
-    .bind(q.user_id)
-    .fetch_all(pool.as_ref())
-    //.instrument(tracing::info_span!("some db query"))
-    .await
-    .expect("query failed");
+    let singles = fetch_singles(pool.as_ref(), q.user_id, q.puzzle_id)
+        .await
+        .expect("query failed");
 
-    info!("{} singles fetched", result.len());
+    debug!("{} singles fetched", singles.len());
 
     // TODO: Handle failures by writing to error!
-    let csv = create_csv_from_singles(&result).expect("should never fail");
+    let csv = create_csv_from_singles(&singles).expect("should never fail");
 
     HttpResponse::Ok()
         /*
@@ -191,15 +198,21 @@ async fn main() -> std::io::Result<()> {
     );
 
     // TODO: Make logging to file work.
+
+    // Just a useless file experiment.
     let file_appender = tracing_appender::rolling::daily("./logs", "server.log");
-    let foo = tracing_subscriber::fmt::layer().with_writer(file_appender);
+    let (non_blocking, _guard) = tracing_appender::non_blocking(file_appender);
+    // Can probably be combined with BunyanFormattingLayer to achieve a bunyan format written to
+    // files.
+    let file_appender_layer = tracing_subscriber::fmt::layer().with_writer(non_blocking);
 
     // The `with` method is provided by `SubscriberExt`, an extension
     // trait for `Subscriber` exposed by `tracing_subscriber`
     let subscriber = Registry::default()
         .with(env_filter)
         .with(JsonStorageLayer)
-        .with(formatting_layer);
+        .with(formatting_layer)
+        .with(file_appender_layer);
     // `set_global_default` can be used by applications to specify
     // what subscriber should be used to process spans.
     set_global_default(subscriber).expect("Failed to set subscriber");
@@ -218,11 +231,9 @@ async fn main() -> std::io::Result<()> {
     .fetch_all(&pool)
     .await
     .expect("query failed");
-    //span.drop();
 
     info!("{:?}", result);
 
-    //tokio_postgres::connect("postgres://postgres@db/cubemania_production", NoTls)
     HttpServer::new(move || {
         App::new()
             .wrap(TracingLogger)
