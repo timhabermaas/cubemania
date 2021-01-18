@@ -1,9 +1,9 @@
 module UrlHelper
-  def puzzle_timers_path(id = "3x3x3")
+  def puzzle_timers_path_with_default(id = "3x3x3")
     "/puzzles/#{id}/timer"
   end
 
-  def puzzle_records_path(id = "3x3x3")
+  def puzzle_records_path_with_default(id = "3x3x3")
     "/puzzles/#{id}/records"
   end
 

@@ -2,9 +2,9 @@
   <p class="challenge">
     <% if current_user? @user %>
       How fast do you solve the cube?<br/>
-      <%= link_to "Stop your times and get the record!", puzzle_timers_path %>
+      <%= link_to "Stop your times and get the record!", puzzle_timers_path_with_default %>
     <% else %>
-      <%= @user.name %> has no personal records yet. <%= link_to "Do you?", puzzle_timers_path %>
+      <%= @user.name %> has no personal records yet. <%= link_to "Do you?", puzzle_timers_path_with_default %>
     <% end %>
   </p>
 <% else %>

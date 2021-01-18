@@ -45,7 +45,7 @@ module Authentication
     def logout
       if logged_in?
         flash[:notice] = 'You must logout before you can login or register.'
-        redirect_to root_url
+        redirect_to root_path
       end
     end
 
