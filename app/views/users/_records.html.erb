@@ -12,6 +12,9 @@
   <ul class="records">
     <% records.each do |puzzle, records| %>
     <li class="record <%= cycle "even", "odd" %>">
+      <% if current_user?(@user) %>
+        <div class="csv-download-link"><%= link_to "CSV #{["F09F93A5"].pack("H*")}", csv_download_path(@user.id, puzzle.id) %></div>
+      <% end %>
       <div class="puzzle">
         <div class="puzzle-image pos<%= puzzle.css_position %>">
           <div class="kind-image pos<%= puzzle.kind.css_position %>"></div>

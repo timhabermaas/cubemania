@@ -57,6 +57,14 @@
     .kind-image {
       @include kind-image;
     }
+    .record {
+      position: relative;
+      .csv-download-link {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+      }
+    }
     li {
       width: 280px;
       float: left;
@@ -72,20 +80,22 @@
     thead {
       border-bottom: 1px solid $yellow;
     }
-    th, td {
-      padding: 0; // TODO delete default table styles?
+    th,
+    td {
       padding: 4px;
     }
     th {
       text-align: left;
     }
-    td, thead th {
+    td,
+    thead th {
       text-align: right;
     }
     td.faster strong {
       color: #6f6;
     }
-    td.slower strong, td.slower small {
+    td.slower strong,
+    td.slower small {
       color: #ff4545;
     }
   }

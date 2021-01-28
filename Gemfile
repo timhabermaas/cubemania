@@ -36,6 +36,9 @@ gem 'scrambler'
 
 gem 'cancan'
 
+# Fixed version since newer versions don't support Ruby 1.9.
+gem 'jwt', '1.5.6'
+
 gem 'delayed_job_active_record'
 gem 'delayed_job_web'
 

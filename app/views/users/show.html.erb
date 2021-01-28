@@ -41,9 +41,7 @@
     <% end %>
   <% end %>
 
-  <% cache [@user, "records", current_user] do %>
-    <%= render :partial => "records", :locals => { :records => @records.grouped_by_puzzle_and_amount } %>
-  <% end %>
+  <%= render :partial => "records", :locals => { :records => @records.grouped_by_puzzle_and_amount } %>
 
   <% if can? :read, Following %>
     <% if @user.followees.present? %>

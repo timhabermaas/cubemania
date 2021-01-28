@@ -18,11 +18,20 @@ services:
       - "8080:80"
     volumes:
       - ./public:/home/assets
-      - ~/Documents/certs:/cert
+      - ./nginx/certs:/etc/letsencrypt/live/www.cubemania.org
   records:
     build:
       context: ./records
       dockerfile: Dockerfile
+    environment:
+      RUST_LOG: trace
+      RUST_BACKTRACE: 1
+      HMAC_SECRET: someUnsecureSecret
+      DATABASE_URL: postgresql://postgres@db/cubemania_production
+    ports:
+      - "8081:8081"
+    depends_on:
+      - db
   records-build:
     build:
       context: ./records
@@ -32,14 +41,6 @@ services:
       - db
     volumes:
       - ./records:/home/rust/src/records
-  record-job:
-    build:
-      context: ./record-job
-      dockerfile: Dockerfile
-    depends_on:
-      - db
-    volumes:
-      - ./record-job:/root/record-job
   jobs:
     build: .
     command: ./start_jobs.sh
@@ -65,6 +66,8 @@ services:
     environment:
       RAILS_ENV: production
       DATABASE_URL: postgresql://postgres@db/cubemania_production
+      HMAC_SECRET: someUnsecureSecret
+
   cache:
     image: memcached:alpine
     command: memcached -m 64
