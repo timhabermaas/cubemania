@@ -1,9 +1,15 @@
 #! /bin/sh
 set -e
 
-docker build -f nginx/Dockerfile -t timhabermaas/cubemania:nginx .
-docker build -t timhabermaas/cubemania:rails_old .
-docker build -f backup/Dockerfile -t timhabermaas/cubemania:backup backup
-docker push timhabermaas/cubemania:nginx
-docker push timhabermaas/cubemania:rails_old
-docker push timhabermaas/cubemania:backup
+COMMIT_SHA=$(git rev-parse HEAD)
+echo $COMMIT_SHA
+
+docker-compose run web bundle exec rake assets:precompile
+docker build -f nginx/Dockerfile -t timhabermaas/cubemania_nginx:$COMMIT_SHA .
+docker build -t timhabermaas/cubemania_rails:$COMMIT_SHA .
+docker build -f backup/Dockerfile -t timhabermaas/cubemania_backup:$COMMIT_SHA backup
+docker build -f records/Dockerfile -t timhabermaas/cubemania_records:$COMMIT_SHA records
+docker push timhabermaas/cubemania_nginx:$COMMIT_SHA
+docker push timhabermaas/cubemania_rails:$COMMIT_SHA
+docker push timhabermaas/cubemania_backup:$COMMIT_SHA
+docker push timhabermaas/cubemania_records:$COMMIT_SHA
