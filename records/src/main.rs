@@ -1,5 +1,4 @@
 extern crate jsonwebtoken as jwt;
-extern crate rustc_serialize;
 
 mod db;
 use actix_web::{
@@ -10,6 +9,7 @@ use jwt::{decode, Algorithm, DecodingKey, Validation};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use sqlx::postgres::PgPoolOptions;
+use sqlx::prelude::Row;
 use sqlx::PgPool;
 use std::collections::HashMap;
 use std::env;
@@ -164,20 +164,6 @@ async fn singles_csv(
     web::Query(q): web::Query<SinglesQuery>,
     app_state: web::Data<AppState>,
 ) -> Result<impl Responder, AppError> {
-    // TODO: proper error handling
-    let singles = db::fetch_singles(&app_state.pool, q.user_id, q.puzzle_id)
-        .await
-        .map_err(|e| AppError {
-            cause: format!("{:?}", e),
-            message: "fetching singles failed".to_string(),
-            error_type: ErrorType::DbError,
-        })?;
-
-    debug!("{} singles fetched", singles.len());
-
-    // TODO: Handle failures by "logging" to error!
-    let csv = create_csv_from_singles(&singles).expect("should never fail");
-
     let token: &str = q.token.as_ref();
     let token_data = decode::<SingleCsvClaim>(
         token,
@@ -196,7 +182,19 @@ async fn singles_csv(
         return Ok(HttpResponse::NotFound().body("csv file not found"));
     }
 
-    info!("{:?}", token_data);
+    // TODO: proper error handling
+    let singles = db::fetch_singles(&app_state.pool, q.user_id, q.puzzle_id)
+        .await
+        .map_err(|e| AppError {
+            cause: format!("{:?}", e),
+            message: "fetching singles failed".to_string(),
+            error_type: ErrorType::DbError,
+        })?;
+
+    debug!("{} singles fetched", singles.len());
+
+    // TODO: Handle failures by "logging" to error!
+    let csv = create_csv_from_singles(&singles).expect("should never fail");
 
     Ok(HttpResponse::Ok()
         .header(
@@ -246,7 +244,7 @@ async fn main() -> std::io::Result<()> {
         .expect("failed to create pool");
 
     let hmac_secret = env::var("HMAC_SECRET")
-        .map_err(|x| "HMAC_SECRET not present")
+        .map_err(|_| "HMAC_SECRET not present")
         .unwrap();
 
     let app_state = AppState {
