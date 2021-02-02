@@ -183,7 +183,7 @@ async fn singles_csv(
     }
 
     // TODO: proper error handling
-    let singles = db::fetch_singles(&app_state.pool, q.user_id, q.puzzle_id)
+    let singles = db::fetch_singles(&app_state.pool, q.user_id as i32, q.puzzle_id as i32)
         .await
         .map_err(|e| AppError {
             cause: format!("{:?}", e),

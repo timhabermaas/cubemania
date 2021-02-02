@@ -25,14 +25,14 @@ pub struct SingleResult {
 #[tracing::instrument(skip(pool))]
 pub async fn fetch_singles(
     pool: &PgPool,
-    user_id: u32,
-    puzzle_id: u32,
+    user_id: i32,
+    puzzle_id: i32,
 ) -> Result<Vec<SingleResult>, sqlx::Error> {
     sqlx::query_as(
-        "SELECT id, comment, time, created_at, penalty FROM singles WHERE puzzle_id = $1 AND user_id = $2 ORDER BY created_at",
+        "SELECT id, time, penalty, created_at, comment FROM singles WHERE user_id = $1 AND puzzle_id = $2 ORDER BY created_at",
     )
-    .bind(puzzle_id)
     .bind(user_id)
+    .bind(puzzle_id)
     .fetch_all(pool)
     .await
 }
