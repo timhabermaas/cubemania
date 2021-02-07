@@ -12,7 +12,7 @@ regex = "1"
 chrono = { version = "0.4", features = [ "serde" ] }
 actix-web = "3"
 actix-rt = "1.1.1"
-tokio = "0.1.5"
+tokio = { version = "0.3.7", features = ["time", "rt"] }
 serde = { version = "1.0", features = ["derive"] }
 csv = "1.1.5"
 tracing = "0.1"
@@ -24,3 +24,4 @@ tracing-actix-web = "0.2"
 tracing-appender = "0.1"
 jsonwebtoken = "7"
 rustc-serialize = "0.3"
+lazy_static = "1.4.0"

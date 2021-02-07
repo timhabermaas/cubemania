@@ -1,15 +1,18 @@
+#[macro_use]
+extern crate lazy_static;
 extern crate jsonwebtoken as jwt;
 
 mod db;
+mod record_job;
+
 use actix_web::{
     error::ResponseError, http::StatusCode, web, App, HttpResponse, HttpServer, Responder,
 };
 use chrono::{DateTime, NaiveDateTime, Utc};
 use jwt::{decode, Algorithm, DecodingKey, Validation};
-use regex::Regex;
+use record_job::runner;
 use serde::{Deserialize, Serialize};
 use sqlx::postgres::PgPoolOptions;
-use sqlx::prelude::Row;
 use sqlx::PgPool;
 use std::collections::HashMap;
 use std::env;
@@ -32,43 +35,6 @@ struct Single {
     created_at: DateTime<Utc>,
     comment: String,
 }
-
-// Use String::from_utf8_lossy + writer to Vec<u8> for csv to get a UTF8 String. Lossy means
-// unknown UTF8 symbols are replaced with some "unknown" character, but it never fails.
-// See https://docs.rs/csv/1.1.5/csv/struct.Writer.html#example-1 for the entire roundtrip from
-// data to CSV string.
-
-/*
-fn main() -> Result<(), Box<dyn error::Error>> {
-    let mut client = Client::connect("postgres://postgres@db/cubemania_production", NoTls)?;
-
-    let re = Regex::new(r"--- !ruby/struct:RecordCalculationJob\nuser_id: (\d+)\npuzzle_id: (\d+)")
-        .unwrap();
-
-    let foo = client.query("SELECT * FROM records", &[])?;
-    println!("{:?}", foo);
-
-    for row in client.query("SELECT handler from delayed_jobs", &[])? {
-        let handler: String = row.get("handler");
-        let capture = re.captures(&handler).unwrap();
-        let user_id: i32 = capture
-            .get(1)
-            .unwrap()
-            .as_str()
-            .parse()
-            .expect("user_id must be a string");
-        let puzzle_id: i32 = capture
-            .get(2)
-            .unwrap()
-            .as_str()
-            .parse()
-            .expect("puzzle_id must be a string");
-        let singles = get_all_singles(&mut client, puzzle_id, user_id);
-        println!("{:?}", singles);
-    }
-    Ok(())
-}
-*/
 
 #[derive(Deserialize)]
 struct SinglesQuery {
@@ -231,6 +197,7 @@ async fn main() -> std::io::Result<()> {
         .with(env_filter)
         .with(JsonStorageLayer)
         .with(formatting_layer);
+
     // `set_global_default` can be used by applications to specify
     // what subscriber should be used to process spans.
     set_global_default(subscriber).expect("Failed to set subscriber");
@@ -248,9 +215,11 @@ async fn main() -> std::io::Result<()> {
         .unwrap();
 
     let app_state = AppState {
-        pool,
+        pool: pool.clone(),
         jwt_secret: hmac_secret,
     };
+
+    let _worker = actix_rt::spawn(runner(pool));
 
     HttpServer::new(move || {
         App::new()
