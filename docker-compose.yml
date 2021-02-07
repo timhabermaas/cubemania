@@ -11,20 +11,23 @@ services:
     build:
       context: .
       dockerfile: nginx/Dockerfile
-    links:
+    depends_on:
+      - records
       - web
     ports:
       - "443:443"
       - "8080:80"
     volumes:
       - ./public:/home/assets
-      - ./nginx/certs:/etc/letsencrypt/live/www.cubemania.org
+      # Replace ssl config with fake to prevent requiring certificates during
+      # development.
+      - ./nginx/empty_ssl.conf:/etc/nginx/ssl.conf
   records:
     build:
       context: ./records
       dockerfile: Dockerfile
     environment:
-      RUST_LOG: trace
+      RUST_LOG: info
       RUST_BACKTRACE: 1
       HMAC_SECRET: someUnsecureSecret
       DATABASE_URL: postgresql://postgres@db/cubemania_production
@@ -59,8 +62,6 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      #- jobs
-      - records
       - db
       - cache
     environment:
@@ -79,7 +80,9 @@ services:
     volumes:
       - ~/.tarsnap:/root/keys
       - ~/.tarsnap/cache:/root/tarsnap-cache
+      - .:/cubemania
     links:
       - db
+
 volumes:
   postgres-volume:
