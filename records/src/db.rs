@@ -24,10 +24,10 @@ pub struct SingleResult {
 
 impl PartialEq for SingleResult {
     fn eq(&self, other: &Self) -> bool {
-        if !self.is_valid() && !other.is_valid() {
+        if !self.is_solved() && !other.is_solved() {
             return true;
         }
-        if self.is_valid() != other.is_valid() {
+        if self.is_solved() != other.is_solved() {
             return false;
         }
         self.time == other.time
@@ -39,10 +39,10 @@ impl PartialOrd for SingleResult {
         if self == other {
             return Some(std::cmp::Ordering::Equal);
         }
-        if self.is_valid() && !other.is_valid() {
+        if self.is_solved() && !other.is_solved() {
             return Some(std::cmp::Ordering::Less);
         }
-        if !self.is_valid() && other.is_valid() {
+        if !self.is_solved() && other.is_solved() {
             return Some(std::cmp::Ordering::Greater);
         }
         self.time.partial_cmp(&other.time)
@@ -116,12 +116,8 @@ mod tests {
 }
 
 impl SingleResult {
-    pub fn is_valid(&self) -> bool {
-        if let Some(Penalty::Dnf) = self.penalty {
-            false
-        } else {
-            true
-        }
+    pub fn is_solved(&self) -> bool {
+        !matches!(self.penalty, Some(Penalty::Dnf))
     }
 }
 

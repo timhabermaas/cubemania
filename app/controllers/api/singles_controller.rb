@@ -67,8 +67,9 @@ module Api
     def update
       single = current_user.singles.find params[:id]
       single.attributes = params[:single]
-      enqueue_record_job(current_user, @puzzle) if single.penalty_changed?
+      penalty_changed = single.penalty_changed?
       if single.save
+        enqueue_record_job(current_user, @puzzle) if penalty_changed
       else
         # TODO handle error case
       end
@@ -77,8 +78,9 @@ module Api
 
   private
     def enqueue_record_job(user, puzzle)
-      job = RecordCalculationJob.new(user.id, puzzle.id)
-      Delayed::Job.enqueue job unless job.exists?
+      ActiveRecord::Base.connection.execute("NOTIFY record_chan, '{\"user_id\": #{user.id}, \"puzzle_id\": #{puzzle.id}}'")
+      #job = RecordCalculationJob.new(user.id, puzzle.id)
+      #Delayed::Job.enqueue job unless job.exists?
     end
 
     def fetch_user
