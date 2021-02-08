@@ -56,6 +56,65 @@ impl Ord for SingleResult {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn single_ord_no_penalty() {
+        let a = SingleResult {
+            penalty: None,
+            time: 12,
+            comment: None,
+            id: 12,
+            created_at: NaiveDateTime::from_timestamp(100, 10),
+        };
+        let b = SingleResult {
+            penalty: None,
+            time: 13,
+            comment: None,
+            id: 12,
+            created_at: NaiveDateTime::from_timestamp(100, 10),
+        };
+        assert!(a < b);
+    }
+
+    #[test]
+    fn single_ord_one_penalty() {
+        let a = SingleResult {
+            penalty: Some(Penalty::Dnf),
+            time: 12,
+            comment: None,
+            id: 12,
+            created_at: NaiveDateTime::from_timestamp(100, 10),
+        };
+        let b = SingleResult {
+            penalty: None,
+            time: 13,
+            comment: None,
+            id: 12,
+            created_at: NaiveDateTime::from_timestamp(100, 10),
+        };
+        assert!(a > b);
+
+        let a = SingleResult {
+            penalty: None,
+            time: 12,
+            comment: None,
+            id: 12,
+            created_at: NaiveDateTime::from_timestamp(100, 10),
+        };
+        let b = SingleResult {
+            penalty: Some(Penalty::Dnf),
+            time: 13,
+            comment: None,
+            id: 12,
+            created_at: NaiveDateTime::from_timestamp(100, 10),
+        };
+        assert!(a < b);
+    }
+}
+
 impl SingleResult {
     pub fn is_valid(&self) -> bool {
         if let Some(Penalty::Dnf) = self.penalty {
