@@ -1708,6 +1708,7 @@ dependencies = [
  "regex",
  "rustc-serialize",
  "serde",
+ "serde_json",
  "sqlx",
  "tokio 0.3.7",
  "tracing",

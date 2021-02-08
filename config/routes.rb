@@ -7,8 +7,6 @@ end
 Cubemania::Application.routes.draw do
   root :to => 'homes#show'
 
-  match "/delayed_job" => DelayedJobWeb, :anchor => false
-
   namespace :api do
     resources :users
     resources :puzzles do

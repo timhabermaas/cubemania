@@ -35,11 +35,6 @@ class Record < ActiveRecord::Base
     end
   end
 
-  def self.remove!(user, puzzle, amount)
-    record = where(:user_id => user.id, :puzzle_id => puzzle.id, :amount => amount).first
-    record.destroy if record
-  end
-
   def self.grouped_by_puzzle_and_amount
     grouped_by_puzzles = all.group_by { |r| r.puzzle }
     grouped_by_puzzles.merge(grouped_by_puzzles) { |k, v| v = v.group_by { |r| r.amount }; v.merge(v) { |k, v| v.try(:first) } }

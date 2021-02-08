@@ -219,7 +219,7 @@ async fn main() -> std::io::Result<()> {
         jwt_secret: hmac_secret,
     };
 
-    let _worker = actix_rt::spawn(runner(pool));
+    let _worker = actix_rt::spawn(runner(pool.clone()));
 
     HttpServer::new(move || {
         App::new()

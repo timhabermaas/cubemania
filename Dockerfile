@@ -23,6 +23,3 @@ ADD Gemfile* /cubemania/
 RUN bundle install
 
 ADD . /cubemania
-
-# required for delayed job
-RUN mkdir -p tmp/pids

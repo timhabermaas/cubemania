@@ -44,16 +44,6 @@ services:
       - db
     volumes:
       - ./records:/home/rust/src/records
-  jobs:
-    build: .
-    command: ./start_jobs.sh
-    volumes:
-      - .:/cubemania
-    links:
-      - db
-    environment:
-      RAILS_ENV: production
-      DATABASE_URL: postgresql://postgres@db/cubemania_production
   web:
     build: .
     command: bundle exec unicorn -p 3000 -c ./config/unicorn.rb

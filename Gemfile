@@ -39,9 +39,6 @@ gem 'cancan'
 # Fixed version since newer versions don't support Ruby 1.9.
 gem 'jwt', '1.5.6'
 
-gem 'delayed_job_active_record'
-gem 'delayed_job_web'
-
 gem 'rabl', '0.6.10' # TODO there seems to be a bug with json roots and children
 
 gem 'unicorn'

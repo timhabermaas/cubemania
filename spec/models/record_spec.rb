@@ -143,30 +143,4 @@ describe Record do
       end
     end
   end
-
-  describe ".remove!" do
-    let(:user) { create :user }
-    let(:puzzle_1) { create :puzzle }
-    let(:puzzle_2) { create :puzzle }
-
-    before :each do
-      create :record, :user => user, :puzzle => puzzle_1, :amount => 1, :singles => build_list(:single, 1)
-      @record = create :record, :user => user, :puzzle => puzzle_1, :amount => 5, :singles => build_list(:single, 5)
-      create :record, :user => user, :puzzle => puzzle_1, :amount => 12, :singles => build_list(:single, 12)
-      create :record, :user => user, :puzzle => puzzle_2, :amount => 5, :singles => build_list(:single, 5)
-    end
-
-    it "removes the existing avg5 record for puzzle 2 and user 1" do
-      lambda {
-        Record.remove!(user, puzzle_1, 5)
-      }.should change(Record, :count).by(-1)
-      Record.exists?(@record).should == false
-    end
-
-    it "does nothing if the record doesn't exist" do
-      lambda {
-        Record.remove!(user, puzzle_2, 12)
-      }.should_not change(Record, :count)
-    end
-  end
 end

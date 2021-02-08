@@ -1,6 +1,5 @@
-use std::time::Duration;
-
-use regex::Regex;
+use serde::Deserialize;
+use sqlx::postgres::PgListener;
 
 // TODO: Explore something like anyhow/thiserror to make the entire thing more ergonomic. E.g. it's
 // tedious to manually add context to error messages.
@@ -17,26 +16,6 @@ impl From<sqlx::Error> for JobError {
 }
 
 #[tracing::instrument(skip(pool))]
-async fn poll_job(pool: &sqlx::PgPool) -> Result<bool, JobError> {
-    match crate::db::fetch_next_job(pool).await? {
-        Some(job) => {
-            tracing::info!("job found: {:?}", job);
-
-            // TODO: Wrap in transaction
-            let (user_id, puzzle_id) = extract_user_id_and_puzzle_id_from_job(&job)?;
-
-            handle_job(pool, user_id, puzzle_id).await?;
-
-            crate::db::remove_job(pool, job.id).await?;
-
-            // Returning true to indicate successful job handling => caller doesn't need to delay.
-            return Ok(true);
-        }
-        None => Ok(false),
-    }
-}
-
-#[tracing::instrument(skip(pool))]
 async fn handle_job(pool: &sqlx::PgPool, user_id: i32, puzzle_id: i32) -> Result<(), JobError> {
     // TODO: There's probably a race condition hiding here if the rails server
     // saves a new single which triggers a new record. Locking table?
@@ -48,54 +27,29 @@ async fn handle_job(pool: &sqlx::PgPool, user_id: i32, puzzle_id: i32) -> Result
     Ok(())
 }
 
-pub async fn runner(pool: sqlx::PgPool) {
-    loop {
-        match poll_job(&pool).await {
-            // If we found a job we don't wait, but keep polling.
-            Ok(true) => continue,
-            Ok(false) => {}
-            Err(e) => tracing::error!("Error while polling job: {:?}", e),
-        }
-        actix_rt::time::delay_for(Duration::from_secs(10)).await;
-    }
+#[derive(Deserialize, Debug)]
+struct RecordCalculationMessage {
+    user_id: i32,
+    puzzle_id: i32,
 }
 
-fn extract_user_id_and_puzzle_id_from_job(job: &crate::db::DbJob) -> Result<(i32, i32), JobError> {
-    lazy_static! {
-        static ref RE: Regex =
-            Regex::new(r"--- !ruby/struct:RecordCalculationJob\nuser_id: (\d+)\npuzzle_id: (\d+)")
-                .unwrap();
+pub async fn runner(pool: sqlx::PgPool) {
+    let mut listener = PgListener::connect_with(&pool)
+        .await
+        .expect("failed to connect to listener");
+    listener
+        .listen("record_chan")
+        .await
+        .expect("registering channel to listen on failed");
+
+    loop {
+        let notification = listener.recv().await.expect("listening failed");
+        let message: RecordCalculationMessage =
+            serde_json::from_str(notification.payload()).expect("failed to decode chan payload");
+        handle_job(&pool, message.user_id, message.puzzle_id)
+            .await
+            .expect("recalculating record failed");
     }
-    let handler = &job.handler;
-    let capture = RE.captures(&handler).ok_or(JobError::ParsingError {
-        context: handler.clone(),
-        message: format!("Couldn't match regex with {}", handler),
-    })?;
-    let user_id: i32 = capture
-        .get(1)
-        .ok_or(JobError::ParsingError {
-            context: handler.clone(),
-            message: "user_id not found".to_string(),
-        })?
-        .as_str()
-        .parse()
-        .map_err(|_| JobError::ParsingError {
-            context: handler.clone(),
-            message: "user_id must be a string".to_string(),
-        })?;
-    let puzzle_id: i32 = capture
-        .get(2)
-        .ok_or(JobError::ParsingError {
-            context: handler.clone(),
-            message: "puzzle_id not found".to_string(),
-        })?
-        .as_str()
-        .parse()
-        .map_err(|_| JobError::ParsingError {
-            context: handler.clone(),
-            message: "puzzle_id must be a string".to_string(),
-        })?;
-    Ok((user_id, puzzle_id))
 }
 
 #[tracing::instrument(skip(singles), fields(singles_count = singles.len()))]
@@ -105,7 +59,7 @@ fn calculate_records(singles: &[crate::db::SingleResult]) -> Vec<crate::db::Reco
     if let Some(single_record) =
         singles
             .iter()
-            .filter(|s| s.is_valid())
+            .filter(|s| s.is_solved())
             .min()
             .map(|s| crate::db::Record {
                 set_at: s.created_at,
@@ -140,7 +94,7 @@ enum AverageResult {
 }
 
 fn cubing_average(singles: &[crate::db::SingleResult]) -> AverageResult {
-    // Ensuring we have at least 3 singles makes the `unwrap` later safe.
+    // Ensuring we have at least 3 singles makes the `unwrap` below safe.
     if singles.len() < 3 {
         return AverageResult::Dnf;
     }
@@ -151,13 +105,13 @@ fn cubing_average(singles: &[crate::db::SingleResult]) -> AverageResult {
     // SAFETY: `unwrap` and slicing is safe since we guard against singles having less than 3
     // entries.
     let middle = &s[1..s.len() - 1];
-    if !middle.last().unwrap().is_valid() {
+    if !middle.last().unwrap().is_solved() {
         return AverageResult::Dnf;
     }
 
     let time: i64 = middle
         .iter()
-        .filter(|s| s.is_valid())
+        .filter(|s| s.is_solved())
         .map(|s| s.time as i64)
         .sum();
 
@@ -177,28 +131,25 @@ fn cubing_average(singles: &[crate::db::SingleResult]) -> AverageResult {
 
 #[cfg(test)]
 mod cubing_average_tests {
+    use crate::db::Penalty::*;
     use chrono::NaiveDateTime;
 
     use super::*;
 
-    fn build_singles(times: &[Option<i32>]) -> Vec<crate::db::SingleResult> {
+    fn build_singles(times: &[(i32, Option<crate::db::Penalty>)]) -> Vec<crate::db::SingleResult> {
         times
             .iter()
             .enumerate()
-            .map(|(i, t)| crate::db::SingleResult {
+            .map(|(i, (time, penalty))| crate::db::SingleResult {
                 created_at: NaiveDateTime::from_timestamp(100 + i as i64, 23),
-                comment: if t.is_some() {
+                comment: if penalty.is_none() {
                     Some(format!("{}", i))
                 } else {
                     None
                 },
                 id: i as i32,
-                time: t.unwrap_or(0),
-                penalty: if t.is_some() {
-                    None
-                } else {
-                    Some(crate::db::Penalty::Dnf)
-                },
+                time: *time,
+                penalty: penalty.clone(),
             })
             .collect()
     }
@@ -207,26 +158,35 @@ mod cubing_average_tests {
     fn too_few_singles() {
         assert_eq!(cubing_average(&vec![]), AverageResult::Dnf);
         assert_eq!(
-            cubing_average(&build_singles(&vec![Some(2)])),
+            cubing_average(&build_singles(&vec![(2, None)])),
             AverageResult::Dnf
         );
         assert_eq!(
-            cubing_average(&build_singles(&vec![Some(1), Some(2)])),
+            cubing_average(&build_singles(&vec![(1, None), (2, None)])),
             AverageResult::Dnf
         );
     }
 
     #[test]
     fn all_dnf() {
-        let singles = build_singles(&vec![None, None, None, None]);
+        let singles = build_singles(&vec![
+            (1, Some(Dnf)),
+            (1, Some(Dnf)),
+            (1, Some(Dnf)),
+            (1, Some(Dnf)),
+        ]);
         assert_eq!(cubing_average(&singles), AverageResult::Dnf);
     }
 
     #[test]
     fn some_valid_avg5() {
-        let singles = build_singles(&vec![Some(10), Some(100), Some(32), None, Some(42)]);
-        // TODO: This test is pretty useless since it uses the custom eq instance which means we're
-        // only comparing .time.
+        let singles = build_singles(&vec![
+            (10, None),
+            (100, None),
+            (32, None),
+            (10, Some(Dnf)),
+            (42, None),
+        ]);
         if let AverageResult::Success(record) = cubing_average(&singles) {
             assert_eq!(record.time, 58);
             assert_eq!(record.amount, 5);
@@ -243,9 +203,13 @@ mod cubing_average_tests {
 
     #[test]
     fn some_avg5_with_too_many_dnfs() {
-        let singles = build_singles(&vec![None, Some(100), Some(32), None, Some(42)]);
-        // TODO: This test is pretty useless since it uses the custom eq instance which means we're
-        // only comparing .time.
+        let singles = build_singles(&vec![
+            (1, Some(Dnf)),
+            (100, None),
+            (32, None),
+            (2, Some(Dnf)),
+            (42, None),
+        ]);
         assert_eq!(cubing_average(&singles), AverageResult::Dnf);
     }
 }

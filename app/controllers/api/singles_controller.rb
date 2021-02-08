@@ -79,8 +79,6 @@ module Api
   private
     def enqueue_record_job(user, puzzle)
       ActiveRecord::Base.connection.execute("NOTIFY record_chan, '{\"user_id\": #{user.id}, \"puzzle_id\": #{puzzle.id}}'")
-      #job = RecordCalculationJob.new(user.id, puzzle.id)
-      #Delayed::Job.enqueue job unless job.exists?
     end
 
     def fetch_user
