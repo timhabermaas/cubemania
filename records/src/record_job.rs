@@ -102,13 +102,19 @@ fn extract_user_id_and_puzzle_id_from_job(job: &crate::db::DbJob) -> Result<(i32
 fn calculate_records(singles: &[crate::db::SingleResult]) -> Vec<crate::db::Record> {
     let mut records = vec![];
 
-    if let Some(single_record) = singles.iter().min().map(|s| crate::db::Record {
-        set_at: s.created_at,
-        amount: 1,
-        time: s.time,
-        comment: s.comment.clone(),
-        single_ids: vec![s.id],
-    }) {
+    if let Some(single_record) =
+        singles
+            .iter()
+            .filter(|s| s.is_valid())
+            .min()
+            .map(|s| crate::db::Record {
+                set_at: s.created_at,
+                amount: 1,
+                time: s.time,
+                comment: s.comment.clone(),
+                single_ids: vec![s.id],
+            })
+    {
         records.push(single_record);
     }
 
