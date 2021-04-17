@@ -11,6 +11,7 @@ services:
     build:
       context: .
       dockerfile: nginx/Dockerfile
+    image: timhabermaas/cubemania_nginx
     depends_on:
       - records
       - web
@@ -26,6 +27,7 @@ services:
     build:
       context: ./records
       dockerfile: Dockerfile
+    image: timhabermaas/cubemania_records
     environment:
       RUST_LOG: info
       RUST_BACKTRACE: 1
@@ -46,6 +48,7 @@ services:
       - ./records:/home/rust/src/records
   web:
     build: .
+    image: timhabermaas/cubemania_rails
     command: bundle exec unicorn -p 3000 -c ./config/unicorn.rb
     volumes:
       - .:/cubemania
@@ -67,6 +70,7 @@ services:
     build:
       context: backup
       dockerfile: Dockerfile
+    image: timhabermaas/cubemania_backup
     volumes:
       - ~/.tarsnap:/root/keys
       - ~/.tarsnap/cache:/root/tarsnap-cache
