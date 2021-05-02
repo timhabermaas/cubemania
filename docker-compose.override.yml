@@ -1,0 +1,18 @@
+version: "3.7"
+services:
+  nginx:
+    volumes:
+      - ./public:/home/assets
+      - ./nginx/empty_ssl.conf:/etc/nginx/ssl.conf
+    ports:
+      - "443:443"
+      - "8080:80"
+  records:
+    ports:
+      - "8081:8081"
+  web:
+    ports:
+      - "3000:3000"
+  db:
+    ports:
+      - "5432:5432"

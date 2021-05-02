@@ -2,8 +2,6 @@ version: "3.7"
 services:
   db:
     image: postgres:9.5.3
-    ports:
-      - "5432:5432"
     restart: always
     volumes:
       - postgres-volume:/var/lib/postgresql/data
@@ -17,14 +15,6 @@ services:
     depends_on:
       - records
       - web
-    ports:
-      - "443:443"
-      - "8080:80"
-    volumes:
-      - ./public:/home/assets
-      # Replace ssl config with fake to prevent requiring certificates during
-      # development.
-      - ./nginx/empty_ssl.conf:/etc/nginx/ssl.conf
   records:
     build:
       context: ./records
@@ -34,10 +24,8 @@ services:
     environment:
       RUST_LOG: info
       RUST_BACKTRACE: 1
-      HMAC_SECRET: someUnsecureSecret
+      HMAC_SECRET: ${HMAC_SECRET}
       DATABASE_URL: postgresql://postgres@db/cubemania_production
-    ports:
-      - "8081:8081"
     depends_on:
       - db
   records-build:
@@ -56,15 +44,13 @@ services:
     command: bundle exec unicorn -p 3000 -c ./config/unicorn.rb
     volumes:
       - .:/cubemania
-    ports:
-      - "3000:3000"
     depends_on:
       - db
       - cache
     environment:
       RAILS_ENV: production
       DATABASE_URL: postgresql://postgres@db/cubemania_production
-      HMAC_SECRET: someUnsecureSecret
+      HMAC_SECRET: ${HMAC_SECRET}
 
   cache:
     image: memcached:alpine

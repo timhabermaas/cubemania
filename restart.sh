@@ -2,5 +2,5 @@
 
 set -e
 
-docker-compose down
-docker-compose up -d nginx
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml down
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d nginx
