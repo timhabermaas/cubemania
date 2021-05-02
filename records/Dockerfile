@@ -1,4 +1,4 @@
-FROM ekidd/rust-musl-builder:1.49.0 as builder
+FROM ekidd/rust-musl-builder:1.51.0 as builder
 
 RUN USER=root cargo new --bin records
 WORKDIR ./records
