@@ -4,6 +4,7 @@ services:
     image: postgres:9.5.3
     ports:
       - "5432:5432"
+    restart: always
     volumes:
       - postgres-volume:/var/lib/postgresql/data
   nginx:
@@ -12,6 +13,7 @@ services:
       context: .
       dockerfile: nginx/Dockerfile
     image: timhabermaas/cubemania_nginx
+    restart: always
     depends_on:
       - records
       - web
@@ -28,6 +30,7 @@ services:
       context: ./records
       dockerfile: Dockerfile
     image: timhabermaas/cubemania_records
+    restart: always
     environment:
       RUST_LOG: info
       RUST_BACKTRACE: 1
@@ -49,6 +52,7 @@ services:
   web:
     build: .
     image: timhabermaas/cubemania_rails
+    restart: always
     command: bundle exec unicorn -p 3000 -c ./config/unicorn.rb
     volumes:
       - .:/cubemania
@@ -64,6 +68,7 @@ services:
 
   cache:
     image: memcached:alpine
+    restart: always
     command: memcached -m 64
 
   backup:
@@ -71,12 +76,12 @@ services:
       context: backup
       dockerfile: Dockerfile
     image: timhabermaas/cubemania_backup
-    volumes:
-      - ~/.tarsnap:/root/keys
-      - ~/.tarsnap/cache:/root/tarsnap-cache
-      - .:/cubemania
     links:
       - db
+    environment:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
 
 volumes:
   postgres-volume:
