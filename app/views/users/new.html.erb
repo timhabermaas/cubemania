@@ -1,6 +1,6 @@
 <h1>Register</h1>
 
-<%= semantic_form_for @user do |form| %>
+<%= semantic_form_for @user, {url: register_path} do |form| %>
   <%= form.inputs do %>
     <%= form.input :name %>
     <%= form.input :email %>

@@ -5,6 +5,12 @@ services:
     restart: always
     volumes:
       - postgres-volume:/var/lib/postgresql/data
+  frontend:
+    restart: always
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: timhabermaas/cubemania_frontend
   nginx:
     restart: always
     build:
@@ -16,6 +22,7 @@ services:
       - records
       - web
       - backup
+      - frontend
   records:
     build:
       context: ./records
@@ -29,15 +36,6 @@ services:
       DATABASE_URL: postgresql://postgres@db/cubemania_production
     depends_on:
       - db
-  records-build:
-    build:
-      context: ./records
-      dockerfile: Dockerfile
-      target: builder
-    depends_on:
-      - db
-    volumes:
-      - ./records:/home/rust/src/records
   web:
     build: .
     image: timhabermaas/cubemania_rails
@@ -52,6 +50,11 @@ services:
       RAILS_ENV: production
       DATABASE_URL: postgresql://postgres@db/cubemania_production
       HMAC_SECRET: ${HMAC_SECRET}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      NEW_RELIC_ID: ${NEW_RELIC_ID}
+      NEW_RELIC_APP_NAME: ${NEW_RELIC_APP_NAME-do}
+      NEW_RELIC_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY}
+      SECRET_TOKEN: ${SECRET_TOKEN}
 
   cache:
     image: memcached:alpine

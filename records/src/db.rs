@@ -136,6 +136,68 @@ pub async fn fetch_singles(
     .await
 }
 
+#[derive(sqlx::FromRow, Debug, Serialize)]
+pub struct SimpleUser {
+    singles_count: i32,
+    name: String,
+    slug: String,
+}
+
+#[derive(Serialize)]
+pub struct Paginated<T, I> {
+    pub items: Vec<T>,
+    pub page: I,
+    pub item_count: usize,
+    pub next_page: Option<I>,
+}
+
+#[tracing::instrument(skip(pool))]
+pub async fn fetch_users(
+    pool: &PgPool,
+    // TODO: Switch to `after` based pagination to avoid scanning the entire table
+    page: Option<u32>,
+    limit: u32,
+    search_term: Option<String>,
+) -> Result<Paginated<SimpleUser, u32>, sqlx::Error> {
+    let page = page.unwrap_or(0);
+
+    let mut users: Vec<SimpleUser> = sqlx::query_as(
+        "SELECT id, name, slug, singles_count FROM users WHERE lower(name) LIKE $3 ORDER BY singles_count DESC LIMIT $1 OFFSET $2",
+    )
+    // Intentionally overfetching to determine whether there are more results to be returned.
+    .bind(limit + 1)
+    .bind(page * limit)
+    .bind(search_term.map(|name| format!("%{}%", name.to_lowercase())).unwrap_or("%".to_string()))
+    .fetch_all(pool)
+    .await?;
+
+    let next_page = if users.len() as u32 == limit + 1 {
+        // Remove last element we overfetched earlier.
+        users.pop();
+        Some(page + 1)
+    } else {
+        None
+    };
+
+    return Ok(Paginated {
+        item_count: users.len(),
+        items: users,
+        page,
+        next_page,
+    });
+}
+
+pub async fn fetch_max_singles_count(pool: &PgPool) -> Result<u64, sqlx::Error> {
+    let foo: Option<(i32,)> = sqlx::query_as("SELECT MAX(singles_count) FROM users")
+        .fetch_optional(pool)
+        .await?;
+    if let Some((count,)) = foo {
+        Ok(count as u64)
+    } else {
+        Ok(0)
+    }
+}
+
 #[derive(Debug)]
 pub struct Record {
     pub set_at: NaiveDateTime,
@@ -237,4 +299,47 @@ pub async fn remove_job(pool: &sqlx::PgPool, id: i32) -> Result<(), sqlx::Error>
         .execute(pool)
         .await
         .map(|_| ())
+}
+
+pub async fn find_simple_user(
+    pool: &sqlx::PgPool,
+    user_id: i32,
+) -> Result<Option<SimpleUser>, sqlx::Error> {
+    sqlx::query_as("SELECT name, slug, singles_count from users WHERE id = $1")
+        .bind(user_id)
+        .fetch_optional(pool)
+        .await
+}
+
+#[derive(Debug, Serialize, sqlx::FromRow)]
+pub struct Post {
+    id: i32,
+    title: String,
+    content: String,
+    comments_count: i64,
+}
+
+pub async fn find_announcement(pool: &sqlx::PgPool) -> Result<Option<Post>, sqlx::Error> {
+    let post: Option<(i32, String, String)> =
+        sqlx::query_as("SELECT id, title, content FROM posts ORDER BY created_at DESC LIMIT 1")
+            .fetch_optional(pool)
+            .await?;
+
+    if let Some(post) = post {
+        let comment_result: Option<(i64,)> = sqlx::query_as(
+            "SELECT COUNT(*) FROM comments WHERE commentable_id = $1 AND commentable_type = 'Post'",
+        )
+        .bind(post.0)
+        .fetch_optional(pool)
+        .await?;
+        let comments_count = comment_result.map(|x| x.0).unwrap_or(0);
+        Ok(Some(Post {
+            id: post.0,
+            content: post.2,
+            title: post.1,
+            comments_count,
+        }))
+    } else {
+        Ok(None)
+    }
 }

@@ -1,0 +1,31 @@
+body {
+  min-width: $width + 32px;
+  font-size: 16px;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+a, a:visited {
+  text-decoration: none;
+}
+a:hover, a:active {
+  text-decoration: none;
+}
+
+div.clear {
+  @include clear-fix;
+}
+
+::selection {
+  color: #2f2f2f;
+  background-color: $yellow;
+}
+::-moz-selection {
+  color: #2f2f2f;
+  background-color: $yellow;
+}

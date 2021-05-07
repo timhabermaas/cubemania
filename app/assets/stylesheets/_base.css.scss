@@ -1,7 +1,10 @@
 body {
   min-width: $width + 32px;
   font-size: 16px;
-  font-family: Verdana, Arial, Helvetica, sans-serif
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 a, a:visited {

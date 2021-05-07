@@ -1,0 +1,43 @@
+#record header {
+  padding-top: 3px;
+  position: relative;
+  margin-bottom: 2em;
+  small {
+    display: block;
+  }
+  h2 {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  h2, small {
+    margin-left: 70px;
+  }
+  .puzzle {
+    @include puzzle-image;
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+  .kind {
+    @include kind-image;
+    text-indent: -9999px;
+  }
+}
+
+#singles, table.singles {
+  td {
+    padding: 0.5em;
+    small {
+      white-space: normal;
+    }
+  }
+}
+#singles {
+  width: 100%;
+  margin-bottom: 1em;
+}
+table.singles {
+  width: 900px;
+  margin-top: 1em;
+  margin-bottom: 2em;
+}

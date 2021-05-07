@@ -1,0 +1,38 @@
+article.announcement {
+  background-color: $darkblue;
+  padding: 0.5em;
+  line-height: 1.5;
+  margin-bottom: 2em;
+}
+
+p.introduction {
+  font-size: 1.25em;
+  text-align: center;
+  margin-bottom: 1.5em;
+}
+
+#features {
+  text-align: center;
+  img {
+    border: 2px solid $darkblue;
+    margin-bottom: 0.25em;
+  }
+  a:hover {
+    background: none;
+    img {
+      border: 2px solid $yellow;
+    }
+  }
+  li {
+    float: left;
+    display: block;
+    width: 464px;
+    margin-bottom: 1.5em;
+  }
+  li.odd {
+    margin-right: 32px;
+  }
+}
+#features:after {
+  @include clear-fix;
+}

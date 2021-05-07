@@ -1,0 +1,41 @@
+article.post {
+  .text {
+    margin-bottom: 1em;
+  }
+  .meta {
+    text-align: center;
+    margin: 2em 0;
+  }
+}
+div.comments {
+  background-color: $darkblue;
+  padding: 1em;
+  ol.comments > li {
+    margin-bottom: 1em;
+  }
+  .comment cite {
+    display: block;
+    font-size: 1.25em;
+    margin-bottom: 0.125em;
+  }
+  .comment small {
+    display: block;
+    margin-bottom: 0.25em;
+  }
+  form li {
+    margin-bottom: 1em;
+  }
+  label {
+    display: none;
+  }
+  textarea {
+    width: 99%;
+    height: 8em;
+  }
+  p.inline-errors {
+    padding-left: 0;
+  }
+  input[type=submit] {
+    margin-left: 0;
+  }
+}

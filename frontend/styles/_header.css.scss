@@ -1,0 +1,48 @@
+header.main {
+  height: 100px;
+  flex: none;
+  background: url("../static/images/header.gif") repeat-x;
+
+  div.center {
+    @include center($width - 32px);
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  h1 {
+    float: left;
+    a {
+      text-indent: -9999px;
+      display: block;
+      height: 100px;
+      width: 295px;
+      background: url("../static/images/logo.gif") no-repeat left center;
+    }
+  }
+
+  q {
+    float: right;
+    margin-top: 42px;
+    color: white;
+    /*background-color: #f0f;*/
+    padding: 0 21px 0 21px;
+    position: relative;
+  }
+  q:before,
+  q:after {
+    content: '"';
+    width: 18px;
+    display: block;
+    text-indent: -9999px;
+    position: absolute;
+  }
+  q:before {
+    left: -2px;
+    background: url("../static/images/open-quote.gif") no-repeat top left;
+  }
+  q:after {
+    right: -2px;
+    bottom: -2px;
+    background: url("../static/images/close-quote.gif") no-repeat bottom right;
+  }
+}
