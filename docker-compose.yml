@@ -52,6 +52,11 @@ services:
       RAILS_ENV: production
       DATABASE_URL: postgresql://postgres@db/cubemania_production
       HMAC_SECRET: ${HMAC_SECRET}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      NEW_RELIC_ID: ${NEW_RELIC_ID}
+      NEW_RELIC_APP_NAME: ${NEW_RELIC_APP_NAME-do}
+      NEW_RELIC_LICENSE_KEY: ${NEW_RELIC_LICENSE_KEY}
+      SECRET_TOKEN: ${SECRET_TOKEN}
 
   cache:
     image: memcached:alpine
