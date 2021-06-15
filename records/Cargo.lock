@@ -897,16 +897,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "gethostname"
-version = "0.2.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e692e296bfac1d2533ef168d0b60ff5897b8b70a4009276834014dd8924cc028"
-dependencies = [
- "libc",
- "winapi 0.3.9",
-]
-
-[[package]]
 name = "getrandom"
 version = "0.1.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1661,8 +1651,10 @@ version = "0.1.0"
 dependencies = [
  "actix-rt",
  "actix-web",
+ "base64 0.13.0",
  "chrono",
  "csv",
+ "futures-util",
  "jsonwebtoken",
  "regex",
  "serde",
@@ -1670,7 +1662,6 @@ dependencies = [
  "sqlx",
  "tracing",
  "tracing-actix-web",
- "tracing-bunyan-formatter",
  "tracing-log",
  "tracing-subscriber",
 ]
@@ -2372,23 +2363,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
-]
-
-[[package]]
-name = "tracing-bunyan-formatter"
-version = "0.1.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "06718867c20ea03700d41a9413610cccf5d772caea792f34cc73cdd43f0e14a6"
-dependencies = [
- "chrono",
- "gethostname",
- "log",
- "serde",
- "serde_json",
- "tracing",
- "tracing-core",
- "tracing-log",
- "tracing-subscriber",
 ]
 
 [[package]]

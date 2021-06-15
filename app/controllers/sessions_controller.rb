@@ -17,6 +17,15 @@ class SessionsController < ApplicationController
     end
   end
 
+  def show
+    if self.current_user
+      payload = { :user_id => current_user.id, :exp => Time.now.to_i + 30 * 3600 }
+      render :json => { :user_id => self.current_user, :token => JWT.encode(payload, ENV.fetch("HMAC_SECRET"), "HS256")  }
+    else
+      render :json => { :error => "unauthorized" }, :status => :not_found
+    end
+  end
+
   def destroy
     self.current_user = nil
     flash[:notice] = "You are now logged out."

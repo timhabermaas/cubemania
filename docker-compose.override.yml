@@ -1,18 +1,39 @@
 version: "3.7"
 services:
+  frontend:
+    build:
+      target: dev-runner
+    command: ["yarn", "dev", "-p", "4000"]
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules/
+    ports:
+      - "4000:4000"
   nginx:
     volumes:
       - ./public:/home/assets
       - ./nginx/empty_ssl.conf:/etc/nginx/ssl.conf
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
       - "443:443"
       - "8080:80"
   records:
     ports:
       - "8081:8081"
+  records-build:
+    build:
+      context: ./records
+      dockerfile: Dockerfile
+      target: builder
+    depends_on:
+      - db
+    volumes:
+      - ./records:/home/rust/src/records
   web:
     ports:
       - "3000:3000"
+    environment:
+      RAILS_ENV: development
   db:
     ports:
       - "5432:5432"

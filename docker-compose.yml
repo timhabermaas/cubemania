@@ -5,6 +5,12 @@ services:
     restart: always
     volumes:
       - postgres-volume:/var/lib/postgresql/data
+  frontend:
+    restart: always
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: timhabermaas/cubemania_frontend
   nginx:
     restart: always
     build:
@@ -16,6 +22,7 @@ services:
       - records
       - web
       - backup
+      - frontend
   records:
     build:
       context: ./records
@@ -29,15 +36,6 @@ services:
       DATABASE_URL: postgresql://postgres@db/cubemania_production
     depends_on:
       - db
-  records-build:
-    build:
-      context: ./records
-      dockerfile: Dockerfile
-      target: builder
-    depends_on:
-      - db
-    volumes:
-      - ./records:/home/rust/src/records
   web:
     build: .
     image: timhabermaas/cubemania_rails

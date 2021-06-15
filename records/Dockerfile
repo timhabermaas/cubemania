@@ -1,16 +1,15 @@
+# syntax=docker/dockerfile:experimental
+
 FROM ekidd/rust-musl-builder:1.51.0 as builder
 
-RUN USER=root cargo new --bin records
-WORKDIR ./records
-COPY ./Cargo.lock ./Cargo.lock
-COPY ./Cargo.toml ./Cargo.toml
-RUN cargo build --release
-RUN rm src/*.rs
+RUN mkdir /home/rust/records
+WORKDIR /home/rust/records
 
-ADD . ./
+COPY --chown=rust:rust . ./
 
-RUN rm target/x86_64-unknown-linux-musl/release/deps/records*
-RUN cargo build --release
+RUN --mount=type=cache,target=/home/rust/.cargo/registry,uid=1000,gid=1000 \
+    --mount=type=cache,target=/home/rust/records/target,uid=1000,gid=1000 \
+    cargo build --release && cp target/x86_64-unknown-linux-musl/release/records ./records
 
 FROM alpine:latest
 
@@ -28,7 +27,7 @@ RUN apk update \
     && apk add --no-cache ca-certificates tzdata \
     && rm -rf /var/cache/apk/*
 
-COPY --from=builder /home/rust/src/records/target/x86_64-unknown-linux-musl/release/records ${APP}/records
+COPY --from=builder /home/rust/records/records ${APP}/records
 
 RUN chown -R $APP_USER:$APP_USER ${APP}
 USER $APP_USER

@@ -1,0 +1,14 @@
+#loading {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 50%;
+  background-color: $yellow;
+  width: 80px;
+  margin-left: -40px;
+  padding: 0.4em;
+  padding-top: 0.25em;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.9);
+}

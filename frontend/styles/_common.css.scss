@@ -1,0 +1,37 @@
+$width: 960px;
+$yellow: #df0;
+$yellow_hover: #ce0;
+$blue: #5c7da0;
+$darkblue: #517397;
+$lightblue: #8ba4c0;
+$greyblue: #b5cadf;
+
+@mixin center($width) {
+  width: $width;
+  margin: 0 auto;
+}
+
+@mixin clear-fix {
+  content: "";
+  visibility: hidden;
+  display: block;
+  clear: both;
+}
+
+@mixin puzzle-image {
+  width: 50px;
+  height: 50px;
+  position: relative;
+  background-image: url("../static/images/puzzles.png");
+  background-repeat: no-repeat;
+}
+
+@mixin kind-image {
+  width: 25px;
+  height: 25px;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background-image: url("../static/images/kinds.png");
+  background-repeat: no-repeat;
+}

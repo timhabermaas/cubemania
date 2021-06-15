@@ -1,0 +1,30 @@
+//= require jquery.fancybox
+
+@import "styles/_reset.css.scss";
+@import "styles/_common.css.scss";
+@import "styles/_base.css.scss";
+@import "styles/_header.css.scss";
+@import "styles/_navigation.css.scss";
+@import "styles/_subnavigation.css.scss";
+@import "styles/_notice.css.scss";
+@import "styles/token-input-facebook.css.scss";
+@import "styles/_form.css.scss";
+@import "styles/_content.css.scss";
+@import "styles/_footer.css.scss";
+@import "styles/_loading.css.scss";
+
+/* lol */
+@for $i from 0 through 20 {
+  .puzzle.pos#{$i}, .puzzle-image.pos#{$i} {
+    background-position: $i * -50px 0px;
+  }
+  #puzzles .puzzle.pos#{$i} {
+    background-position: $i * -50px -50px;
+  }
+  #puzzles a:hover .puzzle.pos#{$i}, #puzzles li.checked a .puzzle.pos#{$i} {
+    background-position: $i * -50px 0px;
+  }
+  .kind.pos#{$i}, .kind-image.pos#{$i} {
+    background-position: $i * -25px 0px;
+  }
+}
