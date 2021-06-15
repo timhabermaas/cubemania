@@ -2,22 +2,18 @@ version: "3.7"
 services:
   db:
     image: postgres:9.5.3
-    restart: always
     volumes:
       - postgres-volume:/var/lib/postgresql/data
   frontend:
-    restart: always
     build:
       context: ./frontend
       dockerfile: Dockerfile
     image: timhabermaas/cubemania_frontend
   nginx:
-    restart: always
     build:
       context: .
       dockerfile: nginx/Dockerfile
     image: timhabermaas/cubemania_nginx
-    restart: always
     depends_on:
       - records
       - web
@@ -28,7 +24,6 @@ services:
       context: ./records
       dockerfile: Dockerfile
     image: timhabermaas/cubemania_records
-    restart: always
     environment:
       RUST_LOG: info
       RUST_BACKTRACE: 1
@@ -39,7 +34,6 @@ services:
   web:
     build: .
     image: timhabermaas/cubemania_rails
-    restart: always
     command: bundle exec unicorn -p 3000 -c ./config/unicorn.rb
     volumes:
       - .:/cubemania
@@ -58,7 +52,6 @@ services:
 
   cache:
     image: memcached:alpine
-    restart: always
     command: memcached -m 64
 
   backup:

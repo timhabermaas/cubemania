@@ -1,11 +1,23 @@
 version: "3.7"
 services:
+  db:
+    restart: always
   frontend:
     build:
       target: prod-runner
+    restart: always
   nginx:
+    restart: always
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
     ports:
       - "443:443"
       - "80:80"
+  records:
+    restart: always
+  web:
+    restart: always
+  cache:
+    restart: always
+  backup:
+    restart: always
