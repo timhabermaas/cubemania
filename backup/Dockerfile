@@ -1,4 +1,4 @@
-FROM alpine:3.4
+FROM alpine:3.15
 
 RUN apk --update --upgrade add postgresql python3 py-pip groff less && rm -rf /var/cache/apk/*
 RUN pip install awscli
