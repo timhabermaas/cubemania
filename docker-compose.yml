@@ -1,9 +1,11 @@
 version: "3.7"
 services:
   db:
-    image: postgres:9.5.3
+    image: postgres:13.5-alpine3.15
     volumes:
       - postgres-volume:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?psql password missing}
   frontend:
     build:
       context: ./frontend
@@ -28,7 +30,7 @@ services:
       RUST_LOG: info
       RUST_BACKTRACE: 1
       HMAC_SECRET: ${HMAC_SECRET}
-      DATABASE_URL: postgresql://postgres@db/cubemania_production
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@db/cubemania_production
     depends_on:
       - db
   web:
@@ -42,7 +44,7 @@ services:
       - cache
     environment:
       RAILS_ENV: production
-      DATABASE_URL: postgresql://postgres@db/cubemania_production
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@db/cubemania_production
       HMAC_SECRET: ${HMAC_SECRET}
       EMAIL_PASSWORD: ${EMAIL_PASSWORD}
       NEW_RELIC_ID: ${NEW_RELIC_ID}
