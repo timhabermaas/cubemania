@@ -2,7 +2,7 @@ nav.main {
   flex: none;
 
   border-top: 1px solid $yellow;
-  background: url("../static/images/navigation.gif") repeat-x;
+  background: url("../public/static/images/navigation.gif") repeat-x;
   overflow: hidden;
   ul {
     @include center($width);
@@ -22,7 +22,7 @@ nav.main {
     li a:hover,
     li.selected a {
       color: #202020;
-      background: $yellow url("../static/images/item.gif") repeat-x bottom;
+      background: $yellow url("../public/static/images/item.gif") repeat-x bottom;
     }
     li.session.selected a,
     li.session a:hover {

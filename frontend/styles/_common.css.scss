@@ -22,7 +22,7 @@ $greyblue: #b5cadf;
   width: 50px;
   height: 50px;
   position: relative;
-  background-image: url("../static/images/puzzles.png");
+  background-image: url("../public/static/images/puzzles.png");
   background-repeat: no-repeat;
 }
 
@@ -32,6 +32,6 @@ $greyblue: #b5cadf;
   position: absolute;
   right: 0;
   bottom: 0;
-  background-image: url("../static/images/kinds.png");
+  background-image: url("../public/static/images/kinds.png");
   background-repeat: no-repeat;
 }

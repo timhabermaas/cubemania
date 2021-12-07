@@ -1,7 +1,7 @@
 header.main {
   height: 100px;
   flex: none;
-  background: url("../static/images/header.gif") repeat-x;
+  background: url("../public/static/images/header.gif") repeat-x;
 
   div.center {
     @include center($width - 32px);
@@ -16,7 +16,7 @@ header.main {
       display: block;
       height: 100px;
       width: 295px;
-      background: url("../static/images/logo.gif") no-repeat left center;
+      background: url("../public/static/images/logo.gif") no-repeat left center;
     }
   }
 
@@ -38,11 +38,11 @@ header.main {
   }
   q:before {
     left: -2px;
-    background: url("../static/images/open-quote.gif") no-repeat top left;
+    background: url("../public/static/images/open-quote.gif") no-repeat top left;
   }
   q:after {
     right: -2px;
     bottom: -2px;
-    background: url("../static/images/close-quote.gif") no-repeat bottom right;
+    background: url("../public/static/images/close-quote.gif") no-repeat bottom right;
   }
 }

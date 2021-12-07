@@ -3,7 +3,7 @@ div.fancybox-inner {
   flex: 1 1 0%;
 
   color: white;
-  background: #5c7da0 url("../static/images/content.gif") repeat-x;
+  background: #5c7da0 url("../public/static/images/content.gif") repeat-x;
   .center {
     @include center($width);
     padding: 32px 16px;

@@ -1,5 +1,5 @@
 div.flash {
-  background: #e4ff33 url("../static/images/notice.gif") top repeat-x;
+  background: #e4ff33 url("../public/static/images/notice.gif") top repeat-x;
   position: relative;
   p {
     color: #2f2f2f;
@@ -28,7 +28,7 @@ div.flash {
     top: 50%;
     margin-top: -10px;
     text-indent: -9999px;
-    background: $yellow url("../static/images/close_button.gif") center
+    background: $yellow url("../public/static/images/close_button.gif") center
       no-repeat;
   }
   a.close:hover {
