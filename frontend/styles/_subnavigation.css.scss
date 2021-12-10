@@ -28,6 +28,8 @@
   background: #5d5d5d url("../public/static/images/puzzles.gif") repeat-x;
   ul {
     position: relative;
+    transition-property: left;
+    transition-duration: 0.4s;
   }
   li ul {
     position: static;

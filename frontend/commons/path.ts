@@ -13,3 +13,18 @@ export const homePath: string = "/";
 export function postPath(postId: number): string {
   return `/posts/${postId}#comments`;
 }
+
+export function recordsPath(
+  puzzleSlug: string,
+  page?: number,
+  type?: string
+): string {
+  const queryParam = new URLSearchParams({});
+  if (page !== undefined) {
+    queryParam.append("page", page.toString());
+  }
+  if (type !== undefined) {
+    queryParam.append("type", type);
+  }
+  return `/puzzles/${puzzleSlug}/records?${queryParam}`;
+}

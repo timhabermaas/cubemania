@@ -8,6 +8,7 @@ import { assertExhausted } from "../commons/types/assertions";
 
 interface LayoutProps {
   jwtToken?: string;
+  puzzleNav?: JSX.Element;
   page: Page;
 }
 
@@ -37,6 +38,7 @@ export const Layout: React.FC<LayoutProps> = (props) => {
         <title>{pageTitle(props.page)}</title>
       </Head>
       <Header jwtToken={props.jwtToken} page={props.page} />
+      {props.puzzleNav}
       <Flash />
       <section id="content">
         <div className="center">{props.children}</div>

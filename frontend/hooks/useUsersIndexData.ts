@@ -1,11 +1,5 @@
 import { InfiniteData, useInfiniteQuery, useQuery } from "react-query";
-
-interface PaginatedResponse<T> {
-  items: Array<T>;
-  page: number;
-  item_count: number;
-  next_page: number | null;
-}
+import { PaginatedResponse } from "../commons/types/PaginatedResponse";
 
 interface SimpleUser {
   name: string;
@@ -59,7 +53,7 @@ export function useUsersIndexData({
     Error
   >(
     ["users", searchTerm],
-    async ({ pageParam = 0 }) => {
+    async ({ pageParam = 1 }) => {
       const queryParam = new URLSearchParams({
         page: pageParam,
       });
