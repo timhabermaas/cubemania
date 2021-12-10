@@ -3,7 +3,7 @@ use serde::Serialize;
 use sqlx::PgPool;
 
 #[derive(sqlx::Type, Debug, Serialize, Clone)]
-#[sqlx(rename = "varchar")]
+#[sqlx(type_name = "varchar")]
 pub enum Penalty {
     #[sqlx(rename = "plus2")]
     #[serde(rename = "PLUS2")]

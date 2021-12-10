@@ -252,7 +252,6 @@ fn parse_query_string(query_string: &str) -> HashMap<String, String> {
 impl FromRequest for LoggedInUser {
     type Error = AppError;
     type Future = Ready<Result<Self, Self::Error>>;
-    type Config = ();
 
     fn from_request(req: &HttpRequest, payload: &mut dev::Payload) -> Self::Future {
         let session = UserSession::from_request(req, payload).into_inner();
@@ -279,7 +278,6 @@ impl FromRequest for LoggedInUser {
 impl FromRequest for UserSession {
     type Error = AppError;
     type Future = Ready<Result<Self, Self::Error>>;
-    type Config = ();
 
     fn from_request(req: &HttpRequest, _payload: &mut dev::Payload) -> Self::Future {
         let app_state = req.app_data::<web::Data<AppState>>();
@@ -359,12 +357,12 @@ async fn singles_csv(
     let csv = create_csv_from_singles(&singles).expect("should never fail");
 
     Ok(HttpResponse::Ok()
-        .header(
+        .append_header((
             "Content-Disposition",
             "attachment; filename=\"singles.csv\"",
-        )
-        .header("Content-Type", "text/csv")
-        //.header("Content-Type", "text/plain")
+        ))
+        .append_header(("Content-Type", "text/csv"))
+        //.append_header(("Content-Type", "text/plain"))
         .body(csv))
 }
 
@@ -447,8 +445,8 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(move || {
         App::new()
-            .wrap(TracingLogger)
-            .data(app_state.clone())
+            .wrap(TracingLogger::default())
+            .app_data(web::Data::new(app_state.clone()))
             .route("/api/singles.csv", web::get().to(singles_csv))
             .route("/api/me", web::get().to(me_api))
             .route(
