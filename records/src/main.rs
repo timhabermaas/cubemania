@@ -9,6 +9,7 @@ use actix_web::{
     HttpServer, Responder,
 };
 use chrono::{DateTime, NaiveDateTime, Utc};
+use futures::Future;
 use futures_util::future::{err, ok, Ready};
 use jwt::{decode, Algorithm, DecodingKey, Validation};
 use record_job::runner;
@@ -17,6 +18,7 @@ use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
 use std::collections::HashMap;
 use std::env;
+use std::pin::Pin;
 use tracing::subscriber::set_global_default;
 use tracing::{debug, error, info};
 use tracing_actix_web::TracingLogger;
@@ -116,12 +118,7 @@ impl ResponseError for AppError {
 
     fn error_response(&self) -> HttpResponse {
         error!("{:?}", self);
-        HttpResponse::NotFound().json(
-            [("error", "TBD")]
-                .iter()
-                .cloned()
-                .collect::<HashMap<_, _>>(),
-        )
+        HttpResponse::NotFound().json(serde_json::json!({"error": "TBD"}))
     }
 }
 
@@ -145,10 +142,106 @@ async fn users_api(
         .await
         .map_err(|e| AppError {
             cause: format!("{:?}", e),
-            message: "fetching singles failed".to_string(),
+            message: "fetching users failed".to_string(),
             error_type: ErrorType::DbError,
         })?;
     Ok(HttpResponse::Ok().json(UsersResponse { users: paginated }))
+}
+
+#[derive(Deserialize)]
+struct UserBlockRequest {
+    user_slug: String,
+}
+
+async fn current_user(
+    app_state: &web::Data<AppState>,
+    user_session: UserSession,
+) -> Result<Option<db::SimpleUser>, AppError> {
+    let current_user = if let Some(user_id) = user_session.user_id {
+        db::find_simple_user(&app_state.pool, user_id)
+            .await
+            .map_err(|e| AppError {
+                cause: format!("{:?}", e),
+                message: "fetching single user failed".to_string(),
+                error_type: ErrorType::DbError,
+            })?
+    } else {
+        None
+    };
+
+    Ok(current_user)
+}
+
+async fn user_block_api(
+    path: web::Path<UserBlockRequest>,
+    app_state: web::Data<AppState>,
+    _current_admin: AdminUser,
+) -> Result<HttpResponse, AppError> {
+    let flag = db::block_user(&app_state.pool, &path.user_slug)
+        .await
+        .map_err(|e| AppError {
+            cause: format!("{:?}", e),
+            message: "fetching users failed".to_string(),
+            error_type: ErrorType::DbError,
+        })?;
+
+    Ok(HttpResponse::Ok().json(serde_json::json!({ "ignored": flag })))
+}
+
+async fn puzzles_api(app_state: web::Data<AppState>) -> Result<HttpResponse, AppError> {
+    let kinds = db::fetch_puzzles(&app_state.pool)
+        .await
+        .map_err(|e| AppError {
+            cause: format!("{:?}", e),
+            message: "fetching puzzles failed".to_string(),
+            error_type: ErrorType::DbError,
+        })?;
+
+    Ok(HttpResponse::Ok().json(kinds))
+}
+
+#[derive(Deserialize)]
+struct RecordsQuery {
+    /// The user search string provided by the user.
+    #[serde(rename = "type")]
+    type_: String,
+    page: Option<u32>,
+    puzzle_slug: String,
+}
+
+#[derive(Serialize)]
+struct RecordsResponse {
+    records: db::Paginated<db::RecordRow, u32>,
+}
+
+async fn records_api(
+    web::Query(q): web::Query<RecordsQuery>,
+    app_state: web::Data<AppState>,
+) -> Result<HttpResponse, AppError> {
+    info!("{}", q.puzzle_slug);
+    let puzzle_id = db::fetch_puzzle_id_from_slug(&app_state.pool, &q.puzzle_slug)
+        .await
+        .map_err(|e| AppError {
+            cause: format!("{:?}", e),
+            message: "fetching puzzle_id failed".to_string(),
+            error_type: ErrorType::DbError,
+        })?;
+
+    let puzzle_id = match puzzle_id {
+        Some(p) => p,
+        None => return Ok(HttpResponse::NotFound().body("puzzle slug doesn't exist")),
+    };
+    info!("{}", puzzle_id);
+
+    let records = db::fetch_records(&app_state.pool, &q.type_, puzzle_id, q.page, 50)
+        .await
+        .map_err(|e| AppError {
+            cause: format!("{:?}", e),
+            message: "fetching records failed".to_string(),
+            error_type: ErrorType::DbError,
+        })?;
+
+    Ok(HttpResponse::Ok().json(RecordsResponse { records }))
 }
 
 async fn announcement_api(app_state: web::Data<AppState>) -> Result<HttpResponse, AppError> {
@@ -156,7 +249,7 @@ async fn announcement_api(app_state: web::Data<AppState>) -> Result<HttpResponse
         .await
         .map_err(|e| AppError {
             cause: format!("{:?}", e),
-            message: "fetching singles failed".to_string(),
+            message: "fetching announcement failed".to_string(),
             error_type: ErrorType::DbError,
         })?;
     Ok(HttpResponse::Ok().json(post))
@@ -172,7 +265,7 @@ async fn max_singles_record_api(app_state: web::Data<AppState>) -> Result<HttpRe
         .await
         .map_err(|e| AppError {
             cause: format!("{:?}", e),
-            message: "fetching singles failed".to_string(),
+            message: "fetching max singles count failed".to_string(),
             error_type: ErrorType::DbError,
         })?;
 
@@ -187,29 +280,50 @@ async fn me_api(
     app_state: web::Data<AppState>,
     user_session: UserSession,
 ) -> Result<HttpResponse, AppError> {
-    let current_user = if let Some(user_id) = user_session.user_id {
-        db::find_simple_user(&app_state.pool, user_id)
-            .await
-            .map_err(|e| AppError {
-                cause: format!("{:?}", e),
-                message: "fetching single user failed".to_string(),
-                error_type: ErrorType::DbError,
-            })?
-    } else {
-        None
-    };
+    let current_user = current_user(&app_state, user_session).await?;
 
     Ok(HttpResponse::Ok().json(MeResponse { current_user }))
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct UserSession {
     user_id: Option<i32>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct LoggedInUser {
-    user_id: i32,
+    user: db::SimpleUser,
+}
+
+#[derive(Debug, Clone)]
+struct AdminUser {
+    user: db::SimpleUser,
+}
+
+impl FromRequest for AdminUser {
+    type Error = AppError;
+    type Future = Pin<Box<dyn Future<Output = Result<Self, Self::Error>>>>;
+
+    fn from_request(req: &HttpRequest, payload: &mut dev::Payload) -> Self::Future {
+        let req = req.clone();
+
+        let user_future = LoggedInUser::from_request(&req, payload);
+
+        Box::pin(async move {
+            let current_user = user_future.await?;
+            if current_user.user.is_admin() {
+                Ok(AdminUser {
+                    user: current_user.user,
+                })
+            } else {
+                return Err(AppError {
+                    cause: "user is not an admin".to_string(),
+                    message: "user is not an admin".to_string(),
+                    error_type: ErrorType::Unauthorized,
+                });
+            }
+        })
+    }
 }
 
 struct UserSessionConfig {
@@ -251,27 +365,35 @@ fn parse_query_string(query_string: &str) -> HashMap<String, String> {
 
 impl FromRequest for LoggedInUser {
     type Error = AppError;
-    type Future = Ready<Result<Self, Self::Error>>;
+    type Future = Pin<Box<dyn Future<Output = Result<Self, Self::Error>>>>;
 
     fn from_request(req: &HttpRequest, payload: &mut dev::Payload) -> Self::Future {
         let session = UserSession::from_request(req, payload).into_inner();
-        if let Ok(session) = session {
-            if let Some(user_id) = session.user_id {
-                ok(Self { user_id })
+        let app_state = req
+            .app_data::<web::Data<AppState>>()
+            .expect("app data not found")
+            .clone();
+
+        Box::pin(async move {
+            if let Ok(session) = session {
+                let user = current_user(&app_state, session.clone()).await?;
+                if let Some(user) = user {
+                    Ok(Self { user })
+                } else {
+                    Err(AppError {
+                        cause: "expected existing user for session".to_string(),
+                        message: "expected existing user for session".to_string(),
+                        error_type: ErrorType::Unauthorized,
+                    })
+                }
             } else {
-                err(AppError {
-                    cause: "expected existing user for session".to_string(),
-                    message: "expected existing user for session".to_string(),
+                Err(AppError {
+                    cause: "expected existing session".to_string(),
+                    message: "expected existing session".to_string(),
                     error_type: ErrorType::Unauthorized,
                 })
             }
-        } else {
-            err(AppError {
-                cause: "expected existing session".to_string(),
-                message: "expected existing session".to_string(),
-                error_type: ErrorType::Unauthorized,
-            })
-        }
+        })
     }
 }
 
@@ -332,12 +454,12 @@ async fn singles_csv(
     app_state: web::Data<AppState>,
     current_user: LoggedInUser,
 ) -> Result<impl Responder, AppError> {
-    if current_user.user_id != q.user_id as i32 {
+    if current_user.user.id != q.user_id as i32 {
         // TODO: error
         // 404 is correct, but also needs to be logged and get proper error response.
         info!(
             "claims to be {:?}, but wants files for {:?}",
-            current_user.user_id, q.user_id
+            current_user.user.id, q.user_id
         );
         return Ok(HttpResponse::NotFound().body("csv file not found"));
     }
@@ -455,6 +577,12 @@ async fn main() -> std::io::Result<()> {
             )
             .route("/api/announcement", web::get().to(announcement_api))
             .route("/api/users", web::get().to(users_api))
+            .route(
+                "/api/users/{user_slug}/block",
+                web::put().to(user_block_api),
+            )
+            .route("/api/puzzles", web::get().to(puzzles_api))
+            .route("/api/records", web::get().to(records_api))
     })
     .bind("0.0.0.0:8081")?
     .run()

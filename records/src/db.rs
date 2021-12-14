@@ -1,4 +1,5 @@
 use chrono::NaiveDateTime;
+use itertools::Itertools;
 use serde::Serialize;
 use sqlx::PgPool;
 
@@ -136,19 +137,69 @@ pub async fn fetch_singles(
     .await
 }
 
-#[derive(sqlx::FromRow, Debug, Serialize)]
+#[derive(sqlx::Type, Debug, Serialize, Clone)]
+#[sqlx(type_name = "varchar")]
+pub enum UserRole {
+    #[sqlx(rename = "admin")]
+    #[serde(rename = "admin")]
+    Admin,
+    #[sqlx(rename = "moderator")]
+    #[serde(rename = "moderator")]
+    Moderator,
+    #[sqlx(rename = "user")]
+    #[serde(rename = "user")]
+    User,
+}
+
+#[derive(sqlx::FromRow, Debug, Serialize, Clone)]
 pub struct SimpleUser {
-    singles_count: i32,
-    name: String,
-    slug: String,
+    pub id: i32,
+    pub singles_count: i32,
+    pub name: String,
+    pub slug: String,
+    role: UserRole,
+}
+
+impl SimpleUser {
+    pub fn is_admin(&self) -> bool {
+        matches!(self.role, UserRole::Admin)
+    }
 }
 
 #[derive(Serialize)]
 pub struct Paginated<T, I> {
     pub items: Vec<T>,
     pub page: I,
-    pub item_count: usize,
+    pub max_items_per_page: usize,
     pub next_page: Option<I>,
+    pub total_item_count: usize,
+}
+
+impl<T> Paginated<T, u32> {
+    fn from_vec(
+        mut vec: Vec<T>,
+        page: u32,
+        limit: u32,
+        total_item_count: usize,
+        max_items_per_page: usize,
+    ) -> Paginated<T, u32> {
+        let next_page = if vec.len() as u32 > limit {
+            for _ in 0..(vec.len() as u32 - limit) {
+                vec.pop();
+            }
+            Some(page + 1)
+        } else {
+            None
+        };
+
+        Paginated {
+            max_items_per_page,
+            items: vec,
+            page,
+            next_page,
+            total_item_count,
+        }
+    }
 }
 
 #[tracing::instrument(skip(pool))]
@@ -159,32 +210,34 @@ pub async fn fetch_users(
     limit: u32,
     search_term: Option<String>,
 ) -> Result<Paginated<SimpleUser, u32>, sqlx::Error> {
-    let page = page.unwrap_or(0);
+    let page = page.unwrap_or(1);
 
-    let mut users: Vec<SimpleUser> = sqlx::query_as(
-        "SELECT id, name, slug, singles_count FROM users WHERE lower(name) LIKE $3 ORDER BY singles_count DESC LIMIT $1 OFFSET $2",
+    let search_term_sql = search_term
+        .map(|name| format!("%{}%", name.to_lowercase()))
+        .unwrap_or("%".to_string());
+
+    let users: Vec<SimpleUser> = sqlx::query_as(
+        "SELECT id, name, slug, singles_count, role FROM users WHERE lower(name) LIKE $3 ORDER BY singles_count DESC LIMIT $1 OFFSET $2",
     )
     // Intentionally overfetching to determine whether there are more results to be returned.
     .bind(limit + 1)
-    .bind(page * limit)
-    .bind(search_term.map(|name| format!("%{}%", name.to_lowercase())).unwrap_or("%".to_string()))
+    .bind((page - 1) * limit)
+    .bind(search_term_sql.clone())
     .fetch_all(pool)
     .await?;
 
-    let next_page = if users.len() as u32 == limit + 1 {
-        // Remove last element we overfetched earlier.
-        users.pop();
-        Some(page + 1)
-    } else {
-        None
-    };
+    let (count,): (i64,) = sqlx::query_as("SELECT count(*) FROM users WHERE lower(name) LIKE $1;")
+        .bind(search_term_sql)
+        .fetch_one(pool)
+        .await?;
 
-    return Ok(Paginated {
-        item_count: users.len(),
-        items: users,
+    Ok(Paginated::from_vec(
+        users,
         page,
-        next_page,
-    });
+        limit,
+        count as usize,
+        limit as usize,
+    ))
 }
 
 pub async fn fetch_max_singles_count(pool: &PgPool) -> Result<u64, sqlx::Error> {
@@ -305,7 +358,7 @@ pub async fn find_simple_user(
     pool: &sqlx::PgPool,
     user_id: i32,
 ) -> Result<Option<SimpleUser>, sqlx::Error> {
-    sqlx::query_as("SELECT name, slug, singles_count from users WHERE id = $1")
+    sqlx::query_as("SELECT id, name, slug, singles_count, role from users WHERE id = $1")
         .bind(user_id)
         .fetch_optional(pool)
         .await
@@ -342,4 +395,149 @@ pub async fn find_announcement(pool: &sqlx::PgPool) -> Result<Option<Post>, sqlx
     } else {
         Ok(None)
     }
+}
+
+#[derive(Debug, Serialize)]
+pub struct Puzzle {
+    id: i32,
+    slug: String,
+    css_position: i32,
+    name: String,
+}
+
+#[derive(Debug, Serialize)]
+pub struct Kind {
+    id: i32,
+    name: String,
+    css_position: i32,
+    puzzles: Vec<Puzzle>,
+}
+
+#[derive(sqlx::FromRow, Debug, Clone)]
+struct PuzzleKindJoin {
+    kind_id: i32,
+    kind_name: String,
+    kind_css_position: i32,
+    puzzle_id: i32,
+    puzzle_name: String,
+    puzzle_slug: String,
+    puzzle_css_position: i32,
+}
+
+pub async fn fetch_puzzles(pool: &sqlx::PgPool) -> Result<Vec<Kind>, sqlx::Error> {
+    let q = "
+      SELECT kinds.id as kind_id, kinds.name as kind_name, kinds.css_position as kind_css_position,
+             puzzles.id as puzzle_id, puzzles.name as puzzle_name, puzzles.slug as puzzle_slug, puzzles.css_position as puzzle_css_position
+      FROM kinds
+      LEFT JOIN puzzles ON puzzles.kind_id=kinds.id
+      ORDER BY kinds.id, puzzles.name";
+    let r: Vec<PuzzleKindJoin> = sqlx::query_as(q).fetch_all(pool).await?;
+
+    let mut result = Vec::new();
+    for (kind, group) in &r
+        .into_iter()
+        .group_by(|e| (e.kind_id, e.kind_name.clone(), e.kind_css_position))
+    {
+        let puzzles = group
+            .map(|pk| Puzzle {
+                id: pk.puzzle_id,
+                slug: pk.puzzle_slug,
+                css_position: pk.puzzle_css_position,
+                name: pk.puzzle_name,
+            })
+            .collect::<Vec<_>>();
+        result.push(Kind {
+            id: kind.0,
+            name: kind.1,
+            css_position: kind.2,
+            puzzles,
+        });
+    }
+
+    Ok(result)
+}
+
+pub async fn fetch_puzzle_id_from_slug(
+    pool: &sqlx::PgPool,
+    slug: &str,
+) -> Result<Option<i32>, sqlx::Error> {
+    let row: Option<(i32,)> = sqlx::query_as("SELECT id FROM puzzles WHERE slug = $1")
+        .bind(slug)
+        .fetch_optional(pool)
+        .await?;
+
+    Ok(row.map(|x| x.0))
+}
+
+pub async fn block_user(pool: &sqlx::PgPool, slug: &str) -> Result<bool, sqlx::Error> {
+    let result = sqlx::query("UPDATE users SET ignored = true WHERE slug = $1")
+        .bind(slug)
+        .execute(pool)
+        .await?;
+
+    Ok(result.rows_affected() > 0)
+}
+
+#[derive(Debug, sqlx::FromRow, Serialize)]
+pub struct RecordRow {
+    id: i32,
+    rank: i32,
+    time: i32,
+    user_name: String,
+    user_slug: String,
+    comment: Option<String>,
+    set_at: NaiveDateTime,
+}
+
+pub async fn fetch_records(
+    pool: &sqlx::PgPool,
+    type_: &str,
+    puzzle_id: i32,
+    page: Option<u32>,
+    limit: u32,
+) -> Result<Paginated<RecordRow, u32>, sqlx::Error> {
+    let page = page.unwrap_or(1);
+    let amount = match type_ {
+        "single" => 1,
+        "avg5" => 5,
+        "avg12" => 12,
+        _ => panic!("use enums..."),
+    };
+    let q = "
+    SELECT records.id as id, 1 as rank, time, users.name as user_name, users.slug as user_slug, comment, set_at
+    FROM records
+    INNER JOIN users ON records.user_id = users.id
+    WHERE puzzle_id = $1 AND amount = $2 AND users.ignored = false ORDER BY time
+    LIMIT $3 OFFSET $4";
+    let mut records: Vec<RecordRow> = sqlx::query_as(q)
+        .bind(puzzle_id)
+        .bind(amount)
+        .bind(limit + 1)
+        .bind((page - 1) * limit)
+        .fetch_all(pool)
+        .await?;
+
+    for (i, mut r) in records.iter_mut().enumerate() {
+        r.rank = 1 + (page as i32 - 1) * limit as i32 + i as i32;
+    }
+
+    let q = "
+    SELECT count(*)
+    FROM records
+    INNER JOIN users ON records.user_id = users.id
+    WHERE puzzle_id = $1 AND amount = $2 AND users.ignored = false";
+
+    let (count,): (i64,) = sqlx::query_as(q)
+        .bind(puzzle_id)
+        .bind(amount)
+        .fetch_one(pool)
+        .await?;
+
+    Ok(Paginated::from_vec(
+        records,
+        page,
+        limit,
+        count as usize,
+        limit as usize,
+    ))
 }

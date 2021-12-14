@@ -1,4 +1,3 @@
-import { GetServerSideProps } from "next";
 import React, { useState } from "react";
 import { useCallback } from "react";
 import { userPath } from "../../commons/path";
