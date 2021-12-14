@@ -1,14 +1,13 @@
 extern crate jsonwebtoken as jwt;
 
 mod db;
-mod marshal;
 mod record_job;
 
 use actix_web::{
     dev, error::ResponseError, http::StatusCode, web, App, FromRequest, HttpRequest, HttpResponse,
     HttpServer, Responder,
 };
-use chrono::{DateTime, NaiveDateTime, Utc};
+use chrono::NaiveDateTime;
 use futures::Future;
 use futures_util::future::{err, ok, Ready};
 use jwt::{decode, Algorithm, DecodingKey, Validation};
@@ -27,14 +26,6 @@ use tracing_log::LogTracer;
 #[derive(Deserialize, Debug)]
 struct JwtClaim {
     user_id: i32,
-}
-
-#[derive(Debug)]
-struct Single {
-    time: i32,
-    dnf: bool,
-    created_at: DateTime<Utc>,
-    comment: String,
 }
 
 #[derive(Deserialize)]
@@ -500,37 +491,8 @@ struct SessionData {
     csrf_token: String,
 }
 
-fn parse_session(data: &str) -> Option<SessionData> {
-    let binary = base64::decode(data).ok()?;
-    let decoded = marshal::decode(&binary).expect("couldn't decode");
-    match decoded {
-        marshal::RubyObject::Hash(m) => {
-            println!("{:?}", m);
-        }
-        _ => {
-            return None;
-        }
-    }
-    None
-}
-
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    /*
-    let session_data = "BAh7B0kiBmEGOgZFVEkiBmMGOwBUSSIGeAY7AFRJIgZ5BjsAVA==";
-    let result = dbg!(parse_session(session_data));
-    let binary = base64::decode(session_data).expect("proper base64");
-    println!("{:?}", binary);
-    println!(
-        "{}",
-        binary
-            .iter()
-            .map(|x| format!("{:x}", x))
-            .collect::<Vec<_>>()
-            .join(" ")
-    );
-    println!("{:?}", String::from_utf8_lossy(&binary));*/
-
     // Read https://www.lpalmieri.com/posts/2020-09-27-zero-to-production-4-are-we-observable-yet/
     LogTracer::init().expect("Failed to set logger");
     // NOTE This outputs JSON, but it can be made readable by using the executable `bunyan` and
