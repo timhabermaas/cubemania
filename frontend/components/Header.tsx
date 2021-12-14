@@ -48,7 +48,9 @@ export function Header(props: HeaderProps) {
       <header className="main">
         <div className="center">
           <h1>
-            <a href="/">Cubemania</a>
+            <Link href="/">
+              <a>Cubemania</a>
+            </Link>
           </h1>
           <q>Save The World – Solve The Puzzle</q>
         </div>
