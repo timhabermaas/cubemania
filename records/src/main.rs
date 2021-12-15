@@ -1,13 +1,12 @@
 extern crate jsonwebtoken as jwt;
 
 mod db;
+mod error;
 mod record_job;
 
-use actix_web::{
-    dev, error::ResponseError, http::StatusCode, web, App, FromRequest, HttpRequest, HttpResponse,
-    HttpServer, Responder,
-};
+use actix_web::{dev, web, App, FromRequest, HttpRequest, HttpResponse, HttpServer, Responder};
 use chrono::NaiveDateTime;
+use error::{AppError, ErrorType};
 use futures::Future;
 use futures_util::future::{err, ok, Ready};
 use jwt::{decode, Algorithm, DecodingKey, Validation};
@@ -19,7 +18,7 @@ use std::collections::HashMap;
 use std::env;
 use std::pin::Pin;
 use tracing::subscriber::set_global_default;
-use tracing::{debug, error, info};
+use tracing::{debug, info};
 use tracing_actix_web::TracingLogger;
 use tracing_log::LogTracer;
 
@@ -68,51 +67,6 @@ fn create_csv_from_singles(singles: &[db::SingleResult]) -> Result<String, csv::
     Ok(String::from_utf8_lossy(&buffer).into_owned())
 }
 
-#[derive(Debug)]
-struct AppError {
-    cause: String,
-    message: String,
-    error_type: ErrorType,
-}
-
-#[derive(Debug)]
-enum ErrorType {
-    JwtTokenInvalid,
-    JwtSecretNotFound,
-    NotFound,
-    Unauthorized,
-    DbError,
-}
-
-impl std::fmt::Display for AppError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match &self.error_type {
-            ErrorType::JwtTokenInvalid => write!(f, "JWT token is invalid"),
-            ErrorType::JwtSecretNotFound => write!(f, "JWT secret not found"),
-            ErrorType::NotFound => write!(f, "Resource not found"),
-            ErrorType::DbError => write!(f, "Db error"),
-            ErrorType::Unauthorized => write!(f, "Not authorized"),
-        }
-    }
-}
-
-impl ResponseError for AppError {
-    fn status_code(&self) -> StatusCode {
-        match self.error_type {
-            ErrorType::NotFound => StatusCode::NOT_FOUND,
-            ErrorType::JwtSecretNotFound => StatusCode::INTERNAL_SERVER_ERROR,
-            ErrorType::JwtTokenInvalid => StatusCode::UNAUTHORIZED,
-            ErrorType::DbError => StatusCode::INTERNAL_SERVER_ERROR,
-            ErrorType::Unauthorized => StatusCode::UNAUTHORIZED,
-        }
-    }
-
-    fn error_response(&self) -> HttpResponse {
-        error!("{:?}", self);
-        HttpResponse::NotFound().json(serde_json::json!({"error": "TBD"}))
-    }
-}
-
 #[derive(Deserialize)]
 struct UsersQuery {
     /// The user search string provided by the user.
@@ -129,13 +83,7 @@ async fn users_api(
     web::Query(q): web::Query<UsersQuery>,
     app_state: web::Data<AppState>,
 ) -> Result<HttpResponse, AppError> {
-    let paginated = db::fetch_users(&app_state.pool, q.page, 200, q.q)
-        .await
-        .map_err(|e| AppError {
-            cause: format!("{:?}", e),
-            message: "fetching users failed".to_string(),
-            error_type: ErrorType::DbError,
-        })?;
+    let paginated = db::fetch_users(&app_state.pool, q.page, 200, q.q).await?;
     Ok(HttpResponse::Ok().json(UsersResponse { users: paginated }))
 }
 
@@ -149,13 +97,7 @@ async fn current_user(
     user_session: UserSession,
 ) -> Result<Option<db::SimpleUser>, AppError> {
     let current_user = if let Some(user_id) = user_session.user_id {
-        db::find_simple_user(&app_state.pool, user_id)
-            .await
-            .map_err(|e| AppError {
-                cause: format!("{:?}", e),
-                message: "fetching single user failed".to_string(),
-                error_type: ErrorType::DbError,
-            })?
+        db::find_simple_user(&app_state.pool, user_id).await?
     } else {
         None
     };
@@ -168,25 +110,13 @@ async fn user_block_api(
     app_state: web::Data<AppState>,
     _current_admin: AdminUser,
 ) -> Result<HttpResponse, AppError> {
-    let flag = db::block_user(&app_state.pool, &path.user_slug)
-        .await
-        .map_err(|e| AppError {
-            cause: format!("{:?}", e),
-            message: "fetching users failed".to_string(),
-            error_type: ErrorType::DbError,
-        })?;
+    let flag = db::block_user(&app_state.pool, &path.user_slug).await?;
 
     Ok(HttpResponse::Ok().json(serde_json::json!({ "ignored": flag })))
 }
 
 async fn puzzles_api(app_state: web::Data<AppState>) -> Result<HttpResponse, AppError> {
-    let kinds = db::fetch_puzzles(&app_state.pool)
-        .await
-        .map_err(|e| AppError {
-            cause: format!("{:?}", e),
-            message: "fetching puzzles failed".to_string(),
-            error_type: ErrorType::DbError,
-        })?;
+    let kinds = db::fetch_puzzles(&app_state.pool).await?;
 
     Ok(HttpResponse::Ok().json(kinds))
 }
@@ -210,13 +140,7 @@ async fn records_api(
     app_state: web::Data<AppState>,
 ) -> Result<HttpResponse, AppError> {
     info!("{}", q.puzzle_slug);
-    let puzzle_id = db::fetch_puzzle_id_from_slug(&app_state.pool, &q.puzzle_slug)
-        .await
-        .map_err(|e| AppError {
-            cause: format!("{:?}", e),
-            message: "fetching puzzle_id failed".to_string(),
-            error_type: ErrorType::DbError,
-        })?;
+    let puzzle_id = db::fetch_puzzle_id_from_slug(&app_state.pool, &q.puzzle_slug).await?;
 
     let puzzle_id = match puzzle_id {
         Some(p) => p,
@@ -224,25 +148,14 @@ async fn records_api(
     };
     info!("{}", puzzle_id);
 
-    let records = db::fetch_records(&app_state.pool, &q.type_, puzzle_id, q.page, 50)
-        .await
-        .map_err(|e| AppError {
-            cause: format!("{:?}", e),
-            message: "fetching records failed".to_string(),
-            error_type: ErrorType::DbError,
-        })?;
+    let records = db::fetch_records(&app_state.pool, &q.type_, puzzle_id, q.page, 50).await?;
 
     Ok(HttpResponse::Ok().json(RecordsResponse { records }))
 }
 
 async fn announcement_api(app_state: web::Data<AppState>) -> Result<HttpResponse, AppError> {
-    let post = db::find_announcement(&app_state.pool)
-        .await
-        .map_err(|e| AppError {
-            cause: format!("{:?}", e),
-            message: "fetching announcement failed".to_string(),
-            error_type: ErrorType::DbError,
-        })?;
+    let post = db::find_announcement(&app_state.pool).await?;
+
     Ok(HttpResponse::Ok().json(post))
 }
 
@@ -252,13 +165,7 @@ struct MaxSinglesCountResponse {
 }
 
 async fn max_singles_record_api(app_state: web::Data<AppState>) -> Result<HttpResponse, AppError> {
-    let max_singles_record = db::fetch_max_singles_count(&app_state.pool)
-        .await
-        .map_err(|e| AppError {
-            cause: format!("{:?}", e),
-            message: "fetching max singles count failed".to_string(),
-            error_type: ErrorType::DbError,
-        })?;
+    let max_singles_record = db::fetch_max_singles_count(&app_state.pool).await?;
 
     Ok(HttpResponse::Ok().json(MaxSinglesCountResponse { max_singles_record }))
 }
@@ -456,13 +363,7 @@ async fn singles_csv(
     }
 
     // TODO: proper error handling
-    let singles = db::fetch_singles(&app_state.pool, q.user_id as i32, q.puzzle_id as i32)
-        .await
-        .map_err(|e| AppError {
-            cause: format!("{:?}", e),
-            message: "fetching singles failed".to_string(),
-            error_type: ErrorType::DbError,
-        })?;
+    let singles = db::fetch_singles(&app_state.pool, q.user_id as i32, q.puzzle_id as i32).await?;
 
     debug!("{} singles fetched", singles.len());
 
