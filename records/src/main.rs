@@ -485,10 +485,21 @@ struct AppState {
     jwt_secret: String,
 }
 
-#[derive(Debug)]
-struct SessionData {
-    user_id: i64,
-    csrf_token: String,
+fn routes(cfg: &mut web::ServiceConfig) {
+    cfg.route("/api/singles.csv", web::get().to(singles_csv))
+        .route("/api/me", web::get().to(me_api))
+        .route(
+            "/api/max_singles_record",
+            web::get().to(max_singles_record_api),
+        )
+        .route("/api/announcement", web::get().to(announcement_api))
+        .route("/api/users", web::get().to(users_api))
+        .route(
+            "/api/users/{user_slug}/block",
+            web::put().to(user_block_api),
+        )
+        .route("/api/puzzles", web::get().to(puzzles_api))
+        .route("/api/records", web::get().to(records_api));
 }
 
 #[actix_web::main]
@@ -531,20 +542,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(TracingLogger::default())
             .app_data(web::Data::new(app_state.clone()))
-            .route("/api/singles.csv", web::get().to(singles_csv))
-            .route("/api/me", web::get().to(me_api))
-            .route(
-                "/api/max_singles_record",
-                web::get().to(max_singles_record_api),
-            )
-            .route("/api/announcement", web::get().to(announcement_api))
-            .route("/api/users", web::get().to(users_api))
-            .route(
-                "/api/users/{user_slug}/block",
-                web::put().to(user_block_api),
-            )
-            .route("/api/puzzles", web::get().to(puzzles_api))
-            .route("/api/records", web::get().to(records_api))
+            .configure(routes)
     })
     .bind("0.0.0.0:8081")?
     .run()
