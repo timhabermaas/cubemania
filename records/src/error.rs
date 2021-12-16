@@ -10,7 +10,6 @@ pub struct AppError {
 
 #[derive(Debug)]
 pub enum ErrorType {
-    JwtTokenInvalid,
     NotFound,
     Unauthorized,
     DbError,
@@ -19,7 +18,6 @@ pub enum ErrorType {
 impl std::fmt::Display for AppError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match &self.error_type {
-            ErrorType::JwtTokenInvalid => write!(f, "JWT token is invalid"),
             ErrorType::NotFound => write!(f, "Resource not found"),
             ErrorType::DbError => write!(f, "Db error"),
             ErrorType::Unauthorized => write!(f, "Not authorized"),
@@ -31,7 +29,6 @@ impl actix_web::error::ResponseError for AppError {
     fn status_code(&self) -> http::StatusCode {
         match self.error_type {
             ErrorType::NotFound => http::StatusCode::NOT_FOUND,
-            ErrorType::JwtTokenInvalid => http::StatusCode::UNAUTHORIZED,
             ErrorType::DbError => http::StatusCode::INTERNAL_SERVER_ERROR,
             ErrorType::Unauthorized => http::StatusCode::UNAUTHORIZED,
         }
