@@ -8,7 +8,7 @@ use actix_web::{dev, web, App, FromRequest, HttpRequest, HttpResponse, HttpServe
 use chrono::NaiveDateTime;
 use error::{AppError, ErrorType};
 use futures::Future;
-use futures_util::future::{err, ok, Ready};
+use futures_util::future::{ok, Ready};
 use jwt::{decode, Algorithm, DecodingKey, Validation};
 use record_job::runner;
 use serde::{Deserialize, Serialize};
@@ -224,29 +224,6 @@ impl FromRequest for AdminUser {
     }
 }
 
-struct UserSessionConfig {
-    jwt_secret: String,
-}
-
-/// Debug trait implemented by hand to not leak secrets accidentally.
-impl std::fmt::Debug for UserSessionConfig {
-    fn fmt(&self, fmt: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
-        fmt.debug_struct("UserSessionConfig")
-            .field("jwt_secret", &"****")
-            .finish()
-    }
-}
-
-impl Default for UserSessionConfig {
-    fn default() -> Self {
-        // TODO: Is a default safe to use? Maybe better use a global attached to the binary on
-        // startup?
-        Self {
-            jwt_secret: "nope".to_string(),
-        }
-    }
-}
-
 fn parse_query_string(query_string: &str) -> HashMap<String, String> {
     let parts = query_string.split("&");
     let mut result = HashMap::new();
@@ -300,16 +277,9 @@ impl FromRequest for UserSession {
     type Future = Ready<Result<Self, Self::Error>>;
 
     fn from_request(req: &HttpRequest, _payload: &mut dev::Payload) -> Self::Future {
-        let app_state = req.app_data::<web::Data<AppState>>();
-        if app_state.is_none() {
-            return err(AppError {
-                cause: "jwt secret not found".to_string(),
-                message: "jwt secret not found".to_string(),
-                error_type: ErrorType::JwtSecretNotFound,
-            });
-        }
-
-        let app_state = app_state.unwrap();
+        let app_state = req
+            .app_data::<web::Data<AppState>>()
+            .expect("app data not found");
 
         let token = req.headers().get("Authorization").map(|content| {
             content
