@@ -221,6 +221,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "api"
+version = "0.1.0"
+dependencies = [
+ "actix-rt",
+ "actix-web",
+ "base64 0.13.0",
+ "chrono",
+ "csv",
+ "futures",
+ "futures-util",
+ "itertools",
+ "jsonwebtoken",
+ "regex",
+ "serde",
+ "serde_json",
+ "sqlx",
+ "tracing",
+ "tracing-actix-web",
+ "tracing-log",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "arrayvec"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1373,29 +1396,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3190ef7066a446f2e7f42e239d161e905420ccab01eb967c9eb27d21b2322a73"
 dependencies = [
  "rand_core",
-]
-
-[[package]]
-name = "records"
-version = "0.1.0"
-dependencies = [
- "actix-rt",
- "actix-web",
- "base64 0.13.0",
- "chrono",
- "csv",
- "futures",
- "futures-util",
- "itertools",
- "jsonwebtoken",
- "regex",
- "serde",
- "serde_json",
- "sqlx",
- "tracing",
- "tracing-actix-web",
- "tracing-log",
- "tracing-subscriber",
 ]
 
 [[package]]

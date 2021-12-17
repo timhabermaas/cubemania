@@ -17,15 +17,14 @@ services:
       dockerfile: nginx/Dockerfile
     image: timhabermaas/cubemania_nginx
     depends_on:
-      - records
+      - api
       - web
-      - backup
       - frontend
-  records:
+  api:
     build:
-      context: ./records
+      context: ./api
       dockerfile: Dockerfile
-    image: timhabermaas/cubemania_records
+    image: timhabermaas/cubemania_api
     environment:
       RUST_LOG: info
       RUST_BACKTRACE: 1

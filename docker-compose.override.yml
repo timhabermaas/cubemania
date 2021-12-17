@@ -17,18 +17,18 @@ services:
     ports:
       - "443:443"
       - "8080:80"
-  records:
+  api:
     ports:
       - "8081:8081"
-  records-build:
+  api-build:
     build:
-      context: ./records
+      context: ./api
       dockerfile: Dockerfile
       target: builder
     depends_on:
       - db
     volumes:
-      - ./records:/home/rust/src/records
+      - ./api:/home/rust/src/api
   web:
     ports:
       - "3000:3000"

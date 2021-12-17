@@ -28,7 +28,7 @@ services:
       options:
         max-size: "50M"
         max-file: "3"
-  records:
+  api:
     restart: always
     logging:
       driver: "json-file"
