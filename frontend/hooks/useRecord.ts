@@ -1,7 +1,9 @@
 import { useQuery } from "react-query";
 
 interface Single {
+  id: number;
   time: number;
+  penalty?: "DNF" | "PLUS2";
   scramble: string;
   comment: string;
 }

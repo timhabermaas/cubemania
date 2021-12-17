@@ -51,10 +51,10 @@ export default function Record(props: RecordProps) {
           </thead>
           <tbody>
             {data.singles.map((single, i) => (
-              <tr className={(i + 1) % 2 ? "even" : "odd"}>
+              <tr key={single.id} className={(i + 1) % 2 ? "even" : "odd"}>
                 <td>{i + 1}</td>
                 <td>
-                  <strong className="time">
+                  <strong className={`time ${single.penalty?.toLowerCase()}`}>
                     {formatDuration(single.time)}
                   </strong>
                 </td>
