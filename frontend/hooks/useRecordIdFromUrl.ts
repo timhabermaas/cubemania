@@ -1,7 +1,7 @@
 import { useSingleQueryParam } from "./useSingleQueryParam";
 
-export function usePuzzleFromUrl(): string {
-  const q = useSingleQueryParam("puzzleId");
+export function useRecordIdFromUrl(): string {
+  const q = useSingleQueryParam("recordId");
 
   if (q === null) {
     throw new Error("routing error");

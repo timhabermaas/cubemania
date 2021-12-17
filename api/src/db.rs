@@ -541,3 +541,94 @@ pub async fn fetch_records(
         limit as usize,
     ))
 }
+
+#[derive(sqlx::FromRow, Debug, Clone)]
+pub struct RecordWithoutSingles {
+    pub id: i32,
+    pub set_at: NaiveDateTime,
+    pub amount: i32,
+    pub time: i32,
+    pub user_name: String,
+    pub user_slug: String,
+    pub puzzle_css_position: i32,
+    pub kind_css_position: i32,
+    pub puzzle_name: String,
+    pub kind_short_name: Option<String>,
+    pub comment: Option<String>,
+}
+
+#[derive(sqlx::FromRow, Debug, Clone, Serialize)]
+pub struct RecordWithSingles {
+    pub id: i32,
+    pub set_at: NaiveDateTime,
+    pub amount: i32,
+    pub time: i32,
+    pub user_name: String,
+    pub user_slug: String,
+    pub puzzle_css_position: i32,
+    pub kind_css_position: i32,
+    pub puzzle_name: String,
+    pub kind_short_name: Option<String>,
+    pub comment: Option<String>,
+    pub singles: Vec<SingleResultWithScramble>,
+}
+
+#[derive(sqlx::FromRow, Debug, Clone, Serialize)]
+pub struct SingleResultWithScramble {
+    pub id: i32,
+    pub time: i32,
+    pub comment: Option<String>,
+    pub penalty: Option<Penalty>,
+    pub created_at: NaiveDateTime,
+    pub scramble: String,
+}
+
+pub async fn fetch_record(
+    pool: &PgPool,
+    record_id: i32,
+) -> Result<Option<RecordWithSingles>, sqlx::Error> {
+    let record_without_singles: Option<RecordWithoutSingles> =
+        sqlx::query_as(
+            "SELECT p.css_position as puzzle_css_position, k.css_position as kind_css_position, p.name as puzzle_name,
+                    k.short_name as kind_short_name, records.id, set_at, amount, time, comment, u.name as user_name, u.slug as user_slug
+            FROM records
+            INNER JOIN puzzles p ON p.id = records.puzzle_id
+            INNER JOIN kinds k ON p.kind_id = k.id
+            INNER JOIN users u ON u.id = records.user_id
+            WHERE records.id = $1"
+            )
+            .bind(record_id)
+            .fetch_optional(pool)
+            .await?;
+
+    if record_without_singles.is_none() {
+        return Ok(None);
+    }
+    let record_without_singles = record_without_singles.unwrap();
+
+    let singles: Vec<SingleResultWithScramble> = sqlx::query_as(
+        "SELECT id, time, comment, penalty, created_at, scramble
+        FROM singles s, records_singles rs
+        WHERE rs.single_id = s.id AND rs.record_id = $1
+        ORDER BY s.created_at;
+        ",
+    )
+    .bind(record_id)
+    .fetch_all(pool)
+    .await?;
+
+    Ok(Some(RecordWithSingles {
+        id: record_without_singles.id,
+        set_at: record_without_singles.set_at,
+        amount: record_without_singles.amount,
+        kind_css_position: record_without_singles.kind_css_position,
+        puzzle_css_position: record_without_singles.puzzle_css_position,
+        puzzle_name: record_without_singles.puzzle_name,
+        kind_short_name: record_without_singles.kind_short_name,
+        time: record_without_singles.time,
+        comment: record_without_singles.comment,
+        singles,
+        user_name: record_without_singles.user_name,
+        user_slug: record_without_singles.user_slug,
+    }))
+}

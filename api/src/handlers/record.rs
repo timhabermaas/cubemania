@@ -36,3 +36,12 @@ pub async fn records_api(
 
     Ok(HttpResponse::Ok().json(RecordsResponse { records }))
 }
+
+pub async fn record_api(
+    record_id: web::Path<i32>,
+    app_state: web::Data<AppState>,
+) -> Result<HttpResponse, AppError> {
+    let record = db::fetch_record(&app_state.pool, record_id.into_inner()).await?;
+
+    Ok(HttpResponse::Ok().json(record))
+}
