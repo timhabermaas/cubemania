@@ -49,6 +49,7 @@ export default function Users(props: UsersProps) {
         action="/users"
         id="users-search"
         method="get"
+        onSubmit={(e) => e.preventDefault()}
       >
         <input
           autoSave="users-search"
