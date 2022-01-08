@@ -1,4 +1,5 @@
 import { useQuery } from "react-query";
+import { get } from "../commons/http/HttpClient";
 
 export interface Puzzle {
   css_position: number;
@@ -17,10 +18,7 @@ export interface Kind {
 export function usePuzzles() {
   return useQuery<Kind[]>(
     "allPuzzles",
-    async () => {
-      const response = await fetch("/api/puzzles");
-      return await response.json();
-    },
+    async () => get<Kind[]>("/api/puzzles"),
     { staleTime: Infinity }
   );
 }

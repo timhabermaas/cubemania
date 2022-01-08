@@ -1,19 +1,12 @@
 import { useMutation, useQueryClient } from "react-query";
+import { put } from "../commons/http/HttpClient";
 
 export function useBlockUser(jwtToken?: string) {
   const queryClient = useQueryClient();
 
   return useMutation(
     async (slug: string) => {
-      const headers = new Headers();
-      if (jwtToken) {
-        headers.set("Authorization", `Bearer ${jwtToken}`);
-      }
-      const r = await fetch(`/api/users/${slug}/block`, {
-        headers,
-        method: "PUT",
-      });
-      return await r.json();
+      return await put(`/api/users/${slug}/block`, jwtToken);
     },
     {
       onSuccess: () => {

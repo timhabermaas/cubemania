@@ -1,4 +1,5 @@
 import { useQuery } from "react-query";
+import { get } from "../commons/http/HttpClient";
 import { PaginatedResponse } from "../commons/types/PaginatedResponse";
 
 export interface Record {
@@ -18,12 +19,8 @@ interface RecordResponse {
 export function useRecords(type: string, page: number, puzzleSlug: string) {
   return useQuery<RecordResponse>(
     ["records", puzzleSlug, type, page],
-    async () => {
-      let response = await fetch(
-        `/api/records?type=${type}&page=${page}&puzzle_slug=${puzzleSlug}`
-      );
-      return await response.json();
-    },
+    async () =>
+      get(`/api/records?type=${type}&page=${page}&puzzle_slug=${puzzleSlug}`),
     { keepPreviousData: true }
   );
 }

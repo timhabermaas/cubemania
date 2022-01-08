@@ -1,4 +1,5 @@
 import { useQuery } from "react-query";
+import { get } from "../commons/http/HttpClient";
 
 interface Single {
   id: number;
@@ -23,8 +24,9 @@ export interface Record {
 }
 
 export function useRecord(recordId: number) {
-  return useQuery<Record>(["record", recordId], async () => {
-    let response = await fetch(`/api/records/${recordId}`);
-    return await response.json();
-  });
+  return useQuery<Record>(
+    ["record", recordId],
+    async () => get(`/api/records/${recordId}`),
+    { retry: false }
+  );
 }

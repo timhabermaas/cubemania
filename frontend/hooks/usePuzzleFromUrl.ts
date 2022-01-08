@@ -1,11 +1,6 @@
+import { assertNotNull } from "../commons/types/assertions";
 import { useSingleQueryParam } from "./useSingleQueryParam";
 
 export function usePuzzleFromUrl(): string {
-  const q = useSingleQueryParam("puzzleId");
-
-  if (q === null) {
-    throw new Error("routing error");
-  } else {
-    return q;
-  }
+  return assertNotNull(useSingleQueryParam("puzzleId"), "routing error");
 }

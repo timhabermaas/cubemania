@@ -1,6 +1,6 @@
 use crate::app_state::AppState;
 use crate::db;
-use crate::error::AppError;
+use crate::error::{AppError, ErrorType};
 use actix_web::{web, HttpResponse};
 use serde::{Deserialize, Serialize};
 use tracing::info;
@@ -41,7 +41,15 @@ pub async fn record_api(
     record_id: web::Path<i32>,
     app_state: web::Data<AppState>,
 ) -> Result<HttpResponse, AppError> {
-    let record = db::fetch_record(&app_state.pool, record_id.into_inner()).await?;
+    let record_id = record_id.into_inner();
+    let record = db::fetch_record(&app_state.pool, record_id).await?;
 
-    Ok(HttpResponse::Ok().json(record))
+    match record {
+        Some(record) => Ok(HttpResponse::Ok().json(record)),
+        None => Err(AppError {
+            cause: format!("can't find record {}", record_id),
+            message: format!("can't find record {}", record_id),
+            error_type: ErrorType::NotFound,
+        }),
+    }
 }

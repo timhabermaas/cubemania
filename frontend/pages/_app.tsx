@@ -1,10 +1,13 @@
 import App, { AppProps, AppContext } from "next/app";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import "../styles/globals.css.scss";
+import { useRouter } from "next/router";
+import { ErrorBoundary } from "../components/ErrorBoundary";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const router = useRouter();
   const queryClientRef = useRef<QueryClient>();
   const jwtToken = useRef<string>(pageProps.jwtToken);
 
@@ -18,13 +21,20 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, [pageProps.jwtToken]);
 
   if (!queryClientRef.current) {
-    queryClientRef.current = new QueryClient();
+    queryClientRef.current = new QueryClient({
+      defaultOptions: {
+        queries: { useErrorBoundary: true },
+        mutations: { useErrorBoundary: true },
+      },
+    });
   }
 
   return (
     <QueryClientProvider client={queryClientRef.current}>
       <ReactQueryDevtools initialIsOpen={false} />
-      <Component {...pageProps} jwtToken={jwtToken.current} />
+      <ErrorBoundary router={router}>
+        <Component {...pageProps} jwtToken={jwtToken.current} />
+      </ErrorBoundary>
     </QueryClientProvider>
   );
 }

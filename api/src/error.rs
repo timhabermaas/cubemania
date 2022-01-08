@@ -36,7 +36,7 @@ impl actix_web::error::ResponseError for AppError {
 
     fn error_response(&self) -> actix_web::HttpResponse {
         error!("{:?}", self);
-        actix_web::HttpResponse::NotFound().json(serde_json::json!({"error": "TBD"}))
+        actix_web::HttpResponse::NotFound().json(serde_json::json!({"error": self.message}))
     }
 }
 

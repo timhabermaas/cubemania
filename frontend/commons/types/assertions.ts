@@ -9,3 +9,11 @@ export function assertNotUndefined<T>(x: T | undefined): T {
 
   return x;
 }
+
+export function assertNotNull<T>(x: T | null, message?: string): T {
+  if (x === null) {
+    throw new Error(message ?? "value should not be undefined");
+  }
+
+  return x;
+}
