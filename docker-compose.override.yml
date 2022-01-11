@@ -37,3 +37,8 @@ services:
   db:
     ports:
       - "5432:5432"
+  backup:
+    # Using backup profile for this service prevents it from starting locally
+    # unless you set --profile to "backup".
+    # https://docs.docker.com/compose/profiles/
+    profiles: ["backup"]
