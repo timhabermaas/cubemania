@@ -123,6 +123,9 @@ div.fancybox-inner {
     color: rgba(255, 255, 255, 0.3);
     text-decoration: line-through;
   }
+  .time.plus2:after {
+    content: "+";
+  }
   .time.best {
     color: rgba(0, 255, 0, 0.6);
   }

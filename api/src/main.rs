@@ -46,6 +46,17 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(TracingLogger::default())
             .app_data(web::Data::new(app_state.clone()))
+            .app_data(web::QueryConfig::default().error_handler(|err, _req| {
+                let err_message = err.to_string();
+
+                actix_web::error::InternalError::from_response(
+                    err,
+                    web::HttpResponse::BadRequest()
+                        .json(serde_json::json!({ "error": err_message }))
+                        .into(),
+                )
+                .into()
+            }))
             .configure(add_routes)
     })
     .bind("0.0.0.0:8081")?

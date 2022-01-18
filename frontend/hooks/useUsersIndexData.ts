@@ -1,4 +1,5 @@
 import { InfiniteData, useInfiniteQuery, useQuery } from "react-query";
+import { get } from "../commons/http/HttpClient";
 import { PaginatedResponse } from "../commons/types/PaginatedResponse";
 
 interface SimpleUser {
@@ -35,14 +36,7 @@ export function useUsersIndexData({
     Error
   >(
     ["max_singles_record"],
-    async () => {
-      const headers = new Headers();
-      headers.set("Authorization", `Bearer ${jwtToken}`);
-      const r = await fetch("/api/max_singles_record", {
-        headers,
-      });
-      return await r.json();
-    },
+    async () => get("/api/max_singles_record", jwtToken),
     // Setting stale time to infinity since this data rarely changes, no need
     // to refetch the data.
     { staleTime: Infinity }
@@ -60,12 +54,7 @@ export function useUsersIndexData({
       if (searchTerm !== null) {
         queryParam.append("q", searchTerm);
       }
-      const headers = new Headers();
-      headers.set("Authorization", `Bearer ${jwtToken}`);
-      const r = await fetch(`/api/users?${queryParam}`, {
-        headers,
-      });
-      return await r.json();
+      return await get(`/api/users?${queryParam}`, jwtToken);
     },
     {
       getNextPageParam: (lastPage, _pages) => lastPage.users.next_page,

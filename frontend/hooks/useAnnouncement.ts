@@ -1,4 +1,5 @@
 import { useQuery } from "react-query";
+import { get } from "../commons/http/HttpClient";
 
 type AnnouncementResponse = null | {
   id: number;
@@ -8,8 +9,7 @@ type AnnouncementResponse = null | {
 };
 
 export function useAnnouncement() {
-  return useQuery<AnnouncementResponse, Error>(["announcement"], async () => {
-    const r = await fetch("/api/announcement");
-    return await r.json();
-  });
+  return useQuery(["announcement"], async () =>
+    get<AnnouncementResponse>("/api/announcement")
+  );
 }

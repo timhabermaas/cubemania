@@ -12,6 +12,22 @@ export function formatDate(time: string): string {
   });
 }
 
+/** Formats a time given in ISO8601 format as a long day plus 24h time.
+ *
+ * e.g. "October 16, 2019 at 09:03"
+ *
+ * @param time the time given in ISO8601
+ */
+export function formatDateAndTime(time: string): string {
+  return new Date(time).toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  });
+}
+
 /** Formats a given duration in ms to a duration using min and s. Doesn't display
  * the minutes if they are 0.
  *

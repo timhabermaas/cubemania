@@ -4,7 +4,7 @@ class Cubemania.Models.Record extends Backbone.Model
     _.any(@get("singles"), (s) -> s.id == single.get("id"))
 
   getHtmlUrl: (slug) ->
-    "/users/#{slug}/records/#{@get("id")}"
+    "/records/#{@get("id")}"
 
   title: -> # TODO move to RecordPresenter?
     @get("type_full_name")

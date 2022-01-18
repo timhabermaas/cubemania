@@ -1,4 +1,5 @@
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery } from "react-query";
+import { get, NotFoundError } from "../commons/http/HttpClient";
 
 export type Role = "admin" | "moderator" | "user";
 
@@ -11,24 +12,15 @@ interface MeResponse {
 }
 
 export function useMe(jwtToken?: string) {
-  const queryClient = useQueryClient();
-
-  return useQuery<MeResponse, Error>(
-    ["me"],
-    async () => {
-      const headers = new Headers();
-      if (jwtToken) {
-        headers.set("Authorization", `Bearer ${jwtToken}`);
+  return useQuery(["me"], async () => {
+    try {
+      return await get<MeResponse>("/api/me", jwtToken);
+    } catch (e: unknown) {
+      if (e instanceof NotFoundError) {
+        return {};
+      } else {
+        throw e;
       }
-      const r = await fetch("/api/me", {
-        headers,
-      });
-      return await r.json();
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries("records");
-      },
     }
-  );
+  });
 }

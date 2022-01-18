@@ -32,5 +32,9 @@ pub fn add_routes(cfg: &mut ServiceConfig) {
     .route(
         "/api/records",
         get().to(crate::handlers::record::records_api),
+    )
+    .route(
+        "/api/records/{record_id}",
+        get().to(crate::handlers::record::record_api),
     );
 }
