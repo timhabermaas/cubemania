@@ -3,21 +3,16 @@ import React from "react";
 import { userPath } from "../../commons/path";
 import { capitalize } from "../../commons/text";
 import { formatDateAndTime, formatDuration } from "../../commons/time";
-import { Layout } from "../../components/Layout";
 import { useRecord } from "../../hooks/useRecord";
 import { useRecordIdFromUrl } from "../../hooks/useRecordIdFromUrl";
 import { findRecordTypeByAmount } from "../../models/recordTypes";
 
-interface RecordProps {
-  jwtToken?: string;
-}
-
-export default function Record(props: RecordProps) {
+export default function Record() {
   const recordId = parseInt(useRecordIdFromUrl(), 10);
   const { data } = useRecord(recordId);
 
   return (
-    <Layout jwtToken={props.jwtToken} page={"Records"}>
+    <>
       {data && (
         <>
           <h1>
@@ -69,6 +64,6 @@ export default function Record(props: RecordProps) {
           </article>
         </>
       )}
-    </Layout>
+    </>
   );
 }

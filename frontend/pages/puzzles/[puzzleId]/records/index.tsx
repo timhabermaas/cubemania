@@ -4,8 +4,6 @@ import { pages } from "../../../../commons/paginator";
 import { recordsPath, userPath } from "../../../../commons/path";
 import { formatDate, formatDuration } from "../../../../commons/time";
 import { PaginatedResponse } from "../../../../commons/types/PaginatedResponse";
-import { Layout } from "../../../../components/Layout";
-import { PuzzleNav } from "../../../../components/PuzzleNav";
 import { useBlockUser } from "../../../../hooks/useBlockUser";
 import { useMyRole } from "../../../../hooks/useMyRole";
 import { usePuzzleFromUrl } from "../../../../hooks/usePuzzleFromUrl";
@@ -189,11 +187,7 @@ export default function Records(props: RecordsProps) {
   const { data } = useRecords(currentType, page, currentPuzzleSlug);
 
   return (
-    <Layout
-      jwtToken={props.jwtToken}
-      puzzleNav={<PuzzleNav />}
-      page={"Records"}
-    >
+    <>
       <RecordTypeTabs />
       {data && (
         <RecordTable
@@ -210,6 +204,6 @@ export default function Records(props: RecordsProps) {
           records={data.records}
         />
       )}
-    </Layout>
+    </>
   );
 }

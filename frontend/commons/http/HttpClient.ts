@@ -18,7 +18,9 @@ export class RequestError extends Error {
 
   constructor(statusCode: number, body: unknown) {
     super(
-      `HTTP request failed with ${status}. Response: ${JSON.stringify(body)}`
+      `HTTP request failed with ${statusCode}. Response: ${JSON.stringify(
+        body
+      )}`
     );
     this.name = "RequestError";
     this.statusCode = statusCode;

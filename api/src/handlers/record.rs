@@ -1,5 +1,5 @@
 use crate::app_state::AppState;
-use crate::db;
+use crate::db::{self, RecordType};
 use crate::error::{AppError, ErrorType};
 use actix_web::{web, HttpResponse};
 use serde::{Deserialize, Serialize};
@@ -9,7 +9,7 @@ use tracing::info;
 pub struct RecordsQuery {
     /// The user search string provided by the user.
     #[serde(rename = "type")]
-    type_: String,
+    type_: RecordType,
     page: Option<u32>,
     puzzle_slug: String,
 }
@@ -28,11 +28,17 @@ pub async fn records_api(
 
     let puzzle_id = match puzzle_id {
         Some(p) => p,
-        None => return Ok(HttpResponse::NotFound().body("puzzle slug doesn't exist")),
+        None => {
+            return Err(AppError {
+                cause: format!("can't find puzzle slug {}", q.puzzle_slug),
+                message: format!("can't find puzzle slug {}", q.puzzle_slug),
+                error_type: ErrorType::NotFound,
+            })
+        }
     };
     info!("{}", puzzle_id);
 
-    let records = db::fetch_records(&app_state.pool, &q.type_, puzzle_id, q.page, 50).await?;
+    let records = db::fetch_records(&app_state.pool, q.type_, puzzle_id, q.page, 50).await?;
 
     Ok(HttpResponse::Ok().json(RecordsResponse { records }))
 }

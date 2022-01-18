@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useCallback } from "react";
 import { userPath } from "../../commons/path";
-import { Layout } from "../../components/Layout";
 import { useUsersIndexData } from "../../hooks/useUsersIndexData";
 
 interface UserProps {
@@ -43,7 +42,7 @@ export default function Users(props: UsersProps) {
   }, []);
 
   return (
-    <Layout jwtToken={props.jwtToken} page={"Users"}>
+    <>
       <form
         acceptCharset="UTF-8"
         action="/users"
@@ -91,6 +90,6 @@ export default function Users(props: UsersProps) {
           </a>
         </div>
       )}
-    </Layout>
+    </>
   );
 }

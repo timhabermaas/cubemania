@@ -1,6 +1,6 @@
 use chrono::NaiveDateTime;
 use itertools::Itertools;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
 
 #[derive(sqlx::Type, Debug, Serialize, Clone)]
@@ -489,19 +489,29 @@ pub struct RecordRow {
     set_at: NaiveDateTime,
 }
 
+// TODO: Use custom extractor instead.
+#[derive(Deserialize, Clone, Copy)]
+pub enum RecordType {
+    #[serde(rename = "single")]
+    Single,
+    #[serde(rename = "avg5")]
+    Avg5,
+    #[serde(rename = "avg12")]
+    Avg12,
+}
+
 pub async fn fetch_records(
     pool: &sqlx::PgPool,
-    type_: &str,
+    type_: RecordType,
     puzzle_id: i32,
     page: Option<u32>,
     limit: u32,
 ) -> Result<Paginated<RecordRow, u32>, sqlx::Error> {
     let page = page.unwrap_or(1);
     let amount = match type_ {
-        "single" => 1,
-        "avg5" => 5,
-        "avg12" => 12,
-        _ => panic!("use enums..."),
+        RecordType::Single => 1,
+        RecordType::Avg5 => 5,
+        RecordType::Avg12 => 12,
     };
     let q = "
     SELECT records.id as id, 1 as rank, time, users.name as user_name, users.slug as user_slug, comment, set_at

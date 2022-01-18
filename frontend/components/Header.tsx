@@ -10,7 +10,7 @@ import { useMe } from "../hooks/useMe";
 import Link from "next/link";
 
 interface HeaderProps {
-  page: Page;
+  page?: Page;
   jwtToken?: string;
 }
 
@@ -18,12 +18,12 @@ interface NavItemProps {
   title: string;
   url: string;
   page: Page;
-  currentPage: Page;
+  currentPage?: Page;
   pushedRight?: boolean;
 }
 
 function NavItem(props: NavItemProps) {
-  const selected = eqPage(props.page, props.currentPage);
+  const selected = props.currentPage && eqPage(props.page, props.currentPage);
 
   return (
     <li

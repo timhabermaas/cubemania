@@ -1,5 +1,4 @@
 import React from "react";
-import { Layout } from "../components/Layout";
 import {
   postPath,
   records3x3x3Path,
@@ -8,10 +7,6 @@ import {
 } from "../commons/path";
 import { useAnnouncement } from "../hooks/useAnnouncement";
 import ReactMarkdown from "react-markdown";
-
-interface HomeProps {
-  jwtToken?: string;
-}
 
 interface AnnouncementProps {
   url: string;
@@ -32,11 +27,11 @@ function Announcement(props: AnnouncementProps) {
   );
 }
 
-export default function Home(props: HomeProps) {
+export default function Home() {
   const { data } = useAnnouncement();
 
   return (
-    <Layout jwtToken={props.jwtToken} page={"Home"}>
+    <>
       {data && (
         <Announcement
           title={data.title}
@@ -80,6 +75,6 @@ export default function Home(props: HomeProps) {
           <p>Get the record!</p>
         </li>
       </ul>
-    </Layout>
+    </>
   );
 }

@@ -9,10 +9,10 @@ import { assertExhausted } from "../commons/types/assertions";
 interface LayoutProps {
   jwtToken?: string;
   puzzleNav?: JSX.Element;
-  page: Page;
+  page?: Page;
 }
 
-function pageTitle(page: Page): string {
+function pageTitle(page: Page | undefined): string {
   switch (page) {
     case "Home":
       return "Home · Cubemania";
@@ -26,6 +26,8 @@ function pageTitle(page: Page): string {
       return "User · Cubemania";
     case "Records":
       return "Records · Cubemania";
+    case undefined:
+      return "Cubemania";
     default:
       return assertExhausted(page);
   }

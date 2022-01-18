@@ -1,8 +1,9 @@
 import { NextRouter } from "next/router";
 import React, { ReactNode } from "react";
-import Error404 from "../pages/404";
+import { NotFoundError } from "../commons/http/HttpClient";
+import { NotFound } from "../commons/NotFound";
 
-export class ErrorBoundary extends React.Component<
+export class NotFoundErrorBoundary extends React.Component<
   { children: ReactNode; router: NextRouter },
   { hasError: boolean }
 > {
@@ -17,11 +18,21 @@ export class ErrorBoundary extends React.Component<
     return { hasError: true };
   }
 
+  componentDidCatch(error: unknown, _errorInfo: unknown) {
+    if (!(error instanceof NotFoundError)) {
+      throw error;
+    }
+  }
+
   onRouteChangeComplete() {
     this.setState({ hasError: false });
   }
 
   componentDidMount() {
+    // NOTE: Listening on route changes and clearing the error state is
+    // necessary, otherwise using the back button after seeing a 404 error
+    // won't have any effect.
+    // See also https://stackoverflow.com/q/48121750.
     this.props.router.events.on(
       "routeChangeComplete",
       this.onRouteChangeComplete
@@ -37,7 +48,7 @@ export class ErrorBoundary extends React.Component<
 
   render() {
     if (this.state.hasError) {
-      return <Error404></Error404>;
+      return <NotFound></NotFound>;
     }
 
     return this.props.children;
