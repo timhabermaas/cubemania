@@ -1,4 +1,5 @@
 import App, { AppProps, AppContext } from "next/app";
+import Head from "next/head";
 import React, { useEffect, useRef } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
@@ -37,6 +38,9 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClientRef.current}>
+        <Head>
+          <link rel="shortcut icon" href="/favicon.ico" />
+        </Head>
         <ReactQueryDevtools initialIsOpen={false} />
         <Layout
           jwtToken={jwtToken.current}
