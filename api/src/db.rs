@@ -2,6 +2,7 @@ use chrono::NaiveDateTime;
 use itertools::Itertools;
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
+use tracing::info;
 
 #[derive(sqlx::Type, Debug, Serialize, Clone)]
 #[sqlx(type_name = "varchar")]
@@ -368,14 +369,16 @@ pub async fn find_simple_user(
 }
 
 #[derive(Debug, Serialize, sqlx::FromRow)]
-pub struct Post {
+pub struct PostWithCommentsCount {
     id: i32,
     title: String,
     content: String,
     comments_count: i64,
 }
 
-pub async fn find_announcement(pool: &sqlx::PgPool) -> Result<Option<Post>, sqlx::Error> {
+pub async fn find_announcement(
+    pool: &sqlx::PgPool,
+) -> Result<Option<PostWithCommentsCount>, sqlx::Error> {
     let post: Option<(i32, String, String)> =
         sqlx::query_as("SELECT id, title, content FROM posts ORDER BY created_at DESC LIMIT 1")
             .fetch_optional(pool)
@@ -389,7 +392,7 @@ pub async fn find_announcement(pool: &sqlx::PgPool) -> Result<Option<Post>, sqlx
         .fetch_optional(pool)
         .await?;
         let comments_count = comment_result.map(|x| x.0).unwrap_or(0);
-        Ok(Some(Post {
+        Ok(Some(PostWithCommentsCount {
             id: post.0,
             content: post.2,
             title: post.1,
@@ -598,7 +601,7 @@ pub struct SingleResultWithScramble {
     pub scramble: String,
 }
 
-pub async fn fetch_record(
+pub async fn find_record(
     pool: &PgPool,
     record_id: i32,
 ) -> Result<Option<RecordWithSingles>, sqlx::Error> {
@@ -646,4 +649,123 @@ pub async fn fetch_record(
         user_name: record_without_singles.user_name,
         user_slug: record_without_singles.user_slug,
     }))
+}
+
+#[derive(Debug, Clone, Serialize, sqlx::FromRow)]
+pub struct Comment {
+    id: i32,
+    user_name: String,
+    user_slug: String,
+    created_at: NaiveDateTime,
+    content: String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct PostWithComments {
+    id: i32,
+    title: String,
+    content: String,
+    created_at: NaiveDateTime,
+    user_name: String,
+    user_slug: String,
+    comments: Vec<Comment>,
+}
+
+#[derive(Debug, Clone, sqlx::FromRow)]
+struct Post {
+    id: i32,
+    title: String,
+    content: String,
+    created_at: NaiveDateTime,
+    user_name: String,
+    user_slug: String,
+}
+
+pub async fn find_post(
+    pool: &PgPool,
+    post_id: i32,
+) -> Result<Option<PostWithComments>, sqlx::Error> {
+    let post: Option<Post> = sqlx::query_as(
+        "
+        SELECT posts.id, title, content, posts.created_at, u.name as user_name, u.slug as user_slug
+        FROM posts
+        INNER JOIN users u ON u.id = posts.user_id
+        WHERE posts.id = $1
+        ",
+    )
+    .bind(post_id)
+    .fetch_optional(pool)
+    .await?;
+
+    if let Some(p) = post {
+        let comments: Vec<Comment> =
+            sqlx::query_as("
+                           SELECT u.name as user_name, u.slug as user_slug, c.id as id, c.content as content, c.created_at as created_at
+                           FROM comments c
+                           INNER JOIN users u ON c.user_id = u.id
+                           WHERE c.commentable_id = $1
+                           AND c.commentable_type = 'Post'
+                           ORDER BY c.created_at
+                           ")
+                .bind(post_id)
+                .fetch_all(pool)
+                .await?;
+
+        return Ok(Some(PostWithComments {
+            id: p.id,
+            title: p.title,
+            content: p.content,
+            created_at: p.created_at,
+            user_name: p.user_name,
+            user_slug: p.user_slug,
+            comments,
+        }));
+    } else {
+        return Ok(None);
+    }
+}
+
+pub async fn delete_comment(pool: &sqlx::PgPool, comment_id: i32) -> Result<bool, sqlx::Error> {
+    let mut conn_1 = pool.acquire().await?;
+    let mut conn_2 = pool.acquire().await?;
+    let count: (i64,) = sqlx::query_as("SELECT COUNT(*) FROM comments")
+        .fetch_one(&mut conn_1)
+        .await?;
+    info!("result of count from conn 1: {:?}", count);
+    let count: (i64,) = sqlx::query_as("SELECT COUNT(*) FROM comments")
+        .fetch_one(&mut conn_2)
+        .await?;
+    info!("result of count from conn 2: {:?}", count);
+    let result = sqlx::query("DELETE FROM comments WHERE id = $1")
+        .bind(comment_id)
+        .execute(&mut conn_1)
+        .await?;
+
+    info!("result from deleting using conn 1: {:?}", result);
+    let count: (i64,) = sqlx::query_as("SELECT COUNT(*) FROM comments")
+        .fetch_one(&mut conn_1)
+        .await?;
+    info!("result of count from conn 1: {:?}", count);
+    let count: (i64,) = sqlx::query_as("SELECT COUNT(*) FROM comments")
+        .fetch_one(&mut conn_2)
+        .await?;
+    info!("result of count from conn 1: {:?}", count);
+
+    Ok(result.rows_affected() > 0)
+}
+
+#[derive(Debug, sqlx::FromRow)]
+pub struct SimpleComment {
+    pub id: i32,
+    pub user_id: i32,
+}
+
+pub async fn fetch_comment(
+    pool: &sqlx::PgPool,
+    comment_id: i32,
+) -> Result<Option<SimpleComment>, sqlx::Error> {
+    sqlx::query_as("SELECT id, user_id FROM comments WHERE id = $1")
+        .bind(comment_id)
+        .fetch_optional(pool)
+        .await
 }

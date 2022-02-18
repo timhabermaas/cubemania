@@ -65,3 +65,10 @@ export async function put<T = unknown>(
 ): Promise<T> {
   return request(url, "PUT", jwtToken);
 }
+
+export async function delete_<T = unknown>(
+  url: string,
+  jwtToken?: string
+): Promise<T> {
+  return request(url, "DELETE", jwtToken);
+}

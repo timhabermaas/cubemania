@@ -19,12 +19,19 @@ export function formatDate(time: string): string {
  * @param time the time given in ISO8601
  */
 export function formatDateAndTime(time: string): string {
-  return new Date(time).toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
+  return formatDate(time) + " at " + formatTime(time);
+}
+
+/** Formats the time given in ISO8601 format
+ *
+ * e.g. "09:03"
+ *
+ * @param time the time given in ISO8601
+ */
+function formatTime(time: string): string {
+  return new Date(time).toLocaleTimeString(undefined, {
+    hour: "2-digit",
+    minute: "2-digit",
   });
 }
 

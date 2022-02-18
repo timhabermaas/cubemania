@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import {
   postPath,
   records3x3x3Path,
@@ -22,7 +23,9 @@ function Announcement(props: AnnouncementProps) {
       <ReactMarkdown unwrapDisallowed={true} disallowedElements={["p"]}>
         {props.content}
       </ReactMarkdown>{" "}
-      <a href={props.url}>{props.commentsCount} Comments »</a>
+      <Link href={props.url}>
+        <a>{props.commentsCount} Comments »</a>
+      </Link>
     </article>
   );
 }

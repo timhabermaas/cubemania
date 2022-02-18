@@ -48,7 +48,7 @@ pub async fn record_api(
     app_state: web::Data<AppState>,
 ) -> Result<HttpResponse, AppError> {
     let record_id = record_id.into_inner();
-    let record = db::fetch_record(&app_state.pool, record_id).await?;
+    let record = db::find_record(&app_state.pool, record_id).await?;
 
     match record {
         Some(record) => Ok(HttpResponse::Ok().json(record)),
