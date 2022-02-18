@@ -28,6 +28,8 @@ services:
       options:
         max-size: "50M"
         max-file: "3"
+    depends_on:
+      - backup
   api:
     restart: always
     logging:
