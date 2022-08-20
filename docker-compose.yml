@@ -69,5 +69,15 @@ services:
       AWS_BUCKET_NAME: ${AWS_BUCKET_NAME}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
+  migration:
+    image: flyway/flyway
+    volumes:
+      - ./migrations:/flyway/sql
+    links:
+      - db
+    command: "-url=jdbc:postgresql://db:5432/cubemania_production -user=postgres -password=${POSTGRES_PASSWORD} -locations=filesystem:/flyway/sql migrate"
+    environment:
+      FLYWAY_EDITION: community
+
 volumes:
   postgres-volume:
