@@ -19,7 +19,9 @@ RUN gem install bundler -v 1.11.2
 
 RUN mkdir /cubemania
 WORKDIR /cubemania
-ADD Gemfile* /cubemania/
+COPY Gemfile* /cubemania/
 RUN bundle install
 
-ADD . /cubemania
+COPY . /cubemania
+
+RUN bundle exec rake assets:precompile

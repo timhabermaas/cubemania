@@ -1,4 +1,6 @@
 .git
+.github
 tmp
 tags
 api
+frontend
