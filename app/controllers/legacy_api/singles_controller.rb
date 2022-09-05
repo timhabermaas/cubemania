@@ -1,4 +1,4 @@
-module Api
+module LegacyApi
   # TODO get rid of instance variables by using cached instance methods
   class SinglesController < ApiController
     respond_to :json
