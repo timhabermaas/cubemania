@@ -1,4 +1,4 @@
-class Api::ApiController < ActionController::Base
+class LegacyApi::ApiController < ActionController::Base
   include Authentication
 
   load_and_authorize_resource

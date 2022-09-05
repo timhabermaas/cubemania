@@ -7,7 +7,7 @@ end
 Cubemania::Application.routes.draw do
   root :to => 'homes#show'
 
-  namespace :api do
+  namespace :legacy_api do
     resources :users
     resources :puzzles do
       resources :singles do
