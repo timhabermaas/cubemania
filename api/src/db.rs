@@ -418,10 +418,10 @@ struct PuzzleKindJoin {
     kind_id: i32,
     kind_name: String,
     kind_css_position: i32,
-    puzzle_id: i32,
-    puzzle_name: String,
-    puzzle_slug: String,
-    puzzle_css_position: i32,
+    puzzle_id: Option<i32>,
+    puzzle_name: Option<String>,
+    puzzle_slug: Option<String>,
+    puzzle_css_position: Option<i32>,
 }
 
 pub async fn fetch_puzzles(pool: &sqlx::PgPool) -> Result<Vec<Kind>, sqlx::Error> {
@@ -439,11 +439,13 @@ pub async fn fetch_puzzles(pool: &sqlx::PgPool) -> Result<Vec<Kind>, sqlx::Error
         .group_by(|e| (e.kind_id, e.kind_name.clone(), e.kind_css_position))
     {
         let puzzles = group
-            .map(|pk| Puzzle {
-                id: pk.puzzle_id,
-                slug: pk.puzzle_slug,
-                css_position: pk.puzzle_css_position,
-                name: pk.puzzle_name,
+            .filter_map(|pk| {
+                Some(Puzzle {
+                    id: pk.puzzle_id?,
+                    slug: pk.puzzle_slug?,
+                    css_position: pk.puzzle_css_position?,
+                    name: pk.puzzle_name?,
+                })
             })
             .collect::<Vec<_>>();
         result.push(Kind {
