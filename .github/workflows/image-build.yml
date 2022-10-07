@@ -48,8 +48,8 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta_frontend.outputs.tags }}
           labels: ${{ steps.meta_frontend.outputs.labels }}
-          cache-from: type=registry,ref=ghcr.io/timhabermaas/cubemania_frontend:latest
-          cache-to: type=inline
+          cache-from: type=registry,ref=ghcr.io/timhabermaas/cubemania_frontend:buildcache
+          cache-to: type=registry,ref=ghcr.io/timhabermaas/cubemania_frontend:buildcache,mode=max
 
       - name: Docker meta for web
         id: meta_web
@@ -67,8 +67,8 @@ jobs:
           tags: ${{ steps.meta_web.outputs.tags }}
           labels: ${{ steps.meta_web.outputs.labels }}
           push: ${{ github.event_name != 'pull_request' }}
-          cache-from: type=registry,ref=ghcr.io/timhabermaas/cubemania_rails:latest
-          cache-to: type=inline
+          cache-from: type=registry,ref=ghcr.io/timhabermaas/cubemania_rails:buildcache
+          cache-to: type=registry,ref=ghcr.io/timhabermaas/cubemania_rails:buildcache,mode=max
 
       - name: Docker meta for api
         id: meta_api
@@ -86,8 +86,8 @@ jobs:
           tags: ${{ steps.meta_api.outputs.tags }}
           labels: ${{ steps.meta_api.outputs.labels }}
           push: ${{ github.event_name != 'pull_request' }}
-          cache-from: type=registry,ref=ghcr.io/timhabermaas/cubemania_api:latest
-          cache-to: type=inline
+          cache-from: type=registry,ref=ghcr.io/timhabermaas/cubemania_api:buildcache
+          cache-to: type=registry,ref=ghcr.io/timhabermaas/cubemania_api:buildcache,mode=max
 
       - name: Docker meta for backup
         id: meta_backup
@@ -105,5 +105,5 @@ jobs:
           tags: ${{ steps.meta_backup.outputs.tags }}
           labels: ${{ steps.meta_backup.outputs.labels }}
           push: ${{ github.event_name != 'pull_request' }}
-          cache-from: type=registry,ref=ghcr.io/timhabermaas/cubemania_backup:latest
-          cache-to: type=inline
+          cache-from: type=registry,ref=ghcr.io/timhabermaas/cubemania_backup:buildcache
+          cache-to: type=registry,ref=ghcr.io/timhabermaas/cubemania_backup:buildcache,mode=max
