@@ -20,6 +20,13 @@ services:
       - api
       - web
       - frontend
+  nginx-ssl:
+    image: ghcr.io/timhabermaas/cubemania_nginx-ssl:edge
+    build:
+      context: nginx-ssl
+      dockerfile: Dockerfile
+    depends_on:
+      - nginx
   api:
     image: ghcr.io/timhabermaas/cubemania_api:edge
     build:

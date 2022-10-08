@@ -11,10 +11,8 @@ services:
       - "4000:4000"
   nginx:
     volumes:
-      - ./nginx/empty_ssl.conf:/etc/nginx/ssl.conf
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
-      - "443:443"
       - "8080:80"
   api:
     ports:

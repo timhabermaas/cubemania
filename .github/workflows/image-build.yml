@@ -108,6 +108,25 @@ jobs:
           cache-from: type=registry,ref=ghcr.io/timhabermaas/cubemania_nginx:buildcache
           cache-to: type=registry,ref=ghcr.io/timhabermaas/cubemania_nginx:buildcache,mode=max
 
+      - name: Docker meta for nginx-ssl
+        id: meta_nginx-ssl
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ghcr.io/timhabermaas/cubemania_nginx-ssl
+          tags: |
+            type=semver,pattern={{version}}
+            type=edge,branch=master
+      - name: Build nginx-ssl image and push
+        uses: docker/build-push-action@v2
+        with:
+          context: nginx-ssl
+          tags: ${{ steps.meta_nginx-ssl.outputs.tags }}
+          labels: ${{ steps.meta_nginx-ssl.outputs.labels }}
+          push: ${{ github.event_name != 'pull_request' }}
+          cache-from: type=registry,ref=ghcr.io/timhabermaas/cubemania_nginx-ssl:buildcache
+          cache-to: type=registry,ref=ghcr.io/timhabermaas/cubemania_nginx-ssl:buildcache,mode=max
+
       - name: Docker meta for backup
         id: meta_backup
         uses: docker/metadata-action@v4

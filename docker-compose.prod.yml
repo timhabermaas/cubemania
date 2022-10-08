@@ -16,7 +16,7 @@ services:
       options:
         max-size: "50M"
         max-file: "3"
-  nginx:
+  nginx-ssl:
     restart: always
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
