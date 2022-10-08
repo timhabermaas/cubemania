@@ -22,6 +22,15 @@ WORKDIR /cubemania
 COPY Gemfile* /cubemania/
 RUN bundle install
 
-COPY app config db doc lib public script spec vendor Rakefile config.ru Guardfile Procfile /cubemania/
+COPY app /cubemania/app
+COPY config /cubemania/config
+COPY db /cubemania/db
+COPY doc /cubemania/doc
+COPY lib /cubemania/lib
+COPY public /cubemania/public
+COPY script /cubemania/script
+COPY spec /cubemania/spec
+COPY vendor /cubemania/vendor
+COPY Rakefile config.ru Guardfile Procfile /cubemania/
 
 RUN bundle exec rake assets:precompile
