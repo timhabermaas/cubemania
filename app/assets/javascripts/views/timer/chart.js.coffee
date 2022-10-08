@@ -159,7 +159,7 @@ class Cubemania.Views.Chart extends Backbone.View
     $(@el).html(@template())
     @$("p.help").hide()
 
-    @$("#user-tokens").tokenInput "/api/users.json",
+    @$("#user-tokens").tokenInput "/legacy_api/users.json",
       crossDomain: false
       theme: "facebook"
       preventDuplicates: true
@@ -189,7 +189,7 @@ class Cubemania.Views.Chart extends Backbone.View
   # TODO add convenient function for zooming on current day
   fetchDataForChart: (userId, from, to, callback) ->
     puzzleId = Cubemania.currentPuzzle.getId()
-    $.getJSON "/api/puzzles/#{puzzleId}/singles/chart.json?from=#{from}&to=#{to}&user_id=#{userId}", (data) =>
+    $.getJSON "/legacy_api/puzzles/#{puzzleId}/singles/chart.json?from=#{from}&to=#{to}&user_id=#{userId}", (data) =>
       callback(@generateChartDataFromApiData data)
 
   addUserToChart: (id, name) ->

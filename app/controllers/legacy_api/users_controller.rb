@@ -1,4 +1,4 @@
-module Api
+module LegacyApi
   class UsersController < ApiController
     def index
       @users = User.order('singles_count desc').paginate(:page => params[:page], :per_page => 200)

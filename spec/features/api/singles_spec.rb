@@ -21,7 +21,7 @@ describe "api/puzzles/:id/singles", :type => :api do
 
     describe "no date range given" do
       it "returns singles grouped by month" do
-        get "/api/puzzles/#{puzzle.id}/singles/chart.json", :user_id => @user.id
+        get "/legacy_api/puzzles/#{puzzle.id}/singles/chart.json", :user_id => @user.id
         result = JSON.parse(last_response.body)
         expect(result).to have(2).items
         expect(result[0]["time"]).to eq(15000)
@@ -31,7 +31,7 @@ describe "api/puzzles/:id/singles", :type => :api do
 
     describe "date range of one month" do
       it "returns singles grouped by day" do
-        get "/api/puzzles/#{puzzle.id}/singles/chart.json", :user_id => @user.id,
+        get "/legacy_api/puzzles/#{puzzle.id}/singles/chart.json", :user_id => @user.id,
                                                             :from => Time.new(2012, 4, 1).to_i,
                                                             :to => Time.new(2012, 5, 1).to_i
         result = JSON.parse(last_response.body)
@@ -49,7 +49,7 @@ describe "api/puzzles/:id/singles", :type => :api do
         create :single, :user => user, :puzzle => puzzle, :time => 13, :created_at => time_zone.local(2012, 10, 4, 23, 30)
         create :single, :user => user, :puzzle => puzzle, :time => 15, :created_at => time_zone.local(2012, 10, 5, 0, 30)
 
-        get "/api/puzzles/#{puzzle.id}/singles/chart.json", :user_id => user.id,
+        get "/legacy_api/puzzles/#{puzzle.id}/singles/chart.json", :user_id => user.id,
                                                             :from => Time.new(2012, 10, 1).to_i,
                                                             :to => Time.new(2012, 10, 30).to_i
         result = JSON.parse(last_response.body)
