@@ -13,8 +13,8 @@ services:
     image: timhabermaas/cubemania_frontend
   nginx:
     build:
-      context: .
-      dockerfile: nginx/Dockerfile
+      context: nginx
+      dockerfile: Dockerfile
     image: timhabermaas/cubemania_nginx
     depends_on:
       - api
