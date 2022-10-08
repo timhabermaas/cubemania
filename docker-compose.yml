@@ -7,24 +7,24 @@ services:
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?psql password missing}
   frontend:
+    image: ghcr.io/timhabermaas/cubemania_frontend:latest
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    image: timhabermaas/cubemania_frontend
   nginx:
+    image: ghcr.io/timhabermaas/cubemania_nginx:latest
     build:
       context: nginx
       dockerfile: Dockerfile
-    image: timhabermaas/cubemania_nginx
     depends_on:
       - api
       - web
       - frontend
   api:
+    image: ghcr.io/timhabermaas/cubemania_api:latest
     build:
       context: ./api
       dockerfile: Dockerfile
-    image: timhabermaas/cubemania_api
     environment:
       RUST_LOG: info
       RUST_BACKTRACE: 1
@@ -33,8 +33,8 @@ services:
     depends_on:
       - db
   web:
+    image: ghcr.io/timhabermaas/cubemania_rails:latest
     build: .
-    image: timhabermaas/cubemania_rails
     command: bundle exec unicorn -p 3000 -c ./config/unicorn.rb
     volumes:
       - .:/cubemania
@@ -56,10 +56,10 @@ services:
     command: memcached -m 64
 
   backup:
+    image: ghcr.io/timhabermaas/cubemania_backup:latest
     build:
       context: backup
       dockerfile: Dockerfile
-    image: timhabermaas/cubemania_backup
     links:
       - db
     environment:
