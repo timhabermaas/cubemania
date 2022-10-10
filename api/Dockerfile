@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:experimental
 
-FROM ekidd/rust-musl-builder:1.51.0 as builder
+FROM ekidd/rust-musl-builder:1.64.0 as builder
 
 RUN mkdir /home/rust/api
 WORKDIR /home/rust/api
