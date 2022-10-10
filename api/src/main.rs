@@ -7,7 +7,7 @@ mod extractors;
 mod handlers;
 mod record_job;
 
-use actix_web::{web, App, HttpServer};
+use actix_web::{web, App, HttpServer, HttpResponse};
 use handlers::add_routes;
 use record_job::runner;
 use std::env;
@@ -51,7 +51,7 @@ async fn main() -> std::io::Result<()> {
 
                 actix_web::error::InternalError::from_response(
                     err,
-                    web::HttpResponse::BadRequest()
+                    HttpResponse::BadRequest()
                         .json(serde_json::json!({ "error": err_message }))
                         .into(),
                 )

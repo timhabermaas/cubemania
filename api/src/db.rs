@@ -220,8 +220,8 @@ pub async fn fetch_users(
         "SELECT id, name, slug, singles_count, role FROM users WHERE lower(name) LIKE $3 ORDER BY singles_count DESC LIMIT $1 OFFSET $2",
     )
     // Intentionally overfetching to determine whether there are more results to be returned.
-    .bind(limit + 1)
-    .bind((page - 1) * limit)
+    .bind((limit + 1) as i64)
+    .bind(((page - 1) * limit) as i64)
     .bind(search_term_sql.clone())
     .fetch_all(pool)
     .await?;
@@ -524,8 +524,8 @@ pub async fn fetch_records(
     let mut records: Vec<RecordRow> = sqlx::query_as(q)
         .bind(puzzle_id)
         .bind(amount)
-        .bind(limit + 1)
-        .bind((page - 1) * limit)
+        .bind((limit + 1) as i64)
+        .bind(((page - 1) * limit) as i64)
         .fetch_all(pool)
         .await?;
 
