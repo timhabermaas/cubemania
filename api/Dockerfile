@@ -1,15 +1,16 @@
-# syntax=docker/dockerfile:experimental
+FROM rust:1.64.0-alpine3.16 as builder
 
-FROM ekidd/rust-musl-builder:1.51.0 as builder
+RUN apk upgrade --update-cache --available && \
+    apk add musl-dev openssl-dev pkgconfig && \
+    rm -rf /var/cache/apk/*
 
-RUN mkdir /home/rust/api
-WORKDIR /home/rust/api
+WORKDIR /usr/src/api
 
-COPY --chown=rust:rust . ./
+COPY . .
 
-RUN --mount=type=cache,target=/home/rust/.cargo/registry,uid=1000,gid=1000 \
-    --mount=type=cache,target=/home/rust/api/target,uid=1000,gid=1000 \
-    cargo build --release && cp target/x86_64-unknown-linux-musl/release/api ./api
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/usr/src/api/target \
+    cargo install --path .
 
 FROM alpine:latest
 
@@ -27,7 +28,7 @@ RUN apk update \
     && apk add --no-cache ca-certificates tzdata \
     && rm -rf /var/cache/apk/*
 
-COPY --from=builder /home/rust/api/api ${APP}/api
+COPY --from=builder /usr/local/cargo/bin/api ${APP}/api
 
 RUN chown -R $APP_USER:$APP_USER ${APP}
 USER $APP_USER
