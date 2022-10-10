@@ -145,3 +145,25 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           cache-from: type=registry,ref=ghcr.io/timhabermaas/cubemania_backup:buildcache
           cache-to: type=registry,ref=ghcr.io/timhabermaas/cubemania_backup:buildcache,mode=max
+
+
+  staging-update:
+    needs: build-and-push-docker-image
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: timhabermaas/cubemania-kubernetes
+          token: ${{ secrets.K8S_ACCESS_TOKEN }}
+      - name: Set new staging version
+        run: |
+          git config user.name "Deploy Bot"
+          git config user.email "bot@cubemania.org"
+          # Remove v from v2.1.0
+          VERSION=${{ github.ref_name }}
+          ./k8s-cubemania/update-staging-version.sh ${VERSION:1}
+          git push
