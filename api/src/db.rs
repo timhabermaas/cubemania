@@ -149,6 +149,9 @@ pub enum UserRole {
     #[sqlx(rename = "user")]
     #[serde(rename = "user")]
     User,
+    #[sqlx(rename = "beta_user")]
+    #[serde(rename = "beta_user")]
+    BetaUser,
 }
 
 #[derive(sqlx::FromRow, Debug, Serialize, Clone)]
