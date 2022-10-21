@@ -24,8 +24,9 @@ ENV TZ=Etc/UTC \
 RUN addgroup -S $APP_USER \
     && adduser -S -g $APP_USER $APP_USER
 
+# libc6-compat is to make it work on aarm64
 RUN apk update \
-    && apk add --no-cache ca-certificates tzdata \
+    && apk add --no-cache ca-certificates tzdata libc6-compat \
     && rm -rf /var/cache/apk/*
 
 COPY --from=builder /usr/local/cargo/bin/api ${APP}/api
