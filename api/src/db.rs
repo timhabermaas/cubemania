@@ -1,4 +1,4 @@
-use chrono::NaiveDateTime;
+use chrono::{NaiveDateTime, Utc};
 use itertools::Itertools;
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
@@ -725,31 +725,28 @@ pub async fn find_post(
     }
 }
 
+pub async fn create_comment(
+    pool: &sqlx::PgPool,
+    post_id: i32,
+    user_id: i32,
+    content: String,
+) -> Result<i32, sqlx::Error> {
+    let (comment_id,): (i32,) =
+        sqlx::query_as("INSERT INTO comments (commentable_id, commentable_type, user_id, content, created_at) VALUES ($1, 'Post', $2, $3, $4) RETURNING id")
+            .bind(post_id)
+            .bind(user_id)
+            .bind(content)
+            .bind(Utc::now().naive_utc())
+            .fetch_one(pool)
+            .await?;
+    Ok(comment_id)
+}
+
 pub async fn delete_comment(pool: &sqlx::PgPool, comment_id: i32) -> Result<bool, sqlx::Error> {
-    let mut conn_1 = pool.acquire().await?;
-    let mut conn_2 = pool.acquire().await?;
-    let count: (i64,) = sqlx::query_as("SELECT COUNT(*) FROM comments")
-        .fetch_one(&mut conn_1)
-        .await?;
-    info!("result of count from conn 1: {:?}", count);
-    let count: (i64,) = sqlx::query_as("SELECT COUNT(*) FROM comments")
-        .fetch_one(&mut conn_2)
-        .await?;
-    info!("result of count from conn 2: {:?}", count);
     let result = sqlx::query("DELETE FROM comments WHERE id = $1")
         .bind(comment_id)
-        .execute(&mut conn_1)
+        .execute(pool)
         .await?;
-
-    info!("result from deleting using conn 1: {:?}", result);
-    let count: (i64,) = sqlx::query_as("SELECT COUNT(*) FROM comments")
-        .fetch_one(&mut conn_1)
-        .await?;
-    info!("result of count from conn 1: {:?}", count);
-    let count: (i64,) = sqlx::query_as("SELECT COUNT(*) FROM comments")
-        .fetch_one(&mut conn_2)
-        .await?;
-    info!("result of count from conn 1: {:?}", count);
 
     Ok(result.rows_affected() > 0)
 }

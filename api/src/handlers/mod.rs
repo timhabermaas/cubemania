@@ -5,7 +5,7 @@ pub mod record;
 pub mod single;
 pub mod user;
 
-use actix_web::web::{delete, get, put, ServiceConfig};
+use actix_web::web::{delete, get, post, put, ServiceConfig};
 
 pub fn add_routes(cfg: &mut ServiceConfig) {
     cfg.route(
@@ -41,6 +41,10 @@ pub fn add_routes(cfg: &mut ServiceConfig) {
     .route(
         "/api/posts/{post_id}",
         get().to(crate::handlers::post::post_api),
+    )
+    .route(
+        "/api/posts/{post_id}/comments",
+        post().to(crate::handlers::post::create_comment_api),
     )
     .route(
         "/api/comments/{comment_id}",

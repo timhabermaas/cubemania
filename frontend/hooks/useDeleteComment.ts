@@ -24,19 +24,15 @@ export function useDeleteComment(postId: number, jwtToken?: string) {
 
   return useMutation(
     async (commentId: number) => {
-      console.log(`deleting comment ${commentId}`);
       const result = await delete_<Post>(
         `/api/comments/${commentId}`,
         jwtToken
       );
-      console.log(`comment ${commentId} deleted`);
       return result;
     },
     {
-      onSuccess: () => {
-        console.log(`invalidating post ${postId}`);
-        queryClient.invalidateQueries(["post", postId]);
-        console.log(`posts ${postId} invalidated`);
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(["post", postId]);
       },
     }
   );

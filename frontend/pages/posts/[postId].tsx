@@ -8,18 +8,16 @@ import Link from "next/link";
 import { useMyRole } from "../../hooks/useMyRole";
 import { useDeleteComment } from "../../hooks/useDeleteComment";
 import { useMe } from "../../hooks/useMe";
+import { CommentForm } from "../../components/CommentForm";
 
 interface RecordProps {
   jwtToken?: string;
 }
 
-export default function Record(props: RecordProps) {
+export default function Post(props: RecordProps) {
   const { data: meData } = useMe(props.jwtToken);
   const postId = parseInt(usePostIdFromUrl(), 10);
   const { data } = usePost(postId);
-  // TODO: For some reason the /api/posts endpoint doesn't see the deleted
-  // comment immediatelly.
-  console.log("rerendering");
   const userRole = useMyRole(props.jwtToken);
   const deleteComment = useDeleteComment(postId, props.jwtToken);
   const currentUser = meData && meData.current_user;
@@ -34,8 +32,6 @@ export default function Record(props: RecordProps) {
     if (confirm(`Do you really want to remove this comment?`)) {
       deleteComment.mutate(commentId);
     }
-    // TODO: Send delete request to server.
-    console.log("deleting " + commentId);
   };
 
   return (
@@ -55,8 +51,8 @@ export default function Record(props: RecordProps) {
           </cite>
         </div>
       </article>
-      {data.comments.length > 0 && (
-        <div className="comments">
+      <div id="comments" className="comments">
+        {data.comments.length > 0 && (
           <ol className="comments">
             {data.comments.map((c) => (
               <li key={c.id} className="comment">
@@ -67,20 +63,19 @@ export default function Record(props: RecordProps) {
                 </cite>
                 <small>
                   {formatDateAndTime(c.created_at)}{" "}
-                  {userRole === "admin" ||
-                  (currentUser && currentUser.slug === c.user_slug) ? (
-                    <a
-                      href="#"
-                      onClick={(event) => {
-                        event.preventDefault();
-                        onDeleteCommentClick(c.id);
-                      }}
-                    >
-                      Delete
-                    </a>
-                  ) : (
-                    "nope"
-                  )}
+                  {currentUser &&
+                    (currentUser.slug === c.user_slug ||
+                      userRole === "admin") && (
+                      <a
+                        href="#"
+                        onClick={(event) => {
+                          event.preventDefault();
+                          onDeleteCommentClick(c.id);
+                        }}
+                      >
+                        Delete
+                      </a>
+                    )}
                 </small>
                 <div
                   className="text"
@@ -89,8 +84,11 @@ export default function Record(props: RecordProps) {
               </li>
             ))}
           </ol>
-        </div>
-      )}
+        )}
+        {currentUser && (
+          <CommentForm jwtToken={props.jwtToken} postId={postId} />
+        )}
+      </div>
     </div>
   );
 }
