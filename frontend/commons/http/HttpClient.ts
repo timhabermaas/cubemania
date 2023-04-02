@@ -31,14 +31,20 @@ export class RequestError extends Error {
 async function request<T>(
   url: string,
   method: string,
+  jsonBody?: unknown,
   jwtToken?: string
 ): Promise<T> {
   const headers = new Headers();
   if (jwtToken) {
     headers.set("Authorization", `Bearer ${jwtToken}`);
   }
+  headers.set("Content-Type", "application/json;charset=utf8");
 
-  const response = await fetch(url, { method: method, headers });
+  const response = await fetch(url, {
+    body: jsonBody ? JSON.stringify(jsonBody) : undefined,
+    method: method,
+    headers,
+  });
   const content = await response.json();
 
   if (response.ok) {
@@ -56,12 +62,27 @@ export async function get<T = unknown>(
   url: string,
   jwtToken?: string
 ): Promise<T> {
-  return request(url, "GET", jwtToken);
+  return request(url, "GET", undefined, jwtToken);
+}
+
+export async function post<T = unknown>(
+  url: string,
+  jsonBody: unknown,
+  jwtToken?: string
+): Promise<T> {
+  return request(url, "POST", jsonBody, jwtToken);
 }
 
 export async function put<T = unknown>(
   url: string,
   jwtToken?: string
 ): Promise<T> {
-  return request(url, "PUT", jwtToken);
+  return request(url, "PUT", undefined, jwtToken);
+}
+
+export async function delete_<T = unknown>(
+  url: string,
+  jwtToken?: string
+): Promise<T> {
+  return request(url, "DELETE", undefined, jwtToken);
 }

@@ -1,4 +1,4 @@
-FROM rust:1.64.0-alpine3.16 as builder
+FROM rust:1.66.1-alpine3.17 as builder
 
 RUN apk upgrade --update-cache --available && \
     apk add musl-dev openssl-dev pkgconfig && \
@@ -12,7 +12,7 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/usr/src/api/target \
     cargo install --path .
 
-FROM alpine:latest
+FROM alpine:3.17
 
 ARG APP=/usr/src/app
 
